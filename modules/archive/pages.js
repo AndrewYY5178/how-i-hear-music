@@ -1,13 +1,14 @@
 import { data, findAlbum, findArtist, findTrack, rating, safe, slug, trackId } from "../music/data.js";
 import { radar, summary, waveform } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
+import { icon } from "../layout/icons.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
 const tracksForArtist = (artistId) => data.songs.entries.filter((track) => track.artistId === artistId);
 const recordCard = (track) => `<article class="track-card"><div>${radar(track.scores, { className: "mini-radar" })}</div><p class="mono">${safe(track.artist)}</p><h3>${safe(track.title)}</h3><strong>${rating(track.scores?.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`;
 
-const archiveGates = [["TRACKS", "/archive/tracks", data.songs.entries.length + " recorded tracks", "≋"], ["ALBUMS", "/archive/albums", data.profile.albumArchive.length + " albums in view", "◒"], ["ARTISTS", "/archive/artists", data.artists.featured.length + " featured artists", "✦"]];
-export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveNav()}<div class="archive-gates">${archiveGates.map(([title, href, note, symbol]) => `<article><span class="archive-symbol" aria-hidden="true">${symbol}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
+const archiveGates = [["TRACKS", "/archive/tracks", data.songs.entries.length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", data.profile.albumArchive.length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", data.artists.featured.length + " featured artists", "artists"]];
+export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveNav()}<div class="archive-gates">${archiveGates.map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
 
 const renderTrackCards = (tracks) => tracks.map(recordCard).join("") || "<p class='empty-state'>No tracks match this view.</p>";
 export const archiveTracks = () => `${pageHeader("ARCHIVE / TRACKS", "Tracks in the record.", "Formal entries only. Ratings are never inferred.")}${archiveNav()}<div class="archive-tools"><input id="track-search" type="search" placeholder="Search tracks or artists"><div id="track-filters"><button data-track-filter="all" class="active">ALL</button><button data-track-filter="rated">RATED</button><button data-track-filter="beyond">BEYOND SCALE</button></div></div><div class="track-grid" id="track-grid">${renderTrackCards(data.songs.entries)}</div>`;

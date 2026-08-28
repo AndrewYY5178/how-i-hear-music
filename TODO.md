@@ -12,6 +12,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add a lightweight Journal route for rating changes and discoveries.
 - [x] Audit desktop and mobile route rendering; fix Archive track rendering, remove Home horizontal overflow, and add contextual return actions to every non-Home route.
 - [x] Establish design rules and refine Home, Archive, Taste, Import and Rate around a single visual gravity per page; add visual route markers and reduce QQ import / rating density.
+- [x] Complete strict visual QA and cleanup across all existing routes: align shared editorial edges, normalize core spacing and type rhythm, unify gate icons, and harden responsive/touch layouts without adding features.
 
 ## P0 — Make playlist import genuinely useful
 

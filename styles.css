@@ -133,3 +133,154 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
   .album-rate-session form { margin-top:30px; }
   #album-wave-session { padding:22px 10px; }
 }
+
+/* Strict visual QA: shared editorial rhythm and aligned component edges. */
+:root {
+  --space-1:8px;
+  --space-2:16px;
+  --space-3:24px;
+  --space-4:40px;
+  --space-5:64px;
+  --space-6:96px;
+  --space-7:144px;
+}
+#app { width:min(1180px,calc(100% - 48px)); padding:96px 0; }
+.site-header { min-height:64px; padding-inline:64px; }
+.site-footer { gap:24px; padding:24px 64px; }
+.page-head { max-width:760px; margin-bottom:64px; }
+.page-head h1,.home-hero h1,.not-found h1 { margin:16px 0 24px; }
+.page-head>p { max-width:560px; font-size:16px; line-height:1.5; }
+.page-actions { margin-top:24px; }
+.back-button { margin-bottom:24px; }
+.secondary-nav { gap:24px; margin:-24px 0 64px; padding-bottom:16px; }
+.button { min-height:40px; padding:8px 16px; }
+.text-link,.card-link { margin-top:16px; }
+.home-hero { min-height:64vh; }
+.home-hero>p { margin-bottom:24px; }
+.home-section { padding:96px 0; }
+.current-grid article { min-height:224px; padding:24px; }
+.current-grid article:first-child { padding-left:0; }
+.current-grid strong { right:16px; bottom:24px; }
+.current-grid h2 { margin:40px 0 8px; }
+.featured-shape { gap:64px; margin-top:96px; padding:64px 0; }
+.featured-shape-copy h2 { margin:24px 0 8px; }
+.featured-shape-copy .text-link { margin-top:40px; }
+.featured-shape-visual { padding:24px 40px; background:transparent; }
+.feature-score span { padding:8px 0; }
+.featured-landscape { gap:64px; margin-bottom:96px; padding-top:64px; }
+.featured-landscape h2 { margin:16px 0 8px; }
+.enter-archive>div { margin-top:24px; }
+.enter-archive a { min-height:144px; padding:24px; }
+.short-manifesto { padding:96px 0 40px; }
+.archive-gates article,.taste-gates article,.rate-choices article,.import-choices article { min-height:240px; padding:24px; }
+.archive-gates article:first-child,.taste-gates article:first-child,.rate-choices article:first-child,.import-choices article:first-child { padding-left:0; }
+.archive-symbol,.taste-symbol { width:40px; height:40px; margin-bottom:auto; border:0; color:var(--red); }
+.gate-icon { width:32px; height:32px; overflow:visible; }
+.taste-symbol { border-radius:0; }
+.archive-gates article>.mono,.taste-gates article>.mono { margin-top:40px; }
+.archive-gates article .text-link,.taste-gates article .text-link { padding-top:24px; }
+.archive-gates p,.taste-gates p,.rate-choices p,.import-choices p { margin-top:8px; }
+.archive-tools { gap:16px; margin:-24px 0 24px; }
+.track-card { min-height:320px; padding:24px; }
+.track-card h3 { margin-top:8px; }
+.track-card>strong { right:24px; bottom:24px; }
+.album-grid { gap:16px; }
+.album-card p { margin-top:16px; }
+.detail-primary { gap:40px; max-width:800px; padding:40px 0; }
+.meta-strip { margin-bottom:24px; }
+.album-detail-cover { gap:40px; margin-bottom:64px; }
+.tracklist>div { padding:8px 0; }
+.artist-grid article { min-height:224px; padding:24px; }
+.artist-grid h2 { margin:40px 0 8px; }
+.essay-stack article { grid-template-columns:64px 1fr; gap:24px; padding:24px 0; }
+.profile-grid article { min-height:144px; padding:16px; }
+.profile-grid strong { margin-top:40px; }
+.good-not-mine article { padding:24px; }
+.good-not-mine dl { gap:24px; }
+.compare-callout,.continue-panel { padding:40px; }
+.continue-panel { margin-top:40px; }
+.track-rate-session { gap:64px; padding:64px 0; }
+.interactive-radar { padding:24px 0; background:transparent; }
+.rate-form-heading { margin-bottom:24px; }
+.rating-control { gap:16px; padding:16px 0; }
+.track-rate-session .tag-picker { margin:24px 0; }
+.album-rate-session { padding:64px 0; }
+.album-wave-heading { margin-bottom:24px; }
+#album-wave-session { padding:40px; background:transparent; }
+.album-rate-session form { margin-top:40px; }
+.album-track-controls label { gap:16px; padding:8px 0; }
+.album-overall { gap:16px; margin:24px 0; }
+.qq-import-focus { column-gap:64px; row-gap:24px; padding:64px 0; }
+.qq-import-intro h2 { margin:24px 0 8px; }
+.qq-import-focus label>span { margin-bottom:16px; }
+.qq-import-focus textarea { min-height:96px; margin-bottom:24px; padding:16px 0; }
+.qq-import-focus aside { min-height:64px; padding-top:16px; }
+.catalog-search { column-gap:64px; margin-top:96px; }
+.catalog-search form { gap:16px; margin-bottom:24px; }
+.inbox-counts { margin-bottom:40px; }
+.inbox-counts span { padding:16px 0; }
+.inbox-counts span:not(:first-child) { padding-left:16px; }
+.inbox-entries article { gap:16px; padding:16px 0; }
+.entry-actions { gap:8px; }
+.journal-list article { grid-template-columns:96px 1fr auto; gap:24px; padding:24px 0; }
+.journal-list h2 { margin-top:8px; }
+
+@media (max-width:1024px) {
+  .site-header,.site-footer { padding-inline:40px; }
+  #app { width:min(100% - 48px, 1180px); }
+  .featured-shape,.featured-landscape,.qq-import-focus,.catalog-search,.track-rate-session { gap:40px; }
+  .featured-shape { grid-template-columns:minmax(160px,.7fr) minmax(260px,1.2fr) minmax(128px,.45fr); }
+  .album-grid { grid-template-columns:repeat(3,1fr); }
+}
+
+@media (max-width:760px) {
+  #app { width:min(100% - 32px,1180px); padding:64px 0; }
+  .site-header { padding-inline:16px; }
+  .site-footer { gap:16px; padding:24px 16px; }
+  .page-head { margin-bottom:40px; }
+  .page-head h1,.home-hero h1 { font-size:56px; }
+  .page-head>p { font-size:16px; }
+  .secondary-nav { gap:16px; margin:-16px 0 40px; }
+  .home-section { padding:64px 0; }
+  .current-grid article { min-height:192px; padding:16px; }
+  .current-grid article:first-child { padding-left:16px; }
+  .featured-shape { gap:40px; margin-top:64px; padding:40px 0; }
+  .featured-shape-visual { padding:16px 0; }
+  .featured-landscape { gap:24px; margin-bottom:64px; padding-top:40px; }
+  .featured-landscape .waveform { margin-top:16px; }
+  .enter-archive a { min-height:96px; padding:16px; }
+  .short-manifesto { padding:64px 0 40px; }
+  .archive-gates article,.taste-gates article,.rate-choices article,.import-choices article { min-height:208px; padding:24px 0; border-right:0; }
+  .archive-gates article:first-child,.taste-gates article:first-child,.rate-choices article:first-child,.import-choices article:first-child { padding-left:0; }
+  .archive-gates article>.mono,.taste-gates article>.mono { margin-top:24px; }
+  .track-grid,.album-grid,.artist-grid,.current-grid { gap:1px; }
+  .track-card { min-height:288px; padding:16px; }
+  .track-card>strong { right:16px; bottom:16px; }
+  .album-grid { gap:16px; }
+  .detail-primary { gap:24px; padding:24px 0 40px; }
+  .album-detail-cover { gap:24px; margin-bottom:40px; }
+  .essay-stack article { grid-template-columns:40px 1fr; gap:16px; }
+  .good-not-mine article { padding:24px 16px; }
+  .compare-callout,.continue-panel { padding:24px; }
+  .track-rate-session { gap:40px; padding:40px 0; }
+  .large-radar { width:min(100%,400px); }
+  .album-rate-session { padding:40px 0; }
+  #album-wave-session { padding:24px 0; }
+  .album-rate-session form { margin-top:24px; }
+  .qq-import-focus { gap:24px; padding:40px 0; }
+  .catalog-search { gap:24px; margin-top:64px; }
+  .catalog-search form { gap:8px; }
+  .inbox-counts { margin-bottom:24px; }
+  .inbox-entries article { gap:8px; padding:16px 0; }
+  .journal-list article { grid-template-columns:1fr auto; gap:16px; padding:24px 0; }
+}
+
+/* Controls retain a 40px touch target without turning their visual treatment into pills. */
+.rating-control button,.album-track-controls button,.tag-picker button,.entry-actions button,.entry-actions a,.catalog-results button,.archive-tools button { min-height:40px; }
+.rating-control>div,.album-track-controls label>div { min-height:40px; }
+.rating-control output,.album-track-controls output { display:grid; place-items:center; padding:0 8px; }
+.tag-picker button { margin:0 8px 8px 0; padding:8px 16px; border-radius:0; }
+.entry-actions { align-items:center; }
+.entry-actions button,.entry-actions a,.catalog-results button { display:inline-flex; align-items:center; }
+.archive-tools button { margin-left:0; padding:8px; }
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px solid var(--red); outline-offset:3px; }
