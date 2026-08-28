@@ -10,6 +10,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Move listening philosophy and visitor comparison into Taste.
 - [x] Move QQ import and Inbox into dedicated Import routes.
 - [x] Add a lightweight Journal route for rating changes and discoveries.
+- [x] Audit desktop and mobile route rendering; fix Archive track rendering, remove Home horizontal overflow, and add contextual return actions to every non-Home route.
 
 ## P0 — Make playlist import genuinely useful
 
