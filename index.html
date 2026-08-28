@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e7dfcf" />
+    <meta name="description" content="How I Hear Music — a personal music taste archive." />
+    <title>How I Hear Music</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="paper-grain" aria-hidden="true"></div>
+    <div class="scroll-line" aria-hidden="true"><span id="scroll-progress"></span></div>
+
+    <header class="topbar">
+      <a class="wordmark" href="#top">HIM <span>/</span> 001</a>
+      <nav aria-label="Primary navigation">
+        <a href="#method">Method</a>
+        <a href="#origin">Origin</a>
+        <a href="#interview">Interview</a>
+        <a href="#scores">Scores</a>
+        <a href="#lab">Lab</a>
+        <a href="#archive">Archive</a>
+        <a href="#inbox">Import</a>
+      </nav>
+      <div class="topbar-end">
+        <span class="brand-mark" aria-label="anddream brand">anddream</span>
+        <a class="edition-link" href="#archive">READ / 20—</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero chapter" data-reveal>
+        <div class="hero-meta mono"><span>PERSONAL ARCHIVE</span><span>ISSUE 01 / LISTENING NOTES</span></div>
+        <div class="hero-grid">
+          <p class="side-caption mono">A LISTENER'S<br />FIELD NOTES</p>
+          <div class="hero-copy">
+            <p class="eyebrow">How I hear music</p>
+            <h1>Music,<br /><em>as I hear it.</em></h1>
+            <p class="hero-deck" id="hero-deck"></p>
+          </div>
+          <div class="hero-roundel"><span>ANDREW</span><strong>20</strong><span>MUSIC<br />LISTENER</span></div>
+        </div>
+        <div class="hero-foot mono"><span id="hero-note"></span><a href="#method">BEGIN READING <b>↓</b></a></div>
+      </section>
+
+      <section class="chapter method" id="method" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">01</span><h2>How I listen</h2><span class="chapter-tag">THE FIRST GATE</span></div>
+        <div class="method-grid">
+          <div>
+            <p class="display-copy" id="first-gate-copy"></p>
+            <p class="body-copy" id="method-copy"></p>
+          </div>
+          <div class="order-list" id="listening-order"></div>
+        </div>
+        <div class="qualification-strip" id="qualifications"></div>
+      </section>
+
+      <section class="chapter motion" id="motion" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">02</span><h2>The surprise factor</h2><span class="chapter-tag">SETUP / PAYOFF</span></div>
+        <div class="motion-layout">
+          <p class="display-copy" id="surprise-statement"></p>
+          <p class="motion-note" id="late-payoff-note"></p>
+        </div>
+        <div class="surprise-timeline" id="surprise-timeline"></div>
+        <div class="event-cloud" id="surprise-details"></div>
+      </section>
+
+      <section class="origin chapter dark-chapter" id="origin" data-reveal>
+        <div class="origin-mark mono">ORIGIN NOTE / 001</div>
+        <div class="origin-copy">
+          <p class="eyebrow" id="origin-eyebrow"></p>
+          <h2 id="origin-artist"></h2>
+          <p class="origin-lede" id="origin-lede"></p>
+          <p class="body-copy" id="origin-copy"></p>
+          <p class="producer-note" id="producer-note"></p>
+        </div>
+        <div class="origin-aside"><span class="mono" id="origin-side-note"></span><span class="origin-rule"></span><span>THE SONG CAN CHANGE<br />WITHOUT LOSING ITS IDENTITY.</span></div>
+      </section>
+
+      <section class="chapter voice" id="voice" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">03</span><h2>The human voice</h2><span class="chapter-tag">BELIEVABILITY</span></div>
+        <div class="voice-layout">
+          <p class="display-copy" id="voice-statement"></p>
+          <div class="voice-position-list" id="voice-positions"></div>
+        </div>
+        <div class="voice-footer">
+          <div class="voice-affirmations" id="voice-affirmations"></div>
+          <div><p class="voice-timbre" id="voice-timbre"></p><p class="voice-refusal" id="voice-refusal"></p></div>
+        </div>
+      </section>
+
+      <section class="chapter interview" id="interview" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">04</span><h2 id="interview-title"></h2><span class="chapter-tag">FIELD INTERVIEW</span></div>
+        <p class="interview-intro" id="interview-intro"></p>
+        <div class="interview-shell">
+          <aside class="interview-aside">
+            <span class="mono">IN THIS CONVERSATION</span>
+            <ol id="interview-index"></ol>
+            <p id="interview-aside-copy"></p>
+          </aside>
+          <div class="interview-list" id="interview-list"></div>
+        </div>
+      </section>
+
+      <section class="chapter constellation" id="artists" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">05</span><h2 id="constellation-title"></h2><span class="chapter-tag">FEATURED ARTISTS</span></div>
+        <p class="constellation-intro">Not a ranking. A small map of the artists at the center of this archive.</p>
+        <div class="artist-constellation" id="featured-artists"></div>
+        <div class="uncertain-artist" id="uncertain-artists"></div>
+      </section>
+
+      <section class="scores chapter" id="scores" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">06</span><h2>Record of response</h2><span class="chapter-tag">SCORES ARE NOT AVERAGES</span></div>
+        <div class="score-intro">
+          <p class="display-copy">Good <em>≠</em> mine.</p>
+          <p class="body-copy" id="score-legend"></p>
+        </div>
+        <div class="score-controls" id="score-controls" role="group" aria-label="Filter score records"></div>
+        <div class="score-table-wrap">
+          <table>
+            <thead><tr><th>Artist / song</th><th>Song</th><th>Vocal</th><th>Prod.</th><th>Overall</th><th>Record</th></tr></thead>
+            <tbody id="score-rows"></tbody>
+          </table>
+        </div>
+        <p class="data-note mono">— = NOT RECORDED &nbsp; / &nbsp; OVERALL IS PERSONAL &nbsp; / &nbsp; 11 IS ALLOWED</p>
+        <div class="reflection-grid" id="reflection-examples"></div>
+        <div class="resonance-wall"><span class="mono">HIGH RESONANCE WALL</span><div id="high-resonance-wall"></div></div>
+      </section>
+
+      <section class="chapter listening-lab" id="lab" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">07</span><h2 id="lab-title"></h2><span class="chapter-tag">LISTEN → RATE → COMPARE</span></div>
+        <p class="lab-intro" id="lab-intro"></p>
+        <div class="lab-records" id="lab-records" role="group" aria-label="Choose a song to rate"></div>
+        <div class="lab-shell">
+          <div class="lab-rate-panel">
+            <div class="lab-record-head"><span class="mono" id="lab-record-number"></span><button class="lab-next" id="lab-next" type="button">NEXT RECORD <b>↗</b></button></div>
+            <p class="lab-artist mono" id="lab-artist"></p>
+            <h3 id="lab-song-title"></h3>
+            <p class="lab-prompt">How do you hear it?</p>
+            <form id="lab-form">
+              <div class="lab-sliders" id="lab-sliders"></div>
+              <fieldset class="resonance-picker">
+                <legend><span class="mono">RESONANCE / PICK UP TO 3</span><span>What stays with you?</span></legend>
+                <div id="lab-tags"></div>
+              </fieldset>
+              <div class="lab-actions"><button class="lab-submit" type="submit">SAVE + REVEAL ANDREW'S SCORE</button><button class="lab-reset" id="lab-reset" type="button">RESET MINE</button></div>
+            </form>
+          </div>
+          <aside class="lab-results" id="lab-results" aria-live="polite"></aside>
+        </div>
+        <div class="lab-footnote"><span class="mono">MUSIC IS NOT ARITHMETIC</span><p>Overall is never calculated from the other fields. Your choices stay in this browser only; no account, no public profile.</p><p id="lab-annotation-note"></p></div>
+      </section>
+
+      <section class="chapter discovery" id="discovery" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">08</span><h2 id="discovery-title"></h2><span class="chapter-tag">TRACK 01</span></div>
+        <p class="discovery-intro" id="discovery-intro"></p>
+        <div class="discovery-path" id="discovery-path"></div>
+        <div class="album-principle"><span class="mono">ALBUM PRINCIPLE</span><p id="album-principle"></p></div>
+        <div class="album-qualifiers" id="album-qualifiers"></div>
+        <div class="album-shelf" id="album-shelf"></div>
+      </section>
+
+      <section class="chapter archive" id="archive" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">09</span><h2>Listening index</h2><span class="chapter-tag">IN THE LIST ≠ FAVORITE</span></div>
+        <p class="archive-intro">The longer record: songs that have been named, tested or kept in the list. Choose an artist to open a shelf.</p>
+        <div class="archive-layout">
+          <div class="archive-artist-list" id="archive-artists"></div>
+          <div class="archive-shelf">
+            <div class="archive-shelf-head"><span class="mono" id="archive-count"></span><h3 id="archive-artist-name"></h3><span id="archive-status"></span></div>
+            <div class="archive-song-list" id="archive-songs"></div>
+          </div>
+        </div>
+        <details class="boundary-note">
+          <summary>Archive boundary notes <span>+</span></summary>
+          <div id="boundary-content"></div>
+        </details>
+      </section>
+
+      <section class="chapter import-desk" id="inbox" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">10</span><h2 id="inbox-title"></h2><span class="chapter-tag">IMPORT → REVIEW → KEEP</span></div>
+        <div class="inbox-intro">
+          <p class="display-copy" id="inbox-intro"></p>
+          <p class="body-copy" id="inbox-privacy"></p>
+        </div>
+        <div class="import-shell">
+          <form class="import-form" id="import-form">
+            <div class="import-source" id="import-sources" role="group" aria-label="Choose a music service"></div>
+            <label class="import-field"><span class="mono">01 / PLAYLIST LINK</span><input id="import-url" type="url" inputmode="url" placeholder="Paste a QQ Music or NetEase playlist link" autocomplete="url" /></label>
+            <label class="import-field"><span class="mono">02 / TRACKS</span><textarea id="import-tracks" rows="8" placeholder="珠玉 — 单依纯 — 纯妹妹\nTattooed Heart — Ariana Grande — Yours Truly"></textarea><small id="import-guide"></small></label>
+            <div class="import-actions"><button class="import-submit" type="submit">PREVIEW IMPORT</button><button class="import-clear" id="import-clear" type="button">CLEAR</button></div>
+          </form>
+          <aside class="import-preview" id="import-preview" aria-live="polite"></aside>
+        </div>
+        <div class="inbox-list-wrap">
+          <div class="inbox-list-head"><span class="mono">MUSIC INBOX</span><span class="mono" id="inbox-count"></span></div>
+          <div class="inbox-list" id="inbox-list"></div>
+        </div>
+        <p class="import-footnote mono" id="import-adapter-note"></p>
+      </section>
+
+      <section class="chapter requirements" id="requirements" data-reveal>
+        <div class="chapter-head"><span class="chapter-no">11</span><h2 id="requirements-title"></h2><span class="chapter-tag">NO DOGMA</span></div>
+        <p class="display-copy requirements-intro" id="requirements-intro"></p>
+        <div class="requirements-grid" id="requirements-grid"></div>
+        <div class="principles-list" id="principles-list"></div>
+      </section>
+
+      <section class="closing chapter" data-reveal>
+        <div class="closing-mark">HOW I HEAR MUSIC</div>
+        <p class="closing-copy"><span id="closing-line-one"></span><br /><em id="closing-line-two"></em></p>
+        <p class="closing-note" id="closing-note"></p>
+        <div class="closing-foot mono"><span>HOW I HEAR MUSIC</span><span><a href="terms.html">TERMS / RIGHTS</a> &nbsp;·&nbsp; END OF ISSUE / 001</span></div>
+      </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
