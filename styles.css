@@ -304,9 +304,13 @@ html { background:var(--page); }
 body { background:var(--page); transition:background-color .18s ease, color .18s ease; }
 .site-header { background:color-mix(in srgb, var(--page) 93%, transparent); }
 body[data-module="archive"] { --page:var(--paper-deep); }
-body[data-module="taste"],body[data-module="import"],body[data-module="journal"] { --page:var(--paper-light); }
+body[data-module="taste"] { --page:var(--paper-light); }
+body[data-module="import"] { --page:#dde0cf; }
+body[data-module="journal"] { --page:#ead8cd; }
 body[data-module="archive"] .site-header { background:rgba(217,205,185,.93); }
-body[data-module="taste"] .site-header,body[data-module="import"] .site-header,body[data-module="journal"] .site-header { background:rgba(242,237,227,.93); }
+body[data-module="taste"] .site-header { background:rgba(242,237,227,.93); }
+body[data-module="import"] .site-header { background:rgba(221,224,207,.93); }
+body[data-module="journal"] .site-header { background:rgba(234,216,205,.93); }
 
 /* The rating routes recover the old listening-lab treatment: a focused dark studio, not another catalog page. */
 body[data-module="rate"] {
