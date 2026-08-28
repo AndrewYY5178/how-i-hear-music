@@ -1,28 +1,31 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "title": "Music inbox",
   "storageKey": "how-i-hear-music:music-inbox:v1",
+  "libraryStorageKey": "how-i-hear-music:personal-library:v1",
+  "ignoredStorageKey": "how-i-hear-music:ignored-imports:v1",
   "supportedSources": [
     {
       "id": "qqmusic",
       "label": "QQ Music",
-      "urlHint": "Paste a public QQ Music playlist share link.",
+      "urlHint": "Paste a public QQ Music share card or playlist link.",
       "examples": ["https://y.qq.com/n/ryqq/playlist/...", "https://i.y.qq.com/n2/m/share/details/taoge.html?..."],
-      "status": "link recognised / manual track capture"
+      "status": "public playlist import / no login"
     },
     {
       "id": "netease",
       "label": "NetEase Cloud Music",
-      "urlHint": "Paste a public NetEase playlist share link.",
+      "urlHint": "Paste a public NetEase share card or playlist link.",
       "examples": ["https://music.163.com/playlist?id=..."],
-      "status": "link recognised / manual track capture"
+      "status": "share card recognised / track capture"
     }
   ],
   "copy": {
     "intro": "External playlists enter as sources. The archive stays clean: review a track before it becomes part of the record.",
-    "privacy": "This first version does not sign into QQ Music or NetEase. It stores only the link, track metadata and your review decisions in this browser.",
-    "pasteGuide": "Paste one track per line as Title — Artist — Album. Album is optional. Tabs and hyphens also work.",
+    "privacy": "QQ Music public playlist links can be imported without signing in. The archive stores only the source link, public metadata and your review decisions in this browser.",
+    "pasteGuide": "QQ Music: paste a public share card and preview automatically. Manual fallback: one track per line as Title — Artist — Album. Album is optional.",
     "empty": "No tracks are waiting for review.",
-    "adapterNote": "A future approved platform adapter can replace manual capture without changing the canonical library or your notes."
+    "libraryEmpty": "Nothing has been kept in your personal library yet.",
+    "adapterNote": "QQ Music public playlists are fetched through this site's server only. No login, Cookie, audio or lyric requests are used. NetEase remains a manual-track import until its public adapter is added."
   }
 }

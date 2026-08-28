@@ -141,6 +141,7 @@
             <p class="lab-artist mono" id="lab-artist"></p>
             <h3 id="lab-song-title"></h3>
             <p class="lab-prompt">How do you hear it?</p>
+            <div class="lab-live-radar" id="lab-live-radar" aria-live="polite"></div>
             <form id="lab-form">
               <div class="lab-sliders" id="lab-sliders"></div>
               <fieldset class="resonance-picker">
@@ -162,6 +163,13 @@
         <div class="album-principle"><span class="mono">ALBUM PRINCIPLE</span><p id="album-principle"></p></div>
         <div class="album-qualifiers" id="album-qualifiers"></div>
         <div class="album-shelf" id="album-shelf"></div>
+        <div class="album-rating-atlas" id="album-rating-atlas"></div>
+        <section class="album-rating-desk" aria-labelledby="album-desk-title">
+          <div class="album-desk-head"><span class="mono">LISTENING LANDSCAPE / DRAFT</span><h3 id="album-desk-title">Shape an album as you hear it.</h3><p>Each point is a track. Drag a point, use the controls, and the landscape keeps its own contour in this browser.</p></div>
+          <div class="album-desk-wave" id="album-desk-wave" aria-live="polite"></div>
+          <form id="album-desk-form" class="album-track-list"></form>
+          <div class="album-desk-actions"><button id="album-add-track" type="button">+ ADD TRACK</button><button id="album-reset" type="button">RESET DRAFT</button></div>
+        </section>
       </section>
 
       <section class="chapter archive" id="archive" data-reveal>
@@ -189,7 +197,7 @@
         <div class="import-shell">
           <form class="import-form" id="import-form">
             <div class="import-source" id="import-sources" role="group" aria-label="Choose a music service"></div>
-            <label class="import-field"><span class="mono">01 / PLAYLIST LINK</span><input id="import-url" type="url" inputmode="url" placeholder="Paste a QQ Music or NetEase playlist link" autocomplete="url" /></label>
+            <label class="import-field"><span class="mono">01 / SHARE CARD OR LINK</span><textarea id="import-url" rows="3" placeholder="Paste a QQ Music or NetEase share card, or just its playlist link" autocomplete="off"></textarea><small id="import-source-status"></small></label>
             <label class="import-field"><span class="mono">02 / TRACKS</span><textarea id="import-tracks" rows="8" placeholder="珠玉 — 单依纯 — 纯妹妹\nTattooed Heart — Ariana Grande — Yours Truly"></textarea><small id="import-guide"></small></label>
             <div class="import-actions"><button class="import-submit" type="submit">PREVIEW IMPORT</button><button class="import-clear" id="import-clear" type="button">CLEAR</button></div>
           </form>
@@ -198,6 +206,10 @@
         <div class="inbox-list-wrap">
           <div class="inbox-list-head"><span class="mono">MUSIC INBOX</span><span class="mono" id="inbox-count"></span></div>
           <div class="inbox-list" id="inbox-list"></div>
+        </div>
+        <div class="library-list-wrap">
+          <div class="inbox-list-head"><span class="mono">PERSONAL LIBRARY / KEPT</span><span class="mono" id="library-count"></span></div>
+          <div class="inbox-list" id="library-list"></div>
         </div>
         <p class="import-footnote mono" id="import-adapter-note"></p>
       </section>
