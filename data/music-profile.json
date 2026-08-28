@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 2,
+  "source": "MUSIC_TASTE_SOURCE.md",
+  "lastCompiled": "2026-08-28",
+  "title": "How I Hear Music",
+  "subtitle": "A Personal Music Taste Archive",
+  "owner": "Andrew",
+  "age": 20,
+  "primaryLanguage": "English",
+  "secondaryLanguage": "Chinese",
+  "tagline": "A record of songs, sounds, artists and the moments that stay.",
+  "quote": "Every element needs a reason to exist.",
+  "heroNote": "A listening method, not a ranking.",
+  "evidenceLabels": {
+    "CONFIRMED": "Directly stated by the listener.",
+    "IN_THE_LIST": "Present in the listener's list; not automatically a favorite.",
+    "FAVORITE": "Explicit artist-level favorite status.",
+    "NOT_IN_THE_LIST": "Explicitly outside the relevant list.",
+    "UNCERTAIN": "Not yet a definite status.",
+    "UNKNOWN": "No confirmed information."
+  },
+  "listeningOrder": [
+    { "label": "01", "name": "Melody", "note": "The first barrier: the hardest gate, though not an absolute veto." },
+    { "label": "02", "name": "Production / Arrangement", "note": "Movement, shape, timing and the information that returns on replay." },
+    { "label": "03", "name": "Timbre + Lyrics", "note": "Does this voice belong to this song? Is there meaning left to unfold?" },
+    { "label": "04", "name": "Vocal ability", "note": "Appreciated, but never the point by itself." }
+  ],
+  "qualifications": [
+    "All is considered.",
+    "Nothing is absolute.",
+    "It depends on what catches attention.",
+    "Resonance is real, but it is not a number."
+  ],
+  "firstGateCopy": "Melody opens the door. Arrangement makes me stay. Details make me return.",
+  "methodCopy": "A song can be minimal or maximal, innovative or inherited, unified or full of detours. The format is never the rule. The question is whether every choice feels intentional and alive.",
+  "whatMakesMeStay": [
+    "Beautiful melody", "Purposeful arrangement", "Meaningful lyrics", "Human vocals", "Harmony",
+    "Groove", "Surprise", "Reinterpretation", "Emotional resonance"
+  ],
+  "signals": [
+    { "title": "A melody with remaining life", "text": "Not necessarily difficult—just not exhausted by the first listen." },
+    { "title": "Purposeful movement", "text": "A second chorus can become something else. A late section can reveal why the earlier one existed." },
+    { "title": "A human take", "text": "Technique should expand expression, not erase the person inside the voice." }
+  ],
+  "surpriseFactor": {
+    "title": "The surprise factor",
+    "statement": "I don't need a song to be complicated. I need it to keep becoming something.",
+    "stages": [
+      { "time": "0:00", "label": "Setup", "detail": "A world, a melody, a promise." },
+      { "time": "01", "label": "Develop", "detail": "The song reveals more of its internal logic." },
+      { "time": "02", "label": "Surprise", "detail": "A chord, harmony, drum turn or vocal event arrives at the right moment." },
+      { "time": "END", "label": "Payoff", "detail": "An earlier idea returns with a different weight." }
+    ],
+    "details": ["New harmony", "Vocal layer", "Groove shift", "Drum change", "Key change", "A cappella", "Motif return", "Late payoff"],
+    "latePayoffNote": "A great ending raises the whole evaluation a bit; it does not rescue a weak foundation.",
+    "example": "Love Language"
+  },
+  "humanVoice": {
+    "title": "The human voice",
+    "statement": "Perfect isn't always believable.",
+    "positions": [
+      { "label": "Technique", "verdict": "Appreciated." },
+      { "label": "Human presence", "verdict": "Essential." },
+      { "label": "Imperfection", "verdict": "Often welcome." }
+    ],
+    "affirmations": ["Harmony", "Layering", "Vocal arrangement", "Natural imperfection", "Independent moving parts"],
+    "refusal": "Obvious Auto-Tune or pitch correction replacing human presence: totally unacceptable.",
+    "timbreNote": "No fixed timbre preference. The question is whether the voice belongs to the song."
+  },
+  "origin": {
+    "artist": "单依纯",
+    "eyebrow": "Why Shan Yichun",
+    "firstSong": "Forever Young",
+    "lede": "“How songs can be showed like that.”",
+    "text": "The first active exploration began after seeing 单依纯 present Forever Young on stage. The discovery was not only a voice, but that a song and its presentation are not the same thing: arrangement, phrasing, timbre, space and interpretation can make the same work feel like another world.",
+    "sideNote": "ONE SONG, MANY POSSIBILITIES",
+    "producerNote": "The producer matters here too: singer and producer are co-authors of a presentation."
+  },
+  "interview": {
+    "title": "An interview with a listener",
+    "intro": "The archive is not a verdict. It is a conversation with the parts of a song that keep asking to be heard.",
+    "aside": "Answers assembled from the listening conversations behind this archive.",
+    "questions": [
+      {
+        "question": "What has to happen before a song becomes yours?",
+        "answer": "Melody is the first gate. It is the hardest one to pass, but not an absolute veto. A melody can reveal itself slowly, as long as there is enough life left for me to discover.",
+        "note": "FIRST GATE / MELODY"
+      },
+      {
+        "question": "Do you need a song to be complicated?",
+        "answer": "No. I can accept something almost bare or something densely produced. Complexity is not a virtue by itself. The real question is whether every chord, texture and change has a reason to exist.",
+        "note": "NO DOGMA / PURPOSE OVER SIZE"
+      },
+      {
+        "question": "What makes you return after the first listen?",
+        "answer": "Movement. I like a song that keeps opening small doors on replay: a harmony I missed, a groove that shifts, a vocal layer, a motif that comes back with a different weight. I do not need constant novelty; I need meaningful information.",
+        "note": "REPLAY / NEW INFORMATION"
+      },
+      {
+        "question": "What kind of surprise feels earned?",
+        "answer": "A surprise should belong to the song. A late payoff can raise the whole evaluation, especially when an earlier idea returns or an arrangement suddenly explains itself. But a beautiful ending cannot rescue a weak foundation.",
+        "note": "SETUP → PAYOFF"
+      },
+      {
+        "question": "Where does vocal ability fit in your priorities?",
+        "answer": "I appreciate technique, but I do not treat technique as the point. I want a voice to feel present, placed and alive inside the song. An imperfect take can be more convincing than a polished take that has lost the person.",
+        "note": "TECHNIQUE / HUMAN PRESENCE"
+      },
+      {
+        "question": "What is non-negotiable about a vocal recording?",
+        "answer": "Harmony and vocal arrangement are welcome in almost any form. What I cannot accept is obvious Auto-Tune or pitch correction replacing human presence. The tools should expand expression, not erase the singer.",
+        "note": "BOUNDARY / NO SUBSTITUTE FOR A PERSON"
+      },
+      {
+        "question": "Do you like melodies that take time to find?",
+        "answer": "Yes, sometimes. The B-type song can become rewarding because its melody arrives through repeated listening. But I am not trying to make music difficult on purpose. I want a song to have a life beyond its first impression.",
+        "note": "SLOW DISCOVERY / NOT A PUZZLE"
+      },
+      {
+        "question": "How does one song lead you to an album?",
+        "answer": "Often by accident: I hear one song, then look for the record, then begin at Track 1. I want to meet the album in its own order, even when the song that brought me there is somewhere else.",
+        "note": "ACCIDENTAL SONG → TRACK 01"
+      },
+      {
+        "question": "What makes an album great?",
+        "answer": "One extraordinary song can make the whole album matter to me. Ten songs that hold a steady 8 can do it too. An album may be unified or varied, innovative or deliberately continuous; the standard is not uniformity, but intention.",
+        "note": "ONE 10 OR TEN 8s"
+      },
+      {
+        "question": "Do you listen only for structure?",
+        "answer": "No. I can follow the details of an arrangement and still see a picture, a story or a version of myself. The analytical and imaginative ways of listening are not opposites; they can happen at the same time.",
+        "note": "DETAIL / IMAGE / SELF-PROJECTION"
+      },
+      {
+        "question": "What happens when a song really becomes yours?",
+        "answer": "I loop it. I do not ration a song to avoid getting tired of it. If I love a particular section, I can point to that moment, but I do not always need to explain the whole taste judgment to someone else.",
+        "note": "LOOP WITHOUT APOLOGY"
+      },
+      {
+        "question": "Can you separate an artist from the work?",
+        "answer": "Yes. An artist can change, and my view of that person can change, without rewriting what an earlier work did for me. The past song remains a past experience with its own shape and meaning.",
+        "note": "WORK ≠ LATER IDENTITY"
+      }
+    ]
+  },
+  "discovery": {
+    "title": "My music discovery",
+    "intro": "One song gets me in. Then I find the album. Then I start from Track 1.",
+    "steps": ["Accidental song", "Find the album", "Track 01", "Full listen"],
+    "albumPrinciple": "One astonishing song can make an album great. So can ten songs that hold a steady 8.",
+    "albumQualifiers": ["Unified or varied", "Innovation or successful repetition", "Outliers are welcome when they have a reason"]
+  },
+  "albumArchive": [
+    {
+      "title": "纯妹妹",
+      "artist": "单依纯",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/66/a5/ad/66a5ad30-4106-a2e5-3400-54983e51bfdf/4896004765894.jpg/600x600bb-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "勇敢额度",
+      "artist": "单依纯",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ce/10/77/ce10777a-4f5c-7321-0d0b-af82ffb3a3a7/4896004489684.jpg/600x600bb-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "十八般武艺",
+      "artist": "王力宏",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/3e/94/01/3e94013b-17f0-09e9-69ce-4ab94e1507da/18_Material_arts.png/1400x1400bb.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "不可思议",
+      "artist": "王力宏",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music60/v4/5e/97/44/5e974419-e0dd-798e-9a0a-2d98774d6fbf/dj.udxwppdm.jpg/1200x1200bf-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "唯一",
+      "artist": "王力宏",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/48/fd/2f/48fd2fe5-31b2-d979-53a4-9aebf5175bdb/mzi.biqraozb.jpg/600x600bf-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "心中的日月",
+      "artist": "王力宏",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/be/4a/77/be4a7730-c144-a39e-c7b6-9d26ea0ebff3/1400X1400.jpg/600x600bb-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "陶喆",
+      "artist": "陶喆",
+      "status": "CONFIRMED",
+      "coverUrl": "https://fastly-s3.allmusic.com/release/mr0002286834/front/400/LA0V5Amj0jMSfcEN9I-g4R_TZlp6n_cq-Emr2zx15tU%3D.jpg",
+      "coverSource": "AllMusic"
+    },
+    {
+      "title": "黑色柳丁",
+      "artist": "陶喆",
+      "status": "CONFIRMED",
+      "coverUrl": "https://p3-sdbk2-media.byteimg.com/tos-cn-i-xv4ileqgde/53f167e8812541fd96c66aa27fea5262~tplv-xv4ileqgde-resize-w%3A750.image",
+      "coverSource": "快懂百科"
+    },
+    {
+      "title": "Soul Power",
+      "artist": "陶喆",
+      "status": "CONFIRMED",
+      "coverUrl": "https://resources.tidal.com/images/09615e02/5637/4785/9578/19ece868a199/1280x1280.jpg",
+      "coverSource": "TIDAL"
+    },
+    {
+      "title": "世界与孤独女王",
+      "artist": "祁紫檀",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e4/09/b5/e409b5f9-7b24-5698-ba90-cc4bc0365cf2/193017193251.jpg/600x600bb-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "Yours Truly",
+      "artist": "Ariana Grande",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/0a/19/23/0a19235d-8bcc-76d4-58ca-61a65d928587/13UAAIM68293.rgb.jpg/600x600bb-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "Sweetener",
+      "artist": "Ariana Grande",
+      "status": "CONFIRMED",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/7e/aa/71/7eaa717a-857e-6d7a-c03c-8d67b3719706/18UMGIM36924.rgb.jpg/600x600bb-60.jpg",
+      "coverSource": "Apple Music"
+    },
+    {
+      "title": "thank u, next",
+      "artist": "Ariana Grande",
+      "status": "CONFIRMED",
+      "coverUrl": "https://images.universal-music.de/img/assets/478/478038/4/1200/ariana-grande-thank-u-next-cover.jpg",
+      "coverSource": "Universal Music"
+    }
+  ],
+  "notRequirements": {
+    "title": "Not a requirement",
+    "intro": "Perfect vocals, complex chords, constant innovation and album uniformity are not requirements. But every choice needs a reason.",
+    "items": ["Perfect vocals", "Complex chords", "Constant innovation", "One fixed genre", "One specific timbre", "Maximum production", "Album uniformity"]
+  },
+  "rituals": [
+    "I loop songs that become mine. I do not deliberately ration them to avoid getting tired.",
+    "I notice details when the music makes me listen closer—not in order to perform analysis.",
+    "Music can create a picture, story or self-projection; it can also be heard through its structure.",
+    "I can point to the moment I love without needing to win the argument about it."
+  ],
+  "principles": [
+    "Good is not automatically mine.",
+    "Technical quality and personal love are different records.",
+    "A later change in an artist does not retroactively change a work already made.",
+    "Nostalgia is not the authority."
+  ],
+  "closing": {
+    "lineOne": "A good song ends.",
+    "lineTwo": "A great song stays.",
+    "note": "Not because it is perfect. Because something in it keeps changing every time I listen.",
+    "signoff": "Music is how feelings sound."
+  }
+}
