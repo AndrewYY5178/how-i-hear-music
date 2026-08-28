@@ -284,3 +284,11 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
 .entry-actions button,.entry-actions a,.catalog-results button { display:inline-flex; align-items:center; }
 .archive-tools button { margin-left:0; padding:8px; }
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px solid var(--red); outline-offset:3px; }
+
+/* Restored publisher mark from the original archive masthead. */
+.header-end { position:absolute; right:64px; display:flex; align-items:baseline; gap:24px; }
+.brand-mark { color:var(--olive); font:italic 400 15px/.9 var(--serif); letter-spacing:-.06em; opacity:.86; }
+@media (max-width:1024px) { .header-end { right:40px; } }
+@media (max-width:760px) {
+  .header-end { display:none; }
+}
