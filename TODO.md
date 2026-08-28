@@ -2,10 +2,20 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active refactor — Modular product architecture
+
+- [x] Replace the long single-page experience with the six-route product structure: Home, Archive, Rate, Taste, Import and Journal.
+- [x] Add archive browse/detail routes for Tracks, Albums and Artists.
+- [x] Move all rating interactions into the dedicated Rate workspace.
+- [x] Move listening philosophy and visitor comparison into Taste.
+- [x] Move QQ import and Inbox into dedicated Import routes.
+- [x] Add a lightweight Journal route for rating changes and discoveries.
+
 ## P0 — Make playlist import genuinely useful
 
 - [x] Recognise a pasted QQ Music or NetEase share card, extract its public link and retain it as source provenance.
 - [x] Import a public QQ Music playlist from its URL and extract visible track metadata automatically. *(Server-only public metadata adapter; verified against a public 38-track playlist on 2026-08-28.)*
+- [x] Search the QQ Music public catalog and add an individual result to Inbox.
 - [ ] Import a public NetEase Cloud Music playlist from its URL and extract visible track metadata automatically.
 - [ ] Confirm a platform-approved method before adding login, cookies or private-playlist access.
 - [x] Add a clear import error state for private, unavailable or unsupported QQ Music playlist links.
