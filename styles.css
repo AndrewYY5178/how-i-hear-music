@@ -292,3 +292,42 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible 
 @media (max-width:760px) {
   .header-end { display:none; }
 }
+
+/* Recovered from the pre-modular editorial palette: each module now has a page material. */
+:root {
+  --paper-deep:#d9cdb9;
+  --ink-soft:#49453e;
+  --olive-soft:#73745b;
+  --page:var(--paper);
+}
+html { background:var(--page); }
+body { background:var(--page); transition:background-color .18s ease, color .18s ease; }
+.site-header { background:color-mix(in srgb, var(--page) 93%, transparent); }
+body[data-module="archive"] { --page:var(--paper-deep); }
+body[data-module="taste"],body[data-module="import"],body[data-module="journal"] { --page:var(--paper-light); }
+body[data-module="archive"] .site-header { background:rgba(217,205,185,.93); }
+body[data-module="taste"] .site-header,body[data-module="import"] .site-header,body[data-module="journal"] .site-header { background:rgba(242,237,227,.93); }
+
+/* The rating routes recover the old listening-lab treatment: a focused dark studio, not another catalog page. */
+body[data-module="rate"] {
+  --page:#20201d;
+  --ink:#f2ede3;
+  --muted:#c3bcaf;
+  --line:rgba(242,237,227,.28);
+  --paper-light:#292925;
+  --olive:#73745b;
+  color:var(--ink);
+}
+body[data-module="rate"] .site-header { background:rgba(32,32,29,.94); }
+body[data-module="rate"] .site-footer { border-color:rgba(242,237,227,.45); }
+body[data-module="rate"] .primary-nav a,body[data-module="rate"] .edition { color:#c3bcaf; }
+body[data-module="rate"] .brand-mark { color:#a9ab83; }
+body[data-module="rate"] .continue-panel { background:#292925; }
+body[data-module="rate"] .interactive-radar,body[data-module="rate"] #album-wave-session { background:transparent; }
+body[data-module="rate"] .button.primary { border-color:#d7766d; background:#d7766d; color:#20201d; }
+body[data-module="rate"] .tag-picker button { color:var(--ink); }
+body[data-module="rate"] .tag-picker button.active { border-color:#d7766d; background:#d7766d; color:#20201d; }
+
+/* Archival covers inherit the restrained print treatment from the original album shelf. */
+.album-card img { filter:saturate(.82) contrast(.96); }
+.cover-fallback { background:var(--paper-deep); }

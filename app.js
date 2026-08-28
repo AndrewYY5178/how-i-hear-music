@@ -53,6 +53,7 @@ const parentRoute = (path) => {
 const render = () => {
   const path = cleanPath(location.pathname);
   renderShell(path);
+  app.dataset.route = path;
   const parent = parentRoute(path);
   const back = path === "/" ? "" : `<a class="back-button" href="${parent.href}" data-route>← ${parent.label}</a>`;
   app.innerHTML = back + route(path);
