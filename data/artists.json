@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "source": "MUSIC_TASTE_SOURCE.md",
+  "constellationTitle": "My music world",
+  "featured": [
+    { "id": "shan-yichun", "name": "单依纯", "romanized": "Shan Yichun", "status": "FAVORITE", "role": "Origin point for active listening" },
+    { "id": "wang-leehom", "name": "王力宏", "romanized": "Wang Leehom", "status": "FAVORITE" },
+    { "id": "ariana-grande", "name": "Ariana Grande", "status": "FAVORITE" },
+    { "id": "qi-zitan", "name": "祁紫檀", "romanized": "Qi Zitan", "status": "FAVORITE" },
+    { "id": "david-tao", "name": "陶喆", "romanized": "David Tao", "status": "FAVORITE" },
+    { "id": "guan-haode", "name": "关浩德", "status": "FAVORITE" }
+  ],
+  "uncertain": [
+    { "id": "lady-gaga", "name": "Lady Gaga", "status": "UNCERTAIN", "label": "Maybe", "note": "Named songs are in the archive; artist-level favorite status remains uncertain." }
+  ],
+  "archiveArtists": [
+    { "id": "faye-wong", "name": "王菲", "romanized": "Faye Wong", "status": "IN_THE_LIST" },
+    { "id": "a-mei", "name": "张惠妹", "romanized": "A-Mei", "status": "IN_THE_LIST" },
+    { "id": "olivia-rodrigo", "name": "Olivia Rodrigo", "status": "IN_THE_LIST" },
+    { "id": "eve-ai", "name": "艾怡良", "romanized": "Eve Ai", "status": "IN_THE_LIST" },
+    { "id": "ding-shiguang", "name": "丁世光", "status": "IN_THE_LIST" },
+    { "id": "lala-hsu", "name": "徐佳莹", "romanized": "LaLa Hsu", "status": "IN_THE_LIST" },
+    { "id": "billie-eilish", "name": "Billie Eilish", "status": "IN_THE_LIST" },
+    { "id": "a-lin", "name": "A-Lin", "status": "IN_THE_LIST" },
+    { "id": "stefanie-sun", "name": "孙燕姿", "romanized": "Stefanie Sun", "status": "IN_THE_LIST" },
+    { "id": "bruno-mars", "name": "Bruno Mars", "status": "IN_THE_LIST" },
+    { "id": "eason-chan", "name": "陈奕迅", "romanized": "Eason Chan", "status": "IN_THE_LIST", "presence": "Many songs, not often listened to." },
+    { "id": "karen-mok", "name": "莫文蔚", "romanized": "Karen Mok", "status": "IN_THE_LIST", "presence": "Low presence." },
+    { "id": "fish-leong", "name": "梁静茹", "romanized": "Fish Leong", "status": "IN_THE_LIST" },
+    { "id": "taylor-swift", "name": "Taylor Swift", "status": "IN_THE_LIST" },
+    { "id": "eliot-james-reay", "name": "Eliot James Reay", "status": "IN_THE_LIST" },
+    { "id": "jane-zhang", "name": "张靓颖", "romanized": "Jane Zhang", "status": "IN_THE_LIST", "presence": "Low presence." },
+    { "id": "weibird", "name": "韦礼安", "romanized": "WeiBird", "status": "IN_THE_LIST", "presence": "Low presence." },
+    { "id": "teresa-teng", "name": "邓丽君", "romanized": "Teresa Teng", "status": "IN_THE_LIST", "presence": "Listened to infrequently." },
+    { "id": "mao-buyi", "name": "毛不易", "status": "IN_THE_LIST", "presence": "Low presence." }
+  ],
+  "boundaries": {
+    "notInTheList": ["周杰伦", "蔡健雅", "林宥嘉", "Mariah Carey", "蔡依林", "G.E.M.", "孙盛希", "陈粒", "刘柏辛", "窦靖童", "刘恋", "周深", "郭顶"],
+    "lowPresence": ["萧敬腾", "Sabrina Carpenter", "余佳运", "张学友"],
+    "note": "Not in the list is not the same as disliking an artist. It only records the relevant listening list."
+  }
+}
