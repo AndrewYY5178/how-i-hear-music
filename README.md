@@ -1,6 +1,6 @@
 # How I Hear Music
 
-一个零依赖、可直接预览的个人音乐品味展示页。当前版本因为工作区无法从 npm 下载官方脚手架，先采用原生 HTML/CSS/JS；音乐数据按照三个独立文件管理，网页脚本只从数据文件读取内容。
+一个零依赖的个人音乐档案产品，使用原生 HTML/CSS/JS 与 History API 多路由结构实现。主页是编辑入口；Archive、Rate、Taste、Import、Journal 各自负责浏览、评分、审美说明、导入和时间线。
 
 本地 Node 服务还提供一个 QQ Music **公开歌单 metadata** 导入端点：粘贴公开歌单分享卡即可读取歌名、歌手、专辑、QQ MID 和时长。它不使用 QQ 登录、Cookie、音频或歌词；因此 GitHub Pages 等纯静态部署无法使用该功能。
 
@@ -23,8 +23,10 @@ npm run dev
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`
-- 修改页面结构：编辑 `index.html`
+- 修改路由和产品入口：编辑 `app.js`
+- 修改领域页面：编辑 `modules/archive`、`modules/rating`、`modules/taste`、`modules/import`、`modules/journal`
+- 修改共享数据工具与视觉图形：编辑 `modules/music`、`modules/layout`、`modules/rating/visuals.js`
 - 修改视觉：编辑 `styles.css`
-- 修改筛选与交互：编辑 `app.js`
+- 修改 QQ Music 公共 metadata adapter：编辑 `server.mjs`
 
 评分使用 `Song / Vocal / Production / Overall` 顺序。JSON 里的未知值使用 `null`，页面显示为 `—`；不要自行补全。Overall 不是平均分，11 必须保留为有效分数。

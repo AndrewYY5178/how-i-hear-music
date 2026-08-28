@@ -93,7 +93,35 @@ const fetchQQPlaylist = async (shareUrl) => {
   return { playlist: { id: playlistId, title: playlist.dissname || 'QQ Music playlist', creator: playlist.nickname || '', trackCount: tracks.length }, tracks };
 };
 
+const searchQQCatalog = async (query) => {
+  const keyword = String(query || '').trim();
+  if (!keyword || keyword.length > 120) throw new Error('Enter a music search between 1 and 120 characters.');
+  const params = new URLSearchParams({ p: '1', n: '12', w: keyword, format: 'json', new_json: '1', cr: '1', aggr: '1', lossless: '0', flag_qc: '0' });
+  const upstream = await fetch('https://c.y.qq.com/soso/fcgi-bin/client_search_cp?' + params, {
+    headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://y.qq.com/' },
+    signal: AbortSignal.timeout(12_000),
+  });
+  if (!upstream.ok) throw new Error('QQ Music search is unavailable right now (' + upstream.status + ').');
+  const data = await upstream.json();
+  const rows = data.data?.song?.list || data.data?.song?.itemlist || [];
+  return rows.map((song) => ({
+    title: String(song.songname || song.name || '').trim(),
+    artist: (song.singer || []).map((singer) => singer.name).filter(Boolean).join(' / ') || String(song.singername || 'Artist not recorded'),
+    album: String(song.albumname || song.album?.name || '').trim(),
+    provider: { source: 'qqmusic', songMid: song.songmid || song.mid || '', albumMid: song.albummid || song.album?.mid || '', durationSeconds: Number(song.interval) || null },
+  })).filter((track) => track.title);
+};
+
 createServer(async (request, response) => {
+  if (request.method === 'GET' && request.url?.startsWith('/api/import/qq-search')) {
+    try {
+      const query = new URL(request.url, 'http://localhost').searchParams.get('q');
+      json(response, 200, { tracks: await searchQQCatalog(query) });
+    } catch (error) {
+      json(response, 422, { error: error instanceof Error ? error.message : 'Could not search QQ Music.' });
+    }
+    return;
+  }
   if (request.method === 'POST' && request.url === '/api/import/qq-playlist') {
     try {
       const body = await readJsonBody(request);
@@ -113,6 +141,12 @@ createServer(async (request, response) => {
     response.writeHead(200, { 'Content-Type': contentTypes[extname(filePath)] || 'application/octet-stream' });
     response.end(body);
   } catch {
+    if (request.method === 'GET' && !extname(safePath)) {
+      const body = await readFile(join(root, 'index.html'));
+      response.writeHead(200, { 'Content-Type': contentTypes['.html'] });
+      response.end(body);
+      return;
+    }
     response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     response.end('Not found');
   }
