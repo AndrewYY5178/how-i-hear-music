@@ -1,10 +1,11 @@
 import { data, rating, safe } from "../music/data.js";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
+import { icon } from "../layout/icons.js";
 
 const tasteNav = () => secondaryNav([["/taste/philosophy", "Philosophy"], ["/taste/profile", "Profile"], ["/taste/good-not-mine", "Good ≠ Mine"], ["/taste/compare", "Compare"]]);
-const tasteGates = [["LISTENING PHILOSOPHY", "/taste/philosophy", "The parts that need a reason to exist.", "↗"], ["MY TASTE PROFILE", "/taste/profile", "A visual summary, not a personality test.", "◎"], ["GOOD ≠ MINE", "/taste/good-not-mine", "Respect and resonance are different things.", "≠"], ["COMPARE WITH ME", "/taste/compare", "Rate a track, then reveal the distance.", "⊕"]];
-export const tasteHome = () => `${pageHeader("TASTE", "How I hear music.", "The listening method behind the archive.")}${tasteNav()}<div class="taste-gates">${tasteGates.map(([title, href, copy, symbol]) => `<article><span class="taste-symbol" aria-hidden="true">${symbol}</span><span class="mono">${title}</span><p>${copy}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
+const tasteGates = [["LISTENING PHILOSOPHY", "/taste/philosophy", "The parts that need a reason to exist.", "philosophy"], ["MY TASTE PROFILE", "/taste/profile", "A visual summary, not a personality test.", "profile"], ["GOOD ≠ MINE", "/taste/good-not-mine", "Respect and resonance are different things.", "resonance"], ["COMPARE WITH ME", "/taste/compare", "Rate a track, then reveal the distance.", "compare"]];
+export const tasteHome = () => `${pageHeader("TASTE", "How I hear music.", "The listening method behind the archive.")}${tasteNav()}<div class="taste-gates">${tasteGates.map(([title, href, copy, iconName]) => `<article><span class="taste-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${copy}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
 
 export const philosophy = () => `${pageHeader("TASTE / PHILOSOPHY", "Every element needs a reason.", data.profile.methodCopy)}${tasteNav()}<div class="essay-stack"><article><span>01</span><h2>Melody opens the door.</h2><p>${safe(data.profile.firstGateCopy)}</p></article>${data.profile.listeningOrder.map((item, index) => `<article><span>${String(index + 2).padStart(2, "0")}</span><h2>${safe(item.name)}</h2><p>${safe(item.note)}</p></article>`).join("")}<article><span>06</span><h2>Surprise belongs to the song.</h2><p>${safe(data.profile.surpriseFactor.latePayoffNote)}</p></article><article><span>07</span><h2>The human voice stays human.</h2><p>${safe(data.profile.humanVoice.refusal)}</p></article></div>`;
 
