@@ -310,24 +310,54 @@ body[data-module="taste"] .site-header,body[data-module="import"] .site-header,b
 
 /* The rating routes recover the old listening-lab treatment: a focused dark studio, not another catalog page. */
 body[data-module="rate"] {
-  --page:#20201d;
-  --ink:#f2ede3;
-  --muted:#c3bcaf;
-  --line:rgba(242,237,227,.28);
-  --paper-light:#292925;
-  --olive:#73745b;
+  --page:#50533f;
+  --ink:#f1ece2;
+  --muted:#d0c8b9;
+  --line:rgba(241,236,226,.3);
+  --paper-light:#e9e1d2;
+  --olive:#50533f;
   color:var(--ink);
 }
-body[data-module="rate"] .site-header { background:rgba(32,32,29,.94); }
+body[data-module="rate"] .site-header { background:rgba(80,83,63,.94); }
 body[data-module="rate"] .site-footer { border-color:rgba(242,237,227,.45); }
 body[data-module="rate"] .primary-nav a,body[data-module="rate"] .edition { color:#c3bcaf; }
 body[data-module="rate"] .brand-mark { color:#a9ab83; }
-body[data-module="rate"] .continue-panel { background:#292925; }
+body[data-module="rate"] .continue-panel { background:transparent; }
 body[data-module="rate"] .interactive-radar,body[data-module="rate"] #album-wave-session { background:transparent; }
-body[data-module="rate"] .button.primary { border-color:#d7766d; background:#d7766d; color:#20201d; }
+body[data-module="rate"] .button.primary { border-color:#e7aa8d; background:#e7aa8d; color:#20201d; }
 body[data-module="rate"] .tag-picker button { color:var(--ink); }
-body[data-module="rate"] .tag-picker button.active { border-color:#d7766d; background:#d7766d; color:#20201d; }
+body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; background:#e7aa8d; color:#20201d; }
 
 /* Archival covers inherit the restrained print treatment from the original album shelf. */
 .album-card img { filter:saturate(.82) contrast(.96); }
 .cover-fallback { background:var(--paper-deep); }
+
+/* Home keeps the score visual subordinate to the track name. */
+.featured-shape { grid-template-columns:minmax(360px,1fr) minmax(280px,.8fr) minmax(144px,.4fr); }
+.featured-shape-copy h2 { max-width:none; font-size:clamp(40px,4vw,56px); white-space:nowrap; }
+.featured-shape-visual .home-radar { width:min(100%,320px); }
+
+/* Gate grids use full internal gutters so symbols share the same optical start line. */
+.gate-icon { display:block; }
+@media (min-width:1025px) {
+  .archive-gates { grid-template-columns:repeat(3,1fr); }
+  .archive-gates article:first-child,.taste-gates article:first-child { padding-left:24px; }
+}
+@media (min-width:761px) and (max-width:1024px) {
+  .archive-gates article:last-child { grid-column:1 / -1; }
+  .archive-gates article:first-child,.taste-gates article:first-child { padding-left:24px; }
+}
+
+/* Original archive paper fibre: quiet enough to read through, visible enough to feel physical. */
+body::before {
+  z-index:20;
+  opacity:.035;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size:auto;
+}
+
+@media (max-width:760px) {
+  .featured-shape-copy h2 { font-size:48px; white-space:nowrap; }
+  .featured-shape-visual .home-radar { width:min(100%,280px); }
+}

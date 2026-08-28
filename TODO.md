@@ -14,6 +14,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Establish design rules and refine Home, Archive, Taste, Import and Rate around a single visual gravity per page; add visual route markers and reduce QQ import / rating density.
 - [x] Complete strict visual QA and cleanup across all existing routes: align shared editorial edges, normalize core spacing and type rhythm, unify gate icons, and harden responsive/touch layouts without adding features.
 - [x] Recover the pre-modular editorial material palette where it strengthens module identity: warm Archive paper, pale Taste/Import/Journal paper, and the dark Rate studio—without restoring the former single-page layout.
+- [x] Tune the recovered visual language after route review: reduce the Home radar, align Archive/Taste gate systems, restore the original olive Rate studio, and reinstate paper fibre texture.
 
 ## P0 — Make playlist import genuinely useful
 
