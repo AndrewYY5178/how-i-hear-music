@@ -10,6 +10,7 @@ const point = (value, index, size, radius) => {
 const polygon = (values, size, radius) => values.map((value, index) => point(value, index, size, radius).map((part) => part.toFixed(1)).join(",")).join(" ");
 
 export const radar = (scores = {}, { interactive = false, className = "" } = {}) => {
+  scores = scores || {};
   const size = 220; const center = size / 2; const radius = 70;
   const values = fields.map((field) => scores[field] ?? 0);
   const rings = [3.5, 7, 11].map((level) => `<polygon points="${polygon(fields.map(() => level), size, radius)}"></polygon>`).join("");

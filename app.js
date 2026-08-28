@@ -38,10 +38,24 @@ const navigate = (path, { replace = false } = {}) => {
   if (replace) history.replaceState({}, "", target); else history.pushState({}, "", target);
   render();
 };
+const parentRoute = (path) => {
+  if (/^\/archive\/(tracks|albums|artists)\/.+/.test(path)) {
+    const section = path.split("/")[2];
+    return { href: "/archive/" + section, label: "BACK TO " + section.toUpperCase() };
+  }
+  if (path === "/archive") return { href: "/", label: "BACK HOME" };
+  if (/^\/archive\/(tracks|albums|artists)$/.test(path)) return { href: "/archive", label: "BACK TO ARCHIVE" };
+  if (/^\/(taste|import)\/.+/.test(path)) return { href: "/" + path.split("/")[1], label: "BACK TO " + path.split("/")[1].toUpperCase() };
+  if (/^\/(taste|import|journal|rate)$/.test(path)) return { href: "/", label: "BACK HOME" };
+  if (/^\/rate\/.+/.test(path)) return { href: "/rate", label: "BACK TO RATE" };
+  return { href: "/", label: "BACK HOME" };
+};
 const render = () => {
   const path = cleanPath(location.pathname);
   renderShell(path);
-  app.innerHTML = route(path);
+  const parent = parentRoute(path);
+  const back = path === "/" ? "" : `<a class="back-button" href="${parent.href}" data-route>← ${parent.label}</a>`;
+  app.innerHTML = back + route(path);
   app.focus({ preventScroll: true });
   bindArchive(path);
   bindRating(path, navigate);
