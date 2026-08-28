@@ -11,6 +11,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Move QQ import and Inbox into dedicated Import routes.
 - [x] Add a lightweight Journal route for rating changes and discoveries.
 - [x] Audit desktop and mobile route rendering; fix Archive track rendering, remove Home horizontal overflow, and add contextual return actions to every non-Home route.
+- [x] Establish design rules and refine Home, Archive, Taste, Import and Rate around a single visual gravity per page; add visual route markers and reduce QQ import / rating density.
 
 ## P0 — Make playlist import genuinely useful
 
