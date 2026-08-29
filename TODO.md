@@ -42,11 +42,11 @@ This file records planned work that is not complete yet. The current site is a p
 
 - [x] Give every canonical track an independent ID such as `track_000123`.
 - [x] Separate Artist, Album, Track and Release/Recording records. *(Generated `data/catalog.json`; source ratings remain in `data/songs.json`.)*
-- [ ] Store provider IDs for QQ Music and NetEase Cloud Music without using them as canonical IDs.
+- [x] Store provider IDs for QQ Music and NetEase Cloud Music without using them as canonical IDs. *(Imported records use `providerRefs`; canonical IDs remain independent.)*
 - [ ] Store available release date, ISRC, UPC and external reference URLs when they are legitimately available.
-- [ ] Match the same track across QQ Music and NetEase Cloud Music.
-- [ ] Add confidence levels: `AUTO MATCH`, `REVIEW`, `NEW ENTRY`.
-- [ ] Add fuzzy matching for title, artist and album names.
+- [x] Match the same track across QQ Music and NetEase Cloud Music. *(Exact local matches merge provider references.)*
+- [x] Add confidence levels: `AUTO MATCH`, `REVIEW`, `NEW ENTRY`.
+- [x] Add fuzzy matching for title and artist names; album remains supporting metadata rather than a hard match requirement.
 - [x] Keep versions distinct: Studio, Live, Acoustic, Remastered and other clearly identified recordings. *(Recording records have an explicit nullable `versionType`; no version is inferred.)*
 - [x] Separate Composition from Recording/Version so one composition can have multiple performances.
 - [ ] Preserve a track's ratings and notes when an external playlist removes it.
