@@ -40,6 +40,8 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Module material changes are immediate so foreground and background colors cannot pass through a low-contrast transition state.
 - Mobile text links retain their typographic appearance while exposing a 40px minimum touch target.
 - Home's Featured Shape collapses to one column below 760px; its title remains one line and truncates only when it cannot fit the viewport.
+- Mobile navigation closes on Escape and on every route render; its visual state must match `aria-expanded`.
+- Interactive Radar and Waveform nodes support pointer drag plus Arrow, Page Up/Down, Home and End keys; focus remains on the adjusted node after re-rendering.
 
 ## Reference boundary
 

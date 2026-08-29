@@ -7,6 +7,7 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 | 1.1 | 2026-08-29 | Album catalog rhythm, interaction and motion standard | Album of the Year; Music Memory; The Listening Log content model | `Add UI design versioning baseline` |
 | 1.2 | 2026-08-29 | Journal reading hierarchy and module color stability | Music Memory | `Standardize journal reading hierarchy` |
 | 1.3 | 2026-08-29 | Home mobile cascade and touch-target regression | Repository route audit | `Fix Home mobile cascade` |
+| 1.4 | 2026-08-29 | Navigation state and rating interaction integrity | Interaction audit | `Complete rating interaction states` |
 
 ## Version 1.1 — Catalog rhythm and interaction baseline
 
@@ -127,3 +128,51 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 - Keyboard/touch target measurements for representative navigation and editorial links.
 - Live return-navigation checks for Archive detail, Rate workspace, Taste child, Import child and top-level module paths.
 - Automated repository check: `npm test`.
+
+## Version 1.4 — Interaction state integrity
+
+### Before
+
+- Opening the mobile menu and choosing a route left the menu visibly open while the newly rendered toggle reported `aria-expanded="false"`.
+- Escape did not close the mobile menu.
+- Every visit to a track rating route added another global `pointerup` listener.
+- Track precision buttons inherited the form's submit behavior, so a `−/+` adjustment could save a rating and append Journal history.
+- Album waveform points advertised draggable slider semantics but had no pointer or keyboard behavior.
+- Interactive chart parents used `role="img"`, which could flatten their slider descendants in an accessibility tree.
+
+### Decision
+
+- Reset menu state before every shell render, close it on Escape and return focus to the toggle.
+- Manage window-level pointer events with one abortable controller that is replaced on every route bind.
+- Declare every precision control as a labelled non-submit button so score adjustment and saving remain separate actions.
+- Extract score clamping, keyboard steps and chart-coordinate projection into pure tested helpers.
+- Support pointer drag, Arrow keys, Page Up/Down, Home and End on both Radar and Waveform nodes while preserving focus through chart re-rendering.
+- Expose interactive charts as labelled groups and keep static charts as images.
+
+### Evidence
+
+- Before the fix, `/archive` showed `.menu-open` and a visible navigation while its toggle reported `false`.
+- In the isolated test origin, Escape produced a closed menu, `aria-expanded="false"` and focus on the toggle; route selection closed the menu and focused `#app`.
+- Radar keyboard input changed Song from 7.5 to 7.6; a pointer drag changed it from 7.5 to 10.5.
+- Waveform keyboard input changed Track 01 from 7.6 to 7.7; a pointer drag changed it from 7.7 to 9.4.
+- The interactive Landscape exposed one labelled group with six slider descendants across the 0–11 rating domain; pointer movement maps the deliberately magnified 5–11 visual band.
+- A post-fix crawl rendered all 130 routes reachable in the isolated state at desktop and mobile sizes with no structural, menu-state or console failures.
+
+### Files
+
+- `modules/layout/shell.js`
+- `modules/rating/interactions.js`
+- `modules/rating/pages.js`
+- `modules/rating/visuals.js`
+- `styles.css`
+- `scripts/check-project.mjs`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Mobile menu open, Escape, route selection and focus-state checks.
+- Radar and Waveform keyboard and pointer interaction checks on an isolated localhost origin.
+- Pure interaction-helper regression tests through `npm test`.
+- Full reachable-route structural crawl after shared-shell changes.
