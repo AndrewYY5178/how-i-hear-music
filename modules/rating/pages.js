@@ -4,18 +4,23 @@ import { link, pageHeader } from "../layout/shell.js";
 
 const visitorKey = "how-i-hear-music:rating-sessions:v2";
 const journalKey = "how-i-hear-music:journal:v1";
+const inboxKey = data.library.storageKey;
+const libraryKey = data.library.libraryStorageKey;
 const readRatings = () => storage.get(visitorKey, {});
 const saveRating = (id, value) => storage.set(visitorKey, { ...readRatings(), [id]: value });
 const appendJournal = (entry) => storage.set(journalKey, [entry, ...storage.get(journalKey, [])].slice(0, 80));
 const choices = data.songs.entries.filter((track) => track.scores && Object.values(track.scores).some((value) => value !== null));
+const localTracks = () => [...storage.get(inboxKey, []), ...storage.get(libraryKey, [])];
+const findRateTrack = (id) => findTrack(id) || localTracks().find((track) => track.id === id) || null;
+const rateId = (track) => track?.id || trackId(track);
 const scoreControls = (scores) => `<div class="rating-controls">${fields.map((field) => `<div class="rating-control"><span><b>${fieldLabel[field]}</b><small>${field === "overall" ? "Your final feeling" : ""}</small></span><div><button data-score-step="-0.1" data-field="${field}">−</button><output data-score-output="${field}">${rating(scores[field])}</output><button data-score-step="0.1" data-field="${field}">+</button></div></div>`).join("")}</div>`;
 const tagChoices = ["stays with me", "surprised me", "grew on me", "feels personal", "one perfect moment", "immediate replay", "admire > love", "hard to explain"];
 
 export const rateHome = () => `${pageHeader("RATE", "Begin with one listening decision.", "Choose a shape for one track, or a landscape for an album.")}<div class="rate-choices"><article><span class="mono">01 / TRACK</span><h2>Listening Shape</h2><p>Four dimensions, one personal response.</p>${link(`/rate/track/${trackId(choices[0])}`, "RATE A TRACK", "button primary")}</article><article><span class="mono">02 / ALBUM</span><h2>Listening Landscape</h2><p>Build a score curve one track at a time.</p>${link(`/rate/album/${slug(data.profile.albumArchive[0].artist + "-" + data.profile.albumArchive[0].title)}`, "RATE AN ALBUM", "button primary")}</article></div><section class="continue-panel"><span class="mono">CONTINUE RATING</span><p>Choose from a confirmed record:</p><div class="inline-links">${choices.slice(0, 8).map((track) => link(`/rate/track/${trackId(track)}`, track.title)).join("")}</div></section>`;
 
 export const rateTrack = (id) => {
-  const track = findTrack(id) || choices[0];
-  const saved = readRatings()[trackId(track)]; const scores = saved?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 };
+  const track = findRateTrack(id) || choices[0];
+  const saved = readRatings()[rateId(track)]; const scores = saved?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 };
   return `${pageHeader("RATE / TRACK", safe(track.title), track.artist)}<section class="track-rate-session"><div class="interactive-radar" id="rate-radar">${radar(scores, { interactive: true, className: "large-radar" })}<p class="mono">DRAG A NODE / OR USE PRECISE CONTROLS</p></div><form id="track-rate-form"><div class="rate-form-heading"><span class="eyebrow mono">SET THE SHAPE</span><p>Move the graph first; use the controls to refine it.</p></div>${scoreControls(scores)}<fieldset class="tag-picker"><legend class="mono">WHAT STAYED? / PICK UP TO 3</legend>${tagChoices.map((tag) => `<button type="button" data-tag="${tag}">${tag}</button>`).join("")}</fieldset><button class="button primary" type="submit">SAVE RATING</button></form></section><aside id="rate-save-message"></aside>`;
 };
 
@@ -29,7 +34,7 @@ export const rateAlbum = (id) => {
 export const bindRating = (path, navigate) => {
   const match = path.match(/^\/rate\/track\/(.+)$/);
   if (match) {
-    const track = findTrack(match[1]) || choices[0]; let state = { ...(readRatings()[trackId(track)]?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 }) }; let tags = [];
+    const track = findRateTrack(match[1]) || choices[0]; const targetId = rateId(track); const previous = readRatings()[targetId]; let state = { ...(previous?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 }) }; let tags = [...(previous?.tags || [])];
     const render = () => { document.getElementById("rate-radar").innerHTML = radar(state, { interactive: true, className: "large-radar" }) + "<p class='mono'>DRAG A NODE / OR USE PRECISE CONTROLS</p>"; fields.forEach((field) => { const output = document.querySelector(`[data-score-output='${field}']`); if (output) output.textContent = rating(state[field]); }); };
     document.getElementById("track-rate-form").addEventListener("click", (event) => {
       const step = event.target.closest("[data-score-step]"); if (step) { const field = step.dataset.field; state[field] = Math.max(0, Math.min(11, Math.round((state[field] + Number(step.dataset.scoreStep)) * 10) / 10)); render(); }
@@ -39,7 +44,8 @@ export const bindRating = (path, navigate) => {
     document.getElementById("rate-radar").addEventListener("pointerdown", (event) => { const node = event.target.closest("[data-radar-field]"); if (!node) return; activeField = node.dataset.radarField; event.preventDefault(); });
     document.getElementById("rate-radar").addEventListener("pointermove", (event) => { if (!activeField || !event.buttons) return; const svg = document.querySelector("#rate-radar svg"); const box = svg.getBoundingClientRect(); const x = (event.clientX - box.left) / box.width * 220; const y = (event.clientY - box.top) / box.height * 220; const index = fields.indexOf(activeField); const angle = -Math.PI / 2 + Math.PI * 2 * index / 4; const projected = ((x - 110) * Math.cos(angle) + (y - 110) * Math.sin(angle)) / 70 * 11; state[activeField] = Math.max(0, Math.min(11, Math.round(projected * 10) / 10)); render(); });
     window.addEventListener("pointerup", () => { activeField = null; }, { once: false });
-    document.getElementById("track-rate-form").addEventListener("submit", (event) => { event.preventDefault(); const saved = { scores: state, tags, updatedAt: new Date().toISOString() }; saveRating(trackId(track), saved); appendJournal({ type: "rating", title: track.title, artist: track.artist, scores: state, at: saved.updatedAt }); document.getElementById("rate-save-message").innerHTML = `<span class='mono'>RATING SAVED</span><p>Saved in this browser.</p>${link(`/archive/tracks/${trackId(track)}`, "VIEW TRACK", "button")}`; });
+    document.querySelectorAll("[data-tag]").forEach((button) => button.classList.toggle("active", tags.includes(button.dataset.tag)));
+    document.getElementById("track-rate-form").addEventListener("submit", (event) => { event.preventDefault(); const saved = { scores: state, tags, title: track.title, artist: track.artist, source: track.source || "archive", updatedAt: new Date().toISOString() }; saveRating(targetId, saved); appendJournal({ type: "rating", trackId: targetId, title: track.title, artist: track.artist, scores: state, at: saved.updatedAt }); const returnLink = track.id ? link("/import/inbox", "BACK TO INBOX", "button") : link(`/archive/tracks/${trackId(track)}`, "VIEW TRACK", "button"); document.getElementById("rate-save-message").innerHTML = `<span class='mono'>RATING SAVED</span><p>Saved in this browser.</p>${returnLink}`; });
   }
   const albumMatch = path.match(/^\/rate\/album\/(.+)$/);
   if (albumMatch) {
