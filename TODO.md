@@ -53,11 +53,11 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## P1 — Cover and metadata handling
 
-- [ ] Decide on an allowed cover-art source and document its usage rights.
+- [x] Decide on an allowed cover-art source and document its usage rights. *(See `ASSET_POLICY.md`; legacy external references remain provisional.)*
 - [ ] Match a cover reference for newly imported tracks when reliable metadata is available.
-- [ ] Do not silently download or republish third-party cover art.
-- [ ] Add a manual cover override for records whose automatic match is wrong.
-- [ ] Add a consistent fallback when a cover is unavailable.
+- [x] Do not silently download or republish third-party cover art.
+- [x] Add a manual local-only HTTPS cover-reference override for records whose canonical reference is wrong.
+- [x] Add a consistent fallback when a cover is unavailable or fails to load.
 
 ## P1 — Interactive archive expansion
 

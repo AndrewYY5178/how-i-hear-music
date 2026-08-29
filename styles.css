@@ -382,3 +382,12 @@ body::before {
   .local-backup { grid-template-columns:1fr; gap:24px; margin-top:64px; }
   .entry-actions { justify-content:flex-start; }
 }
+
+/* Local cover references preserve the existing album composition and paper fallback. */
+.album-detail-image { width:100%; }
+.album-detail-image img,.album-detail-image .cover-fallback { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
+.cover-override-form { padding-top:24px; }
+.cover-override-form label>span { display:block; margin-bottom:8px; color:var(--red); font-size:8px; }
+.cover-override-form input { width:100%; padding:8px 0; border:0; border-bottom:1px solid var(--line); outline:0; background:transparent; color:inherit; }
+.cover-override-form>div { display:flex; flex-wrap:wrap; gap:16px; margin-top:24px; }
+.cover-override-form p { margin-top:16px; }
