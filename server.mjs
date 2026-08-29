@@ -28,6 +28,11 @@ const readJsonBody = async (request) => {
 
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
+const publicDate = (value) => {
+  const timestamp = Number(value); if (!Number.isFinite(timestamp) || timestamp <= 0) return null;
+  const date = new Date(timestamp < 10_000_000_000 ? timestamp * 1000 : timestamp);
+  return Number.isNaN(date.valueOf()) ? null : date.toISOString().slice(0, 10);
+};
 const parsePublicQQUrl = (value) => {
   let url;
   try { url = new URL(String(value || '')); } catch { throw new Error('Paste a complete public QQ Music share link.'); }
@@ -88,6 +93,10 @@ const fetchQQPlaylist = async (shareUrl) => {
     title: String(song.songname || '').trim(),
     artist: (song.singer || []).map((singer) => singer.name).filter(Boolean).join(' / ') || 'Artist not recorded',
     album: String(song.albumname || '').trim(),
+    releaseDate: publicDate(song.pubtime),
+    isrc: null,
+    upc: null,
+    externalReferences: song.songmid ? [{ provider: 'qqmusic', url: 'https://y.qq.com/n/ryqq/songDetail/' + encodeURIComponent(song.songmid) }] : [],
     provider: { source: 'qqmusic', playlistId, songMid: song.songmid || '', albumMid: song.albummid || '', durationSeconds: Number(song.interval) || null },
   })).filter((track) => track.title);
   if (!tracks.length) throw new Error('QQ Music found the playlist but exposed no importable track metadata.');
@@ -136,6 +145,10 @@ const fetchNetEasePlaylist = async (shareUrl) => {
     title: String(song.name || '').trim(),
     artist: (song.artists || []).map((artist) => artist.name).filter(Boolean).join(' / ') || 'Artist not recorded',
     album: String(song.album?.name || '').trim(),
+    releaseDate: publicDate(song.album?.publishTime),
+    isrc: null,
+    upc: null,
+    externalReferences: song.id ? [{ provider: 'netease', url: 'https://music.163.com/song?id=' + encodeURIComponent(song.id) }] : [],
     provider: { source: 'netease', playlistId, songId: Number(song.id) || null, albumId: Number(song.album?.id) || null, artistIds: (song.artists || []).map((artist) => Number(artist.id)).filter(Number.isFinite), durationSeconds: Number(song.duration) ? Math.round(Number(song.duration) / 1000) : null },
   })).filter((track) => track.title);
   if (!tracks.length) throw new Error('NetEase found the playlist but exposed no importable track metadata.');
@@ -157,6 +170,10 @@ const searchQQCatalog = async (query) => {
     title: String(song.songname || song.name || '').trim(),
     artist: (song.singer || []).map((singer) => singer.name).filter(Boolean).join(' / ') || String(song.singername || 'Artist not recorded'),
     album: String(song.albumname || song.album?.name || '').trim(),
+    releaseDate: publicDate(song.pubtime),
+    isrc: null,
+    upc: null,
+    externalReferences: (song.songmid || song.mid) ? [{ provider: 'qqmusic', url: 'https://y.qq.com/n/ryqq/songDetail/' + encodeURIComponent(song.songmid || song.mid) }] : [],
     provider: { source: 'qqmusic', songMid: song.songmid || song.mid || '', albumMid: song.albummid || song.album?.mid || '', durationSeconds: Number(song.interval) || null },
   })).filter((track) => track.title);
 };

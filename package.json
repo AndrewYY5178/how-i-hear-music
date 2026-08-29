@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build:catalog": "node scripts/build-catalog.mjs",
+    "check:adapters": "node scripts/check-adapters.mjs",
     "check": "node scripts/check-project.mjs",
     "dev": "node server.mjs",
     "start": "node server.mjs",

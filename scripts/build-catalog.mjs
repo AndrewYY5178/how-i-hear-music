@@ -42,7 +42,7 @@ const catalog = {
   },
   artists: artistRecords.map((artist) => ({ id: artist.id, name: artist.name, romanized: artist.romanized || null, status: artist.status || null })),
   albums,
-  tracks: songs.entries.map((entry) => ({ id: entry.id, compositionId: entry.compositionId, title: entry.title, primaryArtistId: entry.artistId, artistName: entry.artist, providerIds: entry.providerIds || {} })),
+  tracks: songs.entries.map((entry) => ({ id: entry.id, compositionId: entry.compositionId, title: entry.title, primaryArtistId: entry.artistId, artistName: entry.artist, releaseDate: entry.releaseDate || null, isrc: entry.isrc || null, upc: entry.upc || null, externalReferences: entry.externalReferences || [], providerIds: entry.providerIds || {} })),
   recordings: songs.entries.map((entry) => {
     const album = entry.album ? albumByIdentity.get(slug(entry.artist + '-' + entry.album)) : null;
     return { id: entry.recordingId, trackId: entry.id, artistIds: [entry.artistId], versionType: entry.versionType || null, releaseId: album ? releaseByAlbum.get(album.id) : null, providerIds: entry.providerIds || {} };

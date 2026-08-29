@@ -2,6 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { matchTrack } from '../modules/music/matching.js';
+import { createPlaylistSnapshot, diffPlaylistSnapshots } from '../modules/music/sync.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -38,7 +39,13 @@ if (matchTrack({ title: 'Tattooed Heart', artist: 'Ariana Grande' }, matchingFix
 if (matchTrack({ title: 'Tattooed Hearts', artist: 'Ariana Grande' }, matchingFixture).confidence !== 'review') errors.push('matching: fuzzy match did not produce REVIEW');
 if (matchTrack({ title: 'Unrelated', artist: 'Nobody' }, matchingFixture).confidence !== 'new_entry') errors.push('matching: unrelated track did not produce NEW ENTRY');
 
-const sourceFiles = ['index.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js'];
+const previousSnapshot = createPlaylistSnapshot({ tracks: [{ title: 'A', artist: 'One' }, { title: 'B', artist: 'Two' }], playlist: { id: 'fixture', title: 'Fixture' }, source: 'fixture', sourceUrl: 'https://example.com/fixture' });
+const currentSnapshot = createPlaylistSnapshot({ tracks: [{ title: 'B', artist: 'Two' }, { title: 'C', artist: 'Three' }], playlist: { id: 'fixture', title: 'Fixture' }, source: 'fixture', sourceUrl: 'https://example.com/fixture' });
+const beforeDiff = JSON.stringify(previousSnapshot); const snapshotDiff = diffPlaylistSnapshots(previousSnapshot, currentSnapshot);
+if (snapshotDiff.additions.map((track) => track.title).join() !== 'C' || snapshotDiff.removals.map((track) => track.title).join() !== 'A' || snapshotDiff.unchanged.map((track) => track.title).join() !== 'B') errors.push('sync: playlist snapshot difference is incorrect');
+if (JSON.stringify(previousSnapshot) !== beforeDiff) errors.push('sync: comparing snapshots mutated the stored baseline');
+
+const sourceFiles = ['index.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
