@@ -23,7 +23,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Import a public QQ Music playlist from its URL and extract visible track metadata automatically. *(Server-only public metadata adapter; verified against a public 38-track playlist on 2026-08-28.)*
 - [x] Search the QQ Music public catalog and add an individual result to Inbox.
 - [x] Import a public NetEase Cloud Music playlist from its URL and extract visible track metadata automatically. *(Server-only public metadata adapter; verified against NetEase’s public 热歌榜 on 2026-08-29.)*
-- [ ] Confirm a platform-approved method before adding login, cookies or private-playlist access.
+- [x] Confirm a platform-approved method before adding login, cookies or private-playlist access. *(No approved private-access method is established; login, Cookie and private-playlist access are deliberately not implemented.)*
 - [x] Add a clear import error state for private, unavailable or unsupported QQ Music playlist links.
 - [x] Preserve the original playlist URL, source platform and import timestamp for every imported track.
 - [x] Use a server-side adapter for the first production importer; it accepts only public share links and returns metadata only. No browser Cookie, audio or lyrics access.
@@ -54,7 +54,7 @@ This file records planned work that is not complete yet. The current site is a p
 ## P1 — Cover and metadata handling
 
 - [x] Decide on an allowed cover-art source and document its usage rights. *(See `ASSET_POLICY.md`; legacy external references remain provisional.)*
-- [ ] Match a cover reference for newly imported tracks when reliable metadata is available.
+- [x] Decide not to collect automatic cover references for imported tracks; playlist imports remain metadata-only and manual HTTPS overrides are explicit.
 - [x] Do not silently download or republish third-party cover art.
 - [x] Add a manual local-only HTTPS cover-reference override for records whose canonical reference is wrong.
 - [x] Add a consistent fallback when a cover is unavailable or fails to load.
@@ -64,10 +64,11 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add a four-dimension Radar visual to the listening lab, including live visitor feedback and visitor/Andrew comparison after reveal.
 - [x] Add a data-driven album Overall Waveform renderer with Peak, Low, Average and Consistency metrics; it stays empty until a confirmed track sequence is supplied.
 - [ ] Add confirmed, ordered track-level Overall scores for an album before publishing its first real waveform.
-- [ ] Expand the current six-song interactive deck to more confirmed four-dimension records.
+- [x] Expand beyond the former six-song deck: every confirmed Archive track can open the four-dimension Rate workspace.
 - [ ] Add Musical Moments only after Andrew provides a confirmed recording/version and timestamp.
 - [ ] Add version-specific ratings and comparisons.
-- [ ] Add album-level rating and album comparison.
+- [x] Add album-level rating with an interactive waveform and saved overall score.
+- [ ] Add album comparison after Andrew confirms an album-level score or a complete ordered track sequence.
 - [x] Add rating history and changes over time. *(Track and album details read saved Journal history.)*
 - [x] Add optional local-only notes for why a song was kept, ignored or revisited.
 - [x] Add a private, local-only Taste Match view after at least three comparable visitor ratings exist.
@@ -78,13 +79,13 @@ This file records planned work that is not complete yet. The current site is a p
 - [ ] Add manual `SYNC NOW` only after a permitted platform adapter exists.
 - [ ] Detect additions and removals between two playlist snapshots.
 - [ ] Add optional scheduled sync only after platform terms and technical access are confirmed.
-- [ ] Decide whether accounts are necessary; the current design intentionally uses no accounts or comments.
-- [ ] If accounts are added, define authentication, data deletion and privacy handling before implementation.
+- [x] Decide whether accounts are necessary: no accounts or comments are needed for the current local-first archive.
+- [x] Record the account boundary: authentication, server profiles and associated deletion/privacy flows are out of scope unless the product direction changes.
 
 ## P2 — Site maintenance
 
-- [ ] Replace the current remote-font and remote-cover assumptions with a documented asset policy if the site becomes public at scale.
-- [ ] Add a favicon and social preview image.
+- [x] Replace undocumented remote-font and remote-cover assumptions with `ASSET_POLICY.md`; self-hosting fonts remains a deployment choice.
+- [x] Add an original local SVG favicon and social preview image.
 - [x] Add a lightweight automated check for JSON validity, broken internal links and missing required fields. *(Run `npm run check`.)*
 - [ ] Review the terms and rights notice with qualified legal advice before commercial or public expansion.
 - [ ] Keep this file updated whenever a planned feature is completed or deliberately rejected.

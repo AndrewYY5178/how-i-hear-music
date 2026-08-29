@@ -19,3 +19,7 @@ The current album JSON contains legacy external references from several music an
 - Removal and correction requests take priority over visual completeness.
 
 This policy is operational guidance, not legal advice. Public or commercial expansion still requires a qualified rights review.
+
+## Fonts and first-party graphics
+
+The current prototype loads Libre Baskerville and DM Mono from Google Fonts. A public-scale deployment should either self-host properly licensed font files or retain the remote service only after reviewing its privacy and availability trade-offs. The favicon and social preview are original repository-owned SVG graphics and may be served locally.
