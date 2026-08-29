@@ -59,7 +59,7 @@ const render = () => {
   const back = path === "/" ? "" : `<a class="back-button" href="${parent.href}" data-route>← ${parent.label}</a>`;
   app.innerHTML = back + route(path);
   app.focus({ preventScroll: true });
-  bindArchive(path);
+  bindArchive(path, navigate);
   bindRating(path, navigate);
   bindImport(path, navigate);
 };
