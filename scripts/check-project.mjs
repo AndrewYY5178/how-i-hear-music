@@ -57,5 +57,10 @@ for (const name of sourceFiles) {
   }
 }
 
+const styles = await readFile(join(root, 'styles.css'), 'utf8');
+const desktopHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(360px,1fr) minmax(280px,.8fr) minmax(144px,.4fr); }');
+const mobileHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(0,1fr); }');
+if (desktopHomeGrid < 0 || mobileHomeGrid < desktopHomeGrid) errors.push('styles.css: the final Home grid cascade does not restore one column on mobile');
+
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);
