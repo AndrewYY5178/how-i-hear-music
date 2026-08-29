@@ -327,6 +327,7 @@ body[data-module="rate"] {
   --ink:#f1ece2;
   --muted:#d0c8b9;
   --line:rgba(241,236,226,.3);
+  --red:#efb99f;
   --paper-light:#e9e1d2;
   --olive:#50533f;
   color:var(--ink);

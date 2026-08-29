@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Returning to How I Hear Music…</title>
+  </head>
+  <body>
+    <p>Returning to How I Hear Music…</p>
+    <script>
+      const base = "/how-i-hear-music";
+      const route = location.pathname.startsWith(base) ? location.pathname.slice(base.length) || "/" : location.pathname;
+      location.replace(`${base}/?route=${encodeURIComponent(route + location.search + location.hash)}`);
+    </script>
+  </body>
+</html>

@@ -18,6 +18,14 @@ const key = (track) => canonical(track.title) + "::" + canonical(track.artist);
 const sourceUrl = (value) => (String(value || "").match(/https?:\/\/[^\s<>"'）)】]+/i) || [""])[0].replace(/[，。；、]+$/, "");
 const readSnapshots = () => storage.get(snapshotKey, {});
 const saveSnapshot = (snapshot) => storage.set(snapshotKey, { ...readSnapshots(), [snapshot.sourceUrl]: snapshot });
+const apiRequest = async (endpoint, options) => {
+  const response = await fetch(endpoint, options);
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) throw new Error("Playlist metadata import requires the local Node server and is unavailable on this static Pages build.");
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "The metadata service could not complete this request.");
+  return result;
+};
 
 export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "External music enters Inbox first. Import is never the Archive.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC</span><h2>Paste a public share.</h2><p>Read playlist metadata without a login, then review before keeping anything.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article><span class="mono">NETEASE</span><h2>Import a public playlist.</h2><p>Read public playlist metadata through the server, with no login, Cookie, audio or lyrics.</p>${link("/import/netease", "IMPORT FROM NETEASE →", "button primary")}</article></div>`;
 
@@ -29,7 +37,7 @@ const stateLabel = (state) => state === "auto_match" ? "AUTO MATCH" : state === 
 export const importInbox = () => {
   const inbox = read(inboxKey); const kept = read(libraryKey); const ignored = read(ignoredKey); const snapshots = Object.values(readSnapshots()); const autoCount = inbox.filter((track) => track.state === "auto_match").length; const reviewCount = inbox.filter((track) => track.state === "review").length; const newCount = inbox.filter((track) => !track.state || track.state === "new_entry").length;
   const sources = snapshots.length ? snapshots.map((snapshot, index) => `<article><div><span class="mono">${safe(snapshot.sourceLabel || snapshot.source)}</span><strong>${safe(snapshot.playlist?.title || "Untitled playlist")}</strong><p>${safe(String(snapshot.playlist?.trackCount || snapshot.tracks?.length || 0))} tracks · last checked ${safe(new Date(snapshot.syncedAt).toLocaleDateString())}</p></div><button class="button" type="button" data-sync-source="${index}">SYNC NOW</button></article>`).join("") : "<p class='empty-state'>Import a public playlist once to create a local sync source.</p>";
-  const entries = inbox.length ? inbox.map((track, index) => `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span><div><span class="inbox-state ${safe(track.state || "new_entry")}">${stateLabel(track.state)}</span><strong>${safe(track.title)}</strong><p>${safe(track.artist + (track.album ? " · " + track.album : ""))}${track.matchedTitle ? safe(" · possible match: " + track.matchedTitle) : ""}</p></div><div class="entry-actions"><button data-inbox-action="keep" data-id="${safe(track.id)}">KEEP</button><a href="/rate/track/${encodeURIComponent(track.id)}" data-route>RATE</a><button data-inbox-action="${track.state === "review" ? "new-entry" : "review"}" data-id="${safe(track.id)}">${track.state === "review" ? "NEW ENTRY" : "REVIEW"}</button><button data-inbox-action="ignore" data-id="${safe(track.id)}">IGNORE</button></div></article>`).join("") : "<p class='empty-state'>Nothing is waiting for review.</p>";
+  const entries = inbox.length ? inbox.map((track, index) => `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span><div><span class="inbox-state ${safe(track.state || "new_entry")}">${stateLabel(track.state)}</span><strong>${safe(track.title)}</strong><p>${safe(track.artist + (track.album ? " · " + track.album : ""))}${track.matchedTitle ? safe(" · possible match: " + track.matchedTitle) : ""}</p></div><div class="entry-actions"><button data-inbox-action="keep" data-id="${safe(track.id)}">KEEP</button>${link(`/rate/track/${encodeURIComponent(track.id)}`, "RATE")}<button data-inbox-action="${track.state === "review" ? "new-entry" : "review"}" data-id="${safe(track.id)}">${track.state === "review" ? "NEW ENTRY" : "REVIEW"}</button><button data-inbox-action="ignore" data-id="${safe(track.id)}">IGNORE</button></div></article>`).join("") : "<p class='empty-state'>Nothing is waiting for review.</p>";
   return `${pageHeader("IMPORT / INBOX", "Review before the archive.", "New imports stay separate until you deliberately keep or rate them.")}${importNav()}<div class="inbox-counts"><span><b>AUTO MATCH</b>${autoCount}</span><span><b>REVIEW</b>${reviewCount}</span><span><b>NEW ENTRY</b>${newCount}</span><span><b>KEPT</b>${kept.length}</span><span><b>IGNORED</b>${ignored.length}</span></div><section class="playlist-sources"><div><span class="eyebrow mono">PLAYLIST SOURCES</span><h2>Check what changed.</h2><p>Sync compares public snapshots. A removal never deletes a local track, rating or note.</p></div><div class="playlist-source-list">${sources}</div><div id="sync-status" aria-live="polite"></div></section><section class="inbox-entries">${entries}</section><section class="local-backup"><div><span class="eyebrow mono">LOCAL DATA</span><h2>Keep a copy of the desk.</h2><p>Export Inbox, Library, ratings, Journal, playlist snapshots and album drafts as one versioned JSON file. Restore merges valid records without deleting existing data.</p></div><div class="backup-actions"><button class="button" id="export-local-data" type="button">EXPORT BACKUP</button><label class="button" for="restore-local-data">RESTORE BACKUP</label><input id="restore-local-data" type="file" accept="application/json,.json"><p id="backup-status" aria-live="polite"></p></div></section>`;
 };
 
@@ -65,8 +73,7 @@ export const bindImport = (path, navigate) => {
       if (!share) { output.innerHTML = "<p>Please paste a public QQ Music playlist link.</p>"; return; }
       output.innerHTML = "<span class='mono'>READING PLAYLIST…</span><p>Checking public QQ Music metadata.</p>";
       try {
-        const response = await fetch("/api/import/qq-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
-        const result = await response.json(); if (!response.ok) throw new Error(result.error);
+        const result = await apiRequest("/api/import/qq-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
         preview(output, result.tracks || [], result.playlist, share);
       } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not read this playlist.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music playlist link.")}</p>`; }
     });
@@ -75,7 +82,7 @@ export const bindImport = (path, navigate) => {
       if (!query) return;
       output.innerHTML = "<p class='empty-state'>Searching QQ Music…</p>";
       try {
-        const response = await fetch("/api/import/qq-search?q=" + encodeURIComponent(query)); const result = await response.json(); if (!response.ok) throw new Error(result.error);
+        const result = await apiRequest("/api/import/qq-search?q=" + encodeURIComponent(query));
         const tracks = result.tracks || [];
         output.innerHTML = tracks.length ? `<div class="catalog-results">${tracks.map((track, index) => `<article><div><strong>${safe(track.title)}</strong><p>${safe(track.artist + (track.album ? " · " + track.album : ""))}</p></div><button data-catalog-add="${index}">ADD TO INBOX</button></article>`).join("")}</div>` : "<p class='empty-state'>No public QQ Music tracks found.</p>";
         output.querySelectorAll("[data-catalog-add]").forEach((button) => button.addEventListener("click", () => {
@@ -92,8 +99,7 @@ export const bindImport = (path, navigate) => {
       if (!share) { output.innerHTML = "<p>Please paste a public NetEase Cloud Music playlist link.</p>"; return; }
       output.innerHTML = "<span class='mono'>READING PLAYLIST…</span><p>Checking public NetEase playlist metadata.</p>";
       try {
-        const response = await fetch("/api/import/netease-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
-        const result = await response.json(); if (!response.ok) throw new Error(result.error);
+        const result = await apiRequest("/api/import/netease-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
         preview(output, result.tracks || [], result.playlist, share, { id: "netease", label: "NetEase Cloud Music" });
       } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not read this playlist.</h2><p>${safe(error instanceof Error ? error.message : "Try another public NetEase playlist link.")}</p>`; }
     });
@@ -129,8 +135,7 @@ const bindInbox = (navigate) => {
     const endpoint = snapshot.source === "netease" ? "/api/import/netease-playlist" : "/api/import/qq-playlist";
     button.disabled = true; button.textContent = "CHECKING…"; status.innerHTML = "<p class='empty-state'>Reading the latest public playlist snapshot…</p>";
     try {
-      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: snapshot.sourceUrl }) });
-      const result = await response.json(); if (!response.ok) throw new Error(result.error);
+      const result = await apiRequest(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: snapshot.sourceUrl }) });
       const current = createPlaylistSnapshot({ tracks: result.tracks || [], playlist: result.playlist, source: snapshot.source, sourceLabel: snapshot.sourceLabel, sourceUrl: snapshot.sourceUrl });
       const diff = diffPlaylistSnapshots(snapshot, current);
       const list = (items) => items.slice(0, 5).map((track) => `<li>${safe(track.title)} <small>${safe(track.artist)}</small></li>`).join("");

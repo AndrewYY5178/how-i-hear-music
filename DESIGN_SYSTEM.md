@@ -42,6 +42,8 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Home's Featured Shape collapses to one column below 760px; its title remains one line and truncates only when it cannot fit the viewport.
 - Mobile navigation closes on Escape and on every route render; its visual state must match `aria-expanded`.
 - Interactive Radar and Waveform nodes support pointer drag plus Arrow, Page Up/Down, Home and End keys; focus remains on the adjusted node after re-rendering.
+- Small Rate metadata and navigation use a light peach that remains readable on the olive studio; the darker archive red remains reserved for light paper modules.
+- Internal routes are logical root paths in source and are translated through the active deployment base. Root hosting, the `/how-i-hear-music/` Pages project path and legacy module hashes must resolve to the same page structure.
 
 ## Reference boundary
 

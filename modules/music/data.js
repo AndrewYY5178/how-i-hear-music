@@ -1,15 +1,15 @@
 const fetchData = async (path) => {
-  const response = await fetch(path);
+  const response = await fetch(new URL(path, import.meta.url));
   if (!response.ok) throw new Error("Could not load " + path);
   return response.json();
 };
 
 export const data = await Promise.all([
-  fetchData("/data/music-profile.json"),
-  fetchData("/data/artists.json"),
-  fetchData("/data/songs.json"),
-  fetchData("/data/library.json"),
-  fetchData("/data/catalog.json"),
+  fetchData("../../data/music-profile.json"),
+  fetchData("../../data/artists.json"),
+  fetchData("../../data/songs.json"),
+  fetchData("../../data/library.json"),
+  fetchData("../../data/catalog.json"),
 ]).then(([profile, artists, songs, library, catalog]) => ({ profile, artists, songs, library, catalog }));
 
 export const safe = (value) => String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character]));
