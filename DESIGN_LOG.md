@@ -6,6 +6,7 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 | --- | --- | --- | --- | --- |
 | 1.1 | 2026-08-29 | Album catalog rhythm, interaction and motion standard | Album of the Year; Music Memory; The Listening Log content model | `Add UI design versioning baseline` |
 | 1.2 | 2026-08-29 | Journal reading hierarchy and module color stability | Music Memory | `Standardize journal reading hierarchy` |
+| 1.3 | 2026-08-29 | Home mobile cascade and touch-target regression | Repository route audit | `Fix Home mobile cascade` |
 
 ## Version 1.1 — Catalog rhythm and interaction baseline
 
@@ -87,4 +88,42 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 
 - Desktop and mobile Journal review for the empty state, plus an isolated seeded render check for populated note hierarchy.
 - Mobile route audit for Journal, Taste, Rate and Import at 390 × 844.
+- Automated repository check: `npm test`.
+
+## Version 1.3 — Mobile cascade discipline
+
+### Before
+
+- A late desktop Featured Shape declaration overrode an earlier mobile rule, leaving the 390px Home page 880px wide.
+- The requested single-line featured title was protected with `white-space: nowrap`, but the surrounding three-column grid was not collapsed after the final desktop override.
+- Typographic links often exposed only a 13–33px-high touch box on mobile; precise `−/+` controls and album title inputs also fell below the 40px interaction contract.
+
+### Decision
+
+- Restore a final one-column Featured Shape rule below 760px and set every grid child to a shrinkable width.
+- Keep the song title on one line, scale it within the mobile range and use ellipsis only when a title cannot fit.
+- Expand every mobile internal route link plus navigation, return, footer, precise rating and album title controls to 40px without adding fills, borders or pills.
+- Add a static cascade-order check to the repository test so a later desktop declaration cannot silently reintroduce this overflow.
+
+### Evidence
+
+- A reachable-route browser crawl covered 140 routes at 1440 × 900 and again at 390 × 844.
+- Before the fix, Home reported `scrollWidth: 880` at a 390px viewport; the Featured Shape visual began at x=416 and the score column ended at x=880.
+- The other audited routes had matching route state, a visible heading, contextual return action and no document-level horizontal overflow.
+- Inbox's 1px file input is intentionally visually hidden behind the local backup control and was not treated as clipping.
+
+### Files
+
+- `styles.css`
+- `scripts/check-project.mjs`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Full reachable-route desktop and mobile crawl.
+- Home viewport and component-boundary measurements at 390 × 844.
+- Keyboard/touch target measurements for representative navigation and editorial links.
+- Live return-navigation checks for Archive detail, Rate workspace, Taste child, Import child and top-level module paths.
 - Automated repository check: `npm test`.

@@ -38,6 +38,8 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - `prefers-reduced-motion: reduce` removes transitions, animation and smooth scrolling.
 - Failed or missing images preserve their frame with an explicit fallback.
 - Module material changes are immediate so foreground and background colors cannot pass through a low-contrast transition state.
+- Mobile text links retain their typographic appearance while exposing a 40px minimum touch target.
+- Home's Featured Shape collapses to one column below 760px; its title remains one line and truncates only when it cannot fit the viewport.
 
 ## Reference boundary
 
