@@ -8,14 +8,16 @@ const ratingKey = "how-i-hear-music:rating-sessions:v2";
 const journalKey = "how-i-hear-music:journal:v1";
 const backupFormat = "how-i-hear-music-backup";
 const backupVersion = 1;
-const importNav = () => secondaryNav([["/import/qq", "QQ Music"], ["/import/inbox", "Inbox"]]);
+const importNav = () => secondaryNav([["/import/qq", "QQ Music"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"]]);
 const read = (key) => storage.get(key, []);
 const key = (track) => canonical(track.title) + "::" + canonical(track.artist);
 const sourceUrl = (value) => (String(value || "").match(/https?:\/\/[^\s<>"'）)】]+/i) || [""])[0].replace(/[，。；、]+$/, "");
 
-export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "External music enters Inbox first. Import is never the Archive.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC</span><h2>Paste a public share.</h2><p>Read playlist metadata without a login, then review before keeping anything.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article class="muted-card"><span class="mono">NETEASE</span><h2>Coming soon.</h2><p>Manual track import remains available after the QQ adapter workflow is complete.</p></article></div>`;
+export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "External music enters Inbox first. Import is never the Archive.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC</span><h2>Paste a public share.</h2><p>Read playlist metadata without a login, then review before keeping anything.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article><span class="mono">NETEASE</span><h2>Import a public playlist.</h2><p>Read public playlist metadata through the server, with no login, Cookie, audio or lyrics.</p>${link("/import/netease", "IMPORT FROM NETEASE →", "button primary")}</article></div>`;
 
 export const importQQ = () => `${pageHeader("IMPORT / QQ MUSIC", "Bring a QQ record in.", "Public metadata only: no QQ login, Cookie, audio or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the share at the desk.</h2><p>One public playlist at a time. Nothing is added until you review the preview.</p></div><form id="qq-import-form"><label><span class="mono">QQ MUSIC PLAYLIST / SHARE CARD</span><textarea id="qq-share" rows="4" placeholder="Paste a QQ Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="qq-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section><section class="catalog-search"><div><span class="eyebrow mono">02 / QQ MUSIC CATALOG</span><p>Looking for one track instead? Search the public catalog and send it straight to Inbox.</p></div><form id="qq-search-form"><input id="qq-search-query" type="search" placeholder="Search tracks, artists or albums"><button class="button" type="submit">SEARCH QQ MUSIC</button></form><div id="qq-search-results"></div></section>`;
+
+export const importNetEase = () => `${pageHeader("IMPORT / NETEASE", "Bring a NetEase record in.", "Public metadata only: no NetEase login, Cookie, audio, cover download or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the public share.</h2><p>Playlist metadata enters the same Inbox review workflow as every other source.</p></div><form id="netease-import-form"><label><span class="mono">NETEASE PLAYLIST / SHARE CARD</span><textarea id="netease-share" rows="4" placeholder="Paste a NetEase Cloud Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="netease-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section>`;
 
 const stateLabel = (state) => state === "review" ? "REVIEW" : "NEW ENTRY";
 export const importInbox = () => {
@@ -23,15 +25,15 @@ export const importInbox = () => {
   return `${pageHeader("IMPORT / INBOX", "Review before the archive.", "New imports stay separate until you deliberately keep or rate them.")}${importNav()}<div class="inbox-counts"><span><b>NEW ENTRY</b>${newCount}</span><span><b>REVIEW</b>${reviewCount}</span><span><b>KEPT</b>${kept.length}</span><span><b>IGNORED</b>${ignored.length}</span></div><section class="inbox-entries">${inbox.length ? inbox.map((track, index) => `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span><div><span class="inbox-state ${safe(track.state || "new_entry")}">${stateLabel(track.state)}</span><strong>${safe(track.title)}</strong><p>${safe(track.artist + (track.album ? " · " + track.album : ""))}</p></div><div class="entry-actions"><button data-inbox-action="keep" data-id="${safe(track.id)}">KEEP</button><a href="/rate/track/${encodeURIComponent(track.id)}" data-route>RATE</a><button data-inbox-action="${track.state === "review" ? "new-entry" : "review"}" data-id="${safe(track.id)}">${track.state === "review" ? "NEW ENTRY" : "REVIEW"}</button><button data-inbox-action="ignore" data-id="${safe(track.id)}">IGNORE</button></div></article>`).join("") : "<p class='empty-state'>Nothing is waiting for review.</p>"}</section><section class="local-backup"><div><span class="eyebrow mono">LOCAL DATA</span><h2>Keep a copy of the desk.</h2><p>Export Inbox, Library, ratings, Journal and album drafts as one versioned JSON file. Restore merges valid records without deleting existing data.</p></div><div class="backup-actions"><button class="button" id="export-local-data" type="button">EXPORT BACKUP</button><label class="button" for="restore-local-data">RESTORE BACKUP</label><input id="restore-local-data" type="file" accept="application/json,.json"><p id="backup-status" aria-live="polite"></p></div></section>`;
 };
 
-const preview = (container, tracks, playlist, source) => {
+const preview = (container, tracks, playlist, source, platform = { id: "qqmusic", label: "QQ Music" }) => {
   const existing = [...data.songs.entries, ...read(inboxKey), ...read(libraryKey)]; const seen = new Set();
   const classified = tracks.map((track) => {
     const duplicate = seen.has(key(track)) || existing.some((item) => key(item) === key(track)); seen.add(key(track));
-    return { ...track, state: duplicate ? "existing" : "new_entry", sourceUrl: source, source: "qqmusic", sourceLabel: "QQ Music", playlist };
+    return { ...track, state: duplicate ? "existing" : "new_entry", sourceUrl: source, source: platform.id, sourceLabel: platform.label, playlist };
   });
   const newCount = classified.filter((track) => track.state === "new_entry").length;
-  container.innerHTML = `<span class="mono">PLAYLIST FOUND</span><h2>${safe(playlist.title)}</h2><p>${safe(playlist.creator ? "by " + playlist.creator + " · " : "")}${classified.length} public tracks</p><p><b>${newCount} New</b> · ${classified.length - newCount} Existing</p><div class="preview-list">${classified.slice(0, 8).map((track) => `<div><span>${safe(track.state)}</span>${safe(track.title)} <small>${safe(track.artist)}</small></div>`).join("")}${classified.length > 8 ? `<p>+ ${classified.length - 8} more tracks</p>` : ""}</div><button id="confirm-qq-import" class="button primary">IMPORT ${newCount} NEW TRACKS</button>`;
-  container.querySelector("#confirm-qq-import").addEventListener("click", () => {
+  container.innerHTML = `<span class="mono">PLAYLIST FOUND</span><h2>${safe(playlist.title)}</h2><p>${safe(playlist.creator ? "by " + playlist.creator + " · " : "")}${classified.length} public tracks</p><p><b>${newCount} New</b> · ${classified.length - newCount} Existing</p><div class="preview-list">${classified.slice(0, 8).map((track) => `<div><span>${safe(track.state)}</span>${safe(track.title)} <small>${safe(track.artist)}</small></div>`).join("")}${classified.length > 8 ? `<p>+ ${classified.length - 8} more tracks</p>` : ""}</div><button id="confirm-playlist-import" class="button primary">IMPORT ${newCount} NEW TRACKS</button>`;
+  container.querySelector("#confirm-playlist-import").addEventListener("click", () => {
     const additions = classified.filter((track) => track.state === "new_entry").map((track) => ({ ...track, id: "inbox_" + crypto.randomUUID(), importedAt: new Date().toISOString() }));
     storage.set(inboxKey, [...read(inboxKey), ...additions]);
     container.innerHTML = `<span class="mono">IMPORT COMPLETE</span><h2>${additions.length} tracks entered Inbox.</h2><p>Review them before adding them to the archive.</p>${link("/import/inbox", "OPEN INBOX", "button primary")}`;
@@ -64,6 +66,18 @@ export const bindImport = (path, navigate) => {
           storage.set(inboxKey, [...read(inboxKey), { ...track, id: "inbox_" + crypto.randomUUID(), state: "new_entry", importedAt: new Date().toISOString(), source: "qqmusic", sourceLabel: "QQ Music catalog" }]); button.textContent = "ADDED";
         }));
       } catch (error) { output.innerHTML = `<p class="empty-state">${safe(error instanceof Error ? error.message : "QQ Music search failed.")}</p>`; }
+    });
+  }
+  if (path === "/import/netease") {
+    document.getElementById("netease-import-form").addEventListener("submit", async (event) => {
+      event.preventDefault(); const share = sourceUrl(document.getElementById("netease-share").value); const output = document.getElementById("netease-import-result");
+      if (!share) { output.innerHTML = "<p>Please paste a public NetEase Cloud Music playlist link.</p>"; return; }
+      output.innerHTML = "<span class='mono'>READING PLAYLIST…</span><p>Checking public NetEase playlist metadata.</p>";
+      try {
+        const response = await fetch("/api/import/netease-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
+        const result = await response.json(); if (!response.ok) throw new Error(result.error);
+        preview(output, result.tracks || [], result.playlist, share, { id: "netease", label: "NetEase Cloud Music" });
+      } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not read this playlist.</h2><p>${safe(error instanceof Error ? error.message : "Try another public NetEase playlist link.")}</p>`; }
     });
   }
   if (path === "/import/inbox") bindInbox(navigate);

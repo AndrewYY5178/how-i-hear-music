@@ -27,6 +27,7 @@ const readJsonBody = async (request) => {
 };
 
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
+const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
 const parsePublicQQUrl = (value) => {
   let url;
   try { url = new URL(String(value || '')); } catch { throw new Error('Paste a complete public QQ Music share link.'); }
@@ -93,6 +94,54 @@ const fetchQQPlaylist = async (shareUrl) => {
   return { playlist: { id: playlistId, title: playlist.dissname || 'QQ Music playlist', creator: playlist.nickname || '', trackCount: tracks.length }, tracks };
 };
 
+const parsePublicNetEaseUrl = (value) => {
+  let url;
+  try { url = new URL(String(value || '')); } catch { throw new Error('Paste a complete public NetEase Cloud Music share link.'); }
+  if (url.protocol !== 'https:' || !isNetEaseHost(url.hostname)) throw new Error('Only public HTTPS NetEase Cloud Music links can be imported.');
+  return url;
+};
+
+const playlistIdFromNetEaseShare = async (shareUrl) => {
+  const supplied = parsePublicNetEaseUrl(shareUrl);
+  const direct = supplied.searchParams.get('id') || supplied.pathname.match(/playlist\/(\d+)/i)?.[1];
+  if (direct && /^\d+$/.test(direct)) return direct;
+  let current = supplied;
+  for (let index = 0; index < 4; index += 1) {
+    const response = await fetch(current, { redirect: 'manual', headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://music.163.com/' }, signal: AbortSignal.timeout(12_000) });
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get('location'); if (!location) throw new Error('NetEase returned an incomplete share redirect.');
+      current = new URL(location, current); if (current.protocol !== 'https:' || !isNetEaseHost(current.hostname)) throw new Error('The NetEase share link redirected outside NetEase Music.');
+      const redirected = current.searchParams.get('id') || current.pathname.match(/playlist\/(\d+)/i)?.[1]; if (redirected && /^\d+$/.test(redirected)) return redirected;
+      continue;
+    }
+    if (!response.ok) throw new Error('NetEase could not open this public share link (' + response.status + ').');
+    const html = await response.text();
+    const id = [current.searchParams.get('id'), current.pathname.match(/playlist\/(\d+)/i)?.[1], ...Array.from(html.matchAll(/(?:playlist\?id=|playlist\/)(\d{5,})/gi), (match) => match[1])].find((item) => /^\d+$/.test(item || ''));
+    if (id) return id;
+    break;
+  }
+  throw new Error('This NetEase link did not resolve to a public playlist. Paste the playlist share link, not a song or album link.');
+};
+
+const fetchNetEasePlaylist = async (shareUrl) => {
+  const playlistId = await playlistIdFromNetEaseShare(shareUrl);
+  const upstream = await fetch('https://music.163.com/api/playlist/detail?id=' + encodeURIComponent(playlistId), {
+    headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://music.163.com/' },
+    signal: AbortSignal.timeout(12_000),
+  });
+  if (!upstream.ok) throw new Error('NetEase playlist metadata is unavailable right now (' + upstream.status + ').');
+  const data = await upstream.json(); const playlist = data.result;
+  if (data.code !== 200 || !playlist || !Array.isArray(playlist.tracks)) throw new Error('NetEase did not return a readable public playlist. It may be private, unavailable or unsupported.');
+  const tracks = playlist.tracks.map((song) => ({
+    title: String(song.name || '').trim(),
+    artist: (song.artists || []).map((artist) => artist.name).filter(Boolean).join(' / ') || 'Artist not recorded',
+    album: String(song.album?.name || '').trim(),
+    provider: { source: 'netease', playlistId, songId: Number(song.id) || null, albumId: Number(song.album?.id) || null, artistIds: (song.artists || []).map((artist) => Number(artist.id)).filter(Number.isFinite), durationSeconds: Number(song.duration) ? Math.round(Number(song.duration) / 1000) : null },
+  })).filter((track) => track.title);
+  if (!tracks.length) throw new Error('NetEase found the playlist but exposed no importable track metadata.');
+  return { playlist: { id: playlistId, title: playlist.name || 'NetEase playlist', creator: playlist.creator?.nickname || '', trackCount: tracks.length }, tracks };
+};
+
 const searchQQCatalog = async (query) => {
   const keyword = String(query || '').trim();
   if (!keyword || keyword.length > 120) throw new Error('Enter a music search between 1 and 120 characters.');
@@ -129,6 +178,16 @@ createServer(async (request, response) => {
       json(response, 200, result);
     } catch (error) {
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music playlist.' });
+    }
+    return;
+  }
+  if (request.method === 'POST' && request.url === '/api/import/netease-playlist') {
+    try {
+      const body = await readJsonBody(request);
+      const result = await fetchNetEasePlaylist(body.shareUrl);
+      json(response, 200, result);
+    } catch (error) {
+      json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this NetEase playlist.' });
     }
     return;
   }
