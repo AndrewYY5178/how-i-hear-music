@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build:catalog": "node scripts/build-catalog.mjs",
+    "check": "node scripts/check-project.mjs",
     "dev": "node server.mjs",
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "test": "npm run check"
   }
 }

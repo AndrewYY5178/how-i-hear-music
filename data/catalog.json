@@ -1,0 +1,1111 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": [
+    "data/artists.json",
+    "data/music-profile.json",
+    "data/songs.json"
+  ],
+  "policy": {
+    "unknownValues": "null",
+    "versionTypes": "Never inferred. Studio, Live, Acoustic, Remastered and other labels require an explicit source.",
+    "providerIds": "Stored as provider references; never used as canonical IDs."
+  },
+  "artists": [
+    {
+      "id": "shan-yichun",
+      "name": "单依纯",
+      "romanized": "Shan Yichun",
+      "status": "FAVORITE"
+    },
+    {
+      "id": "wang-leehom",
+      "name": "王力宏",
+      "romanized": "Wang Leehom",
+      "status": "FAVORITE"
+    },
+    {
+      "id": "ariana-grande",
+      "name": "Ariana Grande",
+      "romanized": null,
+      "status": "FAVORITE"
+    },
+    {
+      "id": "qi-zitan",
+      "name": "祁紫檀",
+      "romanized": "Qi Zitan",
+      "status": "FAVORITE"
+    },
+    {
+      "id": "david-tao",
+      "name": "陶喆",
+      "romanized": "David Tao",
+      "status": "FAVORITE"
+    },
+    {
+      "id": "guan-haode",
+      "name": "关浩德",
+      "romanized": null,
+      "status": "FAVORITE"
+    },
+    {
+      "id": "lady-gaga",
+      "name": "Lady Gaga",
+      "romanized": null,
+      "status": "UNCERTAIN"
+    },
+    {
+      "id": "faye-wong",
+      "name": "王菲",
+      "romanized": "Faye Wong",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "a-mei",
+      "name": "张惠妹",
+      "romanized": "A-Mei",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "olivia-rodrigo",
+      "name": "Olivia Rodrigo",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "eve-ai",
+      "name": "艾怡良",
+      "romanized": "Eve Ai",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "ding-shiguang",
+      "name": "丁世光",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "lala-hsu",
+      "name": "徐佳莹",
+      "romanized": "LaLa Hsu",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "billie-eilish",
+      "name": "Billie Eilish",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "a-lin",
+      "name": "A-Lin",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "stefanie-sun",
+      "name": "孙燕姿",
+      "romanized": "Stefanie Sun",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "bruno-mars",
+      "name": "Bruno Mars",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "eason-chan",
+      "name": "陈奕迅",
+      "romanized": "Eason Chan",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "karen-mok",
+      "name": "莫文蔚",
+      "romanized": "Karen Mok",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "fish-leong",
+      "name": "梁静茹",
+      "romanized": "Fish Leong",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "taylor-swift",
+      "name": "Taylor Swift",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "eliot-james-reay",
+      "name": "Eliot James Reay",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "jane-zhang",
+      "name": "张靓颖",
+      "romanized": "Jane Zhang",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "weibird",
+      "name": "韦礼安",
+      "romanized": "WeiBird",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "teresa-teng",
+      "name": "邓丽君",
+      "romanized": "Teresa Teng",
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "mao-buyi",
+      "name": "毛不易",
+      "romanized": null,
+      "status": "IN_THE_LIST"
+    },
+    {
+      "id": "fang-datong",
+      "name": "方大同",
+      "romanized": null,
+      "status": null
+    },
+    {
+      "id": "lin-junjie",
+      "name": "林俊杰",
+      "romanized": null,
+      "status": null
+    }
+  ],
+  "albums": [
+    {
+      "id": "album_000001",
+      "title": "纯妹妹",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/66/a5/ad/66a5ad30-4106-a2e5-3400-54983e51bfdf/4896004765894.jpg/600x600bb-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000002",
+      "title": "勇敢额度",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ce/10/77/ce10777a-4f5c-7321-0d0b-af82ffb3a3a7/4896004489684.jpg/600x600bb-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000003",
+      "title": "十八般武艺",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/3e/94/01/3e94013b-17f0-09e9-69ce-4ab94e1507da/18_Material_arts.png/1400x1400bb.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000004",
+      "title": "不可思议",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music60/v4/5e/97/44/5e974419-e0dd-798e-9a0a-2d98774d6fbf/dj.udxwppdm.jpg/1200x1200bf-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000005",
+      "title": "唯一",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/48/fd/2f/48fd2fe5-31b2-d979-53a4-9aebf5175bdb/mzi.biqraozb.jpg/600x600bf-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000006",
+      "title": "心中的日月",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/be/4a/77/be4a7730-c144-a39e-c7b6-9d26ea0ebff3/1400X1400.jpg/600x600bb-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000007",
+      "title": "陶喆",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "coverReference": "https://fastly-s3.allmusic.com/release/mr0002286834/front/400/LA0V5Amj0jMSfcEN9I-g4R_TZlp6n_cq-Emr2zx15tU%3D.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000008",
+      "title": "黑色柳丁",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "coverReference": "https://p3-sdbk2-media.byteimg.com/tos-cn-i-xv4ileqgde/53f167e8812541fd96c66aa27fea5262~tplv-xv4ileqgde-resize-w%3A750.image",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000009",
+      "title": "Soul Power",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "coverReference": "https://resources.tidal.com/images/09615e02/5637/4785/9578/19ece868a199/1280x1280.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000010",
+      "title": "世界与孤独女王",
+      "primaryArtistId": "qi-zitan",
+      "artistName": "祁紫檀",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e4/09/b5/e409b5f9-7b24-5698-ba90-cc4bc0365cf2/193017193251.jpg/600x600bb-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000011",
+      "title": "Yours Truly",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/0a/19/23/0a19235d-8bcc-76d4-58ca-61a65d928587/13UAAIM68293.rgb.jpg/600x600bb-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000012",
+      "title": "Sweetener",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "coverReference": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/7e/aa/71/7eaa717a-857e-6d7a-c03c-8d67b3719706/18UMGIM36924.rgb.jpg/600x600bb-60.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000013",
+      "title": "thank u, next",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "coverReference": "https://images.universal-music.de/img/assets/478/478038/4/1200/ariana-grande-thank-u-next-cover.jpg",
+      "providerIds": {}
+    }
+  ],
+  "tracks": [
+    {
+      "id": "track_000001",
+      "compositionId": "composition_000001",
+      "title": "向日葵朝着夜",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000002",
+      "compositionId": "composition_000002",
+      "title": "珠玉",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000003",
+      "compositionId": "composition_000003",
+      "title": "还有什么更好的",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000004",
+      "compositionId": "composition_000004",
+      "title": "另一种答案",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000005",
+      "compositionId": "composition_000005",
+      "title": "奇观",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000006",
+      "compositionId": "composition_000006",
+      "title": "有趣",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000007",
+      "compositionId": "composition_000007",
+      "title": "纯妹妹",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000008",
+      "compositionId": "composition_000008",
+      "title": "永不失联的爱",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000009",
+      "compositionId": "composition_000009",
+      "title": "给电影人的情书",
+      "primaryArtistId": "shan-yichun",
+      "artistName": "单依纯",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000010",
+      "compositionId": "composition_000010",
+      "title": "落叶归根",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000011",
+      "compositionId": "composition_000011",
+      "title": "花田错",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000012",
+      "compositionId": "composition_000012",
+      "title": "你不在",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000013",
+      "compositionId": "composition_000013",
+      "title": "Forever Love",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000014",
+      "compositionId": "composition_000014",
+      "title": "大城小爱",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000015",
+      "compositionId": "composition_000015",
+      "title": "心跳",
+      "primaryArtistId": "wang-leehom",
+      "artistName": "王力宏",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000016",
+      "compositionId": "composition_000016",
+      "title": "普通朋友",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000017",
+      "compositionId": "composition_000017",
+      "title": "爱我还是他",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000018",
+      "compositionId": "composition_000018",
+      "title": "飞机场的10:30",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000019",
+      "compositionId": "composition_000019",
+      "title": "寂寞的季节",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000020",
+      "compositionId": "composition_000020",
+      "title": "蝴蝶",
+      "primaryArtistId": "david-tao",
+      "artistName": "陶喆",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000021",
+      "compositionId": "composition_000021",
+      "title": "Tattooed Heart",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000022",
+      "compositionId": "composition_000022",
+      "title": "we can't be friends (wait for your love)",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000023",
+      "compositionId": "composition_000023",
+      "title": "pov",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000024",
+      "compositionId": "composition_000024",
+      "title": "Best Mistake",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000025",
+      "compositionId": "composition_000025",
+      "title": "ghostin",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000026",
+      "compositionId": "composition_000026",
+      "title": "needy",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000027",
+      "compositionId": "composition_000027",
+      "title": "Into You",
+      "primaryArtistId": "ariana-grande",
+      "artistName": "Ariana Grande",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000028",
+      "compositionId": "composition_000028",
+      "title": "vampire",
+      "primaryArtistId": "olivia-rodrigo",
+      "artistName": "Olivia Rodrigo",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000029",
+      "compositionId": "composition_000029",
+      "title": "drivers license",
+      "primaryArtistId": "olivia-rodrigo",
+      "artistName": "Olivia Rodrigo",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000030",
+      "compositionId": "composition_000030",
+      "title": "暗涌",
+      "primaryArtistId": "faye-wong",
+      "artistName": "王菲",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000031",
+      "compositionId": "composition_000031",
+      "title": "人间",
+      "primaryArtistId": "faye-wong",
+      "artistName": "王菲",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000032",
+      "compositionId": "composition_000032",
+      "title": "红豆",
+      "primaryArtistId": "faye-wong",
+      "artistName": "王菲",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000033",
+      "compositionId": "composition_000033",
+      "title": "听海",
+      "primaryArtistId": "a-mei",
+      "artistName": "张惠妹",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000034",
+      "compositionId": "composition_000034",
+      "title": "掉了",
+      "primaryArtistId": "a-mei",
+      "artistName": "张惠妹",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000035",
+      "compositionId": "composition_000035",
+      "title": "如果你也听说",
+      "primaryArtistId": "a-mei",
+      "artistName": "张惠妹",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000036",
+      "compositionId": "composition_000036",
+      "title": "一口",
+      "primaryArtistId": "ding-shiguang",
+      "artistName": "丁世光",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000037",
+      "compositionId": "composition_000037",
+      "title": "Simon",
+      "primaryArtistId": "ding-shiguang",
+      "artistName": "丁世光",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000038",
+      "compositionId": "composition_000038",
+      "title": "特别的人",
+      "primaryArtistId": "fang-datong",
+      "artistName": "方大同",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000039",
+      "compositionId": "composition_000039",
+      "title": "修炼爱情",
+      "primaryArtistId": "lin-junjie",
+      "artistName": "林俊杰",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000040",
+      "compositionId": "composition_000040",
+      "title": "我怀念的",
+      "primaryArtistId": "stefanie-sun",
+      "artistName": "孙燕姿",
+      "providerIds": {}
+    },
+    {
+      "id": "track_000041",
+      "compositionId": "composition_000041",
+      "title": "有一种悲伤",
+      "primaryArtistId": "a-lin",
+      "artistName": "A-Lin",
+      "providerIds": {}
+    }
+  ],
+  "recordings": [
+    {
+      "id": "recording_000001",
+      "trackId": "track_000001",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000002",
+      "trackId": "track_000002",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000003",
+      "trackId": "track_000003",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000004",
+      "trackId": "track_000004",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000005",
+      "trackId": "track_000005",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000006",
+      "trackId": "track_000006",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000007",
+      "trackId": "track_000007",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000008",
+      "trackId": "track_000008",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000009",
+      "trackId": "track_000009",
+      "artistIds": [
+        "shan-yichun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000010",
+      "trackId": "track_000010",
+      "artistIds": [
+        "wang-leehom"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000011",
+      "trackId": "track_000011",
+      "artistIds": [
+        "wang-leehom"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000012",
+      "trackId": "track_000012",
+      "artistIds": [
+        "wang-leehom"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000013",
+      "trackId": "track_000013",
+      "artistIds": [
+        "wang-leehom"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000014",
+      "trackId": "track_000014",
+      "artistIds": [
+        "wang-leehom"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000015",
+      "trackId": "track_000015",
+      "artistIds": [
+        "wang-leehom"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000016",
+      "trackId": "track_000016",
+      "artistIds": [
+        "david-tao"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000017",
+      "trackId": "track_000017",
+      "artistIds": [
+        "david-tao"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000018",
+      "trackId": "track_000018",
+      "artistIds": [
+        "david-tao"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000019",
+      "trackId": "track_000019",
+      "artistIds": [
+        "david-tao"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000020",
+      "trackId": "track_000020",
+      "artistIds": [
+        "david-tao"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000021",
+      "trackId": "track_000021",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000022",
+      "trackId": "track_000022",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000023",
+      "trackId": "track_000023",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000024",
+      "trackId": "track_000024",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000025",
+      "trackId": "track_000025",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000026",
+      "trackId": "track_000026",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000027",
+      "trackId": "track_000027",
+      "artistIds": [
+        "ariana-grande"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000028",
+      "trackId": "track_000028",
+      "artistIds": [
+        "olivia-rodrigo"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000029",
+      "trackId": "track_000029",
+      "artistIds": [
+        "olivia-rodrigo"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000030",
+      "trackId": "track_000030",
+      "artistIds": [
+        "faye-wong"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000031",
+      "trackId": "track_000031",
+      "artistIds": [
+        "faye-wong"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000032",
+      "trackId": "track_000032",
+      "artistIds": [
+        "faye-wong"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000033",
+      "trackId": "track_000033",
+      "artistIds": [
+        "a-mei"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000034",
+      "trackId": "track_000034",
+      "artistIds": [
+        "a-mei"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000035",
+      "trackId": "track_000035",
+      "artistIds": [
+        "a-mei"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000036",
+      "trackId": "track_000036",
+      "artistIds": [
+        "ding-shiguang"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000037",
+      "trackId": "track_000037",
+      "artistIds": [
+        "ding-shiguang"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000038",
+      "trackId": "track_000038",
+      "artistIds": [
+        "fang-datong"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000039",
+      "trackId": "track_000039",
+      "artistIds": [
+        "lin-junjie"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000040",
+      "trackId": "track_000040",
+      "artistIds": [
+        "stefanie-sun"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    },
+    {
+      "id": "recording_000041",
+      "trackId": "track_000041",
+      "artistIds": [
+        "a-lin"
+      ],
+      "versionType": null,
+      "releaseId": null,
+      "providerIds": {}
+    }
+  ],
+  "releases": [
+    {
+      "id": "release_000001",
+      "albumId": "album_000001",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000002",
+      "albumId": "album_000002",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000003",
+      "albumId": "album_000003",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000004",
+      "albumId": "album_000004",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000005",
+      "albumId": "album_000005",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000006",
+      "albumId": "album_000006",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000007",
+      "albumId": "album_000007",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000008",
+      "albumId": "album_000008",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000009",
+      "albumId": "album_000009",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000010",
+      "albumId": "album_000010",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000011",
+      "albumId": "album_000011",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000012",
+      "albumId": "album_000012",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000013",
+      "albumId": "album_000013",
+      "releaseType": "album",
+      "providerIds": {}
+    }
+  ]
+}
