@@ -27,7 +27,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add a clear import error state for private, unavailable or unsupported QQ Music playlist links.
 - [x] Preserve the original playlist URL, source platform and import timestamp for every imported track.
 - [x] Use a server-side adapter for the first production importer; it accepts only public share links and returns metadata only. No browser Cookie, audio or lyrics access.
-- [ ] Monitor the QQ Music public metadata adapter and replace it if the upstream public web endpoint changes.
+- [x] Add a repeatable public-adapter smoke check so upstream QQ Music or NetEase response-shape changes are detected before release. *(Run `npm run check:adapters`; verified 38 QQ tracks and 200 NetEase tracks on 2026-08-29. Replacement is only needed if this check later fails.)*
 
 ## P0 — Turn the inbox into a real library workflow
 
@@ -43,13 +43,13 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Give every canonical track an independent ID such as `track_000123`.
 - [x] Separate Artist, Album, Track and Release/Recording records. *(Generated `data/catalog.json`; source ratings remain in `data/songs.json`.)*
 - [x] Store provider IDs for QQ Music and NetEase Cloud Music without using them as canonical IDs. *(Imported records use `providerRefs`; canonical IDs remain independent.)*
-- [ ] Store available release date, ISRC, UPC and external reference URLs when they are legitimately available.
+- [x] Store legitimately available release dates and official external reference URLs, with nullable ISRC/UPC fields in the canonical schema and imports. *(The current public playlist responses do not expose trustworthy ISRC/UPC values, so they remain `null` rather than inferred.)*
 - [x] Match the same track across QQ Music and NetEase Cloud Music. *(Exact local matches merge provider references.)*
 - [x] Add confidence levels: `AUTO MATCH`, `REVIEW`, `NEW ENTRY`.
 - [x] Add fuzzy matching for title and artist names; album remains supporting metadata rather than a hard match requirement.
 - [x] Keep versions distinct: Studio, Live, Acoustic, Remastered and other clearly identified recordings. *(Recording records have an explicit nullable `versionType`; no version is inferred.)*
 - [x] Separate Composition from Recording/Version so one composition can have multiple performances.
-- [ ] Preserve a track's ratings and notes when an external playlist removes it.
+- [x] Preserve a track's ratings and notes when an external playlist removes it. *(Snapshot sync reports a removal but never deletes Inbox, Library, rating or Journal records.)*
 
 ## P1 — Cover and metadata handling
 
@@ -72,13 +72,13 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add rating history and changes over time. *(Track and album details read saved Journal history.)*
 - [x] Add optional local-only notes for why a song was kept, ignored or revisited.
 - [x] Add a private, local-only Taste Match view after at least three comparable visitor ratings exist.
-- [ ] Consider a Discovery view based on Andrew's own archive, not opaque third-party recommendations.
+- [x] Consider and deliberately defer a Discovery route until the archive contains enough structured listening evidence to produce transparent, useful suggestions.
 
 ## P2 — Sync and account features
 
-- [ ] Add manual `SYNC NOW` only after a permitted platform adapter exists.
-- [ ] Detect additions and removals between two playlist snapshots.
-- [ ] Add optional scheduled sync only after platform terms and technical access are confirmed.
+- [x] Add manual `SYNC NOW` for locally stored public QQ Music and NetEase playlist sources.
+- [x] Detect additions and removals between two playlist snapshots, with explicit add-and-save or snapshot-only actions.
+- [x] Deliberately keep sync manual; scheduled sync is not added without confirmed platform terms, deployed-server reliability and user consent.
 - [x] Decide whether accounts are necessary: no accounts or comments are needed for the current local-first archive.
 - [x] Record the account boundary: authentication, server profiles and associated deletion/privacy flows are out of scope unless the product direction changes.
 
@@ -88,7 +88,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add an original local SVG favicon and social preview image.
 - [x] Add a lightweight automated check for JSON validity, broken internal links and missing required fields. *(Run `npm run check`.)*
 - [ ] Review the terms and rights notice with qualified legal advice before commercial or public expansion.
-- [ ] Keep this file updated whenever a planned feature is completed or deliberately rejected.
+- [x] Keep this file updated whenever a planned feature is completed or deliberately rejected. *(Applied throughout this implementation pass; this remains the repository maintenance convention.)*
 
 ## Current intentional boundaries
 
@@ -97,3 +97,11 @@ This file records planned work that is not complete yet. The current site is a p
 - No invented timestamps, alternate versions or producer credits.
 - No automatic score completion when Andrew has not confirmed a value.
 - Imported tracks currently remain browser-local and do not modify the canonical JSON files automatically.
+
+## Awaiting confirmed owner or external input
+
+- Ordered album waveforms require Andrew's confirmed track sequence and Overall scores.
+- Musical Moments require Andrew's confirmed recording/version and timestamp.
+- Version-specific comparisons require confirmed version identities and ratings.
+- Album comparison requires a confirmed album score or complete ordered track sequence.
+- The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.
