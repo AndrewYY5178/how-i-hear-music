@@ -337,9 +337,10 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .cover-fallback { background:var(--paper-deep); }
 
 /* Inbox workflow: status remains typographic; backup controls stay a quiet utility. */
-.inbox-counts { grid-template-columns:repeat(4,1fr); }
+.inbox-counts { grid-template-columns:repeat(5,1fr); }
 .inbox-state { display:block; margin-bottom:8px; color:var(--red); font:8px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
 .inbox-state.review { color:var(--olive); }
+.inbox-state.auto_match { color:var(--olive); }
 .entry-actions { flex-wrap:wrap; justify-content:flex-end; }
 .local-backup { display:grid; grid-template-columns:minmax(240px,.8fr) minmax(320px,1.2fr); gap:64px; align-items:end; margin-top:96px; padding:40px 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
 .local-backup h2 { margin:16px 0 8px; font:400 clamp(28px,3vw,42px)/1 var(--serif); letter-spacing:-.055em; }
@@ -377,7 +378,7 @@ body::before {
   .featured-shape-copy h2 { font-size:48px; white-space:nowrap; }
   .featured-shape-visual .home-radar { width:min(100%,280px); }
   .inbox-counts { grid-template-columns:repeat(2,1fr); }
-  .inbox-counts span:nth-child(3),.inbox-counts span:nth-child(4) { border-top:1px solid var(--line); }
+  .inbox-counts span:nth-child(n+3) { border-top:1px solid var(--line); }
   .local-backup { grid-template-columns:1fr; gap:24px; margin-top:64px; }
   .entry-actions { justify-content:flex-start; }
 }

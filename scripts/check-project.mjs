@@ -1,6 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { matchTrack } from '../modules/music/matching.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -31,6 +32,11 @@ if (songs && artists && catalog) {
   if (catalogTrackIds.size !== trackIds.size || [...trackIds].some((id) => !catalogTrackIds.has(id))) errors.push('catalog.json tracks do not match songs.json');
   catalog.recordings.forEach((recording) => { if (!catalogTrackIds.has(recording.trackId)) errors.push(`${recording.id}: invalid track reference ${recording.trackId}`); });
 }
+
+const matchingFixture = [{ id: 'fixture_track', title: 'Tattooed Heart', artist: 'Ariana Grande' }];
+if (matchTrack({ title: 'Tattooed Heart', artist: 'Ariana Grande' }, matchingFixture).confidence !== 'auto_match') errors.push('matching: exact match did not produce AUTO MATCH');
+if (matchTrack({ title: 'Tattooed Hearts', artist: 'Ariana Grande' }, matchingFixture).confidence !== 'review') errors.push('matching: fuzzy match did not produce REVIEW');
+if (matchTrack({ title: 'Unrelated', artist: 'Nobody' }, matchingFixture).confidence !== 'new_entry') errors.push('matching: unrelated track did not produce NEW ENTRY');
 
 const sourceFiles = ['index.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
