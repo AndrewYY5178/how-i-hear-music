@@ -40,15 +40,15 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## P1 — Canonical music database
 
-- [ ] Give every canonical track an independent ID such as `track_000123`.
-- [ ] Separate Artist, Album, Track and Release/Recording records.
+- [x] Give every canonical track an independent ID such as `track_000123`.
+- [x] Separate Artist, Album, Track and Release/Recording records. *(Generated `data/catalog.json`; source ratings remain in `data/songs.json`.)*
 - [ ] Store provider IDs for QQ Music and NetEase Cloud Music without using them as canonical IDs.
 - [ ] Store available release date, ISRC, UPC and external reference URLs when they are legitimately available.
 - [ ] Match the same track across QQ Music and NetEase Cloud Music.
 - [ ] Add confidence levels: `AUTO MATCH`, `REVIEW`, `NEW ENTRY`.
 - [ ] Add fuzzy matching for title, artist and album names.
-- [ ] Keep versions distinct: Studio, Live, Acoustic, Remastered and other clearly identified recordings.
-- [ ] Separate Composition from Recording/Version so one composition can have multiple performances.
+- [x] Keep versions distinct: Studio, Live, Acoustic, Remastered and other clearly identified recordings. *(Recording records have an explicit nullable `versionType`; no version is inferred.)*
+- [x] Separate Composition from Recording/Version so one composition can have multiple performances.
 - [ ] Preserve a track's ratings and notes when an external playlist removes it.
 
 ## P1 — Cover and metadata handling
@@ -85,7 +85,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 - [ ] Replace the current remote-font and remote-cover assumptions with a documented asset policy if the site becomes public at scale.
 - [ ] Add a favicon and social preview image.
-- [ ] Add a lightweight automated check for JSON validity, broken internal links and missing required fields.
+- [x] Add a lightweight automated check for JSON validity, broken internal links and missing required fields. *(Run `npm run check`.)*
 - [ ] Review the terms and rights notice with qualified legal advice before commercial or public expansion.
 - [ ] Keep this file updated whenever a planned feature is completed or deliberately rejected.
 
