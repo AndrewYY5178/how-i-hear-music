@@ -22,7 +22,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Recognise a pasted QQ Music or NetEase share card, extract its public link and retain it as source provenance.
 - [x] Import a public QQ Music playlist from its URL and extract visible track metadata automatically. *(Server-only public metadata adapter; verified against a public 38-track playlist on 2026-08-28.)*
 - [x] Search the QQ Music public catalog and add an individual result to Inbox.
-- [ ] Import a public NetEase Cloud Music playlist from its URL and extract visible track metadata automatically.
+- [x] Import a public NetEase Cloud Music playlist from its URL and extract visible track metadata automatically. *(Server-only public metadata adapter; verified against NetEase’s public 热歌榜 on 2026-08-29.)*
 - [ ] Confirm a platform-approved method before adding login, cookies or private-playlist access.
 - [x] Add a clear import error state for private, unavailable or unsupported QQ Music playlist links.
 - [x] Preserve the original playlist URL, source platform and import timestamp for every imported track.

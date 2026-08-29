@@ -3,7 +3,7 @@ import { home } from "./modules/home.js";
 import { archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
 import { rateAlbum, rateHome, rateTrack, bindRating } from "./modules/rating/pages.js";
 import { compare, goodNotMine, philosophy, profile, tasteHome } from "./modules/taste/pages.js";
-import { bindImport, importHome, importInbox, importQQ } from "./modules/import/pages.js";
+import { bindImport, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js";
 import { journal } from "./modules/journal/pages.js";
 
 const app = document.getElementById("app");
@@ -28,6 +28,7 @@ const route = (path) => {
   if (current === "/taste/compare") return compare();
   if (current === "/import") return importHome();
   if (current === "/import/qq") return importQQ();
+  if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/journal") return journal();
   return `<section class="not-found"><span class="eyebrow mono">404</span><h1>That page is not in the archive.</h1><a href="/" data-route class="button primary">RETURN HOME</a></section>`;
