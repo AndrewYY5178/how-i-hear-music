@@ -33,10 +33,10 @@ This file records planned work that is not complete yet. The current site is a p
 
 - [x] Add a local canonical-library store separate from `data/songs.json`.
 - [x] Make `KEEP` move a track from Music Inbox into the local personal library instead of only removing it from the inbox.
-- [ ] Add a `RATE` action from the inbox to the four-dimension rating card.
-- [ ] Add a `REVIEW` state for uncertain matches.
-- [ ] Add a `NEW ENTRY` state for tracks that do not match existing records.
-- [ ] Add a safe export/import format so localStorage data can be backed up and restored.
+- [x] Add a `RATE` action from the inbox to the four-dimension rating card.
+- [x] Add a `REVIEW` state for uncertain matches.
+- [x] Add a `NEW ENTRY` state for tracks that do not match existing records.
+- [x] Add a safe export/import format so localStorage data can be backed up and restored. *(Versioned JSON; compatible records merge without deleting existing browser data.)*
 
 ## P1 — Canonical music database
 
