@@ -16,6 +16,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Recover the pre-modular editorial material palette where it strengthens module identity: warm Archive paper, pale Taste/Import/Journal paper, and the dark Rate studio—without restoring the former single-page layout.
 - [x] Tune the recovered visual language after route review: reduce the Home radar, align Archive/Taste gate systems, restore the original olive Rate studio, and reinstate paper fibre texture.
 - [x] Give every top-level module a distinct, low-saturation paper material while retaining the shared editorial palette and route structure.
+- [x] Standardize Journal as a reading-first notebook: expose saved listening notes, add a direct empty-state action, and remove low-contrast color flashing between modules. *(UI 1.2; documented in `DESIGN_LOG.md` and `musicmemory.app.md`.)*
 
 ## P0 — Make playlist import genuinely useful
 
