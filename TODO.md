@@ -68,9 +68,9 @@ This file records planned work that is not complete yet. The current site is a p
 - [ ] Add Musical Moments only after Andrew provides a confirmed recording/version and timestamp.
 - [ ] Add version-specific ratings and comparisons.
 - [ ] Add album-level rating and album comparison.
-- [ ] Add rating history and changes over time.
-- [ ] Add optional local-only notes for why a song was kept, ignored or revisited.
-- [ ] Consider a private, local-only Taste Match view after enough visitor data exists.
+- [x] Add rating history and changes over time. *(Track and album details read saved Journal history.)*
+- [x] Add optional local-only notes for why a song was kept, ignored or revisited.
+- [x] Add a private, local-only Taste Match view after at least three comparable visitor ratings exist.
 - [ ] Consider a Discovery view based on Andrew's own archive, not opaque third-party recommendations.
 
 ## P2 — Sync and account features

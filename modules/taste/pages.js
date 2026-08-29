@@ -1,4 +1,4 @@
-import { data, rating, safe } from "../music/data.js";
+import { data, findTrack, rating, safe, storage } from "../music/data.js";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 import { icon } from "../layout/icons.js";
@@ -19,4 +19,9 @@ export const goodNotMine = () => {
   return `${pageHeader("TASTE / GOOD ≠ MINE", "I know it's good. It's just not mine.", "Technical admiration and personal resonance do not need to agree.")}${tasteNav()}<div class="good-not-mine">${entries.map((track) => `<article><div>${radar(track.scores, { className: "mini-radar" })}</div><p>${safe(track.artist)}</p><h2>${safe(track.title)}</h2><dl><div><dt>SONG</dt><dd>${rating(track.scores.song)}</dd></div><div><dt>VOCAL</dt><dd>${rating(track.scores.vocal)}</dd></div><div><dt>OVERALL</dt><dd>${rating(track.scores.overall)}</dd></div></dl></article>`).join("")}</div>`;
 };
 
-export const compare = () => `${pageHeader("TASTE / COMPARE", "Two ways of hearing.", "Rate a selected track in the dedicated workspace, then reveal Andrew’s response.", link("/rate", "RATE A TRACK", "button primary"))}${tasteNav()}<section class="compare-callout"><span class="mono">TASTE MATCH / LOCAL-ONLY</span><h2>Comparison begins with a real score.</h2><p>Your ratings remain in this browser. Taste Match, Guess My Score and This or That have a home here when enough comparisons exist.</p></section>`;
+export const compare = () => {
+  const ratings = storage.get("how-i-hear-music:rating-sessions:v2", {}); const comparisons = Object.entries(ratings).map(([id, visitor]) => ({ track: findTrack(id), visitor })).filter(({ track, visitor }) => Number.isFinite(track?.scores?.overall) && Number.isFinite(visitor?.scores?.overall));
+  const distances = comparisons.map(({ track, visitor }) => Math.abs(track.scores.overall - visitor.scores.overall)); const average = distances.length ? distances.reduce((sum, value) => sum + value, 0) / distances.length : null; const match = average === null ? null : Math.max(0, Math.round((1 - average / 11) * 100));
+  const content = comparisons.length >= 3 ? `<span class="mono">TASTE MATCH / ${comparisons.length} SHARED TRACKS</span><h2>${match}% listening proximity.</h2><p>This is the average distance between your Overall scores and Andrew’s—not a compatibility verdict.</p><div class="taste-distances">${comparisons.slice(0, 6).map(({ track, visitor }) => `<span><b>${safe(track.title)}</b><em>${rating(visitor.scores.overall)} / ${rating(track.scores.overall)}</em></span>`).join("")}</div>` : `<span class="mono">TASTE MATCH / LOCAL-ONLY</span><h2>${comparisons.length ? `${3 - comparisons.length} more shared ${3 - comparisons.length === 1 ? "track" : "tracks"}.` : "Comparison begins with a real score."}</h2><p>Rate at least three archived tracks. Your ratings remain in this browser and no public profile is created.</p>`;
+  return `${pageHeader("TASTE / COMPARE", "Two ways of hearing.", "Rate selected tracks in the dedicated workspace, then reveal the distance.", link("/rate", "RATE A TRACK", "button primary"))}${tasteNav()}<section class="compare-callout">${content}</section>`;
+};
