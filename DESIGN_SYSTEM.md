@@ -28,7 +28,7 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Rate: one dominant chart and its controls.
 - Taste: essay rhythm and long reading pauses.
 - Import: functional source status before long queues.
-- Journal: chronological notebook rhythm.
+- Journal: chronological notebook rhythm; the saved listening thought is primary, while date, event type, artist and score remain metadata.
 
 ## Interaction standard
 
@@ -37,7 +37,8 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Hover movement is optional feedback, never required to understand state.
 - `prefers-reduced-motion: reduce` removes transitions, animation and smooth scrolling.
 - Failed or missing images preserve their frame with an explicit fallback.
+- Module material changes are immediate so foreground and background colors cannot pass through a low-contrast transition state.
 
 ## Reference boundary
 
-Online references provide evidence for hierarchy and interaction decisions. Their brand colors, fonts, advertisements, social mechanics and visual identity are not copied. The first recorded reference is `albumoftheyear.org.md`; its useful lesson is stable square-cover repetition and typographic scores, not its compressed visual tone.
+Online references provide evidence for hierarchy and interaction decisions. Their brand colors, fonts, advertisements, social mechanics and visual identity are not copied. `albumoftheyear.org.md` informs stable square-cover repetition and typographic scores. `musicmemory.app.md` informs the priority of listening memory over technical metadata and a controlled reading measure.

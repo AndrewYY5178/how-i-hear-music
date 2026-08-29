@@ -1,0 +1,66 @@
+{
+  "source": "https://musicmemory.app/",
+  "capturedAt": "2026-08-29",
+  "tokens": {
+    "spacing": {
+      "page_inset": "~58px",
+      "hero_gap": "72px",
+      "body_measure": "~430px"
+    },
+    "typography": {
+      "families": ["Newsreader Variable", "Hanken Grotesk Variable"],
+      "scale": [
+        { "role": "display", "size": "95.04px", "line_height": "93.14px", "weight": "400", "family": "Newsreader Variable" },
+        { "role": "section-heading", "size": "44–80px", "weight": "400", "family": "Newsreader Variable" },
+        { "role": "body", "size": "20px", "line_height": "30px", "weight": "400", "family": "Newsreader Variable" }
+      ]
+    },
+    "colors": [
+      { "role": "page-background", "value": "#F4EDE0" },
+      { "role": "text-primary", "value": "#1C1813" },
+      { "role": "accent", "value": "#FF6500" },
+      { "role": "accent-dark", "value": "#BF4A06" }
+    ],
+    "radius": ["3px", "4px", "5px", "6px", "10px", "pill", "circle"],
+    "shadows": ["0 18px 40px -26px rgba(28,24,19,.4)"],
+    "image_ratios": [
+      { "usage": "phone-composition", "ratio": "~0.54:1" },
+      { "usage": "album-thumbnail", "ratio": "1:1" }
+    ],
+    "grid": {
+      "container": "1440px",
+      "columns": ["~638px", "~471px"],
+      "gutter": "72px"
+    }
+  },
+  "taste": [
+    {
+      "name": "Memory before coordinates",
+      "trigger": "When a listening event includes a recollection plus technical coordinates",
+      "decision": "Choose the remembered sentence as the reading anchor over equal field weight",
+      "reason": "The subject is why a song remains attached to a moment, not the database row",
+      "evidence": ["large Newsreader statements lead", "date, place and controls use smaller supporting type"]
+    },
+    {
+      "name": "A narrow measure creates attention",
+      "trigger": "When a personal statement must hold focus beside a visual object",
+      "decision": "Choose an approximately 430px text measure over the full hero-column width",
+      "reason": "Shorter lines join the display statement and body copy into one editorial unit",
+      "evidence": ["20px / 30px body copy", "approximately 430px measure inside a 638px column"]
+    },
+    {
+      "name": "One dominant sentence",
+      "trigger": "When a hero contains explanation and a product preview",
+      "decision": "Choose one 95px serif statement over several equally prominent headings",
+      "reason": "The structure remains legible when blurred",
+      "evidence": ["95px / 93px headline", "two unequal hero columns"]
+    },
+    {
+      "name": "Product-specific restraint boundary",
+      "trigger": "When applying the reference to an archival site rather than a waitlist landing page",
+      "decision": "Transfer memory hierarchy and reading width while rejecting the orange accent, floating tiles, shadows and phone composition",
+      "reason": "The established archive identity is flat paper with six distinct modules",
+      "evidence": ["reference uses #FF6500 and rounded memory tiles", "repository contract uses deep red, square edges and no shadow by default"]
+    }
+  ]
+}

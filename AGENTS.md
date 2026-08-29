@@ -1,6 +1,6 @@
 ## Design Taste
 
-Source reference: https://www.albumoftheyear.org/ — adapted to this repository's existing editorial identity.
+Source references: https://www.albumoftheyear.org/ and https://musicmemory.app/ — adapted to this repository's existing editorial identity.
 
 ### Tokens
 
@@ -15,10 +15,13 @@ Source reference: https://www.albumoftheyear.org/ — adapted to this repository
 - When many records must be scanned, use repeated square covers and aligned metadata rather than varying card compositions.
 - When ratings repeat, render them as numerals or chart geometry rather than filled badges.
 - When cover art already supplies visual contrast, group with spacing and 1px rules rather than boxes and shadows.
+- When a listening history entry contains a personal note, let the title and note carry the entry before date, type, artist and score metadata.
+- Keep narrative copy within a readable 430–640px measure; do not stretch an essay or listening note across the full grid.
 - When borrowing from an online reference, record the evidence and rejected alternatives in `DESIGN_LOG.md` before shipping.
 
 ### Anti-patterns
 
 - Never copy another project's palette, typography, advertising layout or social mechanics.
+- Never import Music Memory's orange accent, rounded floating cards, shadows or phone-marketing composition.
 - Avoid adding cards, pills, gradients, shadows or icons merely to make a page feel more designed.
 - Never modify an earlier `DESIGN_LOG.md` entry; append a new version and connect it to a Git commit.
