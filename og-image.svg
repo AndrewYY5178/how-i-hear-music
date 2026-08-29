@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#e9e1d2"/>
+  <rect x="64" y="64" width="1072" height="502" fill="none" stroke="#9f3b35" stroke-width="2"/>
+  <text x="96" y="128" fill="#9f3b35" font-family="monospace" font-size="20" letter-spacing="4">PERSONAL ARCHIVE / ISSUE 001</text>
+  <text x="92" y="300" fill="#201f1b" font-family="Georgia,serif" font-size="104">How I hear</text>
+  <text x="92" y="410" fill="#9f3b35" font-family="Georgia,serif" font-size="104" font-style="italic">music.</text>
+  <circle cx="1000" cy="315" r="96" fill="none" stroke="#50533f" stroke-width="3"/>
+  <circle cx="1000" cy="315" r="20" fill="#9f3b35"/>
+  <text x="96" y="520" fill="#50533f" font-family="Georgia,serif" font-size="24" font-style="italic">Melody opens the door. Everything else earns its place.</text>
+</svg>
