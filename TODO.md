@@ -87,6 +87,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Replace undocumented remote-font and remote-cover assumptions with `ASSET_POLICY.md`; self-hosting fonts remains a deployment choice.
 - [x] Add an original local SVG favicon and social preview image.
 - [x] Add a lightweight automated check for JSON validity, broken internal links and missing required fields. *(Run `npm run check`.)*
+- [x] Establish a repository UI contract and append-only design-version record. *(See `DESIGN_SYSTEM.md`, `DESIGN_LOG.md` and per-reference Taste DNA files.)*
 - [ ] Review the terms and rights notice with qualified legal advice before commercial or public expansion.
 - [x] Keep this file updated whenever a planned feature is completed or deliberately rejected. *(Applied throughout this implementation pass; this remains the repository maintenance convention.)*
 

@@ -1,0 +1,55 @@
+{
+  "source": "https://www.albumoftheyear.org/",
+  "capturedAt": "2026-08-29",
+  "tokens": {
+    "spacing": { "scale": [10, 20, 25, 30, 168], "base_unit": 10 },
+    "typography": {
+      "families": ["Open Sans", "Roboto"],
+      "scale": [
+        { "role": "section-heading", "size": "13px", "weight": "700", "family": "Open Sans" },
+        { "role": "metadata", "size": "~12px", "weight": "400", "family": "Open Sans" }
+      ]
+    },
+    "colors": [
+      { "role": "page-background", "value": "#F7F7F7" },
+      { "role": "content-surface", "value": "#FFFFFF" },
+      { "role": "text-primary", "value": "#222222" },
+      { "role": "text-secondary", "value": "#808080" },
+      { "role": "score-accent", "value": "#85CE73" }
+    ],
+    "radius": ["3px", "500px", "9999px"],
+    "shadows": [],
+    "image_ratios": [{ "usage": "album-cover", "ratio": "1:1" }],
+    "grid": { "max_width": "~1350px", "columns": 6, "gutter": "~28px" }
+  },
+  "taste": [
+    {
+      "name": "Cover-first catalog scanning",
+      "trigger": "When many releases must be compared in one viewport",
+      "decision": "Choose identical 1:1 cover frames and fixed metadata order over variable editorial card compositions",
+      "reason": "Listeners can identify records visually before parsing titles or scores",
+      "evidence": ["six 201px square covers across a 1440px viewport", "artist, title, critic score and user score repeat in the same order"]
+    },
+    {
+      "name": "Scores behave like type",
+      "trigger": "When two rating systems sit beneath every album",
+      "decision": "Choose plain numerals with a thin green measure over filled score badges",
+      "reason": "Repeated ratings stay comparable without turning the catalog into competing labels",
+      "evidence": ["scores use dark text on white", "#85CE73 is restricted to short score measures"]
+    },
+    {
+      "name": "Density through repetition",
+      "trigger": "When the release catalog must show many items above the fold",
+      "decision": "Choose a six-column repeated grid over large feature cards",
+      "reason": "A catalog reader benefits from stable comparison positions more than narrative emphasis on every item",
+      "evidence": ["six columns at 1440px", "~28px gutters", "13px section headings"]
+    },
+    {
+      "name": "Flat catalog surfaces",
+      "trigger": "When cover art already supplies strong color and texture",
+      "decision": "Choose no card shadows and nearly square corners over depth effects around every release",
+      "reason": "Added depth would compete with the artwork and reduce the sense of one continuous catalog",
+      "evidence": ["no detected box shadows", "cards are not boxed", "#F7F7F7 and #FFFFFF carry the structural separation"]
+    }
+  ]
+}
