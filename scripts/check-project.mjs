@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { matchTrack } from '../modules/music/matching.js';
 import { createPlaylistSnapshot, diffPlaylistSnapshots } from '../modules/music/sync.js';
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from '../modules/rating/interactions.js';
+import { withBase, withoutBase } from '../modules/layout/paths.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -52,8 +53,10 @@ const chartRect = { left: 0, top: 0, width: 220, height: 220 };
 if (radarScoreFromPointer(110, 40, chartRect, 0) !== 11 || radarScoreFromPointer(110, 110, chartRect, 0) !== 0) errors.push('rating interaction: radar pointer projection is incorrect');
 const waveRect = { top: 0, height: 180 };
 if (waveformScoreFromPointer(24, waveRect) !== 11 || waveformScoreFromPointer(156, waveRect) !== 5) errors.push('rating interaction: waveform pointer projection is incorrect');
+if (withBase('/archive', '/how-i-hear-music') !== '/how-i-hear-music/archive' || withoutBase('/how-i-hear-music/archive', '/how-i-hear-music') !== '/archive') errors.push('routing: project-site base path conversion is incorrect');
+if (withBase('/', '') !== '/' || withoutBase('/archive', '') !== '/archive') errors.push('routing: root deployment path conversion is incorrect');
 
-const sourceFiles = ['index.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js'];
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
@@ -72,6 +75,13 @@ if (desktopHomeGrid < 0 || mobileHomeGrid < desktopHomeGrid) errors.push('styles
 const ratingPages = await readFile(join(root, 'modules', 'rating', 'pages.js'), 'utf8');
 const precisionButtons = ratingPages.match(/<button[^>]*data-(?:score-step|album-step)[^>]*>/g) || [];
 if (!precisionButtons.length || precisionButtons.some((button) => !button.includes('type="button"') || !button.includes('aria-label='))) errors.push('rating controls: every precision button must be a labelled non-submit button');
+const entryHtml = await readFile(join(root, 'index.html'), 'utf8');
+if ([...entryHtml.matchAll(/(?:href|src)="(\/[^\"]+)"/g)].length) errors.push('index.html: root-absolute assets break GitHub project-site deployment');
+if (!entryHtml.includes('<base id="app-base" href="/"') || !entryHtml.includes('document.getElementById("app-base").href') || !entryHtml.includes('/how-i-hear-music/')) errors.push('index.html: deployment-aware asset base is missing');
+const fallbackHtml = await readFile(join(root, '404.html'), 'utf8');
+if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.includes('route=${encodeURIComponent')) errors.push('404.html: GitHub Pages route recovery is missing');
+const appSource = await readFile(join(root, 'app.js'), 'utf8');
+if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);

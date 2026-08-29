@@ -1,4 +1,5 @@
-import { renderShell } from "./modules/layout/shell.js";
+import { link, renderShell } from "./modules/layout/shell.js";
+import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
 import { rateAlbum, rateHome, rateTrack, bindRating } from "./modules/rating/pages.js";
@@ -31,12 +32,14 @@ const route = (path) => {
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/journal") return journal();
-  return `<section class="not-found"><span class="eyebrow mono">404</span><h1>That page is not in the archive.</h1><a href="/" data-route class="button primary">RETURN HOME</a></section>`;
+  return `<section class="not-found"><span class="eyebrow mono">404</span><h1>That page is not in the archive.</h1>${link("/", "RETURN HOME", "button primary")}</section>`;
 };
 
 const navigate = (path, { replace = false } = {}) => {
-  const target = cleanPath(path);
-  if (replace) history.replaceState({}, "", target); else history.pushState({}, "", target);
+  const requested = new URL(path, location.href);
+  const target = cleanPath(withoutBase(requested.pathname));
+  const browserPath = `${withBase(target)}${requested.search}${requested.hash}`;
+  if (replace) history.replaceState({}, "", browserPath); else history.pushState({}, "", browserPath);
   render();
 };
 const parentRoute = (path) => {
@@ -52,11 +55,11 @@ const parentRoute = (path) => {
   return { href: "/", label: "BACK HOME" };
 };
 const render = () => {
-  const path = cleanPath(location.pathname);
+  const path = cleanPath(withoutBase(location.pathname));
   renderShell(path);
   app.dataset.route = path;
   const parent = parentRoute(path);
-  const back = path === "/" ? "" : `<a class="back-button" href="${parent.href}" data-route>← ${parent.label}</a>`;
+  const back = path === "/" ? "" : link(parent.href, `← ${parent.label}`, "back-button");
   app.innerHTML = back + route(path);
   app.focus({ preventScroll: true });
   bindArchive(path, navigate);
@@ -74,4 +77,22 @@ document.addEventListener("click", (event) => {
   window.scrollTo({ top: 0, behavior: "instant" });
 });
 window.addEventListener("popstate", render);
-render();
+
+const restorePagesRoute = () => {
+  const parameters = new URLSearchParams(location.search);
+  const recovered = parameters.get("route");
+  if (recovered?.startsWith("/")) {
+    const target = new URL(recovered, location.origin);
+    navigate(`${target.pathname}${target.search}${target.hash}`, { replace: true });
+    return true;
+  }
+  const current = cleanPath(withoutBase(location.pathname));
+  const legacy = location.hash.match(/^#(archive|rate|taste|import|journal)(\/.*)?$/);
+  if (current === "/" && legacy) {
+    navigate(`/${legacy[1]}${legacy[2] || ""}`, { replace: true });
+    return true;
+  }
+  return false;
+};
+
+if (!restorePagesRoute()) render();

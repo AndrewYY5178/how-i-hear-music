@@ -8,6 +8,7 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 | 1.2 | 2026-08-29 | Journal reading hierarchy and module color stability | Music Memory | `Standardize journal reading hierarchy` |
 | 1.3 | 2026-08-29 | Home mobile cascade and touch-target regression | Repository route audit | `Fix Home mobile cascade` |
 | 1.4 | 2026-08-29 | Navigation state and rating interaction integrity | Interaction audit | `Complete rating interaction states` |
+| 1.5 | 2026-08-29 | Static publishing routes and Rate metadata contrast | Repository and deployment audit | `Harden GitHub Pages routing` |
 
 ## Version 1.1 — Catalog rhythm and interaction baseline
 
@@ -176,3 +177,52 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 - Radar and Waveform keyboard and pointer interaction checks on an isolated localhost origin.
 - Pure interaction-helper regression tests through `npm test`.
 - Full reachable-route structural crawl after shared-shell changes.
+
+## Version 1.5 — Static publishing integrity
+
+### Before
+
+- The modular application used root-absolute assets and internal links, so GitHub's `/how-i-hear-music/` project path could not load the new branch correctly.
+- Switching assets to plain relative URLs made direct refreshes below the first route level resolve scripts from the wrong directory.
+- The former single-page `/#archive` bookmark no longer entered the Archive module.
+- Static Pages import failures exposed an HTML-to-JSON parsing message instead of the actual server boundary.
+- Rate metadata inherited the archive red at a 1.33:1 contrast ratio against the olive studio.
+
+### Decision
+
+- Derive one deployment base from the loaded module URL and translate every shared route through it.
+- Set the document asset base before loading the favicon, stylesheet or application module.
+- Add a GitHub Pages `404.html` bridge that returns deep requests to the application entry and restores the requested logical route.
+- Migrate legacy top-level module hashes with `history.replaceState` so bookmarks land on canonical modular URLs.
+- Explain the static-server boundary when import endpoints return non-JSON content.
+- Use a restrained light peach for small Rate metadata at 4.57:1 contrast while retaining the olive studio and the archive's darker red on paper.
+
+### Evidence
+
+- The deployed repository is a GitHub project site at `/how-i-hear-music/`; its production branch still served the pre-modular page before this version.
+- A fresh local project-subpath origin loaded its stylesheet, favicon, data and module links from `/how-i-hear-music/` and recovered `/archive`, `/archive/tracks` and `/import/qq` without overflow.
+- A mobile direct-route audit reproduced blank pages at `/archive/tracks`, `/taste/profile` and `/import/qq` before the dynamic asset base; all routes rendered after it.
+- No external visual language was borrowed in this version; the contrast change follows the existing olive-and-peach Rate palette.
+
+### Files
+
+- `index.html`
+- `404.html`
+- `app.js`
+- `modules/layout/paths.js`
+- `modules/layout/shell.js`
+- `modules/music/data.js`
+- `modules/import/pages.js`
+- `styles.css`
+- `scripts/check-project.mjs`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+- `README.md`
+
+### Verification
+
+- Root-origin legacy hash migration and direct nested-route refresh.
+- Project-subpath route recovery, asset loading, internal-link base and static import boundary.
+- Desktop 1440 × 900 and mobile 390 × 844 checks with zero document overflow.
+- Automated routing, asset and interaction regression checks through `npm test`.
