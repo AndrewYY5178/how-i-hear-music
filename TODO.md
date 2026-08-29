@@ -18,6 +18,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Give every top-level module a distinct, low-saturation paper material while retaining the shared editorial palette and route structure.
 - [x] Standardize Journal as a reading-first notebook: expose saved listening notes, add a direct empty-state action, and remove low-contrast color flashing between modules. *(UI 1.2; documented in `DESIGN_LOG.md` and `musicmemory.app.md`.)*
 - [x] Run a reachable-route regression pass and fix the late-cascade Home mobile overflow; restore 40px mobile touch targets without changing the typographic link treatment. *(UI 1.3; 140 desktop and mobile routes audited.)*
+- [x] Complete interactive rating state: close stale mobile menus, remove repeated global pointer listeners, and make Radar/Waveform sliders work by drag and keyboard. *(UI 1.4; verified in an isolated browser storage origin.)*
 
 ## P0 — Make playlist import genuinely useful
 

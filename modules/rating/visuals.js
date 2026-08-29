@@ -17,7 +17,7 @@ export const radar = (scores = {}, { interactive = false, className = "" } = {})
   const axes = fields.map((_, index) => { const target = point(11, index, size, radius); return `<line x1="${center}" y1="${center}" x2="${target[0]}" y2="${target[1]}"></line>`; }).join("");
   const nodes = values.map((value, index) => { const target = point(value, index, size, radius); const field = fields[index]; return `<circle ${interactive ? `data-radar-field="${field}" tabindex="0" role="slider" aria-label="${fieldLabel[field]} score" aria-valuemin="0" aria-valuemax="11" aria-valuenow="${rating(value)}"` : ""} cx="${target[0]}" cy="${target[1]}" r="${interactive ? 6 : 4}"></circle>`; }).join("");
   const labels = fields.map((field, index) => { const target = point(11, index, size, radius + 28); return `<text x="${target[0]}" y="${target[1] + 3}" text-anchor="middle">${field.toUpperCase()}</text>`; }).join("");
-  return `<svg class="radar ${className}" viewBox="0 0 ${size} ${size}" role="img" aria-label="Listening Shape"><g class="radar-grid">${rings}${axes}</g><polygon class="radar-fill" points="${polygon(values, size, radius)}"></polygon><g class="radar-points">${nodes}</g><g class="radar-labels">${labels}</g></svg>`;
+  return `<svg class="radar ${className}" viewBox="0 0 ${size} ${size}" role="${interactive ? "group" : "img"}" aria-label="Listening Shape"><g class="radar-grid">${rings}${axes}</g><polygon class="radar-fill" points="${polygon(values, size, radius)}"></polygon><g class="radar-points">${nodes}</g><g class="radar-labels">${labels}</g></svg>`;
 };
 
 const y = (score, height, padding) => padding + (height - padding * 2) - ((Math.max(5, Math.min(11, Number(score) || 5)) - 5) / 6) * (height - padding * 2);
@@ -32,7 +32,7 @@ export const waveform = (tracks, { interactive = false } = {}) => {
   }, "");
   const guides = [5, 7, 9, 11].map((score) => `<line x1="${padding}" x2="${width - padding}" y1="${y(score, height, padding)}" y2="${y(score, height, padding)}"></line>`).join("");
   const nodes = coords.map((coord, index) => `<circle ${interactive ? `data-wave-index="${index}" tabindex="0" role="slider" aria-label="${safe(tracks[index].title)} score" aria-valuemin="0" aria-valuemax="11" aria-valuenow="${rating(tracks[index].overall)}"` : ""} cx="${coord[0]}" cy="${coord[1]}" r="${interactive ? 6 : 4}"><title>${safe(tracks[index].title)}: ${rating(tracks[index].overall)}</title></circle><text x="${coord[0]}" y="${height - 5}" text-anchor="middle">${String(index + 1).padStart(2, "0")}</text>`).join("");
-  return `<svg class="waveform" viewBox="0 0 ${width} ${height}" role="img" aria-label="Listening Landscape"><g class="wave-guides">${guides}</g><path d="${path}"></path><g class="wave-points">${nodes}</g></svg>`;
+  return `<svg class="waveform" viewBox="0 0 ${width} ${height}" role="${interactive ? "group" : "img"}" aria-label="Listening Landscape"><g class="wave-guides">${guides}</g><path d="${path}"></path><g class="wave-points">${nodes}</g></svg>`;
 };
 
 export const summary = (tracks) => {

@@ -279,6 +279,10 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
   .journal-list article { grid-template-columns:1fr auto; gap:16px; padding:24px 0; }
 }
 
+/* Dragging a rating node must not hand the gesture to page scrolling. */
+.interactive-radar .radar-points circle,.wave-points circle[data-wave-index] { touch-action:none; }
+.radar-points circle[role="slider"]:focus-visible,.wave-points circle[role="slider"]:focus-visible { outline:none; stroke:#e7aa8d; stroke-width:4; }
+
 /* Controls retain a 40px touch target without turning their visual treatment into pills. */
 .rating-control button,.album-track-controls button,.tag-picker button,.entry-actions button,.entry-actions a,.catalog-results button,.archive-tools button { min-width:40px; min-height:40px; }
 .rating-control>div,.album-track-controls label>div { min-height:40px; }

@@ -3,6 +3,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { matchTrack } from '../modules/music/matching.js';
 import { createPlaylistSnapshot, diffPlaylistSnapshots } from '../modules/music/sync.js';
+import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from '../modules/rating/interactions.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -45,6 +46,13 @@ const beforeDiff = JSON.stringify(previousSnapshot); const snapshotDiff = diffPl
 if (snapshotDiff.additions.map((track) => track.title).join() !== 'C' || snapshotDiff.removals.map((track) => track.title).join() !== 'A' || snapshotDiff.unchanged.map((track) => track.title).join() !== 'B') errors.push('sync: playlist snapshot difference is incorrect');
 if (JSON.stringify(previousSnapshot) !== beforeDiff) errors.push('sync: comparing snapshots mutated the stored baseline');
 
+if (clampScore(11.4) !== 11 || clampScore(-0.2) !== 0) errors.push('rating interaction: score clamping is incorrect');
+if (scoreFromKey('ArrowUp', 7.5) !== 7.6 || scoreFromKey('PageDown', 7.5) !== 6.5 || scoreFromKey('Escape', 7.5) !== null) errors.push('rating interaction: keyboard score steps are incorrect');
+const chartRect = { left: 0, top: 0, width: 220, height: 220 };
+if (radarScoreFromPointer(110, 40, chartRect, 0) !== 11 || radarScoreFromPointer(110, 110, chartRect, 0) !== 0) errors.push('rating interaction: radar pointer projection is incorrect');
+const waveRect = { top: 0, height: 180 };
+if (waveformScoreFromPointer(24, waveRect) !== 11 || waveformScoreFromPointer(156, waveRect) !== 5) errors.push('rating interaction: waveform pointer projection is incorrect');
+
 const sourceFiles = ['index.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
@@ -61,6 +69,9 @@ const styles = await readFile(join(root, 'styles.css'), 'utf8');
 const desktopHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(360px,1fr) minmax(280px,.8fr) minmax(144px,.4fr); }');
 const mobileHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(0,1fr); }');
 if (desktopHomeGrid < 0 || mobileHomeGrid < desktopHomeGrid) errors.push('styles.css: the final Home grid cascade does not restore one column on mobile');
+const ratingPages = await readFile(join(root, 'modules', 'rating', 'pages.js'), 'utf8');
+const precisionButtons = ratingPages.match(/<button[^>]*data-(?:score-step|album-step)[^>]*>/g) || [];
+if (!precisionButtons.length || precisionButtons.some((button) => !button.includes('type="button"') || !button.includes('aria-label='))) errors.push('rating controls: every precision button must be a labelled non-submit button');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);
