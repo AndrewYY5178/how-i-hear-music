@@ -10,6 +10,8 @@ Archive 支持两种本地、证据优先的比较：在曲目详情明确登记
 
 UI 2.0 把长期聆听证据继续分成三层：`Song / Vocal / Production / Overall` 只表示个人评分；四组双极滑杆只描述声音性格；`Why This Works`、Musical Moment、Journal 历史与手工 Taste 分组只描述个人关系。Taste 中提供边界分析、Sonic Map、Taste Constellation 与 Listening Portrait；Journal 提供 Rediscovery、年度奖项和年度画像。所有结果均来自明确保存的数据，不自动推断标签、版本、奖项或缺失评分。
 
+UI 3.0 将这些证据连接成同一套高级 Taste 系统：Taste DNA 只发布至少五首歌曲支持的审美特征；Blind Spots 描述证据附近尚未覆盖的区域而不承诺推荐结果；Archive Entropy 按季度观察集中与分散；Memory Palace 同时容纳可追溯的派生记忆和手动编排；Track Glyph、Album Terrain、Artist Signature 与 Listening Portrait 共用一套几何基础。缺少可信年份、Sonic 或关联 metadata 时，相应盲区维度保持缺席。
+
 未完成的导入、数据库和互动功能记录在 [`TODO.md`](TODO.md) 中，并按优先级整理。
 
 ## 在线版本

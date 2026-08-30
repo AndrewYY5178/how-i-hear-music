@@ -1,4 +1,4 @@
-import { allArtists, allTracks, data, findTrack, rating, safe, storage, trackId } from "../music/data.js";
+import { allAlbums, allArtists, allTracks, data, findTrack, rating, safe, storage, trackId } from "../music/data.js";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 import { icon } from "../layout/icons.js";
@@ -7,10 +7,12 @@ import { insightLabel, insightStats } from "../music/insights.js";
 import { readSonic, sonicDimensions } from "../music/sonic.js";
 import { addTasteGroup, readTasteGroups, removeTasteGroup } from "../music/groups.js";
 import { listeningPortrait } from "../music/portrait.js";
+import { blindSpots, tasteDNA } from "../music/taste-dna.js";
+import { tasteTraitMark } from "../music/geometry.js";
 
 const tasteNav = () => secondaryNav([["/taste/philosophy", "Philosophy"], ["/taste/profile", "Profile"], ["/taste/good-not-mine", "Good ≠ Mine"], ["/taste/compare", "Compare"]]);
 const tasteGates = [["LISTENING PHILOSOPHY", "/taste/philosophy", "The parts that need a reason to exist.", "philosophy"], ["MY TASTE PROFILE", "/taste/profile", "A visual summary, not a personality test.", "profile"], ["GOOD ≠ MINE", "/taste/good-not-mine", "Respect and resonance are different things.", "resonance"], ["COMPARE WITH ME", "/taste/compare", "Rate a track, then reveal the distance.", "compare"]];
-const analysisRoutes = [["BOUNDARIES", "/taste/anti-recommendation"], ["SONIC MAP", "/taste/sonic-map"], ["TASTE CONSTELLATION", "/taste/family-tree"], ["LISTENING PORTRAIT", "/taste/portrait"]];
+const analysisRoutes = [["TASTE DNA", "/taste/dna"], ["BLIND SPOTS", "/taste/blind-spots"], ["BOUNDARIES", "/taste/anti-recommendation"], ["SONIC MAP", "/taste/sonic-map"], ["TASTE CONSTELLATION", "/taste/family-tree"], ["LISTENING PORTRAIT", "/taste/portrait"]];
 export const tasteHome = () => `${pageHeader("TASTE", "How I hear music.", "The listening method behind the archive.")}${tasteNav()}<div class="taste-gates">${tasteGates.map(([title, href, copy, iconName]) => `<article><span class="taste-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${copy}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div><nav class="taste-analysis-index" aria-label="Personal analysis">${analysisRoutes.map(([label, href], index) => link(href, `${String(index + 1).padStart(2, "0")} / ${label} →`)).join("")}</nav>`;
 
 export const philosophy = () => `${pageHeader("TASTE / PHILOSOPHY", "Every element needs a reason.", data.profile.methodCopy)}${tasteNav()}<div class="essay-stack"><article><span>01</span><h2>Melody opens the door.</h2><p>${safe(data.profile.firstGateCopy)}</p></article>${data.profile.listeningOrder.map((item, index) => `<article><span>${String(index + 2).padStart(2, "0")}</span><h2>${safe(item.name)}</h2><p>${safe(item.note)}</p></article>`).join("")}<article><span>06</span><h2>Surprise belongs to the song.</h2><p>${safe(data.profile.surpriseFactor.latePayoffNote)}</p></article><article><span>07</span><h2>The human voice stays human.</h2><p>${safe(data.profile.humanVoice.refusal)}</p></article></div>`;
@@ -36,6 +38,16 @@ export const compare = () => {
 export const antiRecommendation = () => {
   const patterns = antiRecommendationPatterns();
   return `${pageHeader("TASTE / BOUNDARIES", "What probably won't work for me?", "Patterns require at least three rated tracks. They describe recurring distance, never a genre stereotype.")}${patterns.length ? `<section class="anti-patterns">${patterns.map((pattern) => `<article><span class="mono">PATTERN FROM ${pattern.records.length} TRACKS</span><h2>${safe(pattern.title)}</h2><p>${safe(pattern.copy)}</p><div>${pattern.records.slice(0, 5).map((record) => link(`/archive/tracks/${record.id}`, record.title)).join("")}</div></article>`).join("")}</section>` : `<section class="analysis-empty"><span class="mono">NOT ENOUGH EVIDENCE</span><h2>No boundary repeats across three tracks yet.</h2><p>More explicit ratings may reveal a pattern; the site will not manufacture one.</p></section>`}`;
+};
+
+export const dna = () => {
+  const traits = tasteDNA();
+  return `${pageHeader("TASTE / DNA", "What repeats beneath the ratings.", "A trait needs at least five supporting tracks. Genre is not used as the primary explanation.")}${traits.length ? `<section class="taste-dna">${traits.map((trait, index) => `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span><div><h2>${safe(trait.label)}</h2><p>${safe(trait.copy)}</p><small class="mono">${trait.evidenceCount} TRACKS CONTRIBUTING · ${Math.round(trait.confidence * 100)}% EVIDENCE CONFIDENCE</small></div>${tasteTraitMark(trait)}</article>`).join("")}</section>` : `<section class="analysis-empty"><span class="mono">NOT ENOUGH EVIDENCE</span><h2>No recurring trait reaches five explicit tracks yet.</h2><p>Ratings can contribute to score-based traits. Why This Works, Listening Temperature and history make the model more specific.</p>${link("/rate", "ADD LISTENING EVIDENCE →", "text-link")}</section>`}`;
+};
+
+export const blindSpotPage = () => {
+  const spots = blindSpots({ albums: allAlbums() });
+  return `${pageHeader("TASTE / BLIND SPOTS", "Where the archive has barely looked.", "These are coverage gaps beside recurring taste evidence—not promises about what you will like.")}${spots.length ? `<section class="blind-spots">${spots.map((spot, index) => `<article><span class="mono">BLIND SPOT ${String(index + 1).padStart(2, "0")} · ${safe(spot.type)}</span><h2>${safe(spot.title)}</h2><p>${safe(spot.copy)}</p><dl><div><dt>TRAIT AFFINITY</dt><dd>${Math.round(spot.affinity * 100)}</dd></div><div><dt>EXPLORED</dt><dd>${Math.round((1 - spot.coverageGap) * 100)}%</dd></div></dl>${spot.links?.length ? `<div class="blind-spot-entrypoints"><span class="mono">CURRENT EVIDENCE</span>${spot.links.map((item) => link(item.href, `${item.label} →`)).join("")}</div>` : ""}</article>`).join("")}</section>` : `<section class="analysis-empty"><span class="mono">NOT ENOUGH EVIDENCE</span><h2>A blind spot needs both a stable Taste DNA trait and a measurable coverage gap.</h2><p>The site will not convert sparse data into recommendations.</p>${link("/taste/dna", "READ TASTE DNA →", "text-link")}</section>`}`;
 };
 
 const sonicAxis = (key) => sonicDimensions[key] || sonicDimensions.warmCold;

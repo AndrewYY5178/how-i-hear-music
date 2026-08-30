@@ -77,7 +77,7 @@ if (normalizeInsightTags(['VOCAL', "CAN'T EXPLAIN", 'ONE MOMENT']).join() !== 'v
 const latePeakNarrative = albumNarrative([{ overall: 7 }, { overall: 7.2 }, { overall: 8 }, { overall: 8.4 }]);
 if (!latePeakNarrative?.includes('arriving late') || albumNarrative([{ overall: 8 }, { overall: null }, { overall: 9 }]) !== null) errors.push('album narrative: complete evidence gate or peak-position analysis is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js'];
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
@@ -108,10 +108,20 @@ if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes
 if (!appSource.includes('setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim()')) errors.push('app.js: document titles must use the rendered editorial heading');
 if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
 for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
+for (const path of ['/taste/dna', '/taste/blind-spots', '/journal/memory-palace', '/journal/entropy']) if (!appSource.includes(path)) errors.push(`app.js: advanced taste route ${path} is missing`);
 if (!appSource.includes('annualPortrait(') || !appSource.includes('bindYear(')) errors.push('app.js: annual portrait or awards binding is missing');
 const versionSource = await readFile(join(root, 'modules', 'music', 'versions.js'), 'utf8');
 if (!versionSource.includes('confirmedByOwner: true') || !styles.includes('.version-form')) errors.push('versions: explicit owner confirmation and comparison UI are required');
 if (!styles.includes('.version-morph') || !styles.includes('.sonic-map') || !styles.includes('.listening-portrait') || !styles.includes('.personal-awards')) errors.push('styles.css: personal analysis visual contracts are incomplete');
+const dnaSource = await readFile(join(root, 'modules', 'music', 'taste-dna.js'), 'utf8');
+if (!dnaSource.includes('minimumEvidence = 5') || !dnaSource.includes('coverageGap') || !dnaSource.includes('confidence')) errors.push('Taste DNA: evidence gate or blind-spot scoring is missing');
+const entropySource = await readFile(join(root, 'modules', 'music', 'entropy.js'), 'utf8');
+if (!entropySource.includes('evidenceCount >= 3') || !entropySource.includes('Neither direction is treated as better')) errors.push('Archive Entropy: evidence gate or neutral narrative is missing');
+const memorySource = await readFile(join(root, 'modules', 'music', 'memory.js'), 'utf8');
+if (!memorySource.includes('source: "manual"') || !memorySource.includes('source: "derived"') || !memorySource.includes('memory-entries:v1')) errors.push('Memory Palace: manual/derived provenance boundary is missing');
+const geometrySource = await readFile(join(root, 'modules', 'music', 'geometry.js'), 'utf8');
+for (const primitive of ['trackGlyph', 'albumTerrain', 'artistSignature', 'tasteTraitMark']) if (!geometrySource.includes(`export const ${primitive}`)) errors.push(`Music as Geometry: ${primitive} primitive is missing`);
+if (!styles.includes('.taste-dna') || !styles.includes('.memory-palace') || !styles.includes('.entropy-chart') || !styles.includes('.track-glyph')) errors.push('styles.css: advanced taste visual contracts are incomplete');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);

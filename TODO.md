@@ -2,6 +2,32 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active feature — Advanced Taste system
+
+### Phase 1 — Shared analytical foundation
+
+- [x] Add one evidence-based Taste Trait schema that reuses ratings, `Why This Works`, sonic descriptors, history and confirmed versions without creating genre labels or duplicate track records.
+- [x] Add reusable Track Glyph, Album Terrain, Artist Signature and Taste Trait Mark geometry primitives with one stroke/grid/annotation contract.
+- [x] Add a compatible manual/derived Memory Entry schema and deterministic Archive Entropy utilities.
+
+### Phase 2 — Taste DNA and Archive Entropy
+
+- [x] Add `/taste/dna` as a vertical editorial reading of recurring traits, requiring at least five supporting tracks and exposing score, confidence and evidence count.
+- [x] Show only explicitly supported recurring-trait matches on Track detail.
+- [x] Add `/journal/entropy` with one neutral time-series visual and supporting artist concentration, trait diversity, era spread, album depth and exploration rate explanations.
+
+### Phase 3 — Music as Geometry
+
+- [x] Embed compact Track Glyphs, Album Terrains and Artist Signatures into their respective Archive indexes/details without showing all forms at full size together.
+- [x] Extend Listening Portrait composition to reuse the shared geometry system rather than maintain a separate visual vocabulary.
+
+### Phase 4 — Blind Spots and Memory Palace
+
+- [x] Add `/taste/blind-spots` with evidence-gated trait and album-depth coverage gaps; use exploratory language and no more than five entry points. *(Sonic/era gaps remain absent when reliable coverage metadata is unavailable.)*
+- [x] Add `/journal/memory-palace` as a manually curatable 2D archive of First Discoveries, Growers, Perfect Moments, Personal Canon, Reinterpretations and Turning Points.
+- [x] Reprioritize Memory Palace into vertical archive sections on mobile, retain contextual return actions and avoid literal 3D/palace decoration.
+- [x] Complete automated and browser QA, append the design/version record, and publish the connected system. *(UI 3.0.)*
+
 ## Active maintenance — UI 2.1 visual refinement
 
 - [x] Reduce oversized long subpage headings while preserving Home's display-scale hero.
