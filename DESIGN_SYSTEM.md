@@ -52,6 +52,8 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Annual Journal summaries use one dominant average numeral, ruled evidence rows and explicit `NOT ENOUGH EVIDENCE` states; they never synthesize missing listening history.
 - QQ Album import is a dedicated functional subroute: one link input, one complete ordered preview and one explicit import action. Duplicate state remains typographic, and the preview uses rules rather than cards.
 - Imported album tracklists preserve Disc then Track order. Multi-disc records use quiet disc separators; an ordered sequence may appear before ratings, while its Waveform stays empty until scores exist.
+- Recording-version comparison begins with an explicit local owner confirmation. Version type and identifying label are required; each recording keeps its own score history, while the comparison uses aligned Radar geometry and typographic Overall values.
+- Album comparison is available only when two records have a confirmed ordered sequence or album-level score. The paired composition uses a shared baseline and equal columns on desktop, then reprioritizes into full-width sequential readings on mobile.
 
 ## Reference boundary
 

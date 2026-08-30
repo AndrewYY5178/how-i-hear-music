@@ -105,9 +105,9 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add confirmed official album sequences through QQ Music album import; the Waveform remains scoreless until the imported tracks or album session are rated.
 - [x] Expand beyond the former six-song deck: every confirmed Archive track can open the four-dimension Rate workspace.
 - [x] Add user-confirmed Musical Moments through the `ONE MOMENT` reason; a timestamp and observation are required and never inferred.
-- [ ] Add version-specific ratings and comparisons.
+- [x] Add version-specific ratings and comparisons. *(Owner-confirmed local version identities; each recording receives an independent four-dimension rating and side-by-side Radar comparison. UI 1.9; implementation commit `00eb7a2`.)*
 - [x] Add album-level rating with an interactive waveform and saved overall score.
-- [ ] Add album comparison after Andrew confirms an album-level score or a complete ordered track sequence.
+- [x] Add album comparison after Andrew confirms an album-level score or a complete ordered track sequence. *(Comparison is evidence-gated and preserves missing scores as `—`. UI 1.9; implementation commit `00eb7a2`.)*
 - [x] Add rating history and changes over time. *(Track and album details read saved Journal history.)*
 - [x] Add optional local-only notes for why a song was kept, ignored or revisited.
 - [x] Add a private, local-only Taste Match view after at least three comparable visitor ratings exist.
@@ -143,6 +143,6 @@ This file records planned work that is not complete yet. The current site is a p
 
 - Ordered album waveforms require Andrew's confirmed track sequence and Overall scores.
 - Musical Moments require Andrew to enter a timestamp; the interface never invents one.
-- Version-specific comparisons require confirmed version identities and ratings.
-- Album comparison requires a confirmed album score or complete ordered track sequence.
+- Alternate recordings must still be named and typed by Andrew; the interface never infers a version from a title.
+- Album comparison remains empty until two albums have a confirmed ordered sequence or album-level score.
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.

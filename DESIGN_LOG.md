@@ -367,3 +367,50 @@ Implementation commit: `e096c4a`
 - Live `npm run check:adapters` against QQ playlist, QQ album and NetEase playlist metadata.
 - End-to-end browser test for detection, complete preview, import, Archive detail, imported Track detail, Rate Album initialization, duplicate prevention and resource-type rejection.
 - Desktop and 390 × 844 overflow checks with no console warnings or errors.
+
+## Version 1.9 — Evidence-gated comparisons
+
+Implementation commit: `00eb7a2`
+
+### Before
+
+- Track detail reserved a Versions disclosure but could not record an alternate recording or rate it independently.
+- Album pages exposed individual landscapes but offered no disciplined way to read two records against the same evidence.
+- The remaining TODO language still treated ordered album sequences as unavailable after UI 1.8 had added them.
+
+### Decision
+
+- Let the owner explicitly create a local recording version from Track detail by choosing Studio, Live, Acoustic, Remastered or Other and supplying an identifying label. Never derive a version from title punctuation or provider text.
+- Give every confirmed version its own canonical local ID, rating session, Journal history and Radar, then align related recordings in a ruled two-column comparison without badges or added decoration.
+- Add an Album comparison route from the existing Albums header. Admit only albums with a confirmed ordered sequence or album-level score; compare Overall, scored-track Waveform, Track count and Rated count, preserving absent values as `—`.
+- Keep both comparison layouts inside Archive's existing catalog material. Desktop uses equal columns and shared baselines; mobile changes reading priority to full-width sequential sections instead of compressing charts.
+- Include local version records in the existing backup/restore boundary.
+
+### Evidence
+
+- An isolated browser origin created `Live at Test Hall` as an explicit Live version of a canonical track, opened its independent Rate workspace, saved a four-dimension rating and returned a two-record Radar comparison.
+- A separate local application origin imported QQ Music's 15-track `Sweetener` and one-track `纯妹妹`; Album comparison exposed two selectors, two aligned evidence columns, Track counts of 15 and 1, and no invented scores.
+- With no qualifying albums, the route rendered `NOT ENOUGH EVIDENCE` instead of selecting arbitrary Archive records.
+- At 390 × 844, both comparison views measured zero horizontal overflow; version and album columns reprioritized to the full 358px content width. Browser console checks returned no errors.
+- No online visual reference was borrowed for this release. The work follows the existing paper, rules, typography and chart language; cards, pills, shadows and decorative icons were rejected as unnecessary.
+
+### Files
+
+- `app.js`
+- `modules/archive/pages.js`
+- `modules/import/pages.js`
+- `modules/music/data.js`
+- `modules/music/versions.js`
+- `styles.css`
+- `scripts/check-project.mjs`
+- `README.md`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Syntax checks for all changed modules and automated validation through `npm test`.
+- Browser interaction test for explicit version creation, independent rating save and related-version comparison.
+- Browser interaction test for two real QQ ordered album imports and the populated Album comparison route.
+- Empty-evidence, desktop overflow, 390 × 844 responsive and console-error checks.
