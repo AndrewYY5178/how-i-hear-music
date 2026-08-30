@@ -7,6 +7,7 @@ const nav = [
 export const link = (href, label, className = "") => `<a class="${className}" href="${withBase(href)}" data-route>${safe(label)}</a>`;
 export const pageHeader = (eyebrow, title, copy = "", actions = "") => `<section class="page-head"><span class="eyebrow mono">${safe(eyebrow)}</span><h1>${title}</h1>${copy ? `<p>${safe(copy)}</p>` : ""}${actions ? `<div class="page-actions">${actions}</div>` : ""}</section>`;
 export const secondaryNav = (items) => `<nav class="secondary-nav" aria-label="Section navigation">${items.map(([href, label]) => link(href, label)).join("")}</nav>`;
+export const setDocumentTitle = (label = "Home") => { document.title = `${data.profile.title} — ${String(label)}`; };
 
 export const renderShell = (path) => {
   const header = document.getElementById("site-header");
@@ -26,5 +27,5 @@ export const renderShell = (path) => {
     toggle.setAttribute("aria-expanded", "false");
     toggle.focus();
   };
-  document.title = `${data.profile.title} — ${path === "/" ? "Home" : path.split("/").filter(Boolean).map((item) => item[0].toUpperCase() + item.slice(1)).join(" / ")}`;
+  setDocumentTitle(path === "/" ? "Home" : path.split("/").filter(Boolean).map((item) => item[0].toUpperCase() + item.slice(1)).join(" / "));
 };

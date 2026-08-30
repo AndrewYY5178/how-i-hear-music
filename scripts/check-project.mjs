@@ -70,11 +70,13 @@ for (const name of sourceFiles) {
 
 const styles = await readFile(join(root, 'styles.css'), 'utf8');
 const desktopHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(360px,1fr) minmax(280px,.8fr) minmax(144px,.4fr); }');
+const tabletHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(0,.8fr) minmax(240px,1fr) minmax(120px,.45fr); }');
 const mobileHomeGrid = styles.lastIndexOf('.featured-shape { grid-template-columns:minmax(0,1fr); }');
-if (desktopHomeGrid < 0 || mobileHomeGrid < desktopHomeGrid) errors.push('styles.css: the final Home grid cascade does not restore one column on mobile');
+if (desktopHomeGrid < 0 || tabletHomeGrid < desktopHomeGrid || mobileHomeGrid < tabletHomeGrid) errors.push('styles.css: the final Home grid cascade must restore tablet and mobile layouts after the desktop declaration');
 const ratingPages = await readFile(join(root, 'modules', 'rating', 'pages.js'), 'utf8');
 const precisionButtons = ratingPages.match(/<button[^>]*data-(?:score-step|album-step)[^>]*>/g) || [];
 if (!precisionButtons.length || precisionButtons.some((button) => !button.includes('type="button"') || !button.includes('aria-label='))) errors.push('rating controls: every precision button must be a labelled non-submit button');
+if (!styles.includes('summary { min-height:40px; align-items:center; }')) errors.push('styles.css: disclosure summaries must expose a 40px interaction target');
 const entryHtml = await readFile(join(root, 'index.html'), 'utf8');
 if ([...entryHtml.matchAll(/(?:href|src)="(\/[^\"]+)"/g)].length) errors.push('index.html: root-absolute assets break GitHub project-site deployment');
 if (!entryHtml.includes('<base id="app-base" href="/"') || !entryHtml.includes('document.getElementById("app-base").href') || !entryHtml.includes('/how-i-hear-music/')) errors.push('index.html: deployment-aware asset base is missing');
@@ -82,6 +84,7 @@ const fallbackHtml = await readFile(join(root, '404.html'), 'utf8');
 if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.includes('route=${encodeURIComponent')) errors.push('404.html: GitHub Pages route recovery is missing');
 const appSource = await readFile(join(root, 'app.js'), 'utf8');
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
+if (!appSource.includes('setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim()')) errors.push('app.js: document titles must use the rendered editorial heading');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);

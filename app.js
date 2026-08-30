@@ -1,4 +1,4 @@
-import { link, renderShell } from "./modules/layout/shell.js";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
@@ -61,6 +61,7 @@ const render = () => {
   const parent = parentRoute(path);
   const back = path === "/" ? "" : link(parent.href, `← ${parent.label}`, "back-button");
   app.innerHTML = back + route(path);
+  setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim() || "Page");
   app.focus({ preventScroll: true });
   bindArchive(path, navigate);
   bindRating(path, navigate);

@@ -44,6 +44,9 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Interactive Radar and Waveform nodes support pointer drag plus Arrow, Page Up/Down, Home and End keys; focus remains on the adjusted node after re-rendering.
 - Small Rate metadata and navigation use a light peach that remains readable on the olive studio; the darker archive red remains reserved for light paper modules.
 - Internal routes are logical root paths in source and are translated through the active deployment base. Root hosting, the `/how-i-hear-music/` Pages project path and legacy module hashes must resolve to the same page structure.
+- Disclosure summaries expose the full 40px row as their interaction target without adding a container treatment.
+- Between 761px and 1024px, Home's Featured Shape retains three roles but uses shrinkable columns; below 761px it becomes one column.
+- Browser titles use the rendered editorial heading for record details rather than internal IDs or encoded URL segments.
 
 ## Reference boundary
 

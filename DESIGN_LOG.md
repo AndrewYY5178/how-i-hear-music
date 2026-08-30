@@ -9,6 +9,7 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 | 1.3 | 2026-08-29 | Home mobile cascade and touch-target regression | Repository route audit | `Fix Home mobile cascade` |
 | 1.4 | 2026-08-29 | Navigation state and rating interaction integrity | Interaction audit | `Complete rating interaction states` |
 | 1.5 | 2026-08-29 | Static publishing routes and Rate metadata contrast | Repository and deployment audit | `Harden GitHub Pages routing` |
+| 1.6 | 2026-08-30 | Production route, disclosure and tablet integrity | Production browser audit | `Polish production route details` |
 
 ## Version 1.1 — Catalog rhythm and interaction baseline
 
@@ -226,3 +227,43 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 - Project-subpath route recovery, asset loading, internal-link base and static import boundary.
 - Desktop 1440 × 900 and mobile 390 × 844 checks with zero document overflow.
 - Automated routing, asset and interaction regression checks through `npm test`.
+
+## Version 1.6 — Production route detail integrity
+
+### Before
+
+- Disclosure summaries looked like full-width rows, but their native clickable box was only 13px high on mobile.
+- Album detail browser titles exposed percent-encoded URL segments; track detail titles exposed canonical internal IDs.
+- At 768px, a late desktop Featured Shape declaration overrode the earlier tablet rule and pushed the score column 120px beyond the viewport.
+
+### Decision
+
+- Move disclosure spacing into a 40px summary row so the visual row and actual interaction target agree.
+- Set the final document title from the rendered page heading, retaining `Home` for the root route.
+- Reinstate a final 761–1024px Featured Shape grid with shrinkable copy, visual and score columns.
+- Extend the automated cascade and interaction checks to cover the tablet grid, disclosure target and editorial title contract.
+
+### Evidence
+
+- A recursive production crawl reached 130 routes at 1440 × 900 and 390 × 844 with no structural errors, missing returns, visible broken images, horizontal overflow or console warnings.
+- The same mobile crawl found the 13px disclosure target consistently across 55 album and track detail routes.
+- At 768 × 1024, nine representative routes passed; Home alone reported a 120px overflow, with the score column beginning at the page's right edge.
+- After the fix, the three Home columns measured approximately 228 / 284 / 128px within the 720px content width, with 40px gaps and zero overflow.
+- No external visual language was introduced; this version only reconciles existing layout and interaction rules with production behavior.
+
+### Files
+
+- `app.js`
+- `modules/layout/shell.js`
+- `styles.css`
+- `scripts/check-project.mjs`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Full production crawl of 130 reachable routes on desktop and mobile.
+- Local album and track detail checks for 40px summaries and human-readable browser titles.
+- Local 768px Home grid measurement and visual review.
+- Automated regression checks through `npm test`.

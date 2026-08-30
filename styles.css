@@ -284,6 +284,8 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
 .radar-points circle[role="slider"]:focus-visible,.wave-points circle[role="slider"]:focus-visible { outline:none; stroke:#e7aa8d; stroke-width:4; }
 
 /* Controls retain a 40px touch target without turning their visual treatment into pills. */
+details { padding-block:0; }
+summary { min-height:40px; align-items:center; }
 .rating-control button,.album-track-controls button,.tag-picker button,.entry-actions button,.entry-actions a,.catalog-results button,.archive-tools button { min-width:40px; min-height:40px; }
 .rating-control>div,.album-track-controls label>div { min-height:40px; }
 .rating-control output,.album-track-controls output { display:grid; place-items:center; padding:0 8px; }
@@ -396,6 +398,7 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
   .archive-gates article:first-child,.taste-gates article:first-child { padding-left:24px; }
 }
 @media (min-width:761px) and (max-width:1024px) {
+  .featured-shape { grid-template-columns:minmax(0,.8fr) minmax(240px,1fr) minmax(120px,.45fr); }
   .archive-gates article:last-child { grid-column:1 / -1; }
   .archive-gates article:first-child,.taste-gates article:first-child { padding-left:24px; }
 }
