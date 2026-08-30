@@ -315,6 +315,8 @@ Implementation commit: `d0a959a`
 
 ## Version 1.8 — Ordered QQ Music album import
 
+Implementation commit: `e096c4a`
+
 ### Before
 
 - QQ Music import accepted public playlists and individual catalog results, but explicitly rejected album links.

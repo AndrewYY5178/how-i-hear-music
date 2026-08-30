@@ -34,7 +34,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Store one canonical local album record, ordered local tracks, provider mappings and an import log without using QQ IDs as canonical IDs.
 - [x] Render imported single- and multi-disc tracklists in Archive and initialize Rate Album from that confirmed sequence.
 - [x] Preserve album-import records in local backup/restore and prevent duplicate album creation.
-- [ ] Add adapter tests, browser QA, design/version notes and publish the completed feature. *(Adapter and browser QA passed; version record and publication remain.)*
+- [x] Add adapter tests, browser QA, design/version notes and publish the completed feature. *(UI 1.8; implementation commit `e096c4a`.)*
 
 ## Active refactor — Modular product architecture
 
