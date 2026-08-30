@@ -617,3 +617,49 @@ Implementation commit: `f720387`
 - `node --check server.mjs`
 - `git diff --check`
 - Browser QA deferred only because the browser control surface reported no available browser.
+
+## Version 3.2 — Durable local archive and delivery closure
+
+Implementation commit: `7248513`
+
+### Before
+
+- Data Desk exports were readable JSON only, browser quota was invisible, and Inbox duplicated a smaller backup interface with fewer privacy cues.
+- Journal history could be removed but not corrected. Album notes were a placeholder, metadata provenance lacked a resolvable source, and playlist source labels could not be maintained.
+- Blind Spots described trait and album depth only even when the owner had supplied enough language, date or Sonic evidence for a cautious coverage reading.
+- The static archive had no offline shell, install metadata, explicit update state or route-level canonical metadata. The adapter exposed no health/version contract and trusted only the direct socket address without documenting proxy behavior.
+
+### Decision
+
+- Keep local-first storage and make its limits legible. Plain JSON remains available; optional password export uses PBKDF2-SHA256 with 250,000 iterations and AES-GCM. Data Desk owns backup, restore, recovery, persistence and quota status so Inbox has one clear route to it.
+- Treat Journal correction as editing one historical snapshot, never the current rating or canonical record. Preserve correction time and revision count. Add private Album Notes as local searchable evidence included in backup.
+- Extend metadata provenance with a complete HTTPS source URL, evidence note and exact local revision time. Keep unknown values unknown and provide a missing-only queue.
+- Allow local playlist source renaming, refresh and removal while explicitly retaining every imported track, rating and note.
+- Publish language and era concentration only when at least ten scored records and 60% coverage are available, with a 70% dominant group. Publish a Sonic quadrant gap only after eight explicit placements and a materially concentrated quadrant. Frame every output as archive coverage, not predicted quality.
+- Precache the complete first-party application graph and built-in data, but exclude metadata APIs and health responses. Require user confirmation before activating an updated worker.
+- Add request IDs, structured logs, bounded cache/rate-window cleanup, health/version endpoints and an opt-in `TRUST_PROXY=1` boundary. Replace the inline-script CSP exception with a fixed script hash.
+
+### Evidence
+
+- Core tests cover Journal revision, invalid score rejection, Album Note backup inclusion, AES-GCM round-trip and wrong-password rejection, plus synthetic language, era and Sonic evidence gates.
+- Static checks require explicit button types, image alternatives, safe external links, reduced-motion handling, offline API exclusion, the full module graph in the shell, install/crawler assets and adapter resilience contracts.
+- Eleven representative route renders pass without browser APIs. `npm test`, `node --check server.mjs` and `git diff --check` pass.
+- Local HTTP verification returned `200` for `/healthz`, the Service Worker and a clean SPA deep link. HTML and Service Worker responses use `Cache-Control: no-cache`; structured logs include request IDs, status and duration.
+- A controllable browser was requested twice, but the environment reported no browser instance. Desktop/tablet/mobile visual measurement remains open rather than being represented as complete.
+- No online visual reference was borrowed in this pass. The paper palette, six module backgrounds, typography, geometry and zero-radius/no-shadow rules remain intentionally unchanged. New cards, badges, decorative icons, cloud-account claims and automatic metadata inference were rejected because they do not solve the identified reliability problems.
+
+### Files
+
+- `app.js`, `index.html`, `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `sw.js`, `styles.css`
+- `modules/archive/pages.js`, `modules/import/pages.js`, `modules/journal/pages.js`, `modules/search/pages.js`, `modules/taste/pages.js`
+- `modules/music/journal.js`, `modules/music/metadata.js`, `modules/music/notes.js`, `modules/music/resilience.js`, `modules/music/taste-dna.js`
+- `server.mjs`, `scripts/check-project.mjs`, `scripts/test-core.mjs`, `scripts/test-render.mjs`
+- `README.md`, `TERMS.md`, `TODO.md`, `DESIGN_LOG.md`
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Local HTTP headers and health endpoint checked against the running Node adapter.
+- Real browser QA remains deferred only because the browser control surface reported no available browser.
