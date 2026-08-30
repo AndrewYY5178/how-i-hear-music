@@ -63,6 +63,9 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Anti-Recommendation requires the same quantitative relationship across at least three tracks. Empty evidence is preferable to a speculative aesthetic label.
 - Personal Music Awards present evidence-derived candidates, but no winner appears until explicitly confirmed; every category supports `NO SELECTION`.
 - Listening Portrait samples at most 24 high-priority Track shapes and eight Album landscapes into an archival print. It remains an artwork, not a data dashboard or Wrapped imitation.
+- Home alone keeps the 108px display ceiling. Subpage headings stop at 80px on desktop and use a 40–48px fluid range on mobile so long editorial titles introduce rather than displace the page task.
+- Analysis forms and comparison selectors share an 800px reading/control measure; generative visual fields stop at 960px. Native select controls receive the same focus and touch behavior as other inputs.
+- SVG annotations that scale with a 720-unit viewBox increase to 16 units below 760px so their rendered mobile size remains legible.
 
 ## Reference boundary
 

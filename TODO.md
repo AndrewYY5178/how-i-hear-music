@@ -4,10 +4,10 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## Active maintenance — UI 2.1 visual refinement
 
-- [ ] Reduce oversized long subpage headings while preserving Home's display-scale hero.
-- [ ] Normalize the new analysis forms, select controls, keyboard focus and readable content measures.
-- [ ] Improve mobile chart annotation legibility and make empty analysis states occupy their intended grid width.
-- [ ] Re-run desktop/mobile visual QA, append the design record and publish the refinement.
+- [x] Reduce oversized long subpage headings while preserving Home's display-scale hero.
+- [x] Normalize the new analysis forms, select controls, keyboard focus and readable content measures.
+- [x] Improve mobile chart annotation legibility and make empty analysis states occupy their intended grid width.
+- [x] Re-run desktop/mobile visual QA, append the design record and publish the refinement. *(UI 2.1; implementation commit `ae79e88`.)*
 
 ## Active feature — Personal analysis expansion
 

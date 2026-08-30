@@ -481,3 +481,41 @@ Implementation commit: `602487d`
 - Browser interaction checks for tag selection, sonic descriptor save, axis changes, manual constellation creation, version creation/rating/morph, album completion/narrative, annual award confirmation and both portrait routes.
 - Fresh-origin desktop and 390 × 844 route crawl across Home, Track, Album, Rate, Journal, Year, annual Portrait and all new Taste analysis views.
 - Final console-error and horizontal-overflow checks returned zero failures.
+
+## Version 2.1 — Analysis view refinement
+
+Implementation commit: `ae79e88`
+
+### Before
+
+- Newly added analysis routes inherited the 108px subpage display ceiling, causing long headings to occupy up to three lines and nearly 300px before the page task appeared.
+- Native select controls were visually close to other inputs but were absent from the shared font, focus and touch-action rules.
+- Empty Taste Constellation evidence occupied one grid column, while Listening Portrait and Sonic Map annotations became optically too small when their 720-unit SVGs scaled to a mobile viewport.
+- Comparison and analysis forms did not share a consistent readable control measure.
+
+### Decision
+
+- Preserve Home as the only 108px display-scale moment. Cap subpage displays at 80px and use a fluid 40–48px mobile range without adding a fifth typography level.
+- Give version forms, comparison selectors, Sonic Map controls and analysis empty states the same 800px working measure. Bound large visual fields at 960px so they retain gravity without stretching to arbitrary widths.
+- Include native selects in the shared type, keyboard-focus and touch-action contract.
+- Let an empty constellation span its full two-column composition, then increase mobile SVG annotation units so the scaled label remains readable.
+
+### Evidence
+
+- Eleven representative routes were measured at 1440 × 1000 and 390 × 844 for 22 local renders. Every render returned zero horizontal overflow.
+- The tallest audited desktop subpage heading fell from about 295px to 146px; the tallest mobile heading fell from 204px to 128px. Home retained its original 108px desktop and 56px mobile display sizes.
+- The empty Taste Constellation measured the intended 800px desktop width and the full 358px mobile content width.
+- Listening Portrait annotations resolved to 10 SVG units on desktop and 16 on mobile; visible non-range controls retained the 40px target contract.
+- No online visual reference was borrowed. Cards, shadows, extra labels, decorative icons and new colors were rejected because the defects were solved through scale, measure, focus and alignment.
+
+### Files
+
+- `styles.css`
+- `TODO.md`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+
+### Verification
+
+- Automated project validation through `npm test` and whitespace validation through `git diff --check`.
+- Browser measurement of Home, Archive, Track detail, Track Rate, Taste, Sonic Map, Taste Constellation, Listening Portrait, QQ Album Import, Journal and Year in Music at desktop and mobile viewports.
