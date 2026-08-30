@@ -270,6 +270,8 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 
 ## Version 1.7 — Listening evidence lifecycle
 
+Implementation commit: `d0a959a`
+
 ### Before
 
 - Imported records had matching states but no listening lifecycle, and `KEEP` moved them straight into the personal Library.

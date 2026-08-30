@@ -23,7 +23,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add a year summary generated only from locally saved ratings and Journal evidence.
 - [x] Report highest track, highest album, average rating and most frequent listening reason when evidence exists.
 - [x] Derive grower, disappointment, new discovery and strangest rating from explicit transparent rules; show `NOT ENOUGH EVIDENCE` when the required history is absent.
-- [ ] Run desktop/mobile QA, append the design/version record, and publish the completed phases. *(Local desktop/mobile QA and automated checks passed; design record and publication remain.)*
+- [x] Run desktop/mobile QA, append the design/version record, and publish the completed phases. *(UI 1.7; implementation commit `d0a959a`.)*
 
 ## Active refactor — Modular product architecture
 
