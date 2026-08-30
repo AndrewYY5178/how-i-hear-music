@@ -2,6 +2,13 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active maintenance — UI 2.1 visual refinement
+
+- [ ] Reduce oversized long subpage headings while preserving Home's display-scale hero.
+- [ ] Normalize the new analysis forms, select controls, keyboard focus and readable content measures.
+- [ ] Improve mobile chart annotation legibility and make empty analysis states occupy their intended grid width.
+- [ ] Re-run desktop/mobile visual QA, append the design record and publish the refinement.
+
 ## Active feature — Personal analysis expansion
 
 ### Phase 1 — Shared evidence foundation
