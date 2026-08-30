@@ -663,3 +663,48 @@ Implementation commit: `7248513`
 - `git diff --check`
 - Local HTTP headers and health endpoint checked against the running Node adapter.
 - Real browser QA remains deferred only because the browser control surface reported no available browser.
+
+## Version 3.3 — Archive data integrity
+
+Implementation commit: `1702ec8`
+
+### Before
+
+- Album rating created six placeholder tracks with preset scores when no ordered track list existed. Invalid rating URLs silently fell back to the first Track or Album.
+- Album track scores remained inside an album draft/Journal snapshot and did not become the current Track Overall ratings used by Archive and Taste.
+- Journal correction allowed display identity to diverge from its retained Track ID. Metadata used one record-level source, and saving a form could duplicate unchanged canonical values as local overrides.
+- Backup restore changed data immediately without a conflict preview or one-step full rollback. Neutral Sonic coordinates were counted as Cold/Sparse.
+- The active and installing Service Workers shared one cache, cleanup was not scoped to this project, and the adapter version/User-Agent/host configuration could drift.
+
+### Decision
+
+- Require a confirmed ordered Track list before Album rating. Missing or invalid entities render a non-saving state. Require all Track dimensions and every Album track Overall to pass the 0–11 domain validator.
+- On Album completion, write each confirmed track's Overall into the shared current rating store and update lifecycle in the same save flow. Keep one undo path for current ratings, album draft and Journal.
+- Lock Journal identity during ordinary historical correction. Store Metadata as per-field evidence with optional override value, HTTPS source, note and timestamp; unchanged canonical values remain canonical.
+- Preview backup groups/conflicts and let the owner choose local- or backup-wins. Capture every affected raw value, backup reminder and recovery list before restore so one full rollback is exact.
+- Normalize common language aliases and exclude coordinates inside a ±0.2 Sonic dead zone from quadrant claims.
+- Use a release-specific offline cache, delete only caches with the project prefix and serve installed assets cache-first until an explicitly accepted worker update. Read adapter version from `package.json`, expose `HOST`, and use the same version in outbound identity.
+- Move the deployment-base script into a first-party file so both Node and static Pages can use a strict `script-src 'self'` policy. Add a static referrer policy and update route-level Open Graph/Twitter text at runtime.
+
+### Evidence
+
+- Automated checks reject placeholder album rows, first-record route fallbacks, unversioned/unscoped caches, stale adapter identity, missing static CSP and partial individual Track ratings.
+- Core tests cover Album-to-Track persistence, duplicate/missing Track ID rejection, field-level Metadata provenance, immutable Journal identity, backup conflict preview, full rollback, encrypted backup and neutral Sonic handling.
+- Render checks confirm invalid Track/Album pages cannot expose a save form and a canonical Album without track order shows the explicit import requirement.
+- `npm test`, `node --check server.mjs` and `git diff --check` pass. Local HTTP verification returned version `0.3.0` from `/api/version` and `/healthz`, with the strict CSP and no-referrer response boundary.
+- A real browser connection was attempted after starting the local server, but the environment again reported zero available browsers. Responsive visual measurement remains open in `TODO.md`.
+- The six module identities, paper texture, palette, typography and established geometry were intentionally unchanged. No new cards, decoration, shadows or inferred music metadata were introduced.
+
+### Remaining evidence boundaries
+
+- The 41 canonical Tracks still have zero confirmed Album, release-date, language and region coverage. Those facts require source-backed curation rather than invention.
+- Hosted metadata import still requires an owner-selected HTTPS runtime and credentials/configuration. Production `main` remains unchanged until explicit publication approval.
+- Crawlable static route snapshots, a raster social image and CSS cascade consolidation remain open because they need a deployment/build decision or a real visual baseline.
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Local `/`, `/api/version` and `/healthz` HTTP response verification.
+- Browser QA deferred only because no browser instance was available.
