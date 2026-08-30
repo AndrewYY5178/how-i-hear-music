@@ -9,7 +9,7 @@ const score = (value) => { if (value === "" || value === null || value === undef
 
 export const updateJournalEntry = (id, changes = {}) => {
   const entries = readJournal(); const index = entries.findIndex((entry) => entry.id === id); if (index < 0) throw new Error("That Journal entry no longer exists."); const current = entries[index];
-  const next = { ...current, title: clean(changes.title, 120) || current.title, artist: clean(changes.artist, 120), note: clean(changes.note), revisedAt: new Date().toISOString(), revisionCount: Number(current.revisionCount || 0) + 1 };
+  const next = { ...current, note: clean(changes.note), revisedAt: new Date().toISOString(), revisionCount: Number(current.revisionCount || 0) + 1 };
   const timestamp = clean(changes.momentTimestamp, 5); const momentNote = clean(changes.momentNote, 160);
   if ((timestamp || momentNote) && (!/^\d{1,2}:[0-5]\d$/.test(timestamp) || !momentNote)) throw new Error("A musical moment needs both an M:SS timestamp and an observation.");
   next.moment = timestamp && momentNote ? { timestamp, note: momentNote } : null;

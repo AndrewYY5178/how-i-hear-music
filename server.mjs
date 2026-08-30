@@ -7,7 +7,9 @@ import { getQQAlbumDetails, parseQQAlbumLink } from './server/providers/qqmusic-
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 3000);
-const serviceVersion = '0.2.0';
+const host = process.env.HOST || '127.0.0.1';
+const serviceVersion = JSON.parse(await readFile(join(root, 'package.json'), 'utf8')).version;
+const serviceAgent = `How-I-Hear-Music/${serviceVersion} metadata importer`;
 const trustProxy = process.env.TRUST_PROXY === '1';
 const allowedOrigins = new Set(String(process.env.ALLOWED_ORIGIN || '').split(',').map((value) => value.trim()).filter(Boolean));
 const apiCache = new Map();
@@ -62,7 +64,7 @@ const requestQQPage = async (initialUrl) => {
   for (let index = 0; index < 4; index += 1) {
     const response = await fetch(current, {
       redirect: 'manual',
-      headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://y.qq.com/' },
+      headers: { 'User-Agent': serviceAgent, Referer: 'https://y.qq.com/' },
       signal: AbortSignal.timeout(12_000),
     });
     if (response.status >= 300 && response.status < 400) {
@@ -99,7 +101,7 @@ const fetchQQPlaylist = async (shareUrl) => {
     g_tk: '5381', loginUin: '0', hostUin: '0', inCharset: 'utf8', outCharset: 'utf-8', notice: '0', platform: 'yqq.json', needNewCode: '0',
   });
   const upstream = await fetch('https://c.y.qq.com/qzone-music/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?' + query, {
-    headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://y.qq.com/' },
+    headers: { 'User-Agent': serviceAgent, Referer: 'https://y.qq.com/' },
     signal: AbortSignal.timeout(12_000),
   });
   if (!upstream.ok) throw new Error('QQ Music playlist metadata is unavailable right now (' + upstream.status + ').');
@@ -133,7 +135,7 @@ const playlistIdFromNetEaseShare = async (shareUrl) => {
   if (direct && /^\d+$/.test(direct)) return direct;
   let current = supplied;
   for (let index = 0; index < 4; index += 1) {
-    const response = await fetch(current, { redirect: 'manual', headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://music.163.com/' }, signal: AbortSignal.timeout(12_000) });
+    const response = await fetch(current, { redirect: 'manual', headers: { 'User-Agent': serviceAgent, Referer: 'https://music.163.com/' }, signal: AbortSignal.timeout(12_000) });
     if (response.status >= 300 && response.status < 400) {
       const location = response.headers.get('location'); if (!location) throw new Error('NetEase returned an incomplete share redirect.');
       current = new URL(location, current); if (current.protocol !== 'https:' || !isNetEaseHost(current.hostname)) throw new Error('The NetEase share link redirected outside NetEase Music.');
@@ -152,7 +154,7 @@ const playlistIdFromNetEaseShare = async (shareUrl) => {
 const fetchNetEasePlaylist = async (shareUrl) => {
   const playlistId = await playlistIdFromNetEaseShare(shareUrl);
   const upstream = await fetch('https://music.163.com/api/playlist/detail?id=' + encodeURIComponent(playlistId), {
-    headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://music.163.com/' },
+    headers: { 'User-Agent': serviceAgent, Referer: 'https://music.163.com/' },
     signal: AbortSignal.timeout(12_000),
   });
   if (!upstream.ok) throw new Error('NetEase playlist metadata is unavailable right now (' + upstream.status + ').');
@@ -177,7 +179,7 @@ const searchQQCatalog = async (query) => {
   if (!keyword || keyword.length > 120) throw new Error('Enter a music search between 1 and 120 characters.');
   const params = new URLSearchParams({ p: '1', n: '12', w: keyword, format: 'json', new_json: '1', cr: '1', aggr: '1', lossless: '0', flag_qc: '0' });
   const upstream = await fetch('https://c.y.qq.com/soso/fcgi-bin/client_search_cp?' + params, {
-    headers: { 'User-Agent': 'How-I-Hear-Music/0.1 metadata importer', Referer: 'https://y.qq.com/' },
+    headers: { 'User-Agent': serviceAgent, Referer: 'https://y.qq.com/' },
     signal: AbortSignal.timeout(12_000),
   });
   if (!upstream.ok) throw new Error('QQ Music search is unavailable right now (' + upstream.status + ').');
@@ -201,7 +203,7 @@ createServer(async (request, response) => {
   response.on('finish', () => logEvent({ level: 'info', requestId, method: request.method, path: requestPath, status: response.statusCode, durationMs: Date.now() - startedAt }));
   response.setHeader('X-Content-Type-Options', 'nosniff');
   response.setHeader('Referrer-Policy', 'no-referrer');
-  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'sha256-scPrKXA2gsGVl9+H1HRw5ReULhqrky3i05zSO0VuvAE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https:");
+  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https:; base-uri 'self'; object-src 'none'");
   const origin = request.headers.origin;
   if (origin && allowedOrigins.has(origin)) { response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); response.setHeader('Access-Control-Allow-Headers', 'Content-Type'); response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); }
   if (request.method === 'OPTIONS') { if (origin && !allowedOrigins.has(origin)) { response.writeHead(403); response.end(); } else { response.writeHead(204); response.end(); } return; }
@@ -271,6 +273,6 @@ createServer(async (request, response) => {
     response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     response.end('Not found');
   }
-}).listen(port, '127.0.0.1', () => {
-  console.log(`How I Hear Music is running at http://localhost:${port}`);
+}).listen(port, host, () => {
+  console.log(`How I Hear Music is running at http://${host}:${port}`);
 });

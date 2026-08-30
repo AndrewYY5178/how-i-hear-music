@@ -1,6 +1,7 @@
-const cacheName = "how-i-hear-music-shell-v1";
+const cachePrefix = "how-i-hear-music-shell-";
+const cacheName = "how-i-hear-music-shell-0.3.0";
 const shell = [
-  "", "index.html", "styles.css", "app.js", "favicon.svg", "og-image.svg",
+  "", "index.html", "base.js", "styles.css", "app.js", "favicon.svg", "og-image.svg",
   "data/music-profile.json", "data/artists.json", "data/songs.json", "data/library.json", "data/catalog.json",
   "modules/home.js", "modules/archive/pages.js", "modules/import/pages.js", "modules/journal/pages.js", "modules/search/pages.js", "modules/taste/pages.js",
   "modules/layout/icons.js", "modules/layout/paths.js", "modules/layout/shell.js",
@@ -9,11 +10,11 @@ const shell = [
 ].map((path) => new URL(path, self.registration.scope).href);
 
 self.addEventListener("install", (event) => { event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(shell))); });
-self.addEventListener("activate", (event) => { event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== cacheName).map((key) => caches.delete(key))))); });
+self.addEventListener("activate", (event) => { event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith(cachePrefix) && key !== cacheName).map((key) => caches.delete(key))))); });
 self.addEventListener("message", (event) => { if (event.data === "SKIP_WAITING") self.skipWaiting(); });
 self.addEventListener("fetch", (event) => {
   const request = event.request; const url = new URL(request.url); if (request.method !== "GET" || url.pathname.includes("/api/") || url.pathname.endsWith("/healthz")) return;
   if (request.mode === "navigate") { event.respondWith(fetch(request).catch(() => caches.match(new URL("index.html", self.registration.scope).href))); return; }
   if (url.origin !== self.location.origin) return;
-  event.respondWith(caches.match(request).then((cached) => { const fresh = fetch(request).then((response) => { if (response.ok) caches.open(cacheName).then((cache) => cache.put(request, response.clone())); return response; }).catch(() => cached); return cached || fresh; }));
+  event.respondWith(caches.match(request).then((cached) => cached || fetch(request)));
 });

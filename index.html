@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#e7dfcf" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https:; base-uri 'self'; object-src 'none'" />
     <meta name="him-api-base" content="" />
     <meta name="description" content="How I Hear Music — a personal music taste archive." />
     <meta property="og:title" content="How I Hear Music" />
@@ -12,10 +14,10 @@
     <meta property="og:url" content="https://andrewyy5178.github.io/how-i-hear-music/" />
     <meta property="og:image" content="https://andrewyy5178.github.io/how-i-hear-music/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How I Hear Music" />
+    <meta name="twitter:description" content="A personal music taste archive: listening shapes, album landscapes and notes over time." />
     <base id="app-base" href="/" />
-    <script>
-      document.getElementById("app-base").href = location.pathname.startsWith("/how-i-hear-music/") ? "/how-i-hear-music/" : "/";
-    </script>
+    <script src="./base.js"></script>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href="https://andrewyy5178.github.io/how-i-hear-music/" />
     <link rel="manifest" href="./manifest.webmanifest" />

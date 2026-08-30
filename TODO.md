@@ -2,6 +2,32 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active integrity closure — UI 3.3
+
+### Rating and identity integrity
+
+- [x] Remove fabricated album tracks and preset scores; block album rating until a confirmed ordered track list exists.
+- [x] Replace invalid Track/Album route fallbacks with explicit not-found states that cannot save against another record.
+- [x] Persist album track scores into the same current Track rating store and lifecycle used by individual ratings.
+- [x] Validate every album Overall and track score at the domain boundary before storage.
+- [x] Keep Journal record identity immutable during ordinary historical correction.
+
+### Data recovery and provenance
+
+- [x] Add backup restore preview, conflict policy and one-step full restore rollback.
+- [x] Store metadata provenance per field and avoid copying unchanged canonical values into local overrides.
+- [x] Add normalization/dead-zone handling so neutral Sonic values and equivalent language labels do not create false Blind Spots.
+
+### Delivery and verification
+
+- [x] Version offline caches per release without mutating the active worker's cache.
+- [x] Make adapter host/version configuration deployable and keep the outbound User-Agent aligned with the service version.
+- [x] Expand regression coverage for invalid routes, album persistence, restore conflicts, provenance and neutral analysis.
+- [ ] Complete real desktop/tablet/mobile browser QA and publish UI 3.3 to `main` only after explicit production approval.
+- [ ] Curate confirmed Album, release-date, language and region metadata for the 41 canonical Tracks; current canonical coverage remains zero until sources are supplied or verified.
+- [ ] Generate crawlable static snapshots and a broadly supported raster social image for the core routes.
+- [ ] Consolidate the accumulated CSS media-query cascade only after visual baselines can be captured in a real browser.
+
 ## Active closure — UI 3.2
 
 ### Personal data and correction

@@ -8,7 +8,8 @@ export const scoreFromKey = (key, current, minimum = 0, maximum = 11) => {
   if (key === "Home") return minimum;
   if (key === "End") return maximum;
   const step = { ArrowUp: 0.1, ArrowRight: 0.1, ArrowDown: -0.1, ArrowLeft: -0.1, PageUp: 1, PageDown: -1 }[key];
-  return step === undefined ? null : clampScore(Number(current) + step, minimum, maximum);
+  const numeric = current === null || current === undefined || current === "" ? (minimum + maximum) / 2 : Number(current);
+  return step === undefined ? null : clampScore(numeric + step, minimum, maximum);
 };
 
 export const radarScoreFromPointer = (clientX, clientY, rect, fieldIndex) => {

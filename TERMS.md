@@ -32,6 +32,8 @@ Ratings, listening notes, imported records, corrections and analytical inputs ar
 
 Data Desk can export readable JSON or an optional password-encrypted backup. Anyone with access to a plain backup may read its personal notes and ratings. Encrypted backups cannot be opened without the chosen password, and the site does not store or recover that password. Users are responsible for keeping backup files and passwords private and for deleting copies they no longer need.
 
+Before restore, Data Desk reports compatible groups and conflicts. The user chooses whether local or backup values win matching records. One complete pre-restore rollback is retained locally until it is used or replaced by a later restore.
+
 This notice is a repository-level disclosure, not legal advice. Qualified legal review is still required before commercial use or broader public expansion.
 
 ## Contact

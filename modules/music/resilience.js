@@ -7,6 +7,7 @@ export const encryptedBackupVersion = 1;
 export const schemaKey = "how-i-hear-music:schema-version";
 export const recoveryKey = "how-i-hear-music:recovery:v1";
 export const backupReminderKey = "how-i-hear-music:backup-reminder:v1";
+export const restoreRollbackKey = "how-i-hear-music:restore-rollback:v1";
 
 const fixedKeys = [
   data.library.storageKey, data.library.libraryStorageKey, data.library.ignoredStorageKey, data.library.albumStorageKey,
@@ -19,6 +20,7 @@ const fixedKeys = [
 export const backupKeys = () => [...new Set([...fixedKeys, ...Object.keys(localStorage).filter((key) => key.startsWith("how-i-hear-music:album-draft:"))])];
 const identity = (item) => item?.id || `${item?.title || ""}::${item?.artist || ""}::${item?.at || ""}` || JSON.stringify(item);
 const mergeArrays = (current, incoming) => { const result = [...current]; const seen = new Set(current.map(identity)); incoming.forEach((item) => { const id = identity(item); if (!seen.has(id)) { seen.add(id); result.push(item); } }); return result; };
+const compatibleEntries = (payload) => { const allowed = new Set(fixedKeys); return Object.entries(payload?.data || {}).filter(([key]) => allowed.has(key) || key.startsWith("how-i-hear-music:album-draft:")); };
 
 export const exportBackup = () => ({ format: backupFormat, version: backupVersion, schemaVersion: 1, exportedAt: new Date().toISOString(), data: Object.fromEntries(backupKeys().map((key) => [key, storage.get(key, null)]).filter(([, value]) => value !== null)) });
 const bytesToBase64 = (bytes) => { let binary = ""; bytes.forEach((byte) => { binary += String.fromCharCode(byte); }); return btoa(binary); };
@@ -44,19 +46,28 @@ export const decryptBackup = async (payload, password) => {
     return JSON.parse(new TextDecoder().decode(plaintext));
   } catch { throw new Error("The encrypted backup could not be opened. Check the password and file integrity."); }
 };
-export const restoreBackup = (payload) => {
+export const previewRestore = (payload) => {
   if (!payload || payload.format !== backupFormat || ![1, 2].includes(payload.version) || !payload.data || typeof payload.data !== "object" || Array.isArray(payload.data)) throw new Error("This is not a supported How I Hear Music backup.");
-  const allowed = new Set(fixedKeys); let restored = 0;
-  Object.entries(payload.data).forEach(([key, value]) => {
-    if (!allowed.has(key) && !key.startsWith("how-i-hear-music:album-draft:")) return;
-    const current = storage.get(key, Array.isArray(value) ? [] : {});
-    if (Array.isArray(value)) { storage.set(key, mergeArrays(Array.isArray(current) ? current : [], value)); restored += 1; return; }
-    if (value && typeof value === "object") { storage.set(key, { ...(current && typeof current === "object" ? current : {}), ...value }); restored += 1; return; }
-    if (key.startsWith("how-i-hear-music:album-draft:") && Number.isFinite(value)) { storage.set(key, value); restored += 1; }
-  });
+  const entries = compatibleEntries(payload); const conflicts = entries.filter(([key, value]) => { const current = storage.get(key, null); return current !== null && JSON.stringify(current) !== JSON.stringify(value); });
+  return { groups: entries.length, conflicts: conflicts.length, additions: entries.length - conflicts.length, keys: entries.map(([key]) => key) };
+};
+export const restoreBackup = (payload, { conflictPolicy = "backup", createRollback = true } = {}) => {
+  previewRestore(payload); if (!["backup", "local"].includes(conflictPolicy)) throw new Error("Choose whether backup or local values win conflicts."); const entries = compatibleEntries(payload); let restored = 0;
+  if (createRollback) localStorage.setItem(restoreRollbackKey, JSON.stringify({ at: new Date().toISOString(), values: Object.fromEntries([...entries.map(([key]) => [key, localStorage.getItem(key)]), [backupReminderKey, localStorage.getItem(backupReminderKey)], [recoveryKey, localStorage.getItem(recoveryKey)]]) }));
+  try { entries.forEach(([key, value]) => {
+    const current = storage.get(key, Array.isArray(value) ? [] : {}); let next = null;
+    if (Array.isArray(value)) { const local = Array.isArray(current) ? current : []; next = conflictPolicy === "backup" ? mergeArrays(value, local) : mergeArrays(local, value); }
+    else if (value && typeof value === "object") { const local = current && typeof current === "object" ? current : {}; next = conflictPolicy === "backup" ? { ...local, ...value } : { ...value, ...local }; }
+    else if (key.startsWith("how-i-hear-music:album-draft:") && Number.isFinite(value)) next = value;
+    if (next !== null) { if (!storage.set(key, next)) throw new Error("Browser storage rejected part of the restore."); restored += 1; }
+  }); } catch (error) { if (createRollback) restoreLastRollback(); throw error; }
   if (!restored) throw new Error("The backup contains no compatible local records.");
   storage.set(backupReminderKey, { lastBackupAt: new Date().toISOString() });
   return restored;
+};
+export const restoreLastRollback = () => {
+  let snapshot; try { snapshot = JSON.parse(localStorage.getItem(restoreRollbackKey) || "null"); } catch {} if (!snapshot?.values) throw new Error("No complete restore rollback is available.");
+  Object.entries(snapshot.values).forEach(([key, raw]) => { if (raw === null) localStorage.removeItem(key); else localStorage.setItem(key, raw); }); localStorage.removeItem(restoreRollbackKey); return Object.keys(snapshot.values).length;
 };
 
 export const recoverySnapshots = () => storage.get(recoveryKey, []);

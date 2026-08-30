@@ -17,11 +17,12 @@ globalThis.fetch = async (input, options) => {
 };
 
 const { storage, allTracks, trackId } = await import('../modules/music/data.js');
-const { decryptBackup, exportBackup, exportEncryptedBackup, migrateLocalData, recoverySnapshots, restoreBackup } = await import('../modules/music/resilience.js');
-const { metadataCoverage, saveMetadataOverride } = await import('../modules/music/metadata.js');
+const { decryptBackup, exportBackup, exportEncryptedBackup, migrateLocalData, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback } = await import('../modules/music/resilience.js');
+const { metadataCoverage, metadataOverrideFor, saveMetadataOverride } = await import('../modules/music/metadata.js');
 const { journalEntry, updateJournalEntry } = await import('../modules/music/journal.js');
 const { albumNote, albumNotesKey, saveAlbumNote } = await import('../modules/music/notes.js');
-const { blindSpots } = await import('../modules/music/taste-dna.js');
+const { blindSpots, sonicQuadrant } = await import('../modules/music/taste-dna.js');
+const { readRatings, saveAlbumTrackRatings, saveRatingRecord, validScore } = await import('../modules/music/lifecycle.js');
 
 storage.set('how-i-hear-music:journal:v1', [{ type: 'rating', at: '2026-01-01T00:00:00.000Z', title: 'Before IDs' }]);
 const migration = migrateLocalData();
@@ -29,17 +30,27 @@ assert.equal(migration.to, 1);
 assert.match(storage.get('how-i-hear-music:journal:v1', [])[0].id, /^journal_/);
 
 const firstTrack = allTracks()[0];
-saveMetadataOverride(trackId(firstTrack), { album: 'Confirmed Album', releaseDate: '2026-08-31', language: 'Chinese', region: 'Mainland China', sourceNote: 'Owner confirmed' });
+saveMetadataOverride(trackId(firstTrack), { album: 'Confirmed Album', albumSourceUrl: 'https://example.com/album', albumSourceNote: 'Owner confirmed', releaseDate: '2026-08-31', language: 'Chinese', region: 'Mainland China' });
 assert.equal(allTracks()[0].album, 'Confirmed Album');
 assert.equal(metadataCoverage().fields.album > 0, true);
+assert.equal(metadataOverrideFor(trackId(firstTrack)).fields.album.sourceUrl, 'https://example.com/album');
 assert.throws(() => saveMetadataOverride(trackId(firstTrack), { releaseDate: '31/08/2026' }), /YYYY/);
-assert.throws(() => saveMetadataOverride(trackId(firstTrack), { sourceUrl: 'http://example.com' }), /HTTPS/);
+assert.throws(() => saveMetadataOverride(trackId(firstTrack), { album: 'Another Album', albumSourceUrl: 'http://example.com' }), /HTTPS/);
 
 const historicalId = storage.get('how-i-hear-music:journal:v1', [])[0].id;
 updateJournalEntry(historicalId, { title: 'Corrected history', artist: 'Artist', song: '8.2', vocal: '8.4', production: '8.1', overall: '8.3', note: 'Corrected note', momentTimestamp: '2:47', momentNote: 'Harmony enters' });
 assert.equal(journalEntry(historicalId).scores.overall, 8.3);
 assert.equal(journalEntry(historicalId).revisionCount, 1);
+assert.equal(journalEntry(historicalId).title, 'Before IDs');
 assert.throws(() => updateJournalEntry(historicalId, { overall: '12' }), /between 0 and 11/);
+
+assert.equal(validScore('8.26'), 8.3);
+assert.throws(() => validScore(''), /confirmed/);
+assert.throws(() => saveRatingRecord('partial-track', { scores: { overall: 8 } }), /confirmed/);
+const albumRating = saveAlbumTrackRatings({ album: { title: 'Verified Album', artist: 'Artist' }, tracks: [{ trackId: 'verified-1', title: 'First', overall: 8.4 }, { trackId: 'verified-2', title: 'Second', overall: 9.1 }] });
+assert.equal(albumRating.confirmed.length, 2);
+assert.equal(readRatings()['verified-2'].scores.overall, 9.1);
+assert.throws(() => saveAlbumTrackRatings({ album: { title: 'Broken' }, tracks: [{ trackId: 'verified-1', title: 'First', overall: null }] }), /confirmed/);
 
 saveAlbumNote('album-test', 'The second half keeps opening outward.');
 assert.equal(albumNote('album-test').note, 'The second half keeps opening outward.');
@@ -51,21 +62,29 @@ assert.ok(backup.data[albumNotesKey]);
 localStorage.clear();
 assert.equal(restoreBackup(backup) > 0, true);
 assert.equal(allTracks()[0].album, 'Confirmed Album');
+saveAlbumNote('album-test', 'Local conflict value');
+assert.equal(previewRestore(backup).conflicts > 0, true);
+restoreBackup(backup, { conflictPolicy: 'backup' });
+assert.equal(albumNote('album-test').note, 'The second half keeps opening outward.');
+assert.equal(restoreLastRollback() > 0, true);
+assert.equal(albumNote('album-test').note, 'Local conflict value');
 const encrypted = await exportEncryptedBackup('correct horse battery staple');
 assert.equal(encrypted.format, 'how-i-hear-music-encrypted-backup');
 assert.ok((await decryptBackup(encrypted, 'correct horse battery staple')).data['how-i-hear-music:metadata-overrides:v1']);
 await assert.rejects(() => decryptBackup(encrypted, 'wrong password'), /could not be opened/);
 
-const coverageRecords = Array.from({ length: 10 }, (_, index) => ({ id: `coverage-${index}`, title: `Coverage ${index}`, artist: `Artist ${index}`, language: index < 8 ? 'Chinese' : 'English', releaseDate: index < 8 ? '2024-01-01' : '2014-01-01', scores: { overall: 8 } }));
+const coverageRecords = Array.from({ length: 10 }, (_, index) => ({ id: `coverage-${index}`, title: `Coverage ${index}`, artist: `Artist ${index}`, language: index < 7 ? 'Chinese' : index === 7 ? '中文' : 'English', releaseDate: index < 8 ? '2024-01-01' : '2014-01-01', scores: { overall: 8 } }));
 storage.set('how-i-hear-music:sonic-descriptors:v1', Object.fromEntries(coverageRecords.map((record, index) => [record.id, index < 6 ? { warmCold: -0.5, denseSparse: -0.5 } : index < 8 ? { warmCold: 0.5, denseSparse: -0.5 } : { warmCold: -0.5, denseSparse: 0.5 }])));
 const coverageGaps = blindSpots({ records: coverageRecords, traits: [], albums: [], journal: [] }).map((spot) => spot.id);
 assert.ok(coverageGaps.includes('language-breadth'));
 assert.ok(coverageGaps.includes('era-breadth'));
 assert.ok(coverageGaps.includes('sonic-quadrant'));
+assert.equal(sonicQuadrant({ warmCold: 0, denseSparse: 0 }), null);
+assert.equal(sonicQuadrant({ warmCold: -.5, denseSparse: .5 }), 'warm / sparse');
 
 storage.set('how-i-hear-music:test-value', { version: 1 });
 storage.set('how-i-hear-music:test-value', { version: 2 });
 storage.remove('how-i-hear-music:test-value');
 assert.equal(recoverySnapshots().some((snapshot) => snapshot.key === 'how-i-hear-music:test-value' && snapshot.value?.version === 2), true);
 
-console.log('Core data checks passed: correction history, metadata, notes, encrypted backup, coverage gaps and recovery.');
+console.log('Core data checks passed: rating identity, field provenance, album persistence, restore rollback, encryption and evidence gates.');

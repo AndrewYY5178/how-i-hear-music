@@ -30,12 +30,16 @@ export const allAlbums = () => {
   const canonicalAlbums = data.profile.albumArchive.map((album) => { const id = slug(album.artist + "-" + album.title); const supplement = local.find((item) => item.id === id); if (supplement) used.add(supplement.id); return supplement ? { ...album, ...supplement, coverUrl: supplement.coverUrl || album.coverUrl || null, coverSource: supplement.coverSource || album.coverSource || null } : album; });
   return [...canonicalAlbums, ...local.filter((album) => !used.has(album.id))];
 };
-export const allTracks = () => {
+export const baseTracks = () => {
   const result = [...data.songs.entries]; const ids = new Set(result.map(trackId));
   importedAlbums().flatMap((album) => album.tracks || []).forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
   localVersions().forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
+  return result;
+};
+export const allTracks = () => {
+  const result = baseTracks();
   const overrides = storage.get("how-i-hear-music:metadata-overrides:v1", {});
-  return result.map((track) => ({ ...track, ...(overrides[trackId(track)] || {}) }));
+  return result.map((track) => { const override = overrides[trackId(track)] || {}; const fieldValues = override.fields ? Object.fromEntries(Object.entries(override.fields).filter(([, evidence]) => evidence?.value).map(([field, evidence]) => [field, evidence.value])) : {}; return { ...track, ...Object.fromEntries(Object.entries(override).filter(([field]) => ["album", "releaseDate", "language", "region"].includes(field))), ...fieldValues }; });
 };
 export const allArtists = () => {
   const result = [...data.artists.featured, ...data.artists.uncertain]; const ids = new Set(result.map((artist) => artist.id));
@@ -43,5 +47,6 @@ export const allArtists = () => {
   return result;
 };
 export const findTrack = (id) => allTracks().find((track) => trackId(track) === id || legacyTrackId(track) === id) || null;
+export const findBaseTrack = (id) => baseTracks().find((track) => trackId(track) === id || legacyTrackId(track) === id) || null;
 export const findArtist = (id) => allArtists().find((artist) => artist.id === id) || null;
 export const findAlbum = (id) => allAlbums().find((album) => (album.id || slug(album.artist + "-" + album.title)) === id || slug(album.artist + "-" + album.title) === id) || null;

@@ -83,7 +83,7 @@ const render = () => {
   const back = path === "/" ? "" : link(parent.href, `← ${parent.label}`, "back-button");
   app.innerHTML = back + route(path);
   const pageTitle = path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim() || "Page"; setDocumentTitle(pageTitle);
-  const publicUrl = new URL(withBase(path), "https://andrewyy5178.github.io").href; document.querySelector('link[rel="canonical"]')?.setAttribute("href", publicUrl); document.querySelector('meta[property="og:url"]')?.setAttribute("content", publicUrl); document.querySelector('meta[name="description"]')?.setAttribute("content", `${pageTitle} — personal listening evidence in How I Hear Music.`);
+  const description = `${pageTitle} — personal listening evidence in How I Hear Music.`; const publicUrl = new URL(withBase(path), "https://andrewyy5178.github.io").href; document.querySelector('link[rel="canonical"]')?.setAttribute("href", publicUrl); document.querySelector('meta[property="og:url"]')?.setAttribute("content", publicUrl); document.querySelector('meta[property="og:title"]')?.setAttribute("content", pageTitle); document.querySelector('meta[property="og:description"]')?.setAttribute("content", description); document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", pageTitle); document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", description); document.querySelector('meta[name="description"]')?.setAttribute("content", description);
   app.focus({ preventScroll: true });
   bindArchive(path, navigate);
   bindRating(path, navigate);

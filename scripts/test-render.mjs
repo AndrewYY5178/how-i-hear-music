@@ -33,5 +33,11 @@ for (const [name, render] of renders) {
   assert.match(html, /<h1>|page-head/, `${name} lacks a page heading`);
   assert.equal(html.includes('undefined'), false, `${name} exposed undefined`);
 }
+assert.match(rating.rateTrack('missing-track'), /Track not found/);
+assert.doesNotMatch(rating.rateTrack('missing-track'), /SAVE RATING/);
+assert.match(rating.rateAlbum('missing-album'), /Album not found/);
+const blockedAlbum = rating.rateAlbum('单依纯-纯妹妹');
+assert.match(blockedAlbum, /CONFIRMED TRACK ORDER REQUIRED/);
+assert.doesNotMatch(blockedAlbum, /Track 01|7\.6/);
 
 console.log(`Route render checks passed: ${renders.length} reliability, retrieval and analysis views.`);

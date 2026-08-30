@@ -16,6 +16,8 @@ UI 3.1 收口了资料可靠性：全站 Search 同时检索 Track、Album、Art
 
 UI 3.2 补齐了本地资料的长期维护路径：Data Desk 可导出可读 JSON 或使用 AES-GCM 与密码保护的备份，并显示浏览器配额；Journal 的历史评分可以独立修订，Album detail 可保存私人专辑笔记，Metadata 可记录 HTTPS 来源、证据说明和修订时间。Blind Spots 只在语言、年代或 Sonic 样本达到门槛时显示覆盖空白。静态页面新增离线壳、显式更新提示、路由 metadata、sitemap 和 manifest；metadata adapter 新增健康/版本端点、结构化日志、可信代理开关和有界运行时缓存。
 
+UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 不再生成虚构 Track 或预设分数；错误 Track/Album URL 不再回退到其他记录；完成 Album rating 会验证所有曲目并同步当前 Track ratings。Journal 修订锁定原记录身份，Metadata 来源按字段保存，备份恢复先预览冲突并保留一次完整回滚。Sonic 中性值不再被误分到 Cold/Sparse，离线缓存按版本隔离，静态部署也获得 CSP/referrer 边界。
+
 未完成的导入、数据库和互动功能记录在 [`TODO.md`](TODO.md) 中，并按优先级整理。
 
 ## 在线版本
@@ -25,10 +27,10 @@ UI 3.2 补齐了本地资料的长期维护路径：Data Desk 可导出可读 JS
 静态页面会在导入表单之前明确显示服务未连接。若已有独立部署的 metadata adapter，可把 `index.html` 中的 `him-api-base` 设置为它的 HTTPS 根地址。adapter 运行环境同时需要：
 
 ```bash
-ALLOWED_ORIGIN=https://andrewyy5178.github.io npm start
+HOST=0.0.0.0 ALLOWED_ORIGIN=https://andrewyy5178.github.io npm start
 ```
 
-可用逗号分隔多个精确 origin。只有在 adapter 位于可信反向代理后方时才设置 `TRUST_PROXY=1`；否则会忽略客户端提供的 `X-Forwarded-For`。`/healthz` 提供运行状态，`/api/version` 提供公开能力版本。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时、结构化请求日志与 CORS 白名单；生产部署仍需由托管平台提供 TLS、日志留存和进程管理。仓库不包含托管账户或部署凭据，因此 GitHub Pages 版本默认保持 metadata service 未连接。
+可用逗号分隔多个精确 origin。本地默认只监听 `127.0.0.1`；托管平台通常需要显式设置 `HOST=0.0.0.0`。只有在 adapter 位于可信反向代理后方时才设置 `TRUST_PROXY=1`；否则会忽略客户端提供的 `X-Forwarded-For`。`/healthz` 提供运行状态，`/api/version` 提供公开能力版本。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时、结构化请求日志与 CORS 白名单；生产部署仍需由托管平台提供 TLS、日志留存和进程管理。仓库不包含托管账户或部署凭据，因此 GitHub Pages 版本默认保持 metadata service 未连接。
 
 ## 预览
 
@@ -50,7 +52,7 @@ npm run dev
 npm test
 ```
 
-该命令覆盖结构与静态无障碍/安全检查、数据迁移、metadata overlay、Journal 修订、专辑笔记、明文与加密备份、恢复快照、Blind Spot 证据门槛，以及十一个可靠性、检索和分析页面的渲染 smoke test。`npm run check:adapters` 会访问第三方公开接口，只应在允许联网并需要检查上游兼容性时运行。
+该命令覆盖结构与静态无障碍/安全检查、数据迁移、字段级 metadata、Journal 身份、Album/Track 评分一致性、明文与加密备份、冲突预览与完整回滚、Blind Spot 中性区，以及十一个可靠性、检索和分析页面的渲染 smoke test。`npm run check:adapters` 会访问第三方公开接口，只应在允许联网并需要检查上游兼容性时运行。
 
 ## 外部依赖
 
