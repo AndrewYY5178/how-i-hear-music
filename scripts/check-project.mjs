@@ -5,6 +5,7 @@ import { matchTrack } from '../modules/music/matching.js';
 import { createPlaylistSnapshot, diffPlaylistSnapshots } from '../modules/music/sync.js';
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from '../modules/rating/interactions.js';
 import { withBase, withoutBase } from '../modules/layout/paths.js';
+import { directQQAlbumIdentity, normalizeQQAlbum } from '../server/providers/qqmusic-album.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -56,7 +57,22 @@ if (waveformScoreFromPointer(24, waveRect) !== 11 || waveformScoreFromPointer(15
 if (withBase('/archive', '/how-i-hear-music') !== '/how-i-hear-music/archive' || withoutBase('/how-i-hear-music/archive', '/how-i-hear-music') !== '/archive') errors.push('routing: project-site base path conversion is incorrect');
 if (withBase('/', '') !== '/' || withoutBase('/archive', '') !== '/archive') errors.push('routing: root deployment path conversion is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js'];
+try {
+  const parsedAlbum = directQQAlbumIdentity('分享专辑 https://y.qq.com/n/ryqq/albumDetail/000hBflm2T62Ur');
+  if (parsedAlbum.id !== '000hBflm2T62Ur') errors.push('QQ album import: desktop album MID parsing failed');
+  const parsedMobileAlbum = directQQAlbumIdentity('https://i.y.qq.com/n2/m/share/details/album.html?albummid=002EfO222kNFd0');
+  if (parsedMobileAlbum.id !== '002EfO222kNFd0') errors.push('QQ album import: mobile album MID parsing failed');
+  directQQAlbumIdentity('https://y.qq.com/n/ryqq/playlist/123456'); errors.push('QQ album import: playlist link was not rejected');
+} catch (error) { if (!String(error.message).includes('playlist')) errors.push(`QQ album import: parser failed (${error.message})`); }
+const albumFixture = normalizeQQAlbum({ code: 0, data: { id: 1, mid: 'fixtureAlbum01', name: 'Fixture', singername: 'Artist', singermid: 'artistMid01', aDate: '2026-01-02', list: [
+  { songmid: 'trackDisc02', songname: 'Disc two', cdIdx: 1, belongCD: 1, interval: 180, singer: [{ name: 'Artist', mid: 'artistMid01' }] },
+  { songmid: 'trackDisc01B', songname: 'Second', cdIdx: 0, belongCD: 2, interval: 170, singer: [{ name: 'Artist', mid: 'artistMid01' }] },
+  { songmid: 'trackDisc01A', songname: 'First', cdIdx: 0, belongCD: 1, interval: 160, singer: [{ name: 'Artist', mid: 'artistMid01' }] },
+] } });
+if (albumFixture.tracks.map((track) => `${track.discNumber}:${track.trackNumber}`).join() !== '1:1,1:2,2:1') errors.push('QQ album import: disc/track ordering is incorrect');
+if (albumFixture.releaseDate !== '2026-01-02' || albumFixture.tracks[0].durationMs !== 160000) errors.push('QQ album import: normalized metadata is incorrect');
+
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');

@@ -50,6 +50,8 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Imported music advances through four explicit typographic states—Imported, Heard, Rated and Archived—and only the final explicit action moves a record into the Library store.
 - Track rating leads with Radar and eight listening reasons. `ONE MOMENT` reveals its own required timestamp/observation fields; the long private note stays collapsed by default.
 - Annual Journal summaries use one dominant average numeral, ruled evidence rows and explicit `NOT ENOUGH EVIDENCE` states; they never synthesize missing listening history.
+- QQ Album import is a dedicated functional subroute: one link input, one complete ordered preview and one explicit import action. Duplicate state remains typographic, and the preview uses rules rather than cards.
+- Imported album tracklists preserve Disc then Track order. Multi-disc records use quiet disc separators; an ordered sequence may appear before ratings, while its Waveform stays empty until scores exist.
 
 ## Reference boundary
 

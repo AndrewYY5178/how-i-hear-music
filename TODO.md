@@ -25,6 +25,17 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Derive grower, disappointment, new discovery and strangest rating from explicit transparent rules; show `NOT ENOUGH EVIDENCE` when the required history is absent.
 - [x] Run desktop/mobile QA, append the design/version record, and publish the completed phases. *(UI 1.7; implementation commit `d0a959a`.)*
 
+## Active feature — QQ Music ordered album import
+
+- [x] Recognize a QQ Music desktop/mobile album link or share text and reject playlist/track links explicitly.
+- [x] Fetch public album metadata and the exact album tracklist through a server-side adapter only.
+- [x] Normalize and sort tracks by `discNumber`, then `trackNumber`, with provider order only as a fallback.
+- [x] Show the complete ordered tracklist and duplicate analysis before writing local data.
+- [x] Store one canonical local album record, ordered local tracks, provider mappings and an import log without using QQ IDs as canonical IDs.
+- [x] Render imported single- and multi-disc tracklists in Archive and initialize Rate Album from that confirmed sequence.
+- [x] Preserve album-import records in local backup/restore and prevent duplicate album creation.
+- [ ] Add adapter tests, browser QA, design/version notes and publish the completed feature. *(Adapter and browser QA passed; version record and publication remain.)*
+
 ## Active refactor — Modular product architecture
 
 - [x] Replace the long single-page experience with the six-route product structure: Home, Archive, Rate, Taste, Import and Journal.
@@ -91,7 +102,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 - [x] Add a four-dimension Radar visual to the listening lab, including live visitor feedback and visitor/Andrew comparison after reveal.
 - [x] Add a data-driven album Overall Waveform renderer with Peak, Low, Average and Consistency metrics; it stays empty until a confirmed track sequence is supplied.
-- [ ] Add confirmed, ordered track-level Overall scores for an album before publishing its first real waveform.
+- [x] Add confirmed official album sequences through QQ Music album import; the Waveform remains scoreless until the imported tracks or album session are rated.
 - [x] Expand beyond the former six-song deck: every confirmed Archive track can open the four-dimension Rate workspace.
 - [x] Add user-confirmed Musical Moments through the `ONE MOMENT` reason; a timestamp and observation are required and never inferred.
 - [ ] Add version-specific ratings and comparisons.

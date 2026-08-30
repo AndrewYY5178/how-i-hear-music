@@ -22,7 +22,7 @@ export const radar = (scores = {}, { interactive = false, className = "" } = {})
 
 const y = (score, height, padding) => padding + (height - padding * 2) - ((Math.max(5, Math.min(11, Number(score) || 5)) - 5) / 6) * (height - padding * 2);
 export const waveform = (tracks, { interactive = false } = {}) => {
-  if (!tracks?.length) return `<div class="empty-wave">No confirmed track sequence yet.</div>`;
+  if (!tracks?.length) return `<div class="empty-wave">No confirmed track scores yet.</div>`;
   const width = 680; const height = 180; const padding = 24;
   const coords = tracks.map((track, index) => [padding + ((width - padding * 2) * index) / Math.max(1, tracks.length - 1), y(track.overall, height, padding)]);
   const path = coords.reduce((result, current, index) => {

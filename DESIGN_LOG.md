@@ -312,3 +312,56 @@ Implementation commit: `d0a959a`
 - Automated project validation through `npm test`.
 - Browser interaction check for reason selection, conditional moment fields, save, Journal rendering and Year in Music aggregation.
 - Desktop Inbox and mobile Year/Queue overflow checks; no console warnings or errors.
+
+## Version 1.8 — Ordered QQ Music album import
+
+### Before
+
+- QQ Music import accepted public playlists and individual catalog results, but explicitly rejected album links.
+- Archive album pages could only filter already-confirmed canonical tracks; their order was not backed by an album entity from the provider.
+- Rate Album opened a six-row placeholder draft when no manual sequence existed.
+
+### Decision
+
+- Give ordered album import its own QQ subroute so playlist review, single-track search and album ingestion retain separate tasks and densities.
+- Normalize QQ's provider-specific `cdIdx` and `belongCD` fields into Disc and Track numbers inside a server-only adapter, then sort by Disc, Track and original response position.
+- Preview the entire sequence and duplicate analysis before one local Album package is written. Keep the Album, canonical local IDs, ordered Tracks, provider mappings and import log together so the browser does not retain a half-created album.
+- Render all imported tracks in Archive before they are rated, but keep the Listening Landscape empty until track scores or a completed album session exist.
+- Preserve the existing asset boundary by deliberately discarding provider artwork; canonical/manual HTTPS cover references remain the only cover paths.
+
+### Evidence
+
+- QQ Music's public album response returned `Sweetener` with 15 tracks; `belongCD` supplied Track 01–15 and `cdIdx` supplied the zero-based disc index.
+- The live adapter smoke check confirmed 15 readable ordered album tracks alongside the existing 38-track QQ playlist and 200-track NetEase fixtures.
+- In an isolated browser origin, a full share sentence resolved to a 15-track preview, imported once, opened every track in Archive and initialized Rate Album with 15 controls.
+- Pasting the same provider album again produced `ALBUM ALREADY EXISTS`, 15 existing tracks and no second import action. A playlist URL returned the explicit “playlist, not an album” error.
+- At 390 × 844 the full preview had no horizontal overflow; desktop Archive also had no overflow or console warnings.
+- No external visual reference was borrowed. The new page reuses the Import module's existing paper, editorial rules, type roles and zero-radius controls.
+
+### Files
+
+- `server/providers/qqmusic-album.mjs`
+- `server.mjs`
+- `modules/music/album-import.js`
+- `modules/music/data.js`
+- `modules/import/pages.js`
+- `modules/archive/pages.js`
+- `modules/rating/pages.js`
+- `modules/rating/visuals.js`
+- `data/library.json`
+- `app.js`
+- `styles.css`
+- `scripts/check-project.mjs`
+- `scripts/check-adapters.mjs`
+- `README.md`
+- `ASSET_POLICY.md`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Syntax checks for every changed JavaScript module and `npm test`.
+- Live `npm run check:adapters` against QQ playlist, QQ album and NetEase playlist metadata.
+- End-to-end browser test for detection, complete preview, import, Archive detail, imported Track detail, Rate Album initialization, duplicate prevention and resource-type rejection.
+- Desktop and 390 × 844 overflow checks with no console warnings or errors.

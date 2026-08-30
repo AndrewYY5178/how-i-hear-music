@@ -13,7 +13,7 @@ The current album JSON contains legacy external references from several music an
 ## Handling rules
 
 - Never scrape, bulk-download, proxy, cache or redistribute third-party cover art.
-- Playlist imports do not collect cover URLs. Imported provider metadata is limited to track, artist, album, IDs and duration.
+- Playlist and album imports do not collect cover URLs. Imported provider metadata is limited to track, artist, album, release date, official disc/track order, IDs and duration.
 - A manual override stores only the HTTPS URL in this browser. It does not modify canonical JSON or upload an image.
 - Missing or failed images use the standard paper fallback.
 - Removal and correction requests take priority over visual completeness.

@@ -4,7 +4,7 @@ import { home } from "./modules/home.js";
 import { archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
 import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
 import { compare, goodNotMine, philosophy, profile, tasteHome } from "./modules/taste/pages.js";
-import { bindImport, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js";
+import { bindImport, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
 import { journal, yearInMusic } from "./modules/journal/pages.js";
 
 const app = document.getElementById("app");
@@ -30,6 +30,7 @@ const route = (path) => {
   if (current === "/taste/compare") return compare();
   if (current === "/import") return importHome();
   if (current === "/import/qq") return importQQ();
+  if (current === "/import/qq-album") return importQQAlbum();
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/journal") return journal();

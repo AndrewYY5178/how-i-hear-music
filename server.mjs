@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getQQAlbumDetails, parseQQAlbumLink } from './server/providers/qqmusic-album.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 3000);
@@ -179,6 +180,17 @@ const searchQQCatalog = async (query) => {
 };
 
 createServer(async (request, response) => {
+  if (request.method === 'POST' && request.url === '/api/import/qq-album-preview') {
+    try {
+      const body = await readJsonBody(request);
+      const resolved = await parseQQAlbumLink(body.text);
+      const album = await getQQAlbumDetails(resolved.albumId);
+      json(response, 200, { album, sourceUrl: album.externalUrl || resolved.canonicalUrl });
+    } catch (error) {
+      json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music album.' });
+    }
+    return;
+  }
   if (request.method === 'GET' && request.url?.startsWith('/api/import/qq-search')) {
     try {
       const query = new URL(request.url, 'http://localhost').searchParams.get('q');

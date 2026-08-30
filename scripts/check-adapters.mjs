@@ -11,3 +11,9 @@ expectTracks('QQ Music', (await qq.json()).cdlist?.[0]?.songlist);
 const netease = await fetch('https://music.163.com/api/playlist/detail?id=3778678', { headers: { 'User-Agent': 'How-I-Hear-Music/0.1 adapter smoke check', Referer: 'https://music.163.com/' }, signal: AbortSignal.timeout(12_000) });
 if (!netease.ok) throw new Error(`NetEase: upstream returned ${netease.status}`);
 expectTracks('NetEase', (await netease.json()).result?.tracks);
+
+const qqAlbum = await fetch('https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg?albummid=000hBflm2T62Ur&format=json&platform=yqq.json&needNewCode=0', { headers: { 'User-Agent': 'How-I-Hear-Music/0.1 adapter smoke check', Referer: 'https://y.qq.com/' }, signal: AbortSignal.timeout(12_000) });
+if (!qqAlbum.ok) throw new Error(`QQ Music album: upstream returned ${qqAlbum.status}`);
+const qqAlbumData = (await qqAlbum.json()).data;
+expectTracks('QQ Music album', qqAlbumData?.list);
+if (!qqAlbumData?.list?.every((track, index) => Number(track.belongCD) === index + 1)) throw new Error('QQ Music album: official track order is no longer readable');

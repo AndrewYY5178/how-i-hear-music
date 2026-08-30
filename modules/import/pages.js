@@ -2,6 +2,7 @@ import { canonical, data, safe, storage } from "../music/data.js";
 import { matchTrack } from "../music/matching.js";
 import { createPlaylistSnapshot, diffPlaylistSnapshots } from "../music/sync.js";
 import { archiveTrack, lifecycleStates, lifecycleTracks, updateLifecycle } from "../music/lifecycle.js";
+import { albumStorageKey, analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 
 const inboxKey = data.library.storageKey;
@@ -13,7 +14,7 @@ const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 const snapshotKey = "how-i-hear-music:playlist-snapshots:v1";
 const backupFormat = "how-i-hear-music-backup";
 const backupVersion = 1;
-const importNav = () => secondaryNav([["/import/qq", "QQ Music"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"]]);
+const importNav = () => secondaryNav([["/import/qq", "QQ Playlist"], ["/import/qq-album", "QQ Album"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"]]);
 const read = (key) => storage.get(key, []);
 const key = (track) => canonical(track.title) + "::" + canonical(track.artist);
 const sourceUrl = (value) => (String(value || "").match(/https?:\/\/[^\s<>"'）)】]+/i) || [""])[0].replace(/[，。；、]+$/, "");
@@ -22,15 +23,17 @@ const saveSnapshot = (snapshot) => storage.set(snapshotKey, { ...readSnapshots()
 const apiRequest = async (endpoint, options) => {
   const response = await fetch(endpoint, options);
   const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) throw new Error("Playlist metadata import requires the local Node server and is unavailable on this static Pages build.");
+  if (!contentType.includes("application/json")) throw new Error("Public metadata import requires the local Node server and is unavailable on this static Pages build.");
   const result = await response.json();
   if (!response.ok) throw new Error(result.error || "The metadata service could not complete this request.");
   return result;
 };
 
-export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "External music enters Inbox first. Import is never the Archive.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC</span><h2>Paste a public share.</h2><p>Read playlist metadata without a login, then review before keeping anything.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article><span class="mono">NETEASE</span><h2>Import a public playlist.</h2><p>Read public playlist metadata through the server, with no login, Cookie, audio or lyrics.</p>${link("/import/netease", "IMPORT FROM NETEASE →", "button primary")}</article></div>`;
+export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "Playlists enter Inbox; a confirmed album import creates its ordered Archive record.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC</span><h2>Playlist or album.</h2><p>Review playlist tracks in Inbox, or preserve an album's official sequence.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article><span class="mono">NETEASE</span><h2>Import a public playlist.</h2><p>Read public playlist metadata through the server, with no login, Cookie, audio or lyrics.</p>${link("/import/netease", "IMPORT FROM NETEASE →", "button primary")}</article></div>`;
 
 export const importQQ = () => `${pageHeader("IMPORT / QQ MUSIC", "Bring a QQ record in.", "Public metadata only: no QQ login, Cookie, audio or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the share at the desk.</h2><p>One public playlist at a time. Nothing is added until you review the preview.</p></div><form id="qq-import-form"><label><span class="mono">QQ MUSIC PLAYLIST / SHARE CARD</span><textarea id="qq-share" rows="4" placeholder="Paste a QQ Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="qq-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section><section class="catalog-search"><div><span class="eyebrow mono">02 / QQ MUSIC CATALOG</span><p>Looking for one track instead? Search the public catalog and send it straight to Inbox.</p></div><form id="qq-search-form"><input id="qq-search-query" type="search" placeholder="Search tracks, artists or albums"><button class="button" type="submit">SEARCH QQ MUSIC</button></form><div id="qq-search-results"></div></section>`;
+
+export const importQQAlbum = () => `${pageHeader("IMPORT / QQ ALBUM", "Preserve the record's sequence.", "Paste one public QQ Music album link. Preview every disc and track before the local Archive changes.")}${importNav()}<section class="qq-import-focus album-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">ORDERED ALBUM IMPORT</span><h2>Start with the album itself.</h2><p>Metadata only. Track order comes from the exact QQ Music album entity—never search results or recommendations.</p></div><form id="qq-album-import-form"><label><span class="mono">QQ MUSIC ALBUM / SHARE TEXT</span><textarea id="qq-album-share" rows="4" placeholder="Paste an album URL or the full QQ Music share message"></textarea></label><button class="button primary" type="submit">DETECT ALBUM</button></form><aside id="qq-album-import-result" aria-live="polite"><span class="mono">ALBUM PREVIEW</span><p>Waiting for a public QQ Music album link.</p></aside></section>`;
 
 export const importNetEase = () => `${pageHeader("IMPORT / NETEASE", "Bring a NetEase record in.", "Public metadata only: no NetEase login, Cookie, audio, cover download or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the public share.</h2><p>Playlist metadata enters the same Inbox review workflow as every other source.</p></div><form id="netease-import-form"><label><span class="mono">NETEASE PLAYLIST / SHARE CARD</span><textarea id="netease-share" rows="4" placeholder="Paste a NetEase Cloud Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="netease-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section>`;
 
@@ -70,7 +73,36 @@ const preview = (container, tracks, playlist, source, platform = { id: "qqmusic"
   });
 };
 
+const albumTrackPreview = (tracks) => {
+  const multipleDiscs = new Set(tracks.map((track) => track.discNumber)).size > 1; let disc = null;
+  return tracks.map((track) => {
+    const separator = multipleDiscs && track.discNumber !== disc ? `<div class="album-preview-disc mono">DISC ${String(track.discNumber).padStart(2, "0")}</div>` : ""; disc = track.discNumber;
+    return `${separator}<div class="album-preview-track"><span>${String(track.trackNumber).padStart(2, "0")}</span><strong>${safe(track.title)}</strong><small>${safe(track.artistName)}</small><em>${track.duplicateStatus === "existing" ? "EXISTS" : track.duplicateStatus === "review" ? "NEEDS REVIEW" : "NEW"}</em></div>`;
+  }).join("");
+};
+const previewAlbum = (container, album, source) => {
+  const analysis = analyzeAlbumImport(album); const meta = [album.artistName, album.year, `${album.trackCount} tracks`].filter(Boolean).join(" · ");
+  container.innerHTML = `<span class="mono">${analysis.duplicateAlbum ? "ALBUM ALREADY EXISTS" : "ALBUM FOUND"}</span><h2>${safe(album.title)}</h2><p>${safe(meta)}</p><p><b>${analysis.counts.new} new</b> · ${analysis.counts.existing} existing · ${analysis.counts.review} need review</p><div class="album-preview-list">${albumTrackPreview(analysis.rows)}</div>${analysis.duplicateAlbum ? link(`/archive/albums/${analysis.existingAlbumId}`, "OPEN EXISTING ALBUM", "button") : `<button id="confirm-album-import" class="button primary" type="button">IMPORT ALBUM</button>`}`;
+  container.querySelector("#confirm-album-import")?.addEventListener("click", () => {
+    try {
+      const result = storeAlbumImport(album, source);
+      container.innerHTML = `<span class="mono">IMPORT COMPLETE</span><h2>${safe(album.title)} entered the Archive.</h2><p>${album.trackCount} tracks preserved in official order. ${analysis.counts.review ? `${analysis.counts.review} possible duplicates remain marked for review.` : "No uncertain duplicate was merged."}</p>${link(`/archive/albums/${result.albumId}`, "OPEN ALBUM", "button primary")}`;
+    } catch (error) { container.innerHTML = `<span class="mono">IMPORT NOT SAVED</span><h2>The album stayed unchanged.</h2><p>${safe(error instanceof Error ? error.message : "The album could not be saved in this browser.")}</p>`; }
+  });
+};
+
 export const bindImport = (path, navigate) => {
+  if (path === "/import/qq-album") {
+    document.getElementById("qq-album-import-form").addEventListener("submit", async (event) => {
+      event.preventDefault(); const text = document.getElementById("qq-album-share").value.trim(); const output = document.getElementById("qq-album-import-result");
+      if (!text) { output.innerHTML = "<p>Paste a public QQ Music album link or share message.</p>"; return; }
+      output.innerHTML = "<span class='mono'>READING ALBUM…</span><p>Resolving the public link and preserving its official sequence.</p>";
+      try {
+        const result = await apiRequest("/api/import/qq-album-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+        previewAlbum(output, result.album, result.sourceUrl);
+      } catch (error) { output.innerHTML = `<span class="mono">ALBUM NOT AVAILABLE</span><h2>Could not read this album.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music album link.")}</p>`; }
+    });
+  }
   if (path === "/import/qq") {
     document.getElementById("qq-import-form").addEventListener("submit", async (event) => {
       event.preventDefault(); const share = sourceUrl(document.getElementById("qq-share").value); const output = document.getElementById("qq-import-result");
@@ -111,7 +143,7 @@ export const bindImport = (path, navigate) => {
   if (path === "/import/inbox") bindInbox(navigate);
 };
 
-const backupKeys = () => [inboxKey, libraryKey, ignoredKey, ratingKey, journalKey, coverOverrideKey, snapshotKey, ...Object.keys(localStorage).filter((item) => item.startsWith("how-i-hear-music:album-draft:"))];
+const backupKeys = () => [inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, coverOverrideKey, snapshotKey, ...Object.keys(localStorage).filter((item) => item.startsWith("how-i-hear-music:album-draft:"))];
 const exportBackup = () => ({ format: backupFormat, version: backupVersion, exportedAt: new Date().toISOString(), data: Object.fromEntries([...new Set(backupKeys())].map((item) => [item, storage.get(item, null)]).filter(([, value]) => value !== null)) });
 const mergeArrays = (current, incoming) => {
   const result = [...current]; const seen = new Set(current.map((item) => item?.id || key(item || {}) || JSON.stringify(item)));
@@ -120,10 +152,10 @@ const mergeArrays = (current, incoming) => {
 };
 const restoreBackup = (payload) => {
   if (!payload || payload.format !== backupFormat || payload.version !== backupVersion || !payload.data || typeof payload.data !== "object" || Array.isArray(payload.data)) throw new Error("This is not a supported How I Hear Music backup.");
-  const exact = new Set([inboxKey, libraryKey, ignoredKey, ratingKey, journalKey, coverOverrideKey, snapshotKey]); let restored = 0;
+  const exact = new Set([inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, coverOverrideKey, snapshotKey]); let restored = 0;
   Object.entries(payload.data).forEach(([name, value]) => {
     if (!exact.has(name) && !name.startsWith("how-i-hear-music:album-draft:")) return;
-    if ([inboxKey, libraryKey, ignoredKey, journalKey].includes(name)) { if (!Array.isArray(value)) return; storage.set(name, mergeArrays(read(name), value)); restored += 1; return; }
+    if ([inboxKey, libraryKey, ignoredKey, albumStorageKey, journalKey].includes(name)) { if (!Array.isArray(value)) return; storage.set(name, mergeArrays(read(name), value)); restored += 1; return; }
     if (name === ratingKey && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
     if ([coverOverrideKey, snapshotKey].includes(name) && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
     if (name.startsWith("how-i-hear-music:album-draft:") && (Array.isArray(value) || Number.isFinite(value))) { storage.set(name, value); restored += 1; }

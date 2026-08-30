@@ -1,16 +1,17 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "title": "Music inbox",
   "storageKey": "how-i-hear-music:music-inbox:v1",
   "libraryStorageKey": "how-i-hear-music:personal-library:v1",
   "ignoredStorageKey": "how-i-hear-music:ignored-imports:v1",
+  "albumStorageKey": "how-i-hear-music:imported-albums:v1",
   "supportedSources": [
     {
       "id": "qqmusic",
       "label": "QQ Music",
-      "urlHint": "Paste a public QQ Music share card or playlist link.",
-      "examples": ["https://y.qq.com/n/ryqq/playlist/...", "https://i.y.qq.com/n2/m/share/details/taoge.html?..."],
-      "status": "public playlist import / no login"
+      "urlHint": "Paste a public QQ Music playlist or album share link.",
+      "examples": ["https://y.qq.com/n/ryqq/playlist/...", "https://y.qq.com/n/ryqq/albumDetail/..."],
+      "status": "public playlist + ordered album import / no login"
     },
     {
       "id": "netease",
@@ -26,6 +27,6 @@
     "pasteGuide": "QQ Music: paste a public share card and preview automatically. Manual fallback: one track per line as Title — Artist — Album. Album is optional.",
     "empty": "No tracks are waiting for review.",
     "libraryEmpty": "Nothing has been kept in your personal library yet.",
-    "adapterNote": "QQ Music and NetEase public playlists are fetched through this site's server only. No login, Cookie, audio, cover download or lyric requests are used."
+    "adapterNote": "QQ Music public playlists/albums and NetEase public playlists are fetched through this site's server only. No login, Cookie, audio, cover download or lyric requests are used."
   }
 }
