@@ -4,6 +4,7 @@ import { createPlaylistSnapshot, diffPlaylistSnapshots } from "../music/sync.js"
 import { archiveTrack, lifecycleStates, lifecycleTracks, updateLifecycle } from "../music/lifecycle.js";
 import { albumStorageKey, analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
+import { dataHealth, exportBackup, markBackupCreated, recoverySnapshots, restoreBackup, restoreRecoverySnapshot } from "../music/resilience.js";
 
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;
@@ -18,16 +19,18 @@ const awardsKey = "how-i-hear-music:personal-awards:v1";
 const rediscoveryKey = "how-i-hear-music:rediscovery-skips:v1";
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 const snapshotKey = "how-i-hear-music:playlist-snapshots:v1";
-const backupFormat = "how-i-hear-music-backup";
-const backupVersion = 1;
-const importNav = () => secondaryNav([["/import/qq", "QQ Playlist"], ["/import/qq-album", "QQ Album"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"]]);
+const importNav = () => secondaryNav([["/import/qq", "QQ Playlist"], ["/import/qq-album", "QQ Album"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"], ["/import/data", "Data Desk"]]) + serviceNotice();
 const read = (key) => storage.get(key, []);
 const key = (track) => canonical(track.title) + "::" + canonical(track.artist);
 const sourceUrl = (value) => (String(value || "").match(/https?:\/\/[^\s<>"'）)】]+/i) || [""])[0].replace(/[，。；、]+$/, "");
 const readSnapshots = () => storage.get(snapshotKey, {});
 const saveSnapshot = (snapshot) => storage.set(snapshotKey, { ...readSnapshots(), [snapshot.sourceUrl]: snapshot });
+const configuredApiBase = () => String(window.__HIM_API_BASE__ || document.querySelector('meta[name="him-api-base"]')?.content || "").replace(/\/$/, "");
+const staticImportUnavailable = () => location.hostname.endsWith("github.io") && !configuredApiBase();
+const serviceNotice = () => staticImportUnavailable() ? `<section class="import-service-note"><span class="mono">STATIC SITE / METADATA SERVICE NOT CONNECTED</span><p>Browsing, rating and local data remain available. Public QQ Music and NetEase import requires the local Node server or a configured hosted adapter.</p><a href="https://github.com/AndrewYY5178/how-i-hear-music#preview" target="_blank" rel="noreferrer">LOCAL SETUP ↗</a></section>` : `<section class="import-service-note service-ready"><span class="mono">METADATA SERVICE</span><p>${configuredApiBase() ? "Hosted adapter configured." : "Local metadata adapter ready."}</p></section>`;
 const apiRequest = async (endpoint, options) => {
-  const response = await fetch(endpoint, options);
+  if (staticImportUnavailable()) throw new Error("This static site has no metadata adapter connected. Run the local Node service or configure a hosted API base.");
+  const response = await fetch(configuredApiBase() + endpoint, options);
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("application/json")) throw new Error("Public metadata import requires the local Node server and is unavailable on this static Pages build.");
   const result = await response.json();
@@ -42,6 +45,13 @@ export const importQQ = () => `${pageHeader("IMPORT / QQ MUSIC", "Bring a QQ rec
 export const importQQAlbum = () => `${pageHeader("IMPORT / QQ ALBUM", "Preserve the record's sequence.", "Paste one public QQ Music album link. Preview every disc and track before the local Archive changes.")}${importNav()}<section class="qq-import-focus album-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">ORDERED ALBUM IMPORT</span><h2>Start with the album itself.</h2><p>Metadata only. Track order comes from the exact QQ Music album entity—never search results or recommendations.</p></div><form id="qq-album-import-form"><label><span class="mono">QQ MUSIC ALBUM / SHARE TEXT</span><textarea id="qq-album-share" rows="4" placeholder="Paste an album URL or the full QQ Music share message"></textarea></label><button class="button primary" type="submit">DETECT ALBUM</button></form><aside id="qq-album-import-result" aria-live="polite"><span class="mono">ALBUM PREVIEW</span><p>Waiting for a public QQ Music album link.</p></aside></section>`;
 
 export const importNetEase = () => `${pageHeader("IMPORT / NETEASE", "Bring a NetEase record in.", "Public metadata only: no NetEase login, Cookie, audio, cover download or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the public share.</h2><p>Playlist metadata enters the same Inbox review workflow as every other source.</p></div><form id="netease-import-form"><label><span class="mono">NETEASE PLAYLIST / SHARE CARD</span><textarea id="netease-share" rows="4" placeholder="Paste a NetEase Cloud Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="netease-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section>`;
+
+const readableDate = (value) => { const date = value instanceof Date ? value : new Date(value); return Number.isFinite(date.valueOf()) ? date.toLocaleString() : "Not recorded"; };
+export const importData = () => {
+  const health = dataHealth(); const snapshots = recoverySnapshots();
+  const recovery = snapshots.length ? snapshots.map((snapshot, index) => `<article><div><span class="mono">${safe(readableDate(snapshot.at))}</span><strong>${safe(snapshot.key.replace("how-i-hear-music:", ""))}</strong><p>Restore the value saved immediately before this local change.</p></div><button class="button" type="button" data-recovery-index="${index}">RESTORE</button></article>`).join("") : `<p class="empty-state">No recovery snapshots yet. They appear after local data changes.</p>`;
+  return `${pageHeader("IMPORT / DATA DESK", "Keep the archive recoverable.", "This site stores personal ratings and notes in this browser. Export a copy before clearing site data or moving devices.")}${importNav()}<section class="data-health" aria-label="Local data health"><div><span class="mono">LOCAL FOOTPRINT</span><strong>${health.kilobytes} KB</strong></div><div><span class="mono">DATA GROUPS</span><strong>${health.groups}</strong></div><div><span class="mono">RECOVERY POINTS</span><strong>${health.recoveryCount}</strong></div><div><span class="mono">LAST BACKUP</span><strong>${health.lastBackupAt ? safe(health.lastBackupAt.toLocaleDateString()) : "Never"}</strong></div></section>${health.backupDue ? `<p class="backup-reminder mono">BACKUP DUE — EXPORT A COPY OF THIS BROWSER'S ARCHIVE.</p>` : ""}<section class="data-desk-actions"><div><span class="eyebrow mono">BACKUP / RESTORE</span><h2>Move a versioned copy.</h2><p>Export covers ratings, Journal, Inbox, Memory, analysis inputs, metadata corrections and album drafts. Restore merges compatible records and does not erase existing ones.</p><p class="privacy-warning"><b>Privacy:</b> the JSON file is readable text and is not encrypted. Store it somewhere private.</p></div><div class="backup-actions"><button class="button primary" id="export-local-data" type="button">EXPORT BACKUP</button><label class="button" for="restore-local-data">RESTORE BACKUP</label><input id="restore-local-data" type="file" accept="application/json,.json"><button class="button" id="persist-local-data" type="button">REQUEST DURABLE STORAGE</button><p id="backup-status" aria-live="polite"></p></div></section><section class="recovery-desk"><div><span class="eyebrow mono">RECOVERY</span><h2>Recent local changes.</h2><p>Up to 20 before-change snapshots are kept in this browser. Restoring one creates no additional recovery snapshot.</p></div><div class="recovery-list">${recovery}</div></section>`;
+};
 
 const stateLabel = (state) => state === "auto_match" ? "AUTO MATCH" : state === "review" ? "REVIEW" : state === "kept" ? "LEGACY RECORD" : "NEW ENTRY";
 export const importInbox = () => {
@@ -147,27 +157,22 @@ export const bindImport = (path, navigate) => {
     });
   }
   if (path === "/import/inbox") bindInbox(navigate);
+  if (path === "/import/data") bindDataDesk(navigate);
 };
 
-const backupKeys = () => [inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, versionKey, sonicKey, tasteGroupKey, memoryKey, awardsKey, rediscoveryKey, coverOverrideKey, snapshotKey, ...Object.keys(localStorage).filter((item) => item.startsWith("how-i-hear-music:album-draft:"))];
-const exportBackup = () => ({ format: backupFormat, version: backupVersion, exportedAt: new Date().toISOString(), data: Object.fromEntries([...new Set(backupKeys())].map((item) => [item, storage.get(item, null)]).filter(([, value]) => value !== null)) });
-const mergeArrays = (current, incoming) => {
-  const result = [...current]; const seen = new Set(current.map((item) => item?.id || key(item || {}) || JSON.stringify(item)));
-  incoming.forEach((item) => { const identity = item?.id || key(item || {}) || JSON.stringify(item); if (!seen.has(identity)) { seen.add(identity); result.push(item); } });
-  return result;
+const downloadBackup = () => {
+  const blob = new Blob([JSON.stringify(exportBackup(), null, 2)], { type: "application/json" }); const href = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = href; anchor.download = `how-i-hear-music-backup-${new Date().toISOString().slice(0, 10)}.json`; anchor.click(); URL.revokeObjectURL(href); markBackupCreated();
 };
-const restoreBackup = (payload) => {
-  if (!payload || payload.format !== backupFormat || payload.version !== backupVersion || !payload.data || typeof payload.data !== "object" || Array.isArray(payload.data)) throw new Error("This is not a supported How I Hear Music backup.");
-  const exact = new Set([inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, versionKey, sonicKey, tasteGroupKey, memoryKey, awardsKey, rediscoveryKey, coverOverrideKey, snapshotKey]); let restored = 0;
-  Object.entries(payload.data).forEach(([name, value]) => {
-    if (!exact.has(name) && !name.startsWith("how-i-hear-music:album-draft:")) return;
-    if ([inboxKey, libraryKey, ignoredKey, albumStorageKey, journalKey, versionKey, tasteGroupKey, memoryKey].includes(name)) { if (!Array.isArray(value)) return; storage.set(name, mergeArrays(read(name), value)); restored += 1; return; }
-    if (name === ratingKey && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
-    if ([sonicKey, awardsKey, rediscoveryKey, coverOverrideKey, snapshotKey].includes(name) && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
-    if (name.startsWith("how-i-hear-music:album-draft:") && (Array.isArray(value) || Number.isFinite(value))) { storage.set(name, value); restored += 1; }
-  });
-  if (!restored) throw new Error("The backup contains no compatible local records.");
-  return restored;
+const restoreFile = async (file) => {
+  if (file.size > 2_000_000) throw new Error("Backup is too large (2 MB maximum).");
+  return restoreBackup(JSON.parse(await file.text()));
+};
+const bindDataDesk = (navigate) => {
+  const status = document.getElementById("backup-status");
+  document.getElementById("export-local-data")?.addEventListener("click", () => { downloadBackup(); status.textContent = "Backup exported. Keep the readable JSON file private."; });
+  document.getElementById("restore-local-data")?.addEventListener("change", async (event) => { const file = event.target.files?.[0]; if (!file) return; try { const restored = await restoreFile(file); status.textContent = `${restored} local data groups restored.`; setTimeout(() => navigate("/import/data"), 350); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not restore this backup."; } });
+  document.getElementById("persist-local-data")?.addEventListener("click", async () => { if (!navigator.storage?.persist) { status.textContent = "Durable storage is not supported by this browser."; return; } const granted = await navigator.storage.persist(); status.textContent = granted ? "This browser granted durable local storage." : "The browser kept its normal storage policy. Export backups regularly."; });
+  document.querySelector(".recovery-list")?.addEventListener("click", (event) => { const button = event.target.closest("[data-recovery-index]"); if (!button) return; try { const snapshot = restoreRecoverySnapshot(button.dataset.recoveryIndex); status.textContent = `${snapshot.key.replace("how-i-hear-music:", "")} restored.`; setTimeout(() => navigate("/import/data"), 350); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not restore that snapshot."; } });
 };
 
 const bindInbox = (navigate) => {
@@ -202,11 +207,10 @@ const bindInbox = (navigate) => {
     navigate("/import/inbox");
   });
   document.getElementById("export-local-data")?.addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(exportBackup(), null, 2)], { type: "application/json" }); const href = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = href; anchor.download = `how-i-hear-music-backup-${new Date().toISOString().slice(0, 10)}.json`; anchor.click(); URL.revokeObjectURL(href); document.getElementById("backup-status").textContent = "Backup exported.";
+    downloadBackup(); document.getElementById("backup-status").textContent = "Backup exported.";
   });
   document.getElementById("restore-local-data")?.addEventListener("change", async (event) => {
     const file = event.target.files?.[0]; const status = document.getElementById("backup-status"); if (!file) return;
-    if (file.size > 2_000_000) { status.textContent = "Backup is too large (2 MB maximum)."; return; }
-    try { const restored = restoreBackup(JSON.parse(await file.text())); status.textContent = `${restored} local data groups restored. Reloading Inbox…`; setTimeout(() => navigate("/import/inbox"), 350); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not restore this backup."; }
+    try { const restored = await restoreFile(file); status.textContent = `${restored} local data groups restored. Reloading Inbox…`; setTimeout(() => navigate("/import/inbox"), 350); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not restore this backup."; }
   });
 };

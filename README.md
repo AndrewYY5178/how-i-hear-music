@@ -12,11 +12,21 @@ UI 2.0 把长期聆听证据继续分成三层：`Song / Vocal / Production / Ov
 
 UI 3.0 将这些证据连接成同一套高级 Taste 系统：Taste DNA 只发布至少五首歌曲支持的审美特征；Blind Spots 描述证据附近尚未覆盖的区域而不承诺推荐结果；Archive Entropy 按季度观察集中与分散；Memory Palace 同时容纳可追溯的派生记忆和手动编排；Track Glyph、Album Terrain、Artist Signature 与 Listening Portrait 共用一套几何基础。缺少可信年份、Sonic 或关联 metadata 时，相应盲区维度保持缺席。
 
+UI 3.1 收口了资料可靠性：全站 Search 同时检索 Track、Album、Artist、Journal、Memory 与 Taste DNA；Archive Metadata 显示字段覆盖并允许站点所有者保存可追溯的本地修正；Data Desk 提供版本化备份、合并恢复、最近变更快照、备份提醒与持久存储请求。Taste DNA 可检查贡献与限制证据，Entropy 明示样本量和可用维度，评分完成后可立即撤销，Journal 误记录可二次确认删除。
+
 未完成的导入、数据库和互动功能记录在 [`TODO.md`](TODO.md) 中，并按优先级整理。
 
 ## 在线版本
 
 [打开 GitHub Pages](https://andrewyy5178.github.io/how-i-hear-music/)。模块路由兼容项目站点子路径、直接刷新以及旧版 `/#archive` 等入口。在线静态版本可浏览、评分并保存浏览器本地数据；QQ Music 与 NetEase 的实时公开 metadata 导入仍需下面的本地 Node 服务。
+
+静态页面会在导入表单之前明确显示服务未连接。若已有独立部署的 metadata adapter，可把 `index.html` 中的 `him-api-base` 设置为它的 HTTPS 根地址。adapter 运行环境同时需要：
+
+```bash
+ALLOWED_ORIGIN=https://andrewyy5178.github.io npm start
+```
+
+可用逗号分隔多个精确 origin。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时与 CORS 白名单；生产部署仍需由托管平台提供 TLS、日志和进程管理。仓库不包含托管账户或部署凭据，因此 GitHub Pages 版本默认保持 metadata service 未连接。
 
 ## 预览
 
@@ -27,6 +37,21 @@ npm run dev
 ```
 
 然后打开 `http://localhost:3000`。
+
+个人评分和笔记仍以浏览器本地数据为准，不是账号同步数据库。换设备或清理站点数据前，请在 `Import → Data Desk` 导出 JSON。备份文件是可读明文而非加密文件，应保存在私密位置。
+
+## 验证
+
+```bash
+npm test
+```
+
+该命令覆盖结构检查、数据迁移、metadata overlay、备份恢复、恢复快照，以及十个可靠性、检索和分析页面的渲染 smoke test。`npm run check:adapters` 会访问第三方公开接口，只应在允许联网并需要检查上游兼容性时运行。
+
+## 外部依赖
+
+- 在线实时导入需要独立 metadata adapter 的托管环境、HTTPS 域名和部署凭据；这些不应提交到仓库。
+- 在商业化或扩大公开使用之前，`TERMS.md`、第三方平台条款、metadata 使用方式和图片引用仍须由合格法律专业人士复核。代码检查不能替代法律意见。
 
 ## 继续修改
 

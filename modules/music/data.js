@@ -20,7 +20,8 @@ export const rating = (value) => { const numeric = Number(value); return value =
 export const canonical = (value) => String(value || "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
 export const storage = {
   get(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || ""); } catch { return fallback; } },
-  set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } },
+  set(key, value, { recover = true } = {}) { try { const next = JSON.stringify(value); const prior = localStorage.getItem(key); if (recover && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1" && prior !== next) { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(localStorage.getItem(recoveryKey) || "[]"); } catch {} const parsed = prior === null ? null : (() => { try { return JSON.parse(prior); } catch { return prior; } })(); localStorage.setItem(recoveryKey, JSON.stringify([{ key, value: parsed, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } localStorage.setItem(key, next); return true; } catch { return false; } },
+  remove(key, { recover = true } = {}) { try { const prior = localStorage.getItem(key); if (recover && prior !== null && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1") { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(localStorage.getItem(recoveryKey) || "[]"); } catch {} let value = prior; try { value = JSON.parse(prior); } catch {} localStorage.setItem(recoveryKey, JSON.stringify([{ key, value, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } localStorage.removeItem(key); return true; } catch { return false; } },
 };
 export const importedAlbums = () => storage.get(data.library.albumStorageKey, []);
 export const localVersions = () => storage.get("how-i-hear-music:recording-versions:v1", []);
@@ -33,7 +34,8 @@ export const allTracks = () => {
   const result = [...data.songs.entries]; const ids = new Set(result.map(trackId));
   importedAlbums().flatMap((album) => album.tracks || []).forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
   localVersions().forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
-  return result;
+  const overrides = storage.get("how-i-hear-music:metadata-overrides:v1", {});
+  return result.map((track) => ({ ...track, ...(overrides[trackId(track)] || {}) }));
 };
 export const allArtists = () => {
   const result = [...data.artists.featured, ...data.artists.uncertain]; const ids = new Set(result.map((artist) => artist.id));

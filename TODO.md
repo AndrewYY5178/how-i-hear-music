@@ -2,6 +2,34 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active hardening — Reliability and product closure
+
+### Phase 1 — Honest deployment and durable local data
+
+- [x] Make static-host import availability explicit and support a configurable hosted metadata-adapter base without changing provider/privacy boundaries.
+- [x] Add versioned local-data migrations, storage health reporting, snapshot recovery and automatic backup reminders.
+- [x] Add a dedicated Data Desk for export, restore, recovery and privacy information; include all analytical/manual data in its backup boundary.
+
+### Phase 2 — Metadata and retrieval
+
+- [x] Add one global search across Tracks, Albums, Artists, Journal, Memory and Taste traits.
+- [x] Add metadata coverage reporting and a local owner-confirmed metadata editor for album, release date, language and region.
+- [x] Make Archive filtering/sorting cover rating, title, artist and Taste DNA evidence without inventing metadata.
+
+### Phase 3 — Analytical trust and correction
+
+- [x] Expose contributing and limiting evidence for every Taste DNA trait and explain what its strength/confidence values mean.
+- [x] Show Entropy evidence count, available dimensions and low-evidence caveats; avoid false precision.
+- [x] Make Memory importance affect ordering and expose provenance consistently.
+- [x] Add safe undo/correction for newly saved ratings and explicit removal of mistaken Journal entries without deleting canonical records.
+
+### Phase 4 — Accessibility, maintainability and verification
+
+- [x] Add textual equivalents for compact geometry and normalize analytical copy around one evidence vocabulary.
+- [x] Split shared backup/deployment/search logic out of page templates and cover migrations, metadata overlays, recovery and route rendering with automated checks.
+- [ ] Complete desktop/tablet/mobile/browser QA, append the design/version record and publish every repository-complete fix. *(Automated route/data checks pass; no controllable browser instance was available for this pass.)*
+- [x] Document the remaining external dependencies: hosted adapter deployment credentials and qualified legal review.
+
 ## Active feature — Advanced Taste system
 
 ### Phase 1 — Shared analytical foundation

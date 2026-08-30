@@ -14,7 +14,7 @@ export const renderShell = (path) => {
   const moduleName = path.split("/").filter(Boolean)[0] || "home";
   document.body.dataset.module = moduleName;
   header.classList.remove("menu-open");
-  header.innerHTML = `<a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span> 001</a><button class="menu-toggle" aria-expanded="false" aria-controls="primary-nav">MENU</button><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, path === href || (href !== "/" && path.startsWith(href)) ? "active" : "")).join("")}</nav><div class="header-end"><span class="brand-mark">anddream</span><span class="edition mono">READ / 20—</span></div>`;
+  header.innerHTML = `<a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span> 001</a><button class="menu-toggle" aria-expanded="false" aria-controls="primary-nav">MENU</button><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, path === href || (href !== "/" && path.startsWith(href)) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}<span class="brand-mark">anddream</span><span class="edition mono">READ / 20—</span></div>`;
   document.getElementById("site-footer").innerHTML = `<span>HOW I HEAR MUSIC</span><span class="mono">PERSONAL ARCHIVE / ISSUE 001</span>${link("/taste/philosophy", "METHOD ↗")}`;
   const toggle = header.querySelector(".menu-toggle");
   toggle.addEventListener("click", (event) => {

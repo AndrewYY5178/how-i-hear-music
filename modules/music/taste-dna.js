@@ -43,7 +43,8 @@ export const tasteDNA = ({ records = currentEvidence(), minimumEvidence = 5, now
     const evidence = scored.filter((record) => definition.match(record, context)); const values = evidence.map(overall); const average = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0; const deviation = values.length ? Math.sqrt(values.reduce((sum, value) => sum + (value - average) ** 2, 0) / values.length) : 0;
     const recency = evidence.length ? evidence.reduce((sum, record) => { const at = latestByTrack.get(trackId(record)); if (!at) return sum + .5; const months = Math.max(0, (now - new Date(at)) / 2629800000); return sum + Math.max(.2, 1 - months / 36); }, 0) / evidence.length : 0;
     const lift = clamp01((average - baseline + 3) / 6); const quality = clamp01(average / 11); const consistency = clamp01(1 - deviation / 3); const score = clamp01(quality * .55 + lift * .3 + consistency * .15); const confidence = clamp01(Math.min(1, evidence.length / 10) * .6 + consistency * .25 + recency * .15);
-    return { ...definition, score, confidence, evidenceCount: evidence.length, evidence, average, baseline };
+    const limitingEvidence = evidence.filter((record) => overall(record) < baseline).sort((a, b) => overall(a) - overall(b));
+    return { ...definition, score, confidence, evidenceCount: evidence.length, evidence, limitingEvidence, average, baseline };
   }).filter((trait) => trait.evidenceCount >= minimumEvidence).sort((a, b) => b.score * b.confidence - a.score * a.confidence || b.evidenceCount - a.evidenceCount);
 };
 

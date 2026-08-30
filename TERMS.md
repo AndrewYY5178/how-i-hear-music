@@ -1,6 +1,6 @@
 # Terms, Rights & Content Notice
 
-Last updated: 2026-08-28
+Last updated: 2026-08-31
 
 How I Hear Music is a personal, non-commercial music catalogue and listening archive maintained by Andrew / anddream. By using this site, you agree to use it lawfully and respectfully.
 
@@ -25,6 +25,14 @@ If you believe material on the site infringes your rights, or that metadata is i
 ## Disclaimer
 
 This is a personal archive provided as-is. The owner does not guarantee that third-party links, metadata, artwork references or imported playlist data will remain available or accurate. Nothing in this notice excludes liability that cannot lawfully be excluded.
+
+## Local data and backups
+
+Ratings, listening notes, imported records, corrections and analytical inputs are stored in the visitor's browser unless a separate service is explicitly introduced. The site does not provide account synchronization. Clearing browser data may remove these records.
+
+Data Desk exports are readable, unencrypted JSON files. Anyone with access to a backup may read its personal notes and ratings. Users are responsible for keeping backup files private and for deleting copies they no longer need.
+
+This notice is a repository-level disclosure, not legal advice. Qualified legal review is still required before commercial use or broader public expansion.
 
 ## Contact
 

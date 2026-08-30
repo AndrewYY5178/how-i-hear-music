@@ -8,8 +8,9 @@ import { saveSonic, sonicDimensions, sonicFor } from "../music/sonic.js";
 import { albumNarrative } from "../music/album-narrative.js";
 import { albumTerrain, artistSignature, trackGlyph } from "../music/geometry.js";
 import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
+import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 
-const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
+const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"], ["/archive/coverage", "Metadata"]]);
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 const coverFor = (album, id) => storage.get(coverOverrideKey, {})[id] || album.coverUrl || "";
@@ -18,13 +19,22 @@ const savedRatings = () => storage.get("how-i-hear-music:rating-sessions:v2", {}
 const resolvedScores = (track) => savedRatings()[trackId(track)]?.scores || track.scores || {};
 const historyMarkup = (entries) => entries.length ? `<div class="rating-history">${entries.slice(0, 8).map((entry) => `<article><time class="mono">${safe(new Date(entry.at).toLocaleDateString())}</time><strong>${rating(entry.type === "album" ? entry.overall : entry.scores?.overall)}</strong>${entry.note ? `<p>${safe(entry.note)}</p>` : ""}</article>`).join("")}</div>` : "<p>No local rating changes recorded yet.</p>";
 const coverMarkup = (url, alt, loading = false) => url ? `<img data-cover-image src="${safe(url)}" alt="${safe(alt)}"${loading ? " loading=\"lazy\"" : ""}><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
-const recordCard = (track) => { const scores = resolvedScores(track); return `<article class="track-card"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
+const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `${fieldLabel[field]} ${rating(scores[field])}`).join(" · ") : "NO SCORED GEOMETRY"}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", allAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
 export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveNav()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
 
 const renderTrackCards = (tracks) => tracks.map(recordCard).join("") || "<p class='empty-state'>No tracks match this view.</p>";
-export const archiveTracks = () => `${pageHeader("ARCHIVE / TRACKS", "Tracks in the record.", "Formal and ordered album entries. Ratings are never inferred.")}${archiveNav()}<div class="archive-tools"><input id="track-search" type="search" placeholder="Search tracks or artists"><div id="track-filters"><button data-track-filter="all" class="active">ALL</button><button data-track-filter="rated">RATED</button><button data-track-filter="beyond">BEYOND SCALE</button></div></div><div class="track-grid" id="track-grid">${renderTrackCards(allTracks())}</div>`;
+export const archiveTracks = () => {
+  const traits = tasteDNA();
+  return `${pageHeader("ARCHIVE / TRACKS", "Tracks in the record.", "Formal and ordered album entries. Ratings are never inferred.")}${archiveNav()}<div class="archive-tools"><input id="track-search" type="search" placeholder="Search tracks or artists"><div id="track-filters"><button data-track-filter="all" class="active">ALL</button><button data-track-filter="rated">RATED</button><button data-track-filter="beyond">BEYOND SCALE</button></div><label><span class="mono">TASTE EVIDENCE</span><select id="track-trait-filter"><option value="">ALL TRAITS</option>${traits.map((trait) => `<option value="${safe(trait.id)}">${safe(trait.label)} · ${trait.evidenceCount}</option>`).join("")}</select></label><label><span class="mono">SORT</span><select id="track-sort"><option value="archive">ARCHIVE ORDER</option><option value="rating">RATING HIGH–LOW</option><option value="title">TITLE A–Z</option><option value="artist">ARTIST A–Z</option></select></label></div><div class="track-grid" id="track-grid">${renderTrackCards(allTracks())}</div>`;
+};
+
+export const archiveCoverage = () => {
+  const coverage = metadataCoverage(); const rows = metadataRows(); const selectedId = new URLSearchParams(location.search).get("track") || rows.find((row) => row.missing.length)?.id || rows[0]?.id; const selected = rows.find((row) => row.id === selectedId) || rows[0]; const override = selected ? metadataOverrideFor(selected.id) : {};
+  const fieldLabel = { album: "ALBUM", releaseDate: "RELEASE DATE", language: "LANGUAGE", region: "REGION" };
+  return `${pageHeader("ARCHIVE / METADATA", "Know what the archive actually knows.", "Coverage is reported without filling gaps. Corrections are owner-confirmed and stored only in this browser.")}${archiveNav()}<section class="metadata-coverage"><div><span class="mono">COMPLETE RECORDS</span><strong>${coverage.complete} / ${coverage.total}</strong></div>${metadataFields.map((field) => `<div><span class="mono">${fieldLabel[field]}</span><strong>${coverage.fields[field]} / ${coverage.total}</strong></div>`).join("")}</section><section class="metadata-workspace"><div><span class="eyebrow mono">REVIEW QUEUE</span><h2>${rows.filter((row) => row.missing.length).length} tracks have gaps.</h2><p>Choose a track and enter only facts you can confirm. Leaving every field blank removes its local override.</p><form class="metadata-picker"><label><span class="mono">TRACK</span><select name="track">${rows.map((row) => `<option value="${safe(row.id)}"${row.id === selected?.id ? " selected" : ""}>${safe(row.track.title)} — ${safe(row.track.artist)} · ${row.missing.length ? `${row.missing.length} missing` : "complete"}</option>`).join("")}</select></label><button class="button" type="submit">REVIEW</button></form></div>${selected ? `<form class="metadata-editor" data-track-id="${safe(selected.id)}"><span class="mono">${safe(selected.track.title)} — ${safe(selected.track.artist)}</span>${metadataFields.map((field) => `<label><span>${fieldLabel[field]}</span><input name="${field}" value="${safe(override[field] ?? selected.track[field] ?? "")}" placeholder="${field === "releaseDate" ? "YYYY-MM-DD" : "Unknown"}"></label>`).join("")}<label><span>SOURCE / REFERENCE NOTE</span><input name="sourceNote" value="${safe(override.sourceNote || "")}" placeholder="Where was this confirmed?"></label><button class="button primary" type="submit">SAVE LOCAL CORRECTION</button><p data-metadata-status>${override.metadataConfirmedAt ? `Last confirmed ${safe(new Date(override.metadataConfirmedAt).toLocaleDateString())}.` : "No local correction saved."}</p></form>` : ""}</section>`;
+};
 
 export const archiveTrackDetail = (id) => {
   const track = findTrack(id);
@@ -43,7 +53,7 @@ const versionComparison = (versions) => { if (versions.length < 2) return `<p>No
 const versionForm = (track) => `<form class="version-form" data-base-track-id="${safe(baseTrackId(track))}"><span class="mono">CONFIRM ANOTHER RECORDING</span><label><span>TYPE</span><select name="versionType">${versionTypes.map((type) => `<option value="${type}">${type}</option>`).join("")}</select></label><label><span>IDENTIFYING LABEL</span><input name="versionLabel" maxlength="80" required placeholder="Live at… / 2024 remaster"></label><button class="button" type="submit">ADD VERSION</button><p data-version-status>Stored locally. Nothing is inferred from the title.</p></form>`;
 const sonicForm = (track) => { const values = sonicFor(trackId(track)) || {}; return `<form class="sonic-form" data-sonic-track-id="${safe(trackId(track))}"><p>Character only—neither side is better.</p>${Object.entries(sonicDimensions).map(([key, dimension]) => `<label><span>${dimension.low}</span><input type="range" name="${key}" min="-1" max="1" step="0.1" value="${values[key] ?? 0}" aria-label="${dimension.label}"><span>${dimension.high}</span><output>${Number(values[key] ?? 0).toFixed(1)}</output></label>`).join("")}<button class="button" type="submit">SAVE SONIC CHARACTER</button><p data-sonic-status>${sonicFor(trackId(track)) ? "Saved locally." : "No sonic character saved yet."}</p></form>`; };
 
-export const archiveAlbums = () => `${pageHeader("ARCHIVE / ALBUMS", "Albums in view.", "A cover, an overall response, a compact terrain.", link("/archive/compare/albums", "COMPARE ALBUMS", "button"))}${archiveNav()}<div class="album-grid">${allAlbums().map((album) => { const id = album.id || slug(album.artist + "-" + album.title); const tracks = (album.tracks?.length ? album.tracks : data.songs.entries.filter((track) => canonicalAlbumMatch(track, album))).map((track) => ({ ...track, scores: resolvedScores(track) })); return `<article class="album-card"><div class="album-card-cover">${coverMarkup(coverFor(album, id), album.artist + " — " + album.title + " cover", true)}</div>${albumTerrain(tracks, `${album.title} rating terrain`, "album-card-terrain")}<p>${safe(album.artist)}</p><h3>${safe(album.title)}</h3>${link(`/archive/albums/${id}`, "Open album", "card-link")}</article>`; }).join("")}</div>`;
+export const archiveAlbums = () => `${pageHeader("ARCHIVE / ALBUMS", "Albums in view.", "A cover, an overall response, a compact terrain.", link("/archive/compare/albums", "COMPARE ALBUMS", "button"))}${archiveNav()}<div class="album-grid">${allAlbums().map((album) => { const id = album.id || slug(album.artist + "-" + album.title); const tracks = (album.tracks?.length ? album.tracks : data.songs.entries.filter((track) => canonicalAlbumMatch(track, album))).map((track) => ({ ...track, scores: resolvedScores(track) })); const scores = tracks.map((track) => Number(track.scores?.overall)).filter(Number.isFinite); const terrainText = scores.length ? `${scores.length} RATED · ${rating(Math.min(...scores))}–${rating(Math.max(...scores))}` : "NO RATED TERRAIN"; return `<article class="album-card"><div class="album-card-cover">${coverMarkup(coverFor(album, id), album.artist + " — " + album.title + " cover", true)}</div>${albumTerrain(tracks, `${album.title} rating terrain`, "album-card-terrain")}<span class="geometry-note mono">${terrainText}</span><p>${safe(album.artist)}</p><h3>${safe(album.title)}</h3>${link(`/archive/albums/${id}`, "Open album", "card-link")}</article>`; }).join("")}</div>`;
 
 const orderedTracklist = (tracks) => {
   const multipleDiscs = new Set(tracks.map((track) => track.discNumber || 1)).size > 1; let disc = null;
@@ -94,6 +104,11 @@ export const archiveArtistDetail = (id) => {
 
 export const bindArchive = (path, navigate) => {
   document.querySelectorAll("[data-cover-image]").forEach((image) => image.addEventListener("error", () => { image.hidden = true; const fallback = image.nextElementSibling; if (fallback?.matches("[data-cover-fallback]")) fallback.hidden = false; }, { once: true }));
+  if (path === "/archive/coverage") {
+    document.querySelector(".metadata-picker")?.addEventListener("submit", (event) => { event.preventDefault(); const id = new FormData(event.currentTarget).get("track"); navigate(`/archive/coverage?track=${encodeURIComponent(id)}`); });
+    document.querySelector(".metadata-editor")?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const values = Object.fromEntries(new FormData(form)); try { saveMetadataOverride(form.dataset.trackId, values); form.querySelector("[data-metadata-status]").textContent = "Local correction saved."; setTimeout(() => navigate(`/archive/coverage?track=${encodeURIComponent(form.dataset.trackId)}`), 250); } catch (error) { form.querySelector("[data-metadata-status]").textContent = error.message; } });
+    return;
+  }
   const albumMatch = path.match(/^\/archive\/albums\/(.+)$/);
   if (albumMatch) {
     const form = document.querySelector(".cover-override-form");
@@ -116,16 +131,21 @@ export const bindArchive = (path, navigate) => {
     sonic?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const values = Object.fromEntries(new FormData(form)); saveSonic(form.dataset.sonicTrackId, values); form.querySelector("[data-sonic-status]").textContent = "Saved locally."; });
   }
   if (path !== "/archive/tracks") return;
-  const search = document.getElementById("track-search"); const filters = document.getElementById("track-filters"); const grid = document.getElementById("track-grid"); let active = "all";
+  const search = document.getElementById("track-search"); const filters = document.getElementById("track-filters"); const grid = document.getElementById("track-grid"); const traitFilter = document.getElementById("track-trait-filter"); const sort = document.getElementById("track-sort"); let active = "all";
   const render = () => {
     const query = String(search.value || "").toLowerCase();
+    const selectedTrait = tasteDNA().find((trait) => trait.id === traitFilter.value); const evidenceIds = new Set(selectedTrait?.evidence.map(trackId) || []);
     const tracks = allTracks().filter((track) => {
       const matches = !query || (track.title + " " + track.artist).toLowerCase().includes(query);
-      const overall = Number(track.scores?.overall);
-      return matches && (active === "all" || active === "rated" && Number.isFinite(overall) || active === "beyond" && overall > 10);
+      const overall = Number(resolvedScores(track).overall);
+      return matches && (!selectedTrait || evidenceIds.has(trackId(track))) && (active === "all" || active === "rated" && Number.isFinite(overall) || active === "beyond" && overall > 10);
     });
+    if (sort.value === "rating") tracks.sort((a, b) => (Number(resolvedScores(b).overall) || -Infinity) - (Number(resolvedScores(a).overall) || -Infinity));
+    if (sort.value === "title") tracks.sort((a, b) => a.title.localeCompare(b.title));
+    if (sort.value === "artist") tracks.sort((a, b) => a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title));
     grid.innerHTML = renderTrackCards(tracks);
   };
   search.addEventListener("input", render);
+  traitFilter.addEventListener("change", render); sort.addEventListener("change", render);
   filters.addEventListener("click", (event) => { const button = event.target.closest("[data-track-filter]"); if (!button) return; active = button.dataset.trackFilter; filters.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button)); render(); });
 };

@@ -1,11 +1,13 @@
 import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
 import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
 import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js";
-import { bindImport, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
 import { annualPortrait, bindJournal, bindYear, entropyPage, journal, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
+import { migrateLocalData } from "./modules/music/resilience.js";
+import { bindSearch, searchPage } from "./modules/search/pages.js";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -17,6 +19,7 @@ const route = (path) => {
   if (current === "/archive/albums") return archiveAlbums();
   if (current === "/archive/compare/albums") return archiveAlbumCompare();
   if (current === "/archive/artists") return archiveArtists();
+  if (current === "/archive/coverage") return archiveCoverage();
   if (/^\/archive\/tracks\/.+/.test(current)) return archiveTrackDetail(decodeURIComponent(current.split("/").pop()));
   if (/^\/archive\/albums\/.+/.test(current)) return archiveAlbumDetail(decodeURIComponent(current.split("/").pop()));
   if (/^\/archive\/artists\/.+/.test(current)) return archiveArtistDetail(decodeURIComponent(current.split("/").pop()));
@@ -40,7 +43,9 @@ const route = (path) => {
   if (current === "/import/qq-album") return importQQAlbum();
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
+  if (current === "/import/data") return importData();
   if (current === "/journal") return journal();
+  if (current === "/search") return searchPage();
   if (current === "/journal/memory-palace") return memoryPalace();
   if (current === "/journal/entropy") return entropyPage();
   if (/^\/journal\/year\/\d{4}\/portrait$/.test(current)) return annualPortrait(Number(current.split("/")[3]));
@@ -63,7 +68,7 @@ const parentRoute = (path) => {
     return { href: "/archive/" + section, label: "BACK TO " + section.toUpperCase() };
   }
   if (path === "/archive") return { href: "/", label: "BACK HOME" };
-  if (/^\/archive\/(tracks|albums|artists)$/.test(path)) return { href: "/archive", label: "BACK TO ARCHIVE" };
+  if (/^\/archive\/(tracks|albums|artists|coverage)$/.test(path)) return { href: "/archive", label: "BACK TO ARCHIVE" };
   if (/^\/(taste|import|journal)\/.+/.test(path)) return { href: "/" + path.split("/")[1], label: "BACK TO " + path.split("/")[1].toUpperCase() };
   if (/^\/(taste|import|journal|rate)$/.test(path)) return { href: "/", label: "BACK HOME" };
   if (/^\/rate\/.+/.test(path)) return { href: "/rate", label: "BACK TO RATE" };
@@ -84,6 +89,7 @@ const render = () => {
   bindJournal(path, navigate);
   bindYear(path, navigate);
   bindTaste(path, navigate);
+  bindSearch(path, navigate);
 };
 
 document.addEventListener("click", (event) => {
@@ -114,4 +120,5 @@ const restorePagesRoute = () => {
   return false;
 };
 
+migrateLocalData();
 if (!restorePagesRoute()) render();

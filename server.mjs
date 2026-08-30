@@ -6,6 +6,11 @@ import { getQQAlbumDetails, parseQQAlbumLink } from './server/providers/qqmusic-
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 3000);
+const allowedOrigins = new Set(String(process.env.ALLOWED_ORIGIN || '').split(',').map((value) => value.trim()).filter(Boolean));
+const apiCache = new Map();
+const rateWindows = new Map();
+const cacheFor = async (key, producer, ttl = 300_000) => { const current = apiCache.get(key); if (current && current.expiresAt > Date.now()) return current.value; const value = await producer(); apiCache.set(key, { value, expiresAt: Date.now() + ttl }); if (apiCache.size > 200) { const oldest = apiCache.keys().next().value; apiCache.delete(oldest); } return value; };
+const withinRateLimit = (address) => { const now = Date.now(); const recent = (rateWindows.get(address) || []).filter((at) => now - at < 600_000); if (recent.length >= 30) return false; recent.push(now); rateWindows.set(address, recent); return true; };
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -180,11 +185,18 @@ const searchQQCatalog = async (query) => {
 };
 
 createServer(async (request, response) => {
+  response.setHeader('X-Content-Type-Options', 'nosniff');
+  response.setHeader('Referrer-Policy', 'no-referrer');
+  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https:");
+  const origin = request.headers.origin;
+  if (origin && allowedOrigins.has(origin)) { response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); response.setHeader('Access-Control-Allow-Headers', 'Content-Type'); response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); }
+  if (request.method === 'OPTIONS') { if (origin && !allowedOrigins.has(origin)) { response.writeHead(403); response.end(); } else { response.writeHead(204); response.end(); } return; }
+  if (request.url?.startsWith('/api/') && !withinRateLimit(request.socket.remoteAddress || 'unknown')) { json(response, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }); return; }
   if (request.method === 'POST' && request.url === '/api/import/qq-album-preview') {
     try {
       const body = await readJsonBody(request);
       const resolved = await parseQQAlbumLink(body.text);
-      const album = await getQQAlbumDetails(resolved.albumId);
+      const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId));
       json(response, 200, { album, sourceUrl: album.externalUrl || resolved.canonicalUrl });
     } catch (error) {
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music album.' });
@@ -194,7 +206,7 @@ createServer(async (request, response) => {
   if (request.method === 'GET' && request.url?.startsWith('/api/import/qq-search')) {
     try {
       const query = new URL(request.url, 'http://localhost').searchParams.get('q');
-      json(response, 200, { tracks: await searchQQCatalog(query) });
+      json(response, 200, { tracks: await cacheFor(`qq-search:${String(query || '').trim().toLowerCase()}`, () => searchQQCatalog(query)) });
     } catch (error) {
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not search QQ Music.' });
     }
@@ -203,7 +215,7 @@ createServer(async (request, response) => {
   if (request.method === 'POST' && request.url === '/api/import/qq-playlist') {
     try {
       const body = await readJsonBody(request);
-      const result = await fetchQQPlaylist(body.shareUrl);
+      const result = await cacheFor(`qq-playlist:${body.shareUrl}`, () => fetchQQPlaylist(body.shareUrl));
       json(response, 200, result);
     } catch (error) {
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music playlist.' });
@@ -213,7 +225,7 @@ createServer(async (request, response) => {
   if (request.method === 'POST' && request.url === '/api/import/netease-playlist') {
     try {
       const body = await readJsonBody(request);
-      const result = await fetchNetEasePlaylist(body.shareUrl);
+      const result = await cacheFor(`netease-playlist:${body.shareUrl}`, () => fetchNetEasePlaylist(body.shareUrl));
       json(response, 200, result);
     } catch (error) {
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this NetEase playlist.' });

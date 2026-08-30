@@ -9,6 +9,8 @@
     "check": "node scripts/check-project.mjs",
     "dev": "node server.mjs",
     "start": "node server.mjs",
-    "test": "npm run check"
+    "test:core": "node scripts/test-core.mjs",
+    "test:render": "node scripts/test-render.mjs",
+    "test": "npm run check && npm run test:core && npm run test:render"
   }
 }
