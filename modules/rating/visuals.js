@@ -8,6 +8,7 @@ const point = (value, index, size, radius) => {
   return [size / 2 + Math.cos(angle) * distance, size / 2 + Math.sin(angle) * distance];
 };
 const polygon = (values, size, radius) => values.map((value, index) => point(value, index, size, radius).map((part) => part.toFixed(1)).join(",")).join(" ");
+export const radarPoints = (scores = {}) => polygon(fields.map((field) => scores?.[field] ?? 0), 220, 70);
 
 export const radar = (scores = {}, { interactive = false, className = "" } = {}) => {
   scores = scores || {};

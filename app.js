@@ -3,9 +3,9 @@ import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
 import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
-import { compare, goodNotMine, philosophy, profile, tasteHome } from "./modules/taste/pages.js";
+import { antiRecommendation, bindTaste, compare, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js";
 import { bindImport, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
-import { journal, yearInMusic } from "./modules/journal/pages.js";
+import { annualPortrait, bindJournal, bindYear, journal, yearInMusic } from "./modules/journal/pages.js";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -29,12 +29,17 @@ const route = (path) => {
   if (current === "/taste/profile") return profile();
   if (current === "/taste/good-not-mine") return goodNotMine();
   if (current === "/taste/compare") return compare();
+  if (current === "/taste/anti-recommendation") return antiRecommendation();
+  if (current === "/taste/sonic-map") return sonicMap();
+  if (current === "/taste/family-tree") return familyTree();
+  if (current === "/taste/portrait") return portrait();
   if (current === "/import") return importHome();
   if (current === "/import/qq") return importQQ();
   if (current === "/import/qq-album") return importQQAlbum();
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/journal") return journal();
+  if (/^\/journal\/year\/\d{4}\/portrait$/.test(current)) return annualPortrait(Number(current.split("/")[3]));
   if (/^\/journal\/year\/\d{4}$/.test(current)) return yearInMusic(Number(current.split("/").pop()));
   return `<section class="not-found"><span class="eyebrow mono">404</span><h1>That page is not in the archive.</h1>${link("/", "RETURN HOME", "button primary")}</section>`;
 };
@@ -47,6 +52,7 @@ const navigate = (path, { replace = false } = {}) => {
   render();
 };
 const parentRoute = (path) => {
+  if (/^\/journal\/year\/\d{4}\/portrait$/.test(path)) return { href: path.replace(/\/portrait$/, ""), label: "BACK TO YEAR" };
   if (path === "/archive/compare/albums") return { href: "/archive/albums", label: "BACK TO ALBUMS" };
   if (/^\/archive\/(tracks|albums|artists)\/.+/.test(path)) {
     const section = path.split("/")[2];
@@ -71,6 +77,9 @@ const render = () => {
   bindArchive(path, navigate);
   bindRating(path, navigate);
   bindImport(path, navigate);
+  bindJournal(path, navigate);
+  bindYear(path, navigate);
+  bindTaste(path, navigate);
 };
 
 document.addEventListener("click", (event) => {

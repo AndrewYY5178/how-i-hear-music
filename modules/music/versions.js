@@ -1,7 +1,7 @@
 import { canonical, data, storage, trackId } from "./data.js";
 
 export const versionStorageKey = "how-i-hear-music:recording-versions:v1";
-export const versionTypes = ["STUDIO", "LIVE", "ACOUSTIC", "REMASTERED", "OTHER"];
+export const versionTypes = ["STUDIO", "LIVE", "ACOUSTIC", "REARRANGED", "DEMO", "REMIX", "REMASTERED", "OTHER"];
 
 export const localVersions = () => storage.get(versionStorageKey, []);
 

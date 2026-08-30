@@ -16,7 +16,7 @@ export const safe = (value) => String(value ?? "").replace(/[&<>"']/g, (characte
 export const slug = (value) => String(value).normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
 export const legacyTrackId = (track) => slug(track.artistId + "-" + track.title);
 export const trackId = (track) => track.id || legacyTrackId(track);
-export const rating = (value) => value === null || value === undefined ? "—" : Number(value).toFixed(Number.isInteger(Number(value)) ? 0 : 1);
+export const rating = (value) => { const numeric = Number(value); return value === null || value === undefined || value === "" || !Number.isFinite(numeric) ? "—" : numeric.toFixed(Number.isInteger(numeric) ? 0 : 1); };
 export const canonical = (value) => String(value || "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
 export const storage = {
   get(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || ""); } catch { return fallback; } },

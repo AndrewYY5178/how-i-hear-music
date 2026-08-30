@@ -6,6 +6,8 @@ import { createPlaylistSnapshot, diffPlaylistSnapshots } from '../modules/music/
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from '../modules/rating/interactions.js';
 import { withBase, withoutBase } from '../modules/layout/paths.js';
 import { directQQAlbumIdentity, normalizeQQAlbum } from '../server/providers/qqmusic-album.mjs';
+import { normalizeInsightTags } from '../modules/music/insights.js';
+import { albumNarrative } from '../modules/music/album-narrative.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -71,8 +73,11 @@ const albumFixture = normalizeQQAlbum({ code: 0, data: { id: 1, mid: 'fixtureAlb
 ] } });
 if (albumFixture.tracks.map((track) => `${track.discNumber}:${track.trackNumber}`).join() !== '1:1,1:2,2:1') errors.push('QQ album import: disc/track ordering is incorrect');
 if (albumFixture.releaseDate !== '2026-01-02' || albumFixture.tracks[0].durationMs !== 160000) errors.push('QQ album import: normalized metadata is incorrect');
+if (normalizeInsightTags(['VOCAL', "CAN'T EXPLAIN", 'ONE MOMENT']).join() !== 'vocal-texture,inexplicable,one-moment') errors.push('insights: legacy listening reasons are not backward compatible');
+const latePeakNarrative = albumNarrative([{ overall: 7 }, { overall: 7.2 }, { overall: 8 }, { overall: 8.4 }]);
+if (!latePeakNarrative?.includes('arriving late') || albumNarrative([{ overall: 8 }, { overall: null }, { overall: 9 }]) !== null) errors.push('album narrative: complete evidence gate or peak-position analysis is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js'];
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
@@ -102,8 +107,11 @@ const appSource = await readFile(join(root, 'app.js'), 'utf8');
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
 if (!appSource.includes('setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim()')) errors.push('app.js: document titles must use the rendered editorial heading');
 if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
+for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
+if (!appSource.includes('annualPortrait(') || !appSource.includes('bindYear(')) errors.push('app.js: annual portrait or awards binding is missing');
 const versionSource = await readFile(join(root, 'modules', 'music', 'versions.js'), 'utf8');
 if (!versionSource.includes('confirmedByOwner: true') || !styles.includes('.version-form')) errors.push('versions: explicit owner confirmation and comparison UI are required');
+if (!styles.includes('.version-morph') || !styles.includes('.sonic-map') || !styles.includes('.listening-portrait') || !styles.includes('.personal-awards')) errors.push('styles.css: personal analysis visual contracts are incomplete');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);

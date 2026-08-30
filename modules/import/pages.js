@@ -11,6 +11,10 @@ const ignoredKey = data.library.ignoredStorageKey;
 const ratingKey = "how-i-hear-music:rating-sessions:v2";
 const journalKey = "how-i-hear-music:journal:v1";
 const versionKey = "how-i-hear-music:recording-versions:v1";
+const sonicKey = "how-i-hear-music:sonic-descriptors:v1";
+const tasteGroupKey = "how-i-hear-music:taste-groups:v1";
+const awardsKey = "how-i-hear-music:personal-awards:v1";
+const rediscoveryKey = "how-i-hear-music:rediscovery-skips:v1";
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 const snapshotKey = "how-i-hear-music:playlist-snapshots:v1";
 const backupFormat = "how-i-hear-music-backup";
@@ -144,7 +148,7 @@ export const bindImport = (path, navigate) => {
   if (path === "/import/inbox") bindInbox(navigate);
 };
 
-const backupKeys = () => [inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, versionKey, coverOverrideKey, snapshotKey, ...Object.keys(localStorage).filter((item) => item.startsWith("how-i-hear-music:album-draft:"))];
+const backupKeys = () => [inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, versionKey, sonicKey, tasteGroupKey, awardsKey, rediscoveryKey, coverOverrideKey, snapshotKey, ...Object.keys(localStorage).filter((item) => item.startsWith("how-i-hear-music:album-draft:"))];
 const exportBackup = () => ({ format: backupFormat, version: backupVersion, exportedAt: new Date().toISOString(), data: Object.fromEntries([...new Set(backupKeys())].map((item) => [item, storage.get(item, null)]).filter(([, value]) => value !== null)) });
 const mergeArrays = (current, incoming) => {
   const result = [...current]; const seen = new Set(current.map((item) => item?.id || key(item || {}) || JSON.stringify(item)));
@@ -153,12 +157,12 @@ const mergeArrays = (current, incoming) => {
 };
 const restoreBackup = (payload) => {
   if (!payload || payload.format !== backupFormat || payload.version !== backupVersion || !payload.data || typeof payload.data !== "object" || Array.isArray(payload.data)) throw new Error("This is not a supported How I Hear Music backup.");
-  const exact = new Set([inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, versionKey, coverOverrideKey, snapshotKey]); let restored = 0;
+  const exact = new Set([inboxKey, libraryKey, ignoredKey, albumStorageKey, ratingKey, journalKey, versionKey, sonicKey, tasteGroupKey, awardsKey, rediscoveryKey, coverOverrideKey, snapshotKey]); let restored = 0;
   Object.entries(payload.data).forEach(([name, value]) => {
     if (!exact.has(name) && !name.startsWith("how-i-hear-music:album-draft:")) return;
-    if ([inboxKey, libraryKey, ignoredKey, albumStorageKey, journalKey, versionKey].includes(name)) { if (!Array.isArray(value)) return; storage.set(name, mergeArrays(read(name), value)); restored += 1; return; }
+    if ([inboxKey, libraryKey, ignoredKey, albumStorageKey, journalKey, versionKey, tasteGroupKey].includes(name)) { if (!Array.isArray(value)) return; storage.set(name, mergeArrays(read(name), value)); restored += 1; return; }
     if (name === ratingKey && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
-    if ([coverOverrideKey, snapshotKey].includes(name) && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
+    if ([sonicKey, awardsKey, rediscoveryKey, coverOverrideKey, snapshotKey].includes(name) && value && typeof value === "object" && !Array.isArray(value)) { storage.set(name, { ...storage.get(name, {}), ...value }); restored += 1; return; }
     if (name.startsWith("how-i-hear-music:album-draft:") && (Array.isArray(value) || Number.isFinite(value))) { storage.set(name, value); restored += 1; }
   });
   if (!restored) throw new Error("The backup contains no compatible local records.");

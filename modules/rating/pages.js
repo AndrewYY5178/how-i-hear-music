@@ -3,6 +3,7 @@ import { fieldLabel, fields, radar, summary, waveform } from "./visuals.js";
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from "./interactions.js";
 import { link, pageHeader } from "../layout/shell.js";
 import { lifecycleTracks, readRatings, updateLifecycle } from "../music/lifecycle.js";
+import { insightLabel, insightTags, insightTagsOf } from "../music/insights.js";
 
 const visitorKey = "how-i-hear-music:rating-sessions:v2";
 const journalKey = "how-i-hear-music:journal:v1";
@@ -15,7 +16,6 @@ const localTracks = () => [...storage.get(inboxKey, []), ...storage.get(libraryK
 const findRateTrack = (id) => findTrack(id) || localTracks().find((track) => track.id === id) || null;
 const rateId = (track) => track?.id || trackId(track);
 const scoreControls = (scores) => `<div class="rating-controls">${fields.map((field) => `<div class="rating-control"><span><b>${fieldLabel[field]}</b><small>${field === "overall" ? "Your final feeling" : ""}</small></span><div><button type="button" aria-label="Decrease ${fieldLabel[field]} score" data-score-step="-0.1" data-field="${field}">−</button><output data-score-output="${field}">${rating(scores[field])}</output><button type="button" aria-label="Increase ${fieldLabel[field]} score" data-score-step="0.1" data-field="${field}">+</button></div></div>`).join("")}</div>`;
-const reasonChoices = ["MELODY", "ARRANGEMENT", "VOCAL", "HARMONY", "GROOVE", "LYRIC", "ONE MOMENT", "CAN'T EXPLAIN"];
 let pointerController = null;
 
 export const rateHome = () => {
@@ -32,8 +32,8 @@ export const unratedQueue = () => {
 export const rateTrack = (id) => {
   const track = findRateTrack(id) || choices[0];
   const saved = readRatings()[rateId(track)]; const scores = saved?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 };
-  const reasons = saved?.reasons || []; const moment = saved?.moment || {}; const momentRequired = reasons.includes("ONE MOMENT") ? "required" : "";
-  return `${pageHeader("RATE / TRACK", safe(track.title), track.artist)}<section class="track-rate-session"><div class="interactive-radar" id="rate-radar">${radar(scores, { interactive: true, className: "large-radar" })}<p class="mono">DRAG A NODE / OR USE PRECISE CONTROLS</p></div><form id="track-rate-form"><div class="rate-form-heading"><span class="eyebrow mono">SET THE SHAPE</span><p>Move the graph first; use the controls to refine it.</p></div>${scoreControls(scores)}<fieldset class="tag-picker"><legend class="mono">WHY DOES IT STAY? / PICK UP TO 3</legend>${reasonChoices.map((reason) => `<button type="button" data-tag="${safe(reason)}">${safe(reason)}</button>`).join("")}</fieldset><div class="moment-editor" id="moment-editor" ${reasons.includes("ONE MOMENT") ? "" : "hidden"}><span class="mono">ONE MOMENT</span><div><label><span>TIME</span><input id="moment-time" inputmode="numeric" maxlength="5" pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="2:47" value="${safe(moment.timestamp || "")}" ${momentRequired}></label><label><span>WHAT HAPPENS</span><input id="moment-note" maxlength="160" placeholder="the harmony enters" value="${safe(moment.note || "")}" ${momentRequired}></label></div></div><details class="long-note"><summary class="mono">LONG PRIVATE NOTE / OPTIONAL</summary><label class="listening-note"><textarea id="track-listening-note" rows="3" maxlength="600" placeholder="Why did you keep, revisit or question it?">${safe(saved?.note || "")}</textarea></label></details><button class="button primary" type="submit">SAVE RATING</button></form></section><aside id="rate-save-message"></aside>`;
+  const reasons = insightTagsOf(saved); const moment = saved?.moment || {}; const momentRequired = reasons.includes("one-moment") ? "required" : "";
+  return `${pageHeader("RATE / TRACK", safe(track.title), track.artist)}<section class="track-rate-session"><div class="interactive-radar" id="rate-radar">${radar(scores, { interactive: true, className: "large-radar" })}<p class="mono">DRAG A NODE / OR USE PRECISE CONTROLS</p></div><form id="track-rate-form"><div class="rate-form-heading"><span class="eyebrow mono">SET THE SHAPE</span><p>Move the graph first; use the controls to refine it.</p></div>${scoreControls(scores)}<fieldset class="tag-picker"><legend class="mono">WHAT MAKES IT WORK? / SELECT WHAT IS TRUE</legend>${insightTags.map((reason) => `<button type="button" data-tag="${safe(reason)}">${safe(insightLabel[reason])}</button>`).join("")}</fieldset><div class="moment-editor" id="moment-editor" ${reasons.includes("one-moment") ? "" : "hidden"}><span class="mono">ONE MOMENT</span><div><label><span>TIME</span><input id="moment-time" inputmode="numeric" maxlength="5" pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="2:47" value="${safe(moment.timestamp || "")}" ${momentRequired}></label><label><span>WHAT HAPPENS</span><input id="moment-note" maxlength="160" placeholder="the harmony enters" value="${safe(moment.note || "")}" ${momentRequired}></label></div></div><details class="long-note"><summary class="mono">LONG PRIVATE NOTE / OPTIONAL</summary><label class="listening-note"><textarea id="track-listening-note" rows="3" maxlength="600" placeholder="Why did you keep, revisit or question it?">${safe(saved?.note || "")}</textarea></label></details><button class="button primary" type="submit">SAVE RATING</button></form></section><aside id="rate-save-message"></aside>`;
 };
 
 const draftKey = (id) => "how-i-hear-music:album-draft:" + id;
@@ -56,7 +56,7 @@ export const bindRating = (path, navigate) => {
   }
   const match = path.match(/^\/rate\/track\/(.+)$/);
   if (match) {
-    const track = findRateTrack(match[1]) || choices[0]; const targetId = rateId(track); const previous = readRatings()[targetId]; let state = { ...(previous?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 }) }; let reasons = [...(previous?.reasons || previous?.tags || [])];
+    const track = findRateTrack(match[1]) || choices[0]; const targetId = rateId(track); let previous = readRatings()[targetId]; let state = { ...(previous?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 }) }; let reasons = insightTagsOf(previous);
     const radarTarget = document.getElementById("rate-radar");
     const render = (focusField = null) => {
       radarTarget.innerHTML = radar(state, { interactive: true, className: "large-radar" }) + "<p class='mono'>DRAG A NODE / OR USE PRECISE CONTROLS</p>";
@@ -65,7 +65,7 @@ export const bindRating = (path, navigate) => {
     };
     document.getElementById("track-rate-form").addEventListener("click", (event) => {
       const step = event.target.closest("[data-score-step]"); if (step) { const field = step.dataset.field; state[field] = clampScore(state[field] + Number(step.dataset.scoreStep)); render(); }
-      const tag = event.target.closest("[data-tag]"); if (tag) { const value = tag.dataset.tag; reasons = reasons.includes(value) ? reasons.filter((item) => item !== value) : reasons.length < 3 ? [...reasons, value] : reasons; tag.classList.toggle("active", reasons.includes(value)); const hasMoment = reasons.includes("ONE MOMENT"); document.getElementById("moment-editor").hidden = !hasMoment; document.getElementById("moment-time").required = hasMoment; document.getElementById("moment-note").required = hasMoment; }
+      const tag = event.target.closest("[data-tag]"); if (tag) { const value = tag.dataset.tag; reasons = reasons.includes(value) ? reasons.filter((item) => item !== value) : [...reasons, value]; tag.classList.toggle("active", reasons.includes(value)); const hasMoment = reasons.includes("one-moment"); document.getElementById("moment-editor").hidden = !hasMoment; document.getElementById("moment-time").required = hasMoment; document.getElementById("moment-note").required = hasMoment; }
     });
     let activeField = null;
     radarTarget.addEventListener("pointerdown", (event) => {
@@ -95,10 +95,11 @@ export const bindRating = (path, navigate) => {
     document.getElementById("track-rate-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const note = document.getElementById("track-listening-note").value.trim(); const timestamp = document.getElementById("moment-time").value.trim(); const momentNote = document.getElementById("moment-note").value.trim();
-      const moment = reasons.includes("ONE MOMENT") && timestamp && momentNote ? { timestamp, note: momentNote } : null;
-      const saved = { scores: state, reasons, moment, note, title: track.title, artist: track.artist, source: track.source || "archive", updatedAt: new Date().toISOString() };
-      saveRating(targetId, saved); updateLifecycle(targetId, "rated"); appendJournal({ type: "rating", trackId: targetId, title: track.title, artist: track.artist, scores: state, reasons, moment, note, source: track.source || "archive", at: saved.updatedAt });
-      const returnLink = track.id && !findTrack(targetId) ? link("/rate/queue", "BACK TO QUEUE", "button") : link(`/archive/tracks/${trackId(track)}`, "VIEW TRACK", "button"); document.getElementById("rate-save-message").innerHTML = `<span class='mono'>RATING SAVED</span><p>Saved in this browser${reasons.length ? ` with ${reasons.length} listening reason${reasons.length === 1 ? "" : "s"}` : ""}.</p>${returnLink}`;
+      const moment = reasons.includes("one-moment") && timestamp && momentNote ? { timestamp, note: momentNote } : null; const priorOverall = Number(previous?.scores?.overall); const nextOverall = Number(state.overall); const delta = Number.isFinite(priorOverall) && Number.isFinite(nextOverall) ? nextOverall - priorOverall : null;
+      const saved = { scores: state, insightTags: reasons, reasons, moment, note, title: track.title, artist: track.artist, source: track.source || "archive", updatedAt: new Date().toISOString() };
+      saveRating(targetId, saved); updateLifecycle(targetId, "rated"); appendJournal({ type: "rating", trackId: targetId, title: track.title, artist: track.artist, scores: state, insightTags: reasons, reasons, moment, note, source: track.source || "archive", at: saved.updatedAt });
+      const change = delta === null ? "" : `<dl class="rating-change"><div><dt>THEN</dt><dd>${rating(priorOverall)}</dd></div><div><dt>NOW</dt><dd>${rating(nextOverall)}</dd></div><div><dt>CHANGE</dt><dd>${delta > 0 ? "+" : ""}${rating(delta)}</dd></div></dl>`; const returnLink = track.id && !findTrack(targetId) ? link("/rate/queue", "BACK TO QUEUE", "button") : link(`/archive/tracks/${trackId(track)}`, "VIEW TRACK", "button"); document.getElementById("rate-save-message").innerHTML = `<span class='mono'>RATING SAVED</span><p>Saved in this browser${reasons.length ? ` with ${reasons.length} listening reason${reasons.length === 1 ? "" : "s"}` : ""}.</p>${change}${returnLink}`;
+      previous = saved;
     });
   }
   const albumMatch = path.match(/^\/rate\/album\/(.+)$/);
