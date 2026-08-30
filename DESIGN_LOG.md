@@ -573,3 +573,47 @@ Implementation commit: `21e0af2`
 
 - Syntax validation for every new and changed module, automated project validation through `npm test`, and whitespace validation through `git diff --check`.
 - Browser checks for DNA evidence, Blind Spot output and empty state, Memory Palace add/remove, Entropy evidence gate and populated baseline, Track DNA activation, geometry counts, back navigation, touch targets, responsive overflow and console errors.
+
+## Version 3.1 — Reliability and evidence closure
+
+Implementation commit: `f720387`
+
+### Before
+
+- The static GitHub Pages build exposed live-import controls before explaining that no metadata adapter was connected; the adapter had no hosted-base configuration, CORS boundary, request limit or response cache.
+- Personal records were browser-local but backup lived at the bottom of Inbox, did not include every manual correction, had no migration/recovery layer and did not warn that exported JSON was readable text.
+- Archive retrieval stopped at a track-title filter. Missing album/date/language/region metadata had no coverage report or owner correction path.
+- Taste DNA published aggregate strength without showing its contributing or limiting records. Entropy hid its current evidence count, Memory importance did not affect order, and mistaken saves were difficult to reverse.
+- Compact geometry was visually accessible through SVG labels but did not expose an adjacent numeric reading in scanning views.
+
+### Decision
+
+- Keep the six module identities unchanged. Add Search as a header utility and mobile menu item, Metadata as an Archive subsection, and Data Desk as an Import subsection instead of creating another top-level product module.
+- Put a plain service-status line before every Import task. Read a hosted adapter base only from explicit page configuration; keep the default Pages build disconnected. Add exact-origin CORS, per-address request limits, short-lived metadata cache, upstream timeout preservation and baseline security headers to the Node adapter.
+- Treat local durability as a recovery system rather than pretending it is account sync: schema migration, before-change snapshots, complete versioned export, merge restore, backup reminders, browser persistence request and an explicit plaintext warning.
+- Keep metadata unknown until owner-confirmed. Show field-by-field coverage, store corrections as an overlay with a source note and confirmation time, and include that overlay in backup and recovery.
+- Make analytical claims inspectable. DNA exposes contributing and below-baseline limiting evidence; Entropy names sample size and available dimensions; Memory sorts by importance and shows provenance; rating/album saves gain immediate undo while Journal removal requires a second confirmation.
+- Preserve existing Radar, Terrain and Signature drawings. Add quiet numeric text beneath compact Track and Album geometry rather than adding legends, badges, cards or new decoration.
+
+### Evidence
+
+- `npm test` now runs the existing project audit, core tests for migration/metadata/backup/recovery, and render smoke tests for ten reliability, retrieval and analysis routes.
+- Metadata date validation rejects non-ISO-like values; backup version 2 restores version 1 or 2 payloads and includes metadata overlays; recovery retains the 20 latest before-change values.
+- Static Import status is decided before network interaction, Search indexes six local evidence domains, and mobile Search remains reachable inside the existing menu.
+- Automated checks and `git diff --check` passed. A real browser was requested for desktop/tablet/mobile visual QA, but no controllable browser instance was available in this environment; that verification remains explicitly open in `TODO.md`.
+- No online visual reference was borrowed for this pass. Cloud accounts, decorative dashboards, recommendation feeds, encrypted-vault claims, inferred metadata and a seventh top-level module were rejected because they either require external authority or weaken the existing editorial hierarchy.
+
+### Files
+
+- `app.js`, `index.html`, `styles.css`
+- `modules/archive/pages.js`, `modules/import/pages.js`, `modules/journal/pages.js`, `modules/rating/pages.js`, `modules/search/pages.js`, `modules/taste/pages.js`
+- `modules/music/data.js`, `modules/music/metadata.js`, `modules/music/resilience.js`, `modules/music/taste-dna.js`
+- `server.mjs`, `scripts/test-core.mjs`, `scripts/test-render.mjs`, `package.json`
+- `README.md`, `TERMS.md`, `TODO.md`, `DESIGN_LOG.md`
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Browser QA deferred only because the browser control surface reported no available browser.
