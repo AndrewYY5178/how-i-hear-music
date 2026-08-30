@@ -2,6 +2,29 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active feature — Listening memory system
+
+### Phase 1 — Import lifecycle and Unrated Queue
+
+- [x] Give every imported local track one visible lifecycle state: `IMPORTED`, `HEARD`, `RATED` or `ARCHIVED`.
+- [x] Keep imports out of the Archive until an explicit archive action.
+- [x] Add an Unrated Queue that prioritizes heard-but-unrated tracks and links directly into Rate.
+- [x] Preserve lifecycle fields in the existing local backup and restore flow.
+
+### Phase 2 — Why this song stays
+
+- [x] Replace generic listening tags with the eight listening reasons: Melody, Arrangement, Vocal, Harmony, Groove, Lyric, One Moment and Can't Explain.
+- [x] Reveal a required timestamp and short observation only when `ONE MOMENT` is selected.
+- [x] Keep the long private note available but collapsed by default, so the Radar and listening reasons lead the page.
+- [x] Carry saved reasons and confirmed moments into Journal entries without inventing timestamps.
+
+### Phase 3 — Year in Music
+
+- [x] Add a year summary generated only from locally saved ratings and Journal evidence.
+- [x] Report highest track, highest album, average rating and most frequent listening reason when evidence exists.
+- [x] Derive grower, disappointment, new discovery and strangest rating from explicit transparent rules; show `NOT ENOUGH EVIDENCE` when the required history is absent.
+- [ ] Run desktop/mobile QA, append the design/version record, and publish the completed phases. *(Local desktop/mobile QA and automated checks passed; design record and publication remain.)*
+
 ## Active refactor — Modular product architecture
 
 - [x] Replace the long single-page experience with the six-route product structure: Home, Archive, Rate, Taste, Import and Journal.
@@ -70,7 +93,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add a data-driven album Overall Waveform renderer with Peak, Low, Average and Consistency metrics; it stays empty until a confirmed track sequence is supplied.
 - [ ] Add confirmed, ordered track-level Overall scores for an album before publishing its first real waveform.
 - [x] Expand beyond the former six-song deck: every confirmed Archive track can open the four-dimension Rate workspace.
-- [ ] Add Musical Moments only after Andrew provides a confirmed recording/version and timestamp.
+- [x] Add user-confirmed Musical Moments through the `ONE MOMENT` reason; a timestamp and observation are required and never inferred.
 - [ ] Add version-specific ratings and comparisons.
 - [x] Add album-level rating with an interactive waveform and saved overall score.
 - [ ] Add album comparison after Andrew confirms an album-level score or a complete ordered track sequence.
@@ -103,12 +126,12 @@ This file records planned work that is not complete yet. The current site is a p
 - No audio downloads, full lyrics or scraped private platform data.
 - No invented timestamps, alternate versions or producer credits.
 - No automatic score completion when Andrew has not confirmed a value.
-- Imported tracks currently remain browser-local and do not modify the canonical JSON files automatically.
+- Imported tracks and their lifecycle states remain browser-local and do not modify the canonical JSON files automatically.
 
 ## Awaiting confirmed owner or external input
 
 - Ordered album waveforms require Andrew's confirmed track sequence and Overall scores.
-- Musical Moments require Andrew's confirmed recording/version and timestamp.
+- Musical Moments require Andrew to enter a timestamp; the interface never invents one.
 - Version-specific comparisons require confirmed version identities and ratings.
 - Album comparison requires a confirmed album score or complete ordered track sequence.
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.

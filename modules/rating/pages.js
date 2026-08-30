@@ -2,28 +2,38 @@ import { data, findAlbum, findTrack, rating, safe, slug, storage, trackId } from
 import { fieldLabel, fields, radar, summary, waveform } from "./visuals.js";
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from "./interactions.js";
 import { link, pageHeader } from "../layout/shell.js";
+import { lifecycleTracks, readRatings, updateLifecycle } from "../music/lifecycle.js";
 
 const visitorKey = "how-i-hear-music:rating-sessions:v2";
 const journalKey = "how-i-hear-music:journal:v1";
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;
-const readRatings = () => storage.get(visitorKey, {});
 const saveRating = (id, value) => storage.set(visitorKey, { ...readRatings(), [id]: value });
-const appendJournal = (entry) => storage.set(journalKey, [entry, ...storage.get(journalKey, [])].slice(0, 80));
+const appendJournal = (entry) => storage.set(journalKey, [entry, ...storage.get(journalKey, [])]);
 const choices = data.songs.entries.filter((track) => track.scores && Object.values(track.scores).some((value) => value !== null));
 const localTracks = () => [...storage.get(inboxKey, []), ...storage.get(libraryKey, [])];
 const findRateTrack = (id) => findTrack(id) || localTracks().find((track) => track.id === id) || null;
 const rateId = (track) => track?.id || trackId(track);
 const scoreControls = (scores) => `<div class="rating-controls">${fields.map((field) => `<div class="rating-control"><span><b>${fieldLabel[field]}</b><small>${field === "overall" ? "Your final feeling" : ""}</small></span><div><button type="button" aria-label="Decrease ${fieldLabel[field]} score" data-score-step="-0.1" data-field="${field}">−</button><output data-score-output="${field}">${rating(scores[field])}</output><button type="button" aria-label="Increase ${fieldLabel[field]} score" data-score-step="0.1" data-field="${field}">+</button></div></div>`).join("")}</div>`;
-const tagChoices = ["stays with me", "surprised me", "grew on me", "feels personal", "one perfect moment", "immediate replay", "admire > love", "hard to explain"];
+const reasonChoices = ["MELODY", "ARRANGEMENT", "VOCAL", "HARMONY", "GROOVE", "LYRIC", "ONE MOMENT", "CAN'T EXPLAIN"];
 let pointerController = null;
 
-export const rateHome = () => `${pageHeader("RATE", "Begin with one listening decision.", "Choose a shape for one track, or a landscape for an album.")}<div class="rate-choices"><article><span class="mono">01 / TRACK</span><h2>Listening Shape</h2><p>Four dimensions, one personal response.</p>${link(`/rate/track/${trackId(choices[0])}`, "RATE A TRACK", "button primary")}</article><article><span class="mono">02 / ALBUM</span><h2>Listening Landscape</h2><p>Build a score curve one track at a time.</p>${link(`/rate/album/${slug(data.profile.albumArchive[0].artist + "-" + data.profile.albumArchive[0].title)}`, "RATE AN ALBUM", "button primary")}</article></div><section class="continue-panel"><span class="mono">CONTINUE RATING</span><p>Choose from a confirmed record:</p><div class="inline-links">${choices.slice(0, 8).map((track) => link(`/rate/track/${trackId(track)}`, track.title)).join("")}</div></section>`;
+export const rateHome = () => {
+  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const heard = unrated.filter((track) => track.lifecycleState === "heard").length;
+  return `${pageHeader("RATE", "Begin with one listening decision.", "Choose a shape for one track, or a landscape for an album.")}<div class="rate-choices"><article><span class="mono">01 / TRACK</span><h2>Listening Shape</h2><p>Four dimensions, one personal response.</p>${link(`/rate/track/${trackId(choices[0])}`, "RATE A TRACK", "button primary")}</article><article><span class="mono">02 / ALBUM</span><h2>Listening Landscape</h2><p>Build a score curve one track at a time.</p>${link(`/rate/album/${slug(data.profile.albumArchive[0].artist + "-" + data.profile.albumArchive[0].title)}`, "RATE AN ALBUM", "button primary")}</article></div><section class="queue-callout"><div><span class="mono">UNRATED QUEUE</span><h2>${heard} heard · ${unrated.length} waiting</h2><p>Imported records stay here until listening becomes a rating.</p></div>${link("/rate/queue", "OPEN QUEUE", "button")}</section><section class="continue-panel"><span class="mono">CONTINUE RATING</span><p>Choose from a confirmed record:</p><div class="inline-links">${choices.slice(0, 8).map((track) => link(`/rate/track/${trackId(track)}`, track.title)).join("")}</div></section>`;
+};
+
+export const unratedQueue = () => {
+  const records = lifecycleTracks().filter((track) => ["heard", "imported"].includes(track.lifecycleState)).sort((a, b) => (a.lifecycleState === "heard" ? 0 : 1) - (b.lifecycleState === "heard" ? 0 : 1));
+  const rows = records.length ? records.map((track, index) => `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span><div><span class="mono queue-state">${track.lifecycleState.toUpperCase()}</span><h2>${safe(track.title)}</h2><p>${safe(track.artist)}${track.album ? ` · ${safe(track.album)}` : ""}</p></div><div class="entry-actions">${track.lifecycleState === "imported" ? `<button type="button" data-queue-heard="${safe(track.id)}">MARK HEARD</button>` : ""}${link(`/rate/track/${encodeURIComponent(track.id)}`, "RATE")}</div></article>`).join("") : `<div class="queue-empty"><span class="mono">QUEUE CLEAR</span><h2>No heard or imported track is waiting for a rating.</h2>${link("/import", "IMPORT MUSIC →", "text-link")}</div>`;
+  return `${pageHeader("RATE / UNRATED QUEUE", "What have you heard but not rated?", "Heard records lead; newly imported records remain visible underneath.")}<section class="unrated-queue">${rows}</section>`;
+};
 
 export const rateTrack = (id) => {
   const track = findRateTrack(id) || choices[0];
   const saved = readRatings()[rateId(track)]; const scores = saved?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 };
-  return `${pageHeader("RATE / TRACK", safe(track.title), track.artist)}<section class="track-rate-session"><div class="interactive-radar" id="rate-radar">${radar(scores, { interactive: true, className: "large-radar" })}<p class="mono">DRAG A NODE / OR USE PRECISE CONTROLS</p></div><form id="track-rate-form"><div class="rate-form-heading"><span class="eyebrow mono">SET THE SHAPE</span><p>Move the graph first; use the controls to refine it.</p></div>${scoreControls(scores)}<fieldset class="tag-picker"><legend class="mono">WHAT STAYED? / PICK UP TO 3</legend>${tagChoices.map((tag) => `<button type="button" data-tag="${tag}">${tag}</button>`).join("")}</fieldset><label class="listening-note"><span class="mono">PRIVATE LISTENING NOTE / OPTIONAL</span><textarea id="track-listening-note" rows="3" maxlength="600" placeholder="Why did you keep, revisit or question it?">${safe(saved?.note || "")}</textarea></label><button class="button primary" type="submit">SAVE RATING</button></form></section><aside id="rate-save-message"></aside>`;
+  const reasons = saved?.reasons || []; const moment = saved?.moment || {}; const momentRequired = reasons.includes("ONE MOMENT") ? "required" : "";
+  return `${pageHeader("RATE / TRACK", safe(track.title), track.artist)}<section class="track-rate-session"><div class="interactive-radar" id="rate-radar">${radar(scores, { interactive: true, className: "large-radar" })}<p class="mono">DRAG A NODE / OR USE PRECISE CONTROLS</p></div><form id="track-rate-form"><div class="rate-form-heading"><span class="eyebrow mono">SET THE SHAPE</span><p>Move the graph first; use the controls to refine it.</p></div>${scoreControls(scores)}<fieldset class="tag-picker"><legend class="mono">WHY DOES IT STAY? / PICK UP TO 3</legend>${reasonChoices.map((reason) => `<button type="button" data-tag="${safe(reason)}">${safe(reason)}</button>`).join("")}</fieldset><div class="moment-editor" id="moment-editor" ${reasons.includes("ONE MOMENT") ? "" : "hidden"}><span class="mono">ONE MOMENT</span><div><label><span>TIME</span><input id="moment-time" inputmode="numeric" maxlength="5" pattern="[0-9]{1,2}:[0-5][0-9]" placeholder="2:47" value="${safe(moment.timestamp || "")}" ${momentRequired}></label><label><span>WHAT HAPPENS</span><input id="moment-note" maxlength="160" placeholder="the harmony enters" value="${safe(moment.note || "")}" ${momentRequired}></label></div></div><details class="long-note"><summary class="mono">LONG PRIVATE NOTE / OPTIONAL</summary><label class="listening-note"><textarea id="track-listening-note" rows="3" maxlength="600" placeholder="Why did you keep, revisit or question it?">${safe(saved?.note || "")}</textarea></label></details><button class="button primary" type="submit">SAVE RATING</button></form></section><aside id="rate-save-message"></aside>`;
 };
 
 const draftKey = (id) => "how-i-hear-music:album-draft:" + id;
@@ -37,9 +47,16 @@ export const bindRating = (path, navigate) => {
   pointerController?.abort();
   pointerController = new AbortController();
   const pointerSignal = pointerController.signal;
+  if (path === "/rate/queue") {
+    document.querySelector(".unrated-queue")?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-queue-heard]"); if (!button) return;
+      updateLifecycle(button.dataset.queueHeard, "heard");
+      navigate("/rate/queue");
+    });
+  }
   const match = path.match(/^\/rate\/track\/(.+)$/);
   if (match) {
-    const track = findRateTrack(match[1]) || choices[0]; const targetId = rateId(track); const previous = readRatings()[targetId]; let state = { ...(previous?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 }) }; let tags = [...(previous?.tags || [])];
+    const track = findRateTrack(match[1]) || choices[0]; const targetId = rateId(track); const previous = readRatings()[targetId]; let state = { ...(previous?.scores || { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5 }) }; let reasons = [...(previous?.reasons || previous?.tags || [])];
     const radarTarget = document.getElementById("rate-radar");
     const render = (focusField = null) => {
       radarTarget.innerHTML = radar(state, { interactive: true, className: "large-radar" }) + "<p class='mono'>DRAG A NODE / OR USE PRECISE CONTROLS</p>";
@@ -48,7 +65,7 @@ export const bindRating = (path, navigate) => {
     };
     document.getElementById("track-rate-form").addEventListener("click", (event) => {
       const step = event.target.closest("[data-score-step]"); if (step) { const field = step.dataset.field; state[field] = clampScore(state[field] + Number(step.dataset.scoreStep)); render(); }
-      const tag = event.target.closest("[data-tag]"); if (tag) { const value = tag.dataset.tag; tags = tags.includes(value) ? tags.filter((item) => item !== value) : tags.length < 3 ? [...tags, value] : tags; tag.classList.toggle("active", tags.includes(value)); }
+      const tag = event.target.closest("[data-tag]"); if (tag) { const value = tag.dataset.tag; reasons = reasons.includes(value) ? reasons.filter((item) => item !== value) : reasons.length < 3 ? [...reasons, value] : reasons; tag.classList.toggle("active", reasons.includes(value)); const hasMoment = reasons.includes("ONE MOMENT"); document.getElementById("moment-editor").hidden = !hasMoment; document.getElementById("moment-time").required = hasMoment; document.getElementById("moment-note").required = hasMoment; }
     });
     let activeField = null;
     radarTarget.addEventListener("pointerdown", (event) => {
@@ -74,8 +91,15 @@ export const bindRating = (path, navigate) => {
     const releaseRadar = () => { activeField = null; };
     window.addEventListener("pointerup", releaseRadar, { signal: pointerSignal });
     window.addEventListener("pointercancel", releaseRadar, { signal: pointerSignal });
-    document.querySelectorAll("[data-tag]").forEach((button) => button.classList.toggle("active", tags.includes(button.dataset.tag)));
-    document.getElementById("track-rate-form").addEventListener("submit", (event) => { event.preventDefault(); const note = document.getElementById("track-listening-note").value.trim(); const saved = { scores: state, tags, note, title: track.title, artist: track.artist, source: track.source || "archive", updatedAt: new Date().toISOString() }; saveRating(targetId, saved); appendJournal({ type: "rating", trackId: targetId, title: track.title, artist: track.artist, scores: state, note, at: saved.updatedAt }); const returnLink = track.id && !findTrack(targetId) ? link("/import/inbox", "BACK TO INBOX", "button") : link(`/archive/tracks/${trackId(track)}`, "VIEW TRACK", "button"); document.getElementById("rate-save-message").innerHTML = `<span class='mono'>RATING SAVED</span><p>Saved in this browser.</p>${returnLink}`; });
+    document.querySelectorAll("[data-tag]").forEach((button) => button.classList.toggle("active", reasons.includes(button.dataset.tag)));
+    document.getElementById("track-rate-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const note = document.getElementById("track-listening-note").value.trim(); const timestamp = document.getElementById("moment-time").value.trim(); const momentNote = document.getElementById("moment-note").value.trim();
+      const moment = reasons.includes("ONE MOMENT") && timestamp && momentNote ? { timestamp, note: momentNote } : null;
+      const saved = { scores: state, reasons, moment, note, title: track.title, artist: track.artist, source: track.source || "archive", updatedAt: new Date().toISOString() };
+      saveRating(targetId, saved); updateLifecycle(targetId, "rated"); appendJournal({ type: "rating", trackId: targetId, title: track.title, artist: track.artist, scores: state, reasons, moment, note, source: track.source || "archive", at: saved.updatedAt });
+      const returnLink = track.id && !findTrack(targetId) ? link("/rate/queue", "BACK TO QUEUE", "button") : link(`/archive/tracks/${trackId(track)}`, "VIEW TRACK", "button"); document.getElementById("rate-save-message").innerHTML = `<span class='mono'>RATING SAVED</span><p>Saved in this browser${reasons.length ? ` with ${reasons.length} listening reason${reasons.length === 1 ? "" : "s"}` : ""}.</p>${returnLink}`;
+    });
   }
   const albumMatch = path.match(/^\/rate\/album\/(.+)$/);
   if (albumMatch) {

@@ -2,10 +2,10 @@ import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
-import { rateAlbum, rateHome, rateTrack, bindRating } from "./modules/rating/pages.js";
+import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
 import { compare, goodNotMine, philosophy, profile, tasteHome } from "./modules/taste/pages.js";
 import { bindImport, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js";
-import { journal } from "./modules/journal/pages.js";
+import { journal, yearInMusic } from "./modules/journal/pages.js";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -20,6 +20,7 @@ const route = (path) => {
   if (/^\/archive\/albums\/.+/.test(current)) return archiveAlbumDetail(decodeURIComponent(current.split("/").pop()));
   if (/^\/archive\/artists\/.+/.test(current)) return archiveArtistDetail(decodeURIComponent(current.split("/").pop()));
   if (current === "/rate") return rateHome();
+  if (current === "/rate/queue") return unratedQueue();
   if (/^\/rate\/track\/.+/.test(current)) return rateTrack(decodeURIComponent(current.split("/").pop()));
   if (/^\/rate\/album\/.+/.test(current)) return rateAlbum(decodeURIComponent(current.split("/").pop()));
   if (current === "/taste") return tasteHome();
@@ -32,6 +33,7 @@ const route = (path) => {
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/journal") return journal();
+  if (/^\/journal\/year\/\d{4}$/.test(current)) return yearInMusic(Number(current.split("/").pop()));
   return `<section class="not-found"><span class="eyebrow mono">404</span><h1>That page is not in the archive.</h1>${link("/", "RETURN HOME", "button primary")}</section>`;
 };
 
@@ -49,7 +51,7 @@ const parentRoute = (path) => {
   }
   if (path === "/archive") return { href: "/", label: "BACK HOME" };
   if (/^\/archive\/(tracks|albums|artists)$/.test(path)) return { href: "/archive", label: "BACK TO ARCHIVE" };
-  if (/^\/(taste|import)\/.+/.test(path)) return { href: "/" + path.split("/")[1], label: "BACK TO " + path.split("/")[1].toUpperCase() };
+  if (/^\/(taste|import|journal)\/.+/.test(path)) return { href: "/" + path.split("/")[1], label: "BACK TO " + path.split("/")[1].toUpperCase() };
   if (/^\/(taste|import|journal|rate)$/.test(path)) return { href: "/", label: "BACK HOME" };
   if (/^\/rate\/.+/.test(path)) return { href: "/rate", label: "BACK TO RATE" };
   return { href: "/", label: "BACK HOME" };

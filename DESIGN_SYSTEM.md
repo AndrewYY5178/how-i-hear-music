@@ -47,6 +47,9 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Disclosure summaries expose the full 40px row as their interaction target without adding a container treatment.
 - Between 761px and 1024px, Home's Featured Shape retains three roles but uses shrinkable columns; below 761px it becomes one column.
 - Browser titles use the rendered editorial heading for record details rather than internal IDs or encoded URL segments.
+- Imported music advances through four explicit typographic states—Imported, Heard, Rated and Archived—and only the final explicit action moves a record into the Library store.
+- Track rating leads with Radar and eight listening reasons. `ONE MOMENT` reveals its own required timestamp/observation fields; the long private note stays collapsed by default.
+- Annual Journal summaries use one dominant average numeral, ruled evidence rows and explicit `NOT ENOUGH EVIDENCE` states; they never synthesize missing listening history.
 
 ## Reference boundary
 

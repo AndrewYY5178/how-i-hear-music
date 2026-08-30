@@ -357,10 +357,11 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .album-card .card-link { margin-top:auto; padding-top:16px; }
 
 /* Inbox workflow: status remains typographic; backup controls stay a quiet utility. */
-.inbox-counts { grid-template-columns:repeat(5,1fr); }
+.inbox-counts { grid-template-columns:repeat(4,1fr); }
 .inbox-state { display:block; margin-bottom:8px; color:var(--red); font:8px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
 .inbox-state.review { color:var(--olive); }
 .inbox-state.auto_match { color:var(--olive); }
+.workflow-note { margin:-24px 0 40px; color:var(--muted); font-size:8px; }
 .entry-actions { flex-wrap:wrap; justify-content:flex-end; }
 .local-backup { display:grid; grid-template-columns:minmax(240px,.8fr) minmax(320px,1.2fr); gap:64px; align-items:end; margin-top:96px; padding:40px 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
 .local-backup h2 { margin:16px 0 8px; font:400 clamp(28px,3vw,42px)/1 var(--serif); letter-spacing:-.055em; }
@@ -441,6 +442,43 @@ body::before {
 .listening-note { display:block; margin:24px 0; }
 .listening-note>span { display:block; margin-bottom:8px; color:#e7aa8d; font-size:8px; }
 .listening-note textarea { width:100%; padding:8px 0; border:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); outline:0; background:transparent; color:inherit; resize:vertical; }
+.queue-callout { display:flex; max-width:760px; gap:40px; align-items:end; justify-content:space-between; margin-top:40px; padding:24px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.queue-callout h2 { margin:8px 0; font:400 28px/1.1 var(--serif); }
+.queue-callout p { max-width:520px; margin:0; color:var(--muted); font:italic 14px/1.5 var(--serif); }
+.unrated-queue { border-top:1px solid var(--ink); }
+.unrated-queue article { display:grid; grid-template-columns:40px 1fr auto; gap:24px; align-items:center; padding:24px 0; border-bottom:1px solid var(--line); }
+.unrated-queue article>span,.queue-state { color:var(--red); font-size:8px; }
+.unrated-queue h2 { margin:8px 0 0; font:400 24px/1.1 var(--serif); }
+.unrated-queue p { margin:8px 0 0; color:var(--muted); font:9px var(--mono); }
+.queue-empty { min-height:280px; padding:40px 0; }
+.queue-empty h2 { max-width:640px; margin:16px 0 24px; font:400 clamp(28px,4vw,48px)/1.05 var(--serif); }
+.moment-editor { margin:24px 0; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.moment-editor>span { color:var(--red); font-size:8px; }
+.moment-editor>div { display:grid; grid-template-columns:96px 1fr; gap:16px; margin-top:16px; }
+.moment-editor label span { display:block; margin-bottom:8px; color:var(--muted); font:8px var(--mono); }
+.moment-editor input { width:100%; min-height:40px; padding:8px 0; border:0; border-bottom:1px solid var(--line); outline:0; background:transparent; color:inherit; font:14px var(--serif); }
+.long-note { margin:24px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.long-note summary { display:flex; min-height:40px; cursor:pointer; align-items:center; color:var(--red); font-size:8px; }
+.long-note .listening-note { margin:0 0 16px; }
+.long-note .listening-note textarea { border-top:0; }
+.journal-year-link { display:flex; max-width:760px; align-items:center; justify-content:space-between; margin-bottom:24px; padding:16px 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--line); }
+.journal-reasons { margin-top:16px!important; color:var(--red)!important; font-size:8px!important; font-style:normal!important; }
+.journal-list blockquote { margin:16px 0 0; padding-left:16px; border-left:1px solid var(--red); font:italic 16px/1.5 var(--serif); }
+.journal-list blockquote b { color:var(--red); font:10px var(--mono); }
+.year-lead { display:grid; grid-template-columns:1fr auto; align-items:end; min-height:280px; padding:40px 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
+.year-lead>span { align-self:start; color:var(--red); font-size:8px; }
+.year-lead strong { grid-row:1/3; grid-column:2; color:var(--red); font:400 clamp(88px,17vw,200px)/.75 var(--serif); letter-spacing:-.08em; }
+.year-lead p { margin:0; color:var(--muted); font:9px var(--mono); }
+.year-grid { display:grid; grid-template-columns:repeat(2,1fr); }
+.year-grid article { min-height:240px; padding:40px 24px 24px 0; border-bottom:1px solid var(--line); }
+.year-grid article:nth-child(odd) { border-right:1px solid var(--line); }
+.year-grid article:nth-child(even) { padding-left:24px; }
+.year-grid span { color:var(--red); font-size:8px; }
+.year-grid strong { display:block; margin-top:40px; color:var(--red); font:400 44px/1 var(--serif); }
+.year-grid h2 { margin:8px 0; font:400 24px/1.1 var(--serif); }
+.year-grid p,.year-method p { max-width:520px; margin:0; color:var(--muted); font:italic 13px/1.5 var(--serif); }
+.year-method { display:grid; grid-template-columns:144px 1fr; gap:24px; margin-top:64px; padding:24px 0; border-top:1px solid var(--ink); }
+.year-method span { color:var(--red); font-size:8px; }
 .rating-history { border-top:1px solid var(--line); }
 .rating-history article { display:grid; grid-template-columns:96px 64px 1fr; gap:16px; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--line); }
 .rating-history time { color:var(--muted); font-size:8px; }
@@ -457,4 +495,13 @@ body::before {
 @media (max-width:760px) {
   .rating-history article { grid-template-columns:80px 48px 1fr; gap:8px; }
   .taste-distances span { gap:16px; }
+  .queue-callout { align-items:start; flex-direction:column; gap:24px; }
+  .unrated-queue article { grid-template-columns:24px 1fr; gap:16px; }
+  .unrated-queue .entry-actions { grid-column:2; }
+  .moment-editor>div { grid-template-columns:80px 1fr; }
+  .year-lead { min-height:224px; }
+  .year-lead strong { font-size:88px; }
+  .year-grid { grid-template-columns:1fr; }
+  .year-grid article:nth-child(n) { min-height:208px; padding:40px 0 24px; border-right:0; }
+  .year-method { grid-template-columns:1fr; gap:16px; }
 }

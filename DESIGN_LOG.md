@@ -267,3 +267,46 @@ Append one entry for every visual version. Never rewrite an earlier entry; corre
 - Local album and track detail checks for 40px summaries and human-readable browser titles.
 - Local 768px Home grid measurement and visual review.
 - Automated regression checks through `npm test`.
+
+## Version 1.7 — Listening evidence lifecycle
+
+### Before
+
+- Imported records had matching states but no listening lifecycle, and `KEEP` moved them straight into the personal Library.
+- Rate could save generic tags and a visible long note, but it could not capture a concise reason or confirmed musical moment.
+- Journal was chronological only; it did not summarize a year or distinguish absent evidence from a zero-valued result.
+
+### Decision
+
+- Separate match confidence from a four-step listening lifecycle: Imported, Heard, Rated and Archived. Preserve the record ID when it is explicitly archived so its rating history stays connected.
+- Add an Unrated Queue inside Rate, with heard records before newly imported records.
+- Replace generic tags with eight music-specific listening reasons. Reveal required timestamp and observation fields only for `ONE MOMENT`, and collapse the long private note by default.
+- Generate Year in Music from saved Journal evidence only. Use ruled editorial rows and a single dominant average numeral rather than dashboard cards, badges or decorative charts.
+- Retain the full local Journal timeline instead of truncating it to 80 entries, so later annual summaries can use the evidence the site has accumulated.
+- Define change metrics transparently: first-to-latest Overall for grower/disappointment, first rated non-Archive import for new discovery, and the absolute gap between Overall and the other three dimensions' mean for the strangest rating.
+
+### Evidence
+
+- The existing local browser archive contained 199 imported records; the revised Inbox and Queue classified them as Imported without moving them to Archive.
+- An isolated browser origin saved `ONE MOMENT` with `2:47 — the harmony enters`; Journal rendered the reason and moment, and the annual view counted it without inventing other metrics.
+- At 390 × 844, the annual view and empty Queue had zero horizontal overflow. Desktop Inbox at 1280px also had zero horizontal overflow.
+- No online visual reference was borrowed for this version. The work extends the repository's existing olive studio, Journal paper, typographic ratings and 1px editorial rules.
+
+### Files
+
+- `app.js`
+- `modules/music/lifecycle.js`
+- `modules/import/pages.js`
+- `modules/rating/pages.js`
+- `modules/journal/pages.js`
+- `styles.css`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Syntax checks for all changed JavaScript modules.
+- Automated project validation through `npm test`.
+- Browser interaction check for reason selection, conditional moment fields, save, Journal rendering and Year in Music aggregation.
+- Desktop Inbox and mobile Year/Queue overflow checks; no console warnings or errors.
