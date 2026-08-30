@@ -5,7 +5,7 @@ import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDe
 import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
 import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js";
 import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
-import { annualPortrait, bindJournal, bindYear, entropyPage, journal, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
+import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { bindSearch, searchPage } from "./modules/search/pages.js";
 
@@ -46,6 +46,7 @@ const route = (path) => {
   if (current === "/import/data") return importData();
   if (current === "/journal") return journal();
   if (current === "/search") return searchPage();
+  if (/^\/journal\/edit\/.+/.test(current)) return journalEdit(decodeURIComponent(current.split("/").pop()));
   if (current === "/journal/memory-palace") return memoryPalace();
   if (current === "/journal/entropy") return entropyPage();
   if (/^\/journal\/year\/\d{4}\/portrait$/.test(current)) return annualPortrait(Number(current.split("/")[3]));
@@ -81,7 +82,8 @@ const render = () => {
   const parent = parentRoute(path);
   const back = path === "/" ? "" : link(parent.href, `← ${parent.label}`, "back-button");
   app.innerHTML = back + route(path);
-  setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim() || "Page");
+  const pageTitle = path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim() || "Page"; setDocumentTitle(pageTitle);
+  const publicUrl = new URL(withBase(path), "https://andrewyy5178.github.io").href; document.querySelector('link[rel="canonical"]')?.setAttribute("href", publicUrl); document.querySelector('meta[property="og:url"]')?.setAttribute("content", publicUrl); document.querySelector('meta[name="description"]')?.setAttribute("content", `${pageTitle} — personal listening evidence in How I Hear Music.`);
   app.focus({ preventScroll: true });
   bindArchive(path, navigate);
   bindRating(path, navigate);
@@ -122,3 +124,14 @@ const restorePagesRoute = () => {
 
 migrateLocalData();
 if (!restorePagesRoute()) render();
+
+const registerOfflineShell = async () => {
+  if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
+  try {
+    const registration = await navigator.serviceWorker.register(new URL("./sw.js", import.meta.url), { scope: new URL("./", import.meta.url).pathname }); const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; banner.hidden = false; document.getElementById("apply-update").onclick = () => worker.postMessage("SKIP_WAITING"); };
+    if (registration.waiting) showUpdate(registration.waiting);
+    registration.addEventListener("updatefound", () => registration.installing?.addEventListener("statechange", () => { if (registration.installing?.state === "installed") showUpdate(registration.installing); }));
+    let refreshing = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (refreshing) return; refreshing = true; location.reload(); });
+  } catch (error) { console.warn("Offline shell registration failed.", error); }
+};
+registerOfflineShell();

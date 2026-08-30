@@ -30,7 +30,7 @@ This is a personal archive provided as-is. The owner does not guarantee that thi
 
 Ratings, listening notes, imported records, corrections and analytical inputs are stored in the visitor's browser unless a separate service is explicitly introduced. The site does not provide account synchronization. Clearing browser data may remove these records.
 
-Data Desk exports are readable, unencrypted JSON files. Anyone with access to a backup may read its personal notes and ratings. Users are responsible for keeping backup files private and for deleting copies they no longer need.
+Data Desk can export readable JSON or an optional password-encrypted backup. Anyone with access to a plain backup may read its personal notes and ratings. Encrypted backups cannot be opened without the chosen password, and the site does not store or recover that password. Users are responsible for keeping backup files and passwords private and for deleting copies they no longer need.
 
 This notice is a repository-level disclosure, not legal advice. Qualified legal review is still required before commercial use or broader public expansion.
 

@@ -2,6 +2,36 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active closure — UI 3.2
+
+### Personal data and correction
+
+- [x] Add optional password-encrypted backup export/import without removing the readable JSON workflow.
+- [x] Add storage quota reporting and warn before local usage becomes risky.
+- [x] Let Journal entries be edited as well as removed, while keeping canonical records and current ratings separate.
+- [x] Add a complete rating-history correction view instead of limiting undo to the immediately preceding save.
+- [x] Expand metadata provenance from one free-text note to source URL, evidence note and visible local revision time; add a missing-only review filter.
+- [x] Add private album notes to Album detail, backup and Search without turning them into public reviews.
+- [x] Let playlist sources be renamed, refreshed and removed without deleting imported tracks, ratings or notes.
+
+### Service and delivery resilience
+
+- [x] Add adapter health/version endpoints, bounded cache cleanup, configurable trusted-proxy handling and structured request/error logs.
+- [x] Add an offline shell with explicit update behavior for the static archive; never cache live metadata API responses.
+- [x] Improve crawler/deep-link metadata without introducing a build framework or changing the History API product structure.
+
+### Analytical trust and verification
+
+- [x] Add evidence-gated language, era and Sonic coverage gaps to Blind Spots only when metadata coverage is sufficient.
+- [x] Add automated accessibility/static-security checks and interaction regression coverage for destructive/correction flows.
+- [ ] Complete real desktop/tablet/mobile browser QA, record every intentional non-change and publish the verified version.
+
+### External boundaries
+
+- [ ] Deploy the metadata adapter only after a hosting target, HTTPS origin and credentials are explicitly supplied.
+- [x] Retain the documented local-first/no-account boundary; account sync remains intentionally out of scope until the product owner chooses an authentication/privacy model.
+- [ ] Obtain qualified legal review before commercial use or broader public expansion.
+
 ## Active hardening — Reliability and product closure
 
 ### Phase 1 — Honest deployment and durable local data

@@ -77,8 +77,8 @@ if (normalizeInsightTags(['VOCAL', "CAN'T EXPLAIN", 'ONE MOMENT']).join() !== 'v
 const latePeakNarrative = albumNarrative([{ overall: 7 }, { overall: 7.2 }, { overall: 8 }, { overall: 8.4 }]);
 if (!latePeakNarrative?.includes('arriving late') || albumNarrative([{ overall: 8 }, { overall: null }, { overall: 9 }]) !== null) errors.push('album narrative: complete evidence gate or peak-position analysis is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
-const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'sw.js', 'modules/home.js', 'modules/layout/shell.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/search/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
+const routePattern = /^\/$|^\/(archive|rate|taste|import|journal|search)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
   const links = [...source.matchAll(/(?:href=|link\()(["'`])(\/[^"'`$]*)\1/g)].map((match) => match[2]);
@@ -87,6 +87,11 @@ for (const name of sourceFiles) {
     if (extname(path)) { try { await readFile(join(root, path.slice(1))); } catch { errors.push(`${name}: missing internal asset ${href}`); } }
     else if (!routePattern.test(path)) errors.push(`${name}: unsupported internal route ${href}`);
   }
+  const externalTargets = source.match(/<a[^>]*target="_blank"[^>]*>/g) || [];
+  if (externalTargets.some((anchor) => !/rel="[^"]*noreferrer/.test(anchor))) errors.push(`${name}: target=_blank link is missing noreferrer`);
+  const images = source.match(/<img\b[^>]*>/g) || [];
+  if (images.some((image) => !/\balt=/.test(image))) errors.push(`${name}: image is missing alternative text`);
+  if (/<button\b(?![^>]*\btype=)[^>]*>/i.test(source)) errors.push(`${name}: button is missing an explicit type`);
 }
 
 const styles = await readFile(join(root, 'styles.css'), 'utf8');
@@ -105,7 +110,7 @@ const fallbackHtml = await readFile(join(root, '404.html'), 'utf8');
 if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.includes('route=${encodeURIComponent')) errors.push('404.html: GitHub Pages route recovery is missing');
 const appSource = await readFile(join(root, 'app.js'), 'utf8');
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
-if (!appSource.includes('setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim()')) errors.push('app.js: document titles must use the rendered editorial heading');
+if (!appSource.includes('const pageTitle = path === "/" ? "Home"') || !appSource.includes('link[rel="canonical"]')) errors.push('app.js: document titles or route canonical metadata are missing');
 if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
 for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
 for (const path of ['/taste/dna', '/taste/blind-spots', '/journal/memory-palace', '/journal/entropy']) if (!appSource.includes(path)) errors.push(`app.js: advanced taste route ${path} is missing`);
@@ -122,6 +127,15 @@ if (!memorySource.includes('source: "manual"') || !memorySource.includes('source
 const geometrySource = await readFile(join(root, 'modules', 'music', 'geometry.js'), 'utf8');
 for (const primitive of ['trackGlyph', 'albumTerrain', 'artistSignature', 'tasteTraitMark']) if (!geometrySource.includes(`export const ${primitive}`)) errors.push(`Music as Geometry: ${primitive} primitive is missing`);
 if (!styles.includes('.taste-dna') || !styles.includes('.memory-palace') || !styles.includes('.entropy-chart') || !styles.includes('.track-glyph')) errors.push('styles.css: advanced taste visual contracts are incomplete');
+if (!entryHtml.includes('rel="manifest"') || !entryHtml.includes('rel="canonical"') || !entryHtml.includes('id="update-banner"')) errors.push('index.html: install, canonical or explicit update metadata is missing');
+const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
+if (!serviceWorker.includes('/api/') || !serviceWorker.includes('request.mode === "navigate"') || !serviceWorker.includes('SKIP_WAITING')) errors.push('offline shell: API exclusion, navigation fallback or explicit update behavior is missing');
+for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);
+for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
+if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('styles.css: reduced-motion handling is missing');
+const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');
+for (const contract of ["requestPath === '/healthz'", "requestPath === '/api/version'", 'TRUST_PROXY', 'logEvent', 'pruneRuntimeState']) if (!serverSource.includes(contract)) errors.push(`adapter resilience: missing ${contract}`);
+if (!serverSource.includes("safePath.endsWith('sw.js')") || !serverSource.includes("'Cache-Control': 'no-cache'")) errors.push('delivery: service worker and app shell must revalidate');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);

@@ -14,6 +14,8 @@ UI 3.0 将这些证据连接成同一套高级 Taste 系统：Taste DNA 只发�
 
 UI 3.1 收口了资料可靠性：全站 Search 同时检索 Track、Album、Artist、Journal、Memory 与 Taste DNA；Archive Metadata 显示字段覆盖并允许站点所有者保存可追溯的本地修正；Data Desk 提供版本化备份、合并恢复、最近变更快照、备份提醒与持久存储请求。Taste DNA 可检查贡献与限制证据，Entropy 明示样本量和可用维度，评分完成后可立即撤销，Journal 误记录可二次确认删除。
 
+UI 3.2 补齐了本地资料的长期维护路径：Data Desk 可导出可读 JSON 或使用 AES-GCM 与密码保护的备份，并显示浏览器配额；Journal 的历史评分可以独立修订，Album detail 可保存私人专辑笔记，Metadata 可记录 HTTPS 来源、证据说明和修订时间。Blind Spots 只在语言、年代或 Sonic 样本达到门槛时显示覆盖空白。静态页面新增离线壳、显式更新提示、路由 metadata、sitemap 和 manifest；metadata adapter 新增健康/版本端点、结构化日志、可信代理开关和有界运行时缓存。
+
 未完成的导入、数据库和互动功能记录在 [`TODO.md`](TODO.md) 中，并按优先级整理。
 
 ## 在线版本
@@ -26,7 +28,7 @@ UI 3.1 收口了资料可靠性：全站 Search 同时检索 Track、Album、Art
 ALLOWED_ORIGIN=https://andrewyy5178.github.io npm start
 ```
 
-可用逗号分隔多个精确 origin。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时与 CORS 白名单；生产部署仍需由托管平台提供 TLS、日志和进程管理。仓库不包含托管账户或部署凭据，因此 GitHub Pages 版本默认保持 metadata service 未连接。
+可用逗号分隔多个精确 origin。只有在 adapter 位于可信反向代理后方时才设置 `TRUST_PROXY=1`；否则会忽略客户端提供的 `X-Forwarded-For`。`/healthz` 提供运行状态，`/api/version` 提供公开能力版本。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时、结构化请求日志与 CORS 白名单；生产部署仍需由托管平台提供 TLS、日志留存和进程管理。仓库不包含托管账户或部署凭据，因此 GitHub Pages 版本默认保持 metadata service 未连接。
 
 ## 预览
 
@@ -38,7 +40,9 @@ npm run dev
 
 然后打开 `http://localhost:3000`。
 
-个人评分和笔记仍以浏览器本地数据为准，不是账号同步数据库。换设备或清理站点数据前，请在 `Import → Data Desk` 导出 JSON。备份文件是可读明文而非加密文件，应保存在私密位置。
+个人评分和笔记仍以浏览器本地数据为准，不是账号同步数据库。换设备或清理站点数据前，请在 `Import → Data Desk` 导出备份：普通 JSON 便于检查但可直接阅读；密码备份使用 PBKDF2-SHA256（250,000 次）派生密钥并以 AES-GCM 加密。站点不保存也不能找回密码。
+
+离线壳会缓存同源页面、样式、脚本和内置数据，但不会缓存 `/api/` 或 `/healthz` 响应。新 Service Worker 安装完成后只显示更新提示，由用户决定何时重新载入。
 
 ## 验证
 
@@ -46,7 +50,7 @@ npm run dev
 npm test
 ```
 
-该命令覆盖结构检查、数据迁移、metadata overlay、备份恢复、恢复快照，以及十个可靠性、检索和分析页面的渲染 smoke test。`npm run check:adapters` 会访问第三方公开接口，只应在允许联网并需要检查上游兼容性时运行。
+该命令覆盖结构与静态无障碍/安全检查、数据迁移、metadata overlay、Journal 修订、专辑笔记、明文与加密备份、恢复快照、Blind Spot 证据门槛，以及十一个可靠性、检索和分析页面的渲染 smoke test。`npm run check:adapters` 会访问第三方公开接口，只应在允许联网并需要检查上游兼容性时运行。
 
 ## 外部依赖
 

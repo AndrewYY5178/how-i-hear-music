@@ -19,10 +19,11 @@ const journal = await import('../modules/journal/pages.js');
 const rating = await import('../modules/rating/pages.js');
 const search = await import('../modules/search/pages.js');
 const taste = await import('../modules/taste/pages.js');
+localStorage.setItem('how-i-hear-music:journal:v1', JSON.stringify([{ id: 'journal_fixture', type: 'rating', title: 'Fixture', artist: 'Artist', scores: { song: 8, vocal: 8, production: 8, overall: 8 }, at: '2026-08-31T00:00:00.000Z' }]));
 
 const renders = [
   ['Archive tracks', archive.archiveTracks], ['Archive metadata', archive.archiveCoverage],
-  ['Data Desk', imports.importData], ['Journal', journal.journal], ['Entropy', journal.entropyPage],
+  ['Data Desk', imports.importData], ['Journal', journal.journal], ['Journal correction', () => journal.journalEdit('journal_fixture')], ['Entropy', journal.entropyPage],
   ['Memory Palace', journal.memoryPalace], ['Rate', rating.rateHome], ['Search', search.searchPage],
   ['Taste DNA', taste.dna], ['Blind Spots', taste.blindSpotPage],
 ];

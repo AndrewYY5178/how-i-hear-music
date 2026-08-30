@@ -1,0 +1,13 @@
+{
+  "name": "How I Hear Music",
+  "short_name": "HIM",
+  "description": "A personal music taste archive: listening shapes, album landscapes and notes over time.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e7dfcf",
+  "theme_color": "#e7dfcf",
+  "icons": [
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

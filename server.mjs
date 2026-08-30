@@ -2,20 +2,31 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { randomUUID } from 'node:crypto';
 import { getQQAlbumDetails, parseQQAlbumLink } from './server/providers/qqmusic-album.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 3000);
+const serviceVersion = '0.2.0';
+const trustProxy = process.env.TRUST_PROXY === '1';
 const allowedOrigins = new Set(String(process.env.ALLOWED_ORIGIN || '').split(',').map((value) => value.trim()).filter(Boolean));
 const apiCache = new Map();
 const rateWindows = new Map();
 const cacheFor = async (key, producer, ttl = 300_000) => { const current = apiCache.get(key); if (current && current.expiresAt > Date.now()) return current.value; const value = await producer(); apiCache.set(key, { value, expiresAt: Date.now() + ttl }); if (apiCache.size > 200) { const oldest = apiCache.keys().next().value; apiCache.delete(oldest); } return value; };
 const withinRateLimit = (address) => { const now = Date.now(); const recent = (rateWindows.get(address) || []).filter((at) => now - at < 600_000); if (recent.length >= 30) return false; recent.push(now); rateWindows.set(address, recent); return true; };
+const clientAddress = (request) => trustProxy ? String(request.headers['x-forwarded-for'] || '').split(',')[0].trim() || request.socket.remoteAddress || 'unknown' : request.socket.remoteAddress || 'unknown';
+const pruneRuntimeState = () => { const now = Date.now(); for (const [key, item] of apiCache) if (item.expiresAt <= now) apiCache.delete(key); for (const [key, times] of rateWindows) { const recent = times.filter((at) => now - at < 600_000); if (recent.length) rateWindows.set(key, recent); else rateWindows.delete(key); } };
+setInterval(pruneRuntimeState, 300_000).unref();
+const logEvent = (event) => console.log(JSON.stringify({ service: 'how-i-hear-music-adapter', version: serviceVersion, at: new Date().toISOString(), ...event }));
+const logFailure = (request, requestId, error) => logEvent({ level: 'error', requestId, method: request.method, path: new URL(request.url || '/', 'http://localhost').pathname, message: error instanceof Error ? error.message : 'Unknown adapter error' });
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
 };
 
 const json = (response, status, body) => {
@@ -185,13 +196,18 @@ const searchQQCatalog = async (query) => {
 };
 
 createServer(async (request, response) => {
+  const requestId = randomUUID(); const startedAt = Date.now(); const requestPath = new URL(request.url || '/', 'http://localhost').pathname;
+  response.setHeader('X-Request-Id', requestId);
+  response.on('finish', () => logEvent({ level: 'info', requestId, method: request.method, path: requestPath, status: response.statusCode, durationMs: Date.now() - startedAt }));
   response.setHeader('X-Content-Type-Options', 'nosniff');
   response.setHeader('Referrer-Policy', 'no-referrer');
-  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https:");
+  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'sha256-scPrKXA2gsGVl9+H1HRw5ReULhqrky3i05zSO0VuvAE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https:");
   const origin = request.headers.origin;
   if (origin && allowedOrigins.has(origin)) { response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); response.setHeader('Access-Control-Allow-Headers', 'Content-Type'); response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); }
   if (request.method === 'OPTIONS') { if (origin && !allowedOrigins.has(origin)) { response.writeHead(403); response.end(); } else { response.writeHead(204); response.end(); } return; }
-  if (request.url?.startsWith('/api/') && !withinRateLimit(request.socket.remoteAddress || 'unknown')) { json(response, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }); return; }
+  if (request.method === 'GET' && requestPath === '/healthz') { json(response, 200, { status: 'ok', version: serviceVersion, uptimeSeconds: Math.round(process.uptime()), cacheEntries: apiCache.size, providers: ['qqmusic', 'netease'] }); return; }
+  if (request.method === 'GET' && requestPath === '/api/version') { json(response, 200, { version: serviceVersion, capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist'] }); return; }
+  if (request.url?.startsWith('/api/') && !withinRateLimit(clientAddress(request))) { json(response, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }); return; }
   if (request.method === 'POST' && request.url === '/api/import/qq-album-preview') {
     try {
       const body = await readJsonBody(request);
@@ -199,6 +215,7 @@ createServer(async (request, response) => {
       const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId));
       json(response, 200, { album, sourceUrl: album.externalUrl || resolved.canonicalUrl });
     } catch (error) {
+      logFailure(request, requestId, error);
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music album.' });
     }
     return;
@@ -208,6 +225,7 @@ createServer(async (request, response) => {
       const query = new URL(request.url, 'http://localhost').searchParams.get('q');
       json(response, 200, { tracks: await cacheFor(`qq-search:${String(query || '').trim().toLowerCase()}`, () => searchQQCatalog(query)) });
     } catch (error) {
+      logFailure(request, requestId, error);
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not search QQ Music.' });
     }
     return;
@@ -218,6 +236,7 @@ createServer(async (request, response) => {
       const result = await cacheFor(`qq-playlist:${body.shareUrl}`, () => fetchQQPlaylist(body.shareUrl));
       json(response, 200, result);
     } catch (error) {
+      logFailure(request, requestId, error);
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music playlist.' });
     }
     return;
@@ -228,6 +247,7 @@ createServer(async (request, response) => {
       const result = await cacheFor(`netease-playlist:${body.shareUrl}`, () => fetchNetEasePlaylist(body.shareUrl));
       json(response, 200, result);
     } catch (error) {
+      logFailure(request, requestId, error);
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this NetEase playlist.' });
     }
     return;
@@ -238,12 +258,13 @@ createServer(async (request, response) => {
 
   try {
     const body = await readFile(filePath);
-    response.writeHead(200, { 'Content-Type': contentTypes[extname(filePath)] || 'application/octet-stream' });
+    const cacheControl = safePath.endsWith('sw.js') || extname(filePath) === '.html' ? 'no-cache' : 'public, max-age=300';
+    response.writeHead(200, { 'Content-Type': contentTypes[extname(filePath)] || 'application/octet-stream', 'Cache-Control': cacheControl });
     response.end(body);
   } catch {
     if (request.method === 'GET' && !extname(safePath)) {
       const body = await readFile(join(root, 'index.html'));
-      response.writeHead(200, { 'Content-Type': contentTypes['.html'] });
+      response.writeHead(200, { 'Content-Type': contentTypes['.html'], 'Cache-Control': 'no-cache' });
       response.end(body);
       return;
     }

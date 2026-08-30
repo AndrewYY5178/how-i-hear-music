@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://andrewyy5178.github.io/how-i-hear-music/sitemap.xml
