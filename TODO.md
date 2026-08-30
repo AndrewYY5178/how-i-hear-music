@@ -2,6 +2,34 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active feature — Personal analysis expansion
+
+### Phase 1 — Shared evidence foundation
+
+- [x] Unify `Why This Works` around ten explicit insight tags while preserving existing saved reasons and `ONE MOMENT` data.
+- [x] Normalize non-destructive rating history so the latest rating is current and every earlier save remains available to Rediscovery, Grower and Awards.
+- [x] Extend the owner-confirmed recording-version model with Rearranged, Demo and Remix without inferring identities.
+- [x] Add four independent bipolar sonic descriptors—Warm/Cold, Dense/Sparse, Direct/Abstract and Controlled/Loose—to local track evidence and backup/restore.
+
+### Phase 2 — Immediate listening-memory features
+
+- [x] Add `Why This Works` analytics to Taste Profile, including evidence-gated percentages among tracks rated 9+.
+- [x] Add a Journal Rediscovery Queue for Archive tracks whose latest rating is at least six months old, with `RATE AGAIN` and non-destructive `SKIP FOR NOW`.
+- [x] Generate a deterministic, neutral Album Narrative from confirmed waveform geometry only.
+
+### Phase 3 — Visual comparison and organization
+
+- [x] Replace the static multi-Radar version display with an accessible Version Morph between two explicitly confirmed recordings and numeric dimension deltas.
+- [x] Add track-level sonic descriptor editing and a two-axis `/taste/sonic-map` whose axes can be changed without treating character as quality.
+- [x] Add a manually curated `/taste/family-tree` Taste Constellation in which artists or tracks may belong to multiple groups.
+
+### Phase 4 — Long-term synthesis
+
+- [x] Add evidence-gated `/taste/anti-recommendation` patterns derived from multiple low-resonance ratings, never hardcoded genre assumptions.
+- [x] Add manually confirmed Personal Music Awards to annual Journal pages, with evidence-based candidates and `NO SELECTION` support.
+- [x] Add all-time and annual Listening Portraits that sample existing Radars and album Waveforms into a stable editorial artwork rather than a dashboard.
+- [x] Complete desktop/mobile/accessibility QA, append the design/version record and publish each finished phase without redesigning unrelated pages. *(UI 2.0; implementation commit `602487d`.)*
+
 ## Active feature — Listening memory system
 
 ### Phase 1 — Import lifecycle and Unrated Queue

@@ -414,3 +414,70 @@ Implementation commit: `00eb7a2`
 - Browser interaction test for explicit version creation, independent rating save and related-version comparison.
 - Browser interaction test for two real QQ ordered album imports and the populated Album comparison route.
 - Empty-evidence, desktop overflow, 390 × 844 responsive and console-error checks.
+
+## Version 2.0 — Personal listening analysis
+
+Implementation commit: `602487d`
+
+### Before
+
+- Rating could capture eight broad reasons, but they were not a stable shared vocabulary for Taste analytics, annual awards or boundary analysis.
+- Journal preserved history but did not actively return old ratings to the listener.
+- Version comparison displayed several independent Radars at once instead of expressing the change from one recording to another.
+- Track character, manual cross-artist relationships and annual visual synthesis had no data boundary or dedicated view.
+- Album waveform geometry remained visual only and annual categories were fixed statistics rather than owner-confirmed personal awards.
+
+### Decision
+
+- Separate Quality, Character and Personal Relationship in storage and presentation. Scores remain four dimensions; Listening Temperature receives four bipolar values; insight tags, notes, moments and history remain relationship evidence.
+- Normalize old reasons at read time into ten explicit `Why This Works` tags. Preserve the original records and never infer a new tag.
+- Keep the current rating in the existing session store and preserve every save in Journal. Rediscovery selects the oldest latest-rating that is at least six months old; a skip returns after seven days.
+- Replace the static multi-Radar version grid with one owner-controlled `FROM → TO` Radar morph and an aligned dimension-delta table. Add Rearranged, Demo and Remix to the explicit version vocabulary.
+- Generate Album Narrative with deterministic range, deviation, peak-position and section-average rules only when the complete ordered sequence is scored.
+- Add Listening Temperature editing to Track detail and expose two selectable axes at a time in Sonic Map. No axis direction implies quality.
+- Add manually curated Taste Constellation branches that allow repeated artist or track membership without creating a genre taxonomy.
+- Add evidence-gated boundary patterns only when at least three tracks share the same quantitative score relationship.
+- Add eight annual award categories with suggested candidates, manual confirmation and `NO SELECTION`; unconfirmed suggestions never appear as winners.
+- Compose all-time and annual Listening Portraits from a bounded sample of existing Radars and Waveforms. Use the site's existing paper, red linework and mono annotations without new dashboard containers.
+
+### Evidence
+
+- A clean browser origin saved four simultaneous `Why This Works` reasons; a separate 11-point rating produced `100% MELODY` and `100% SURPRISE` from one explicitly tagged 9+ track.
+- Listening Temperature saved locally and produced a point on Sonic Map; changing both axes updated the route query without horizontal overflow.
+- Taste Constellation stored Ariana Grande and 陶喆 in the same manually named Harmony-heavy branch while preserving the ability to reuse either artist elsewhere.
+- An Acoustic version saved its independent rating, then Version Morph reported Song `10 → 7.5`, Vocal `10 → 7.5`, Production `8 → 7.5` and Overall `11 → 7.5`; the SVG contained one timed shape animation and no console errors.
+- Completing a six-track album session generated the neutral sentence “The rating shape follows a gently changing course, with the strongest rise near the middle.”
+- The 2026 annual page exposed all eight award selectors, saved a manual selection and linked to a generated annual Listening Portrait. Empty categories retained `NO SELECTION`.
+- A fresh-origin crawl covered 13 representative routes at desktop and 390 × 844: 26 route renders had no overflow, missing heading, missing return action or console error.
+- No online visual reference was borrowed for this release. Dashboard cards, auto-generated genre claims, trophy graphics, bright gradients and multi-Radar overlays were explicitly rejected because they would blur the existing editorial evidence hierarchy.
+
+### Files
+
+- `app.js`
+- `modules/archive/pages.js`
+- `modules/import/pages.js`
+- `modules/journal/pages.js`
+- `modules/rating/pages.js`
+- `modules/rating/visuals.js`
+- `modules/taste/pages.js`
+- `modules/music/album-narrative.js`
+- `modules/music/analysis.js`
+- `modules/music/groups.js`
+- `modules/music/insights.js`
+- `modules/music/portrait.js`
+- `modules/music/sonic.js`
+- `modules/music/data.js`
+- `modules/music/versions.js`
+- `styles.css`
+- `scripts/check-project.mjs`
+- `README.md`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+- `TODO.md`
+
+### Verification
+
+- Syntax validation for all application and music-analysis modules; automated project validation through `npm test`.
+- Browser interaction checks for tag selection, sonic descriptor save, axis changes, manual constellation creation, version creation/rating/morph, album completion/narrative, annual award confirmation and both portrait routes.
+- Fresh-origin desktop and 390 × 844 route crawl across Home, Track, Album, Rate, Journal, Year, annual Portrait and all new Taste analysis views.
+- Final console-error and horizontal-overflow checks returned zero failures.

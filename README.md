@@ -8,6 +8,8 @@
 
 Archive 支持两种本地、证据优先的比较：在曲目详情明确登记不同录音版本后，每个版本可以独立评分并并排比较 Radar；在至少两张专辑具有官方曲序或已保存专辑评分后，可以比较曲序覆盖、Waveform 与 Overall。未知评分始终显示为 `—`。
 
+UI 2.0 把长期聆听证据继续分成三层：`Song / Vocal / Production / Overall` 只表示个人评分；四组双极滑杆只描述声音性格；`Why This Works`、Musical Moment、Journal 历史与手工 Taste 分组只描述个人关系。Taste 中提供边界分析、Sonic Map、Taste Constellation 与 Listening Portrait；Journal 提供 Rediscovery、年度奖项和年度画像。所有结果均来自明确保存的数据，不自动推断标签、版本、奖项或缺失评分。
+
 未完成的导入、数据库和互动功能记录在 [`TODO.md`](TODO.md) 中，并按优先级整理。
 
 ## 在线版本

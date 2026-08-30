@@ -54,6 +54,15 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Imported album tracklists preserve Disc then Track order. Multi-disc records use quiet disc separators; an ordered sequence may appear before ratings, while its Waveform stays empty until scores exist.
 - Recording-version comparison begins with an explicit local owner confirmation. Version type and identifying label are required; each recording keeps its own score history, while the comparison uses aligned Radar geometry and typographic Overall values.
 - Album comparison is available only when two records have a confirmed ordered sequence or album-level score. The paired composition uses a shared baseline and equal columns on desktop, then reprioritizes into full-width sequential readings on mobile.
+- `Why This Works` uses ten explicit typographic annotations. Legacy saved reasons are normalized at read time; analytics count only user-selected tags and state their denominator.
+- Rating history remains append-only in Journal. Rediscovery uses the latest dated entry, waits six months, and treats `SKIP FOR NOW` as a temporary seven-day deferral.
+- Listening Temperature is character, never quality: four bipolar values stay separate from score fields. Sonic Map exposes only two selectable axes at once.
+- Version Morph shows one changing Radar between two owner-confirmed recordings, followed by aligned numeric deltas. Reduced-motion preference resolves directly to the destination shape.
+- Album Narrative is a deterministic one-sentence description of complete waveform geometry. It uses neutral position, range and consistency vocabulary and never supplies a review.
+- Taste Constellation is manually curated and permits repeated membership. It uses ruled editorial branches rather than a literal tree diagram or automatic genre classification.
+- Anti-Recommendation requires the same quantitative relationship across at least three tracks. Empty evidence is preferable to a speculative aesthetic label.
+- Personal Music Awards present evidence-derived candidates, but no winner appears until explicitly confirmed; every category supports `NO SELECTION`.
+- Listening Portrait samples at most 24 high-priority Track shapes and eight Album landscapes into an archival print. It remains an artwork, not a data dashboard or Wrapped imitation.
 
 ## Reference boundary
 
