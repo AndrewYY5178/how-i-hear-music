@@ -1,7 +1,7 @@
 import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
-import { archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
 import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
 import { compare, goodNotMine, philosophy, profile, tasteHome } from "./modules/taste/pages.js";
 import { bindImport, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
@@ -15,6 +15,7 @@ const route = (path) => {
   if (current === "/archive") return archiveHome();
   if (current === "/archive/tracks") return archiveTracks();
   if (current === "/archive/albums") return archiveAlbums();
+  if (current === "/archive/compare/albums") return archiveAlbumCompare();
   if (current === "/archive/artists") return archiveArtists();
   if (/^\/archive\/tracks\/.+/.test(current)) return archiveTrackDetail(decodeURIComponent(current.split("/").pop()));
   if (/^\/archive\/albums\/.+/.test(current)) return archiveAlbumDetail(decodeURIComponent(current.split("/").pop()));
@@ -46,6 +47,7 @@ const navigate = (path, { replace = false } = {}) => {
   render();
 };
 const parentRoute = (path) => {
+  if (path === "/archive/compare/albums") return { href: "/archive/albums", label: "BACK TO ALBUMS" };
   if (/^\/archive\/(tracks|albums|artists)\/.+/.test(path)) {
     const section = path.split("/")[2];
     return { href: "/archive/" + section, label: "BACK TO " + section.toUpperCase() };

@@ -2,12 +2,15 @@ import { allAlbums, allArtists, allTracks, data, findAlbum, findArtist, findTrac
 import { radar, summary, waveform } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 import { icon } from "../layout/icons.js";
+import { baseTrackId, createVersion, versionTypes, versionsForTrack } from "../music/versions.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 const coverFor = (album, id) => storage.get(coverOverrideKey, {})[id] || album.coverUrl || "";
 const journalEntries = () => storage.get("how-i-hear-music:journal:v1", []);
+const savedRatings = () => storage.get("how-i-hear-music:rating-sessions:v2", {});
+const resolvedScores = (track) => savedRatings()[trackId(track)]?.scores || track.scores || {};
 const historyMarkup = (entries) => entries.length ? `<div class="rating-history">${entries.slice(0, 8).map((entry) => `<article><time class="mono">${safe(new Date(entry.at).toLocaleDateString())}</time><strong>${rating(entry.type === "album" ? entry.overall : entry.scores?.overall)}</strong>${entry.note ? `<p>${safe(entry.note)}</p>` : ""}</article>`).join("")}</div>` : "<p>No local rating changes recorded yet.</p>";
 const coverMarkup = (url, alt, loading = false) => url ? `<img data-cover-image src="${safe(url)}" alt="${safe(alt)}"${loading ? " loading=\"lazy\"" : ""}><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
 const albumFingerprint = (album) => album.tracks?.length ? album.tracks.map((track) => {
@@ -15,7 +18,7 @@ const albumFingerprint = (album) => album.tracks?.length ? album.tracks.map((tra
   if (!Number.isFinite(Number(score))) return "▁";
   return "▁▂▃▄▅▆▇█"[Math.max(0, Math.min(7, Math.round((Number(score) - 5) / 6 * 7)))];
 }).join("") : "▂▄▆█▇▅▆";
-const recordCard = (track) => `<article class="track-card"><div>${radar(track.scores, { className: "mini-radar" })}</div><p class="mono">${safe(track.artist)}</p><h3>${safe(track.title)}</h3><strong>${rating(track.scores?.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`;
+const recordCard = (track) => { const scores = resolvedScores(track); return `<article class="track-card"><div>${radar(scores, { className: "mini-radar" })}</div><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", allAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
 export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveNav()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
@@ -26,13 +29,17 @@ export const archiveTracks = () => `${pageHeader("ARCHIVE / TRACKS", "Tracks in 
 export const archiveTrackDetail = (id) => {
   const track = findTrack(id);
   if (!track) return `${pageHeader("ARCHIVE / TRACKS", "Track not found.", "This record may not have a confirmed archive entry.", link("/archive/tracks", "Back to tracks", "button"))}`;
-  const scores = track.scores || {};
-  const meta = [["ARTIST", track.artist], ["STATUS", track.songStatus?.replaceAll("_", " ") || "Recorded"], ["SCHEMA", track.scoreSchema?.replaceAll("_", " ") || ""]];
-  const history = journalEntries().filter((entry) => entry.type === "rating" && (entry.trackId === trackId(track) || entry.title === track.title && entry.artist === track.artist));
-  return `${pageHeader("TRACK", safe(track.title), track.artist, link(`/rate/track/${trackId(track)}`, "RATE TRACK", "button primary"))}<section class="detail-primary"><div>${radar(scores, { className: "detail-radar" })}</div><dl class="score-list">${Object.entries({ Song: scores.song, Vocal: scores.vocal, Production: scores.production, Overall: scores.overall }).map(([label, value]) => `<div><dt>${label}</dt><dd>${rating(value)}</dd></div>`).join("")}</dl></section><div class="meta-strip">${meta.map(([label, value]) => `<span><b>${label}</b>${safe(value)}</span>`).join("")}</div><details open><summary>LISTENING SHAPE <span>+</span></summary><p>The shape records the parts of this track that were separately named. Overall remains a personal response, not an average.</p></details><details><summary>MUSICAL MOMENTS <span>+</span></summary><p>No confirmed timestamped moments have been recorded yet.</p></details><details><summary>VERSIONS <span>+</span></summary><p>Version-specific comparisons appear only after a recording is confirmed.</p></details><details><summary>RATING HISTORY <span>+</span></summary>${historyMarkup(history)}</details>`;
+  const scores = resolvedScores(track);
+  const meta = [["ARTIST", track.artist], ["STATUS", track.songStatus?.replaceAll("_", " ") || "Recorded"], ["VERSION", track.versionType?.toUpperCase() || "BASE RECORDING"]];
+  const history = journalEntries().filter((entry) => entry.type === "rating" && (entry.trackId ? entry.trackId === trackId(track) : entry.title === track.title && entry.artist === track.artist));
+  const versions = versionsForTrack(track, allTracks());
+  return `${pageHeader("TRACK", safe(track.title), track.artist, link(`/rate/track/${trackId(track)}`, "RATE TRACK", "button primary"))}<section class="detail-primary"><div>${radar(scores, { className: "detail-radar" })}</div><dl class="score-list">${Object.entries({ Song: scores.song, Vocal: scores.vocal, Production: scores.production, Overall: scores.overall }).map(([label, value]) => `<div><dt>${label}</dt><dd>${rating(value)}</dd></div>`).join("")}</dl></section><div class="meta-strip">${meta.map(([label, value]) => `<span><b>${label}</b>${safe(value)}</span>`).join("")}</div><details open><summary>LISTENING SHAPE <span>+</span></summary><p>The shape records the parts of this track that were separately named. Overall remains a personal response, not an average.</p></details><details><summary>MUSICAL MOMENTS <span>+</span></summary><p>No confirmed timestamped moments have been recorded yet.</p></details><details class="version-disclosure" open><summary>VERSIONS <span>+</span></summary>${versionComparison(versions)}${versionForm(track)}</details><details><summary>RATING HISTORY <span>+</span></summary>${historyMarkup(history)}</details>`;
 };
 
-export const archiveAlbums = () => `${pageHeader("ARCHIVE / ALBUMS", "Albums in view.", "A cover, an overall response, a compact fingerprint.")}${archiveNav()}<div class="album-grid">${allAlbums().map((album) => { const id = album.id || slug(album.artist + "-" + album.title); return `<article class="album-card"><div class="album-card-cover">${coverMarkup(coverFor(album, id), album.artist + " — " + album.title + " cover", true)}</div><span class="album-fingerprint">${albumFingerprint(album)}</span><p>${safe(album.artist)}</p><h3>${safe(album.title)}</h3>${link(`/archive/albums/${id}`, "Open album", "card-link")}</article>`; }).join("")}</div>`;
+const versionComparison = (versions) => versions.length > 1 ? `<div class="version-comparison">${versions.map((item) => { const scores = resolvedScores(item); return `<article><span class="mono">${safe(item.versionType?.toUpperCase() || "BASE RECORDING")}</span><h3>${safe(item.versionLabel || item.title)}</h3>${radar(scores, { className: "mini-radar" })}<strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(item)}`, "OPEN")}</article>`; }).join("")}</div>` : `<p>No alternate recording has been confirmed. Add one only when its identity is known.</p>`;
+const versionForm = (track) => `<form class="version-form" data-base-track-id="${safe(baseTrackId(track))}"><span class="mono">CONFIRM ANOTHER RECORDING</span><label><span>TYPE</span><select name="versionType">${versionTypes.map((type) => `<option value="${type}">${type}</option>`).join("")}</select></label><label><span>IDENTIFYING LABEL</span><input name="versionLabel" maxlength="80" required placeholder="Live at… / 2024 remaster"></label><button class="button" type="submit">ADD VERSION</button><p data-version-status>Stored locally. Nothing is inferred from the title.</p></form>`;
+
+export const archiveAlbums = () => `${pageHeader("ARCHIVE / ALBUMS", "Albums in view.", "A cover, an overall response, a compact fingerprint.", link("/archive/compare/albums", "COMPARE ALBUMS", "button"))}${archiveNav()}<div class="album-grid">${allAlbums().map((album) => { const id = album.id || slug(album.artist + "-" + album.title); return `<article class="album-card"><div class="album-card-cover">${coverMarkup(coverFor(album, id), album.artist + " — " + album.title + " cover", true)}</div><span class="album-fingerprint">${albumFingerprint(album)}</span><p>${safe(album.artist)}</p><h3>${safe(album.title)}</h3>${link(`/archive/albums/${id}`, "Open album", "card-link")}</article>`; }).join("")}</div>`;
 
 const orderedTracklist = (tracks) => {
   const multipleDiscs = new Set(tracks.map((track) => track.discNumber || 1)).size > 1; let disc = null;
@@ -53,6 +60,21 @@ export const archiveAlbumDetail = (id) => {
 };
 const canonicalAlbumMatch = (track, album) => track.artist === album.artist && (track.album === album.title || false);
 
+const albumComparisonEvidence = (album) => {
+  const id = album.id || slug(album.artist + "-" + album.title); const history = journalEntries().find((entry) => entry.type === "album" && (entry.albumId === id || entry.title === album.title && entry.artist === album.artist));
+  const tracks = album.tracks || data.songs.entries.filter((track) => canonicalAlbumMatch(track, album));
+  const scored = tracks.map((track) => ({ ...track, scores: resolvedScores(track) })).filter((track) => track.scores?.overall !== null && track.scores?.overall !== undefined && Number.isFinite(Number(track.scores.overall)));
+  const overall = storage.get(`how-i-hear-music:album-draft:${id}:overall`, history?.overall ?? null);
+  return { album, id, tracks, scored, overall, eligible: tracks.length > 0 || overall !== null && overall !== undefined && Number.isFinite(Number(overall)) };
+};
+const comparisonColumn = (evidence) => `<article><span class="mono">${safe(evidence.album.artist)}</span><h2>${safe(evidence.album.title)}</h2><strong>${rating(evidence.overall)}</strong><p class="mono">ALBUM OVERALL</p>${waveform(evidence.scored)}${summary(evidence.scored)}<dl><div><dt>TRACKS</dt><dd>${evidence.tracks.length}</dd></div><div><dt>RATED</dt><dd>${evidence.scored.length}</dd></div></dl>${link(`/archive/albums/${evidence.id}`, "OPEN ALBUM →", "text-link")}</article>`;
+export const archiveAlbumCompare = () => {
+  const eligible = allAlbums().map(albumComparisonEvidence).filter((item) => item.eligible); const params = new URLSearchParams(location.search); const left = eligible.find((item) => item.id === params.get("left")) || eligible[0]; const right = eligible.find((item) => item.id === params.get("right") && item.id !== left?.id) || eligible.find((item) => item.id !== left?.id);
+  const selectors = eligible.length ? `<form class="comparison-selector"><label><span class="mono">ALBUM A</span><select name="left">${eligible.map((item) => `<option value="${safe(item.id)}"${item.id === left?.id ? " selected" : ""}>${safe(item.album.title)} — ${safe(item.album.artist)}</option>`).join("")}</select></label><label><span class="mono">ALBUM B</span><select name="right">${eligible.map((item) => `<option value="${safe(item.id)}"${item.id === right?.id ? " selected" : ""}>${safe(item.album.title)} — ${safe(item.album.artist)}</option>`).join("")}</select></label><button class="button" type="submit">COMPARE</button></form>` : "";
+  const body = left && right ? `<section class="album-comparison-grid">${comparisonColumn(left)}${comparisonColumn(right)}</section>` : `<section class="comparison-empty"><span class="mono">NOT ENOUGH EVIDENCE</span><h2>Two albums need a confirmed sequence or album score.</h2><p>Import an ordered album or complete an album rating. Missing scores stay blank.</p>${link("/import/qq-album", "IMPORT AN ALBUM →", "text-link")}</section>`;
+  return `${pageHeader("ARCHIVE / ALBUM COMPARISON", "Two landscapes, without forcing a verdict.", "Sequence, coverage and saved ratings remain visible; missing evidence is never completed automatically.")}${selectors}${body}`;
+};
+
 export const archiveArtists = () => `${pageHeader("ARCHIVE / ARTISTS", "The people at the center.", "Editorial notes first. A score never replaces the reason an artist matters.")}${archiveNav()}<div class="artist-grid">${allArtists().map((artist, index) => `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span><h2>${safe(artist.name)}</h2><p>${safe(artist.role || artist.romanized || "In the archive")}</p>${link(`/archive/artists/${artist.id}`, "Open artist", "text-link")}</article>`).join("")}</div>`;
 
 export const archiveArtistDetail = (id) => {
@@ -70,6 +92,14 @@ export const bindArchive = (path, navigate) => {
     const form = document.querySelector(".cover-override-form");
     form?.addEventListener("submit", (event) => { event.preventDefault(); const value = String(new FormData(form).get("coverUrl") || "").trim(); const status = form.querySelector("[data-cover-status]"); let url; try { url = new URL(value); } catch { status.textContent = "Enter a complete HTTPS image URL."; return; } if (url.protocol !== "https:") { status.textContent = "Only HTTPS image references are allowed."; return; } storage.set(coverOverrideKey, { ...storage.get(coverOverrideKey, {}), [form.dataset.albumId]: url.href }); navigate(path); });
     form?.querySelector("[data-clear-cover]")?.addEventListener("click", () => { const overrides = { ...storage.get(coverOverrideKey, {}) }; delete overrides[form.dataset.albumId]; storage.set(coverOverrideKey, overrides); navigate(path); });
+  }
+  if (path === "/archive/compare/albums") {
+    document.querySelector(".comparison-selector")?.addEventListener("submit", (event) => { event.preventDefault(); const values = new FormData(event.currentTarget); navigate(`/archive/compare/albums?left=${encodeURIComponent(values.get("left"))}&right=${encodeURIComponent(values.get("right"))}`); });
+    return;
+  }
+  const trackMatch = path.match(/^\/archive\/tracks\/(.+)$/);
+  if (trackMatch) {
+    document.querySelector(".version-form")?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const values = new FormData(form); const status = form.querySelector("[data-version-status]"); try { const base = findTrack(form.dataset.baseTrackId); const version = createVersion(base, { versionType: values.get("versionType"), label: values.get("versionLabel") }); navigate(`/archive/tracks/${version.id}`); } catch (error) { status.textContent = error.message; } });
   }
   if (path !== "/archive/tracks") return;
   const search = document.getElementById("track-search"); const filters = document.getElementById("track-filters"); const grid = document.getElementById("track-grid"); let active = "all";

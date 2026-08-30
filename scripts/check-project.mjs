@@ -72,7 +72,7 @@ const albumFixture = normalizeQQAlbum({ code: 0, data: { id: 1, mid: 'fixtureAlb
 if (albumFixture.tracks.map((track) => `${track.discNumber}:${track.trackNumber}`).join() !== '1:1,1:2,2:1') errors.push('QQ album import: disc/track ordering is incorrect');
 if (albumFixture.releaseDate !== '2026-01-02' || albumFixture.tracks[0].durationMs !== 160000) errors.push('QQ album import: normalized metadata is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js'];
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'app.js', 'modules/home.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
@@ -101,6 +101,9 @@ if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.
 const appSource = await readFile(join(root, 'app.js'), 'utf8');
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
 if (!appSource.includes('setDocumentTitle(path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim()')) errors.push('app.js: document titles must use the rendered editorial heading');
+if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
+const versionSource = await readFile(join(root, 'modules', 'music', 'versions.js'), 'utf8');
+if (!versionSource.includes('confirmedByOwner: true') || !styles.includes('.version-form')) errors.push('versions: explicit owner confirmation and comparison UI are required');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);

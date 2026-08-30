@@ -23,6 +23,7 @@ export const storage = {
   set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } },
 };
 export const importedAlbums = () => storage.get(data.library.albumStorageKey, []);
+export const localVersions = () => storage.get("how-i-hear-music:recording-versions:v1", []);
 export const allAlbums = () => {
   const local = importedAlbums(); const used = new Set();
   const canonicalAlbums = data.profile.albumArchive.map((album) => { const id = slug(album.artist + "-" + album.title); const supplement = local.find((item) => item.id === id); if (supplement) used.add(supplement.id); return supplement ? { ...album, ...supplement, coverUrl: supplement.coverUrl || album.coverUrl || null, coverSource: supplement.coverSource || album.coverSource || null } : album; });
@@ -31,6 +32,7 @@ export const allAlbums = () => {
 export const allTracks = () => {
   const result = [...data.songs.entries]; const ids = new Set(result.map(trackId));
   importedAlbums().flatMap((album) => album.tracks || []).forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
+  localVersions().forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
   return result;
 };
 export const allArtists = () => {
