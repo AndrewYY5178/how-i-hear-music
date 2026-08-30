@@ -26,7 +26,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add `/taste/blind-spots` with evidence-gated trait and album-depth coverage gaps; use exploratory language and no more than five entry points. *(Sonic/era gaps remain absent when reliable coverage metadata is unavailable.)*
 - [x] Add `/journal/memory-palace` as a manually curatable 2D archive of First Discoveries, Growers, Perfect Moments, Personal Canon, Reinterpretations and Turning Points.
 - [x] Reprioritize Memory Palace into vertical archive sections on mobile, retain contextual return actions and avoid literal 3D/palace decoration.
-- [x] Complete automated and browser QA, append the design/version record, and publish the connected system. *(UI 3.0.)*
+- [x] Complete automated and browser QA, append the design/version record, and publish the connected system. *(UI 3.0; implementation commit `21e0af2`.)*
 
 ## Active maintenance — UI 2.1 visual refinement
 

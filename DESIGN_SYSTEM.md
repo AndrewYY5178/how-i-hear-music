@@ -66,6 +66,11 @@ This file records the current design contract. `DESIGN_LOG.md` is append-only an
 - Home alone keeps the 108px display ceiling. Subpage headings stop at 80px on desktop and use a 40–48px fluid range on mobile so long editorial titles introduce rather than displace the page task.
 - Analysis forms and comparison selectors share an 800px reading/control measure; generative visual fields stop at 960px. Native select controls receive the same focus and touch behavior as other inputs.
 - SVG annotations that scale with a 720-unit viewBox increase to 16 units below 760px so their rendered mobile size remains legible.
+- Taste DNA is an evidence reading, not a personality quiz: every published trait needs five distinct supporting tracks and exposes strength, confidence and evidence count in a single ruled vertical sequence.
+- Blind Spots describe coverage gaps adjacent to stable evidence. They never promise that a record will be liked, never exceed five entry points and omit Sonic, era or network claims when reliable metadata is absent.
+- Archive Entropy begins at three dated track ratings, uses one quarterly line as its visual gravity and treats concentration and breadth as neutral directions.
+- Memory Palace is a two-dimensional archive. Desktop zones use asymmetric shelf-like spans; mobile converts them to full-width chronological sections. Manual and derived entries always retain provenance.
+- Music as Geometry uses one four-axis orientation, terrain baseline, 1–2px stroke family and mono annotation language. Track Glyph, Album Terrain, Artist Signature and Taste Trait Mark may appear only in their corresponding entity context; absence of evidence remains geometrically quiet.
 
 ## Reference boundary
 

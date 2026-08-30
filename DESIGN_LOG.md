@@ -519,3 +519,57 @@ Implementation commit: `ae79e88`
 
 - Automated project validation through `npm test` and whitespace validation through `git diff --check`.
 - Browser measurement of Home, Archive, Track detail, Track Rate, Taste, Sonic Map, Taste Constellation, Listening Portrait, QQ Album Import, Journal and Year in Music at desktop and mobile viewports.
+
+## Version 3.0 — Connected advanced Taste system
+
+Implementation commit: `21e0af2`
+
+### Before
+
+- Ratings, Why This Works, Sonic Map, version history and Journal evidence existed, but the site did not yet express their recurring relationships as a stable aesthetic model.
+- Taste analysis described preferences and boundaries without distinguishing an established trait from a nearby area the archive had barely explored.
+- Journal was chronological only; important memories had no spatial/manual organization, and breadth versus concentration had no time-based reading.
+- Track Radar, Album Waveform and Listening Portrait shared a visual mood but not reusable entity-level geometry primitives.
+
+### Decision
+
+- Build one evidence pipeline rather than five parallel features. Taste DNA, Blind Spots, Entropy, Memory Palace and Geometry all read the current canonical/local tracks, rating sessions, Journal, explicit insight tags, saved Sonic descriptors and confirmed versions.
+- Require five supporting tracks before publishing a Taste DNA trait. Strength blends saved Overall response, archive-baseline lift and consistency; confidence explicitly includes evidence count, consistency and recency. Human Imperfection remains dependent on manually saved vocal-texture and loose-character evidence.
+- Generate Blind Spots only beside a published DNA trait or a repeated high-rated artist whose albums remain unrated. Copy describes exploration gaps, not predicted enjoyment. Reliable Sonic, era, language and artist-network gaps remain absent instead of being inferred.
+- Begin Archive Entropy after three dated track ratings. Derive cumulative quarterly artist concentration, trait diversity, era spread, album depth and exploration rate; show one neutral line and a plain-language directional sentence.
+- Store manual Memory Palace entries separately with entity, zone, note, date, importance and provenance. Merge them non-destructively with growers, confirmed moments, imported discoveries and reinterpretations derived from existing evidence.
+- Establish Track Glyph, Album Terrain, Artist Signature and Taste Trait Mark as reusable SVG/typographic primitives. Archive indexes receive only their corresponding compact geometry, and Listening Portrait reuses the same point and terrain functions.
+
+### Evidence
+
+- The canonical archive produced two qualifying DNA traits without seeded local tags: Vocal Interpretation from eight tracks and Production Curiosity from six. Every weaker trait remained hidden below the five-track threshold.
+- Blind Spot analysis exposed two album-depth gaps from repeated high-rated tracks and no completed album rating; it returned no Sonic or era claims without reliable supporting metadata.
+- A manual Personal Canon memory was added on mobile, rendered in the intended zone, opened as a compact detail and was removed again without affecting the underlying Track.
+- Archive Entropy remained empty below three dated Track ratings, then produced one 2026 Q3 baseline with five supporting metrics after the third saved rating.
+- Archive rendered 41 Track Glyphs, 13 evidence-aware Album Terrain baselines and seven Artist Signatures. Track detail matched two recurring traits for a qualifying record; Listening Portrait reused glyph, terrain and artist-signature geometry.
+- Eleven representative routes were measured at 1440 × 1000, 768 × 900 and 390 × 844. All 33 renders retained a contextual return action, zero horizontal overflow, 40px visible non-range controls and zero console errors.
+- No online visual reference was borrowed. Literal DNA helices, palace illustrations, 3D rooms, recommendation feeds, genre percentages, KPI cards, traffic-light colors, particles, glow and dashboard grids were rejected because they weaken the existing editorial evidence hierarchy.
+
+### Files
+
+- `app.js`
+- `modules/archive/pages.js`
+- `modules/import/pages.js`
+- `modules/journal/pages.js`
+- `modules/taste/pages.js`
+- `modules/music/taste-dna.js`
+- `modules/music/entropy.js`
+- `modules/music/memory.js`
+- `modules/music/geometry.js`
+- `modules/music/portrait.js`
+- `scripts/check-project.mjs`
+- `styles.css`
+- `README.md`
+- `TODO.md`
+- `DESIGN_SYSTEM.md`
+- `DESIGN_LOG.md`
+
+### Verification
+
+- Syntax validation for every new and changed module, automated project validation through `npm test`, and whitespace validation through `git diff --check`.
+- Browser checks for DNA evidence, Blind Spot output and empty state, Memory Palace add/remove, Entropy evidence gate and populated baseline, Track DNA activation, geometry counts, back navigation, touch targets, responsive overflow and console errors.
