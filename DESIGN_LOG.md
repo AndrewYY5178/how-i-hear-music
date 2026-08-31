@@ -830,3 +830,29 @@ Implementation commit: `4e6ece6`
 
 - The published source was confirmed at version 0.4.2 while an existing controlled tab reproduced the stale 0.4.1 heading, isolating the problem to installation fetch caching rather than Pages deployment.
 - Static checks now require the reload request contract. The release cache advances to 0.4.3; `npm test`, `node --check server.mjs` and `git diff --check` pass.
+
+## Version 3.4.4 — Bilingual masthead fit
+
+Implementation commit: `fc76c53`
+
+### Before
+
+- The full desktop navigation remained active down to 761px. In English, its right edge began crossing the Search/language/anddream/edition group below roughly 930px, reaching an 89px overlap at 768px.
+- The language switch used the same 40px visual width and underline treatment as a larger utility action, adding weight to an already dense masthead.
+
+### Decision
+
+- Keep the full editorial masthead only above 1024px. At tablet and smaller widths, use the existing Menu navigation and place Search inside it; this changes responsive priority without removing any destination.
+- Reduce the language switch's visible width to 32px and type to 8px while retaining a 40px vertical target. Remove its underline and reduce desktop utility gaps from 24px to the approved 16px spacing token.
+- Preserve the anddream mark in the full masthead and hide the entire right-side utility group only when the compact menu takes over.
+
+### Evidence
+
+- English header measurements at 1440, 1280, 1100 and 1025px show the full navigation and utility group with zero overlap and zero page overflow.
+- At 1024, 960, 820, 768 and 390px, the compact actions are visible, the full navigation and right-side group are hidden, and page overflow remains zero.
+- Opening the 1024px menu exposes Home, Archive, Rate, Taste, Import, Journal and Search. Switching the open menu to Chinese retains its state and produces no overflow.
+- `npm test`, `node --check server.mjs` and `git diff --check` pass.
+
+### Intentionally unchanged
+
+- Navigation wording, anddream identity, module colors, sticky behavior, typography families and mobile page layouts remain unchanged.
