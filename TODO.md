@@ -45,6 +45,12 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Preserve Search, language switching and `anddream` without changing the established horizontal masthead treatment.
 - [x] Verify English and Chinese navigation at desktop, tablet and mobile widths with no overlap or overflow.
 
+## Completed Import localization closure — UI 3.4.7
+
+- [x] Translate playlist-source controls including `SYNC NOW`, source labels, removal confirmation and live sync states.
+- [x] Translate dynamic playlist/album previews, Inbox lifecycle actions, duplicate states and import feedback.
+- [x] Add regression coverage and verify Chinese Import/Inbox at desktop, tablet and mobile widths.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity
