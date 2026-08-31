@@ -990,3 +990,24 @@ Implementation commit: `7ac632a`
 
 - Ratings, notes, Inbox, Library and recovery snapshots remain local to the browser and remain part of Data Desk backups.
 - Provider matching, public metadata boundaries, manual Ignore/Review controls for unrated records, Archive palette, typography, zero-radius geometry and primary site navigation remain unchanged.
+
+## Version 3.4.10 — Hosted metadata delivery
+
+Implementation commit: `15ce1fc`
+
+### Decision
+
+- Keep GitHub Pages as the static application host and run only the public metadata adapter on a claimed Cloudflare Worker free-plan deployment.
+- Configure the production app with the Worker's HTTPS root address. Restrict browser CORS to `https://andrewyy5178.github.io`; do not commit Cloudflare login data, claim tokens or deployment credentials.
+- Preserve the local Node adapter for development and keep the Worker contract identical: health/version, QQ playlist/search/album and NetEase playlist endpoints.
+
+### Evidence
+
+- The claimed Worker reported version 0.4.10 and providers `qqmusic` and `netease` through `/healthz`.
+- A production-origin request to the hosted QQ playlist endpoint returned the public “随便听听” playlist with 38 readable Tracks. Automated tests cover allowed/disallowed origins, preflight, health, version, invalid input and missing routes.
+- The deployment changes no page composition. Existing responsive evidence from UI 3.4.9 remains applicable; final GitHub Pages import verification is recorded in `TODO.md` before release closure.
+
+### Intentionally unchanged
+
+- Personal ratings, notes, Inbox, Library and backups remain browser-local. The Worker receives public share links and returns public metadata only; it receives no login Cookie, audio, lyrics or personal archive export.
+- Palette, typography, layout, navigation and Import review presentation remain unchanged.
