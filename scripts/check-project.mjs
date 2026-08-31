@@ -139,7 +139,7 @@ if (!serviceWorker.includes('new Request(url, { cache: "reload" })')) errors.pus
 for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);
 for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
 if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('styles.css: reduced-motion handling is missing');
-if (!styles.includes('before English labels collide') || !styles.includes('@media (max-width:1024px)')) errors.push('styles.css: compact masthead breakpoint is missing');
+if (styles.includes('before English labels collide') || !styles.includes('@media (max-width:760px)')) errors.push('styles.css: full masthead must remain available above the mobile breakpoint');
 const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
 if (shellSource.includes('READ / 20—') || styles.includes('.edition')) errors.push('masthead: obsolete edition marker or styling remains');
 const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');

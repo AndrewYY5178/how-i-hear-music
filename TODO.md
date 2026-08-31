@@ -39,6 +39,12 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Verify the simplified masthead in English and Chinese at desktop, tablet and mobile widths.
 - [x] Explain the marker's former editorial purpose and provide an owner-facing functional verification checklist.
 
+## Completed full-navigation restoration — UI 3.4.6
+
+- [x] Restore the original full masthead navigation above the 760px mobile breakpoint while keeping `READ / 20—` removed.
+- [x] Preserve Search, language switching and `anddream` without changing the established horizontal masthead treatment.
+- [x] Verify English and Chinese navigation at desktop, tablet and mobile widths with no overlap or overflow.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity

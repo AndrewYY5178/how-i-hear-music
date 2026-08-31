@@ -1,5 +1,5 @@
 const cachePrefix = "how-i-hear-music-shell-";
-const cacheName = "how-i-hear-music-shell-0.4.5";
+const cacheName = "how-i-hear-music-shell-0.4.6";
 const shell = [
   "", "index.html", "base.js", "styles.css", "app.js", "favicon.svg", "og-image.svg",
   "data/music-profile.json", "data/artists.json", "data/songs.json", "data/library.json", "data/catalog.json",
