@@ -954,3 +954,39 @@ Implementation commit: `61ff1e4`
 ### Intentionally unchanged
 
 - Import data behavior, matching confidence, provider metadata, Inbox lifecycle rules, localStorage boundaries, module palette and responsive composition remain unchanged.
+
+## Version 3.4.9 — Low-friction collection and progressive disclosure
+
+Implementation commit: `7ac632a`
+
+### Before
+
+- An imported Track moved from `imported` to `rated`, but still required a separate Archive action. The saved rating existed while the Track remained absent from the visible Archive because personal Library records were not part of `allTracks()`.
+- Archive maintenance shared the same navigation prominence as everyday browsing. Track details opened version tools by default, while Data Desk exposed backup formats, storage diagnostics and recovery machinery simultaneously.
+
+### Decision
+
+- Treat a completed rating as the owner's collection decision: save the rating, move an imported Track from Inbox to personal Library and expose it through Archive in one transaction. Undo restores both the prior rating and the prior Inbox/Library placement.
+- Remove collected records from the active Inbox list. Keep their archived count as lifecycle evidence without asking the owner to process them again.
+- Keep Tracks, Albums and Artists as the visible Archive navigation. Move metadata maintenance into one collapsed disclosure on Archive Home, and close advanced Track sections by default.
+- Keep ordinary export and restore visible on Data Desk. Place encrypted export, quota diagnostics, durable-storage controls and recovery points behind one advanced disclosure. No data group or recovery ability is removed.
+
+### Evidence
+
+- A real 38-Track QQ Music playlist was imported on an isolated browser origin. Saving a rating for “游京” produced `Rating saved and Track added to Archive`, reduced the active Inbox from 38 to 37 and exposed the Track detail and Archive card with its saved 7.5 geometry.
+- Automated coverage confirms that an imported fixture leaves Inbox, enters personal Library with `archived` state and appears in `allTracks()` immediately after a complete rating.
+- Desktop 1440px, tablet 1024px and mobile 390px checks found zero horizontal overflow. Track maintenance sections and Data Desk advanced tools remained closed by default at every width.
+- English and Chinese Archive maintenance labels and the new automatic-collection feedback were verified without translating recorded music titles or artist names.
+
+### Verification
+
+- `npm test`
+- `node --check modules/rating/pages.js`
+- `node --check modules/import/pages.js`
+- `git diff --check`
+- Real QQ playlist import, Track rating, automatic Archive navigation and responsive inspection at 1440 × 900, 1024 × 900 and 390 × 844.
+
+### Intentionally unchanged
+
+- Ratings, notes, Inbox, Library and recovery snapshots remain local to the browser and remain part of Data Desk backups.
+- Provider matching, public metadata boundaries, manual Ignore/Review controls for unrated records, Archive palette, typography, zero-radius geometry and primary site navigation remain unchanged.
