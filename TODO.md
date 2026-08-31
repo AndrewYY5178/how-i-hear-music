@@ -19,6 +19,12 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Keep artist, Track and Album names in their recorded language instead of treating them as untranslated interface copy.
 - [x] Audit 33 routes for residual interface English and horizontal overflow; repeat the annual page check at 390 × 844.
 
+## Completed Chinese heading punctuation — UI 3.4.2
+
+- [x] Remove a final Chinese full stop from translated H1–H3 headings without changing the same sentence when it appears as body copy.
+- [x] Preserve question marks and other meaningful title punctuation.
+- [x] Verify representative Home, Archive, Rate, Taste, Import and Journal headings in a real browser.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity

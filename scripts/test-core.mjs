@@ -23,7 +23,7 @@ const { journalEntry, updateJournalEntry } = await import('../modules/music/jour
 const { albumNote, albumNotesKey, saveAlbumNote } = await import('../modules/music/notes.js');
 const { blindSpots, sonicQuadrant } = await import('../modules/music/taste-dna.js');
 const { readRatings, saveAlbumTrackRatings, saveRatingRecord, validScore } = await import('../modules/music/lifecycle.js');
-const { translateText } = await import('../modules/layout/i18n.js');
+const { formatTranslatedText, translateText } = await import('../modules/layout/i18n.js');
 
 assert.equal(translateText('Rate', 'zh-CN'), '评分');
 assert.equal(translateText('SONG', 'zh-CN'), '歌曲');
@@ -33,6 +33,9 @@ assert.equal(translateText('12 heard · 3 waiting', 'zh-CN'), '听过 12 首 · 
 assert.equal(translateText('The human voice stays human.', 'zh-CN'), '人声不该失去人的痕迹。');
 assert.equal(translateText('2026 IN MUSIC', 'zh-CN'), '2026 年的音乐');
 assert.equal(translateText('8 TRACKS · AVG 9.4 VS ARCHIVE 6.6 · 74% CONFIDENCE', 'zh-CN'), '8 首歌 · 平均 9.4，档案基准 6.6 · 可信度 74%');
+assert.equal(formatTranslatedText('Begin with one listening decision.', { target: 'zh-CN', heading: true }), '先听，再作出判断');
+assert.equal(formatTranslatedText('Begin with one listening decision.', { target: 'zh-CN' }), '先听，再作出判断。');
+assert.equal(formatTranslatedText('Taste over time.', { target: 'zh-CN', heading: true }), '一路听来，什么变了？');
 assert.equal(translateText('Rate', 'en'), 'Rate');
 
 storage.set('how-i-hear-music:journal:v1', [{ type: 'rating', at: '2026-01-01T00:00:00.000Z', title: 'Before IDs' }]);

@@ -132,10 +132,15 @@ export const translateText = (value, target = language) => {
   return `${match?.[1] || ""}${translated}${match?.[3] || ""}`;
 };
 
+export const formatTranslatedText = (value, { target = language, heading = false } = {}) => {
+  const translated = translateText(value, target);
+  return target === "zh-CN" && heading ? translated.replace(/。(\s*)$/, "$1") : translated;
+};
+
 const translateNode = (node) => {
   if (node.nodeType === Node.TEXT_NODE) {
     if (!originalText.has(node)) originalText.set(node, node.nodeValue);
-    const next = language === "en" ? originalText.get(node) : translateText(originalText.get(node));
+    const next = language === "en" ? originalText.get(node) : formatTranslatedText(originalText.get(node), { heading: Boolean(node.parentElement?.closest?.("h1,h2,h3")) });
     if (node.nodeValue !== next) node.nodeValue = next;
     return;
   }
