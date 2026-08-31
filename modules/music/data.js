@@ -32,6 +32,7 @@ export const allAlbums = () => {
 };
 export const baseTracks = () => {
   const result = [...data.songs.entries]; const ids = new Set(result.map(trackId));
+  storage.get(data.library.libraryStorageKey, []).forEach((track) => { if (!ids.has(trackId(track))) { ids.add(trackId(track)); result.push(track); } });
   importedAlbums().flatMap((album) => album.tracks || []).forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
   localVersions().forEach((track) => { if (!ids.has(track.id)) { ids.add(track.id); result.push(track); } });
   return result;

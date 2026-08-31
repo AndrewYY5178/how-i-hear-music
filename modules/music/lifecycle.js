@@ -15,12 +15,12 @@ export const validScore = (value, { nullable = false } = {}) => {
 export const saveRatingRecord = (id, value) => {
   if (!id) throw new Error("A confirmed Track ID is required before saving a rating.");
   const scores = Object.fromEntries(["song", "vocal", "production", "overall"].map((field) => [field, validScore(value.scores?.[field])]));
-  const next = { ...readRatings(), [id]: { ...value, scores } }; if (!storage.set(ratingStorageKey, next)) throw new Error("Local storage is unavailable."); return next[id];
+  const next = { ...readRatings(), [id]: { ...value, scores } }; if (!storage.set(ratingStorageKey, next)) throw new Error("Local storage is unavailable."); updateLifecycle(id, "rated"); archiveTrack(id); return next[id];
 };
 export const saveAlbumTrackRatings = ({ album, tracks, at = new Date().toISOString() }) => {
   if (!album?.title || !Array.isArray(tracks) || !tracks.length) throw new Error("A confirmed album and ordered Track list are required."); const seen = new Set(); const confirmed = tracks.map((track) => { if (!track.trackId || seen.has(track.trackId)) throw new Error("Every album row needs one unique confirmed Track ID."); seen.add(track.trackId); return { ...track, overall: validScore(track.overall) }; });
   const previousRatings = structuredClone(readRatings()); const next = { ...previousRatings }; confirmed.forEach((track) => { const current = next[track.trackId] || {}; next[track.trackId] = { ...current, title: track.title, artist: track.artist || album.artist, source: current.source || "album", updatedAt: at, scores: { ...(current.scores || {}), overall: track.overall } }; });
-  if (!storage.set(ratingStorageKey, next)) throw new Error("Local storage is unavailable."); confirmed.forEach((track) => updateLifecycle(track.trackId, "rated")); return { confirmed, previousRatings };
+  if (!storage.set(ratingStorageKey, next)) throw new Error("Local storage is unavailable."); confirmed.forEach((track) => { updateLifecycle(track.trackId, "rated"); archiveTrack(track.trackId); }); return { confirmed, previousRatings };
 };
 
 export const lifecycleState = (track, location = "inbox", ratings = readRatings()) => {

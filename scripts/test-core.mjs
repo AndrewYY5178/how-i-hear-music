@@ -67,6 +67,13 @@ assert.throws(() => updateJournalEntry(historicalId, { overall: '12' }), /betwee
 assert.equal(validScore('8.26'), 8.3);
 assert.throws(() => validScore(''), /confirmed/);
 assert.throws(() => saveRatingRecord('partial-track', { scores: { overall: 8 } }), /confirmed/);
+const inboxKey = 'how-i-hear-music:music-inbox:v1';
+const libraryKey = 'how-i-hear-music:personal-library:v1';
+storage.set(inboxKey, [{ id: 'imported-rating-fixture', title: 'Imported fixture', artist: 'Fixture artist', lifecycleState: 'heard', source: 'qqmusic' }]);
+saveRatingRecord('imported-rating-fixture', { scores: { song: 8, vocal: 8.1, production: 8.2, overall: 8.3 }, title: 'Imported fixture', artist: 'Fixture artist' });
+assert.equal(storage.get(inboxKey, []).some((track) => track.id === 'imported-rating-fixture'), false);
+assert.equal(storage.get(libraryKey, []).find((track) => track.id === 'imported-rating-fixture')?.lifecycleState, 'archived');
+assert.equal(allTracks().some((track) => track.id === 'imported-rating-fixture'), true);
 const albumRating = saveAlbumTrackRatings({ album: { title: 'Verified Album', artist: 'Artist' }, tracks: [{ trackId: 'verified-1', title: 'First', overall: 8.4 }, { trackId: 'verified-2', title: 'Second', overall: 9.1 }] });
 assert.equal(albumRating.confirmed.length, 2);
 assert.equal(readRatings()['verified-2'].scores.overall, 9.1);
@@ -107,4 +114,4 @@ storage.set('how-i-hear-music:test-value', { version: 2 });
 storage.remove('how-i-hear-music:test-value');
 assert.equal(recoverySnapshots().some((snapshot) => snapshot.key === 'how-i-hear-music:test-value' && snapshot.value?.version === 2), true);
 
-console.log('Core data checks passed: rating identity, field provenance, album persistence, restore rollback, encryption and evidence gates.');
+console.log('Core data checks passed: rating identity, automatic collection, field provenance, album persistence, restore rollback, encryption and evidence gates.');

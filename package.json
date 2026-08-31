@@ -1,6 +1,6 @@
 {
   "name": "how-i-hear-music",
-  "version": "0.4.7",
+  "version": "0.4.10",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
     "start": "node server.mjs",
     "test:core": "node scripts/test-core.mjs",
     "test:render": "node scripts/test-render.mjs",
-    "test": "npm run check && npm run test:core && npm run test:render"
+    "test:worker": "node scripts/test-worker.mjs",
+    "test": "npm run check && npm run test:core && npm run test:render && npm run test:worker"
   }
 }

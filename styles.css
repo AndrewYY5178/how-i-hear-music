@@ -466,13 +466,14 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .sync-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
 .playlist-sources + .inbox-entries { margin-top:64px; }
 .backup-actions { display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
-.backup-actions input { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.backup-actions input[type="file"] { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
 .backup-actions #backup-status { flex-basis:100%; min-height:24px; color:var(--red); font:10px var(--mono); letter-spacing:.05em; }
 .import-service-note { display:grid; grid-template-columns:240px minmax(280px,1fr) auto; gap:24px; align-items:center; margin:-40px 0 64px; padding:16px 0; border-bottom:1px solid var(--line); color:var(--red); }
 .import-service-note p { max-width:600px; margin:0; color:var(--muted); font:italic 13px/1.5 var(--serif); }
 .import-service-note a { font:9px var(--mono); letter-spacing:.06em; }
 .import-service-note.service-ready { color:var(--olive); }
 .data-health { display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
+.data-health-primary { max-width:640px; grid-template-columns:repeat(2,minmax(0,1fr)); }
 .data-health>div { min-width:0; padding:24px; border-right:1px solid var(--line); }
 .data-health>div:first-child { padding-left:0; }
 .data-health>div:last-child { border-right:0; }
@@ -484,6 +485,11 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .data-desk-actions h2,.recovery-desk h2 { margin:16px 0 8px; font:400 clamp(28px,3vw,42px)/1 var(--serif); letter-spacing:-.055em; }
 .data-desk-actions p,.recovery-desk p { max-width:520px; margin:0; color:var(--muted); font:italic 14px/1.55 var(--serif); }
 .data-desk-actions .privacy-warning { margin-top:16px; color:var(--ink); }
+.data-advanced { max-width:none; margin-top:64px; padding-top:0; }
+.data-advanced>p { margin:0 0 24px; }
+.data-advanced .data-health { max-width:780px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+.advanced-backup-actions { max-width:780px; margin-top:24px; }
+.data-advanced .recovery-desk { margin-top:64px; }
 .backup-password { flex-basis:100%; }
 .backup-password>span { display:block; margin-bottom:8px; color:var(--red); font-size:8px; }
 .backup-password input { position:static; width:100%; height:auto; min-height:40px; padding:8px 0; overflow:visible; clip-path:none; border:0; border-bottom:1px solid var(--ink); background:transparent; color:inherit; }

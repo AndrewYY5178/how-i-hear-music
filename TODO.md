@@ -51,6 +51,20 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Translate dynamic playlist/album previews, Inbox lifecycle actions, duplicate states and import feedback.
 - [x] Add regression coverage and verify Chinese Import/Inbox at desktop, tablet and mobile widths.
 
+## Active hosted import delivery — UI 3.4.8
+
+- [x] Port the public metadata adapter to a free HTTPS Cloudflare Worker without changing the local Node development server.
+- [x] Restrict browser access to `https://andrewyy5178.github.io` and cover health, version, CORS and invalid-request behavior with automated checks.
+- [ ] Deploy and claim the Worker, verify a real public QQ Music playlist through the hosted endpoint, then connect `him-api-base`.
+- [ ] Run the complete test suite and verify Import on the published GitHub Pages site before marking the hosted adapter complete.
+
+## Active low-friction library flow — UI 3.4.9
+
+- [x] Make a completed imported-Track rating archive that Track automatically, with a complete undo that restores its prior Inbox location.
+- [x] Include the personal Library in Archive Track listings so locally collected music remains visible after reload.
+- [x] Reduce maintenance clutter by demoting Archive metadata, collapsing advanced Track details and placing Data Desk diagnostics/recovery behind one optional disclosure.
+- [x] Update bilingual workflow copy, regression coverage and desktop/tablet/mobile browser QA.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity
