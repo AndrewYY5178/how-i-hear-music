@@ -732,3 +732,37 @@ Implementation commit: `deec2bd`
 - `node --check server.mjs`
 - `git diff --check`
 - Public Pages asset and deep-link response checks after deployment.
+
+## Version 3.4 — Bilingual editorial access and save feedback
+
+Implementation commit: `eb3c08a`
+
+### Before
+
+- The site exposed only English interface copy, making dense Rate, Import and Taste instructions difficult for the owner to use independently.
+- The primary actions in the two Rate choices and two Import choices sat too close to their explanatory copy.
+- Track rating saves wrote local data but returned only an unstructured message below the workspace. The message did not receive focus, so keyboard and screen-reader users could miss it.
+- A local deep link could serve the root document below the route path, causing relative assets to resolve under that path and leave the page blank.
+
+### Decision
+
+- Add one persistent English / Simplified Chinese switch to both desktop and mobile navigation. Translate the live DOM rather than rerendering the route so unsaved form values, selected reasons and chart state survive a language change.
+- Keep artist, track and album names untouched. Translate interface text, dynamic status messages, placeholders, titles and accessible labels; update `html[lang]` so assistive technology and typography receive the correct language.
+- Pair Noto Serif SC with Chinese display/body copy and Noto Sans SC with navigation/metadata. This preserves the existing Libre Baskerville / DM Mono hierarchy without importing a new visual identity. Adjust only Chinese line-height and tracking where Latin settings would compress the glyphs.
+- Use the existing 24px spacing token between explanatory text and the Rate/Import actions. Render saved-rating confirmation as a square, 1px-rule status panel with 24px padding, focus it after save and retain the existing view/undo actions.
+- Redirect local extensionless deep links once through `/?route=...`, allowing the root document to establish the correct asset base before restoring the intended route.
+
+### Evidence
+
+- Desktop browser checks covered Home, Archive, Rate, Taste, Import and Journal in Chinese, then switched Journal to English and back without navigation. Every root reported zero horizontal overflow.
+- Mobile checks at 390 × 844 confirmed the language control remains visible, both Rate and both Import actions have 24px top spacing, Noto Serif SC and Noto Sans SC are applied to their intended roles, and neither module overflows.
+- Saving a Track rating produced a visible Chinese confirmation, `role="status"`, `aria-live="polite"`, a 1px border, 24px padding and programmatic focus. The view and undo actions remained available.
+- Automated translation checks cover fixed text, dynamic queue counts, uppercase chart labels, accessible score controls, preserved proper names and the English fallback. `npm test`, `node --check server.mjs` and `git diff --check` pass.
+- No outside design language was borrowed. The six module backgrounds, paper grain, palette, typography roles, chart geometry, square corners and no-shadow rule remain intentionally unchanged. No new feature section, decorative icon, card or badge was added.
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Real desktop and 390 × 844 browser interaction checks.
