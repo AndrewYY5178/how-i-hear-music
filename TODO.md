@@ -33,6 +33,12 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Switch to the compact menu masthead at tablet widths before English navigation overlaps the right-side tools.
 - [x] Verify English and Chinese header geometry across desktop, tablet and mobile widths.
 
+## Completed masthead simplification — UI 3.4.5
+
+- [x] Remove the non-interactive `READ / 20—` edition marker from the masthead.
+- [x] Verify the simplified masthead in English and Chinese at desktop, tablet and mobile widths.
+- [x] Explain the marker's former editorial purpose and provide an owner-facing functional verification checklist.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity

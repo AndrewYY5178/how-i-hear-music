@@ -140,6 +140,8 @@ for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !
 for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
 if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('styles.css: reduced-motion handling is missing');
 if (!styles.includes('before English labels collide') || !styles.includes('@media (max-width:1024px)')) errors.push('styles.css: compact masthead breakpoint is missing');
+const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
+if (shellSource.includes('READ / 20—') || styles.includes('.edition')) errors.push('masthead: obsolete edition marker or styling remains');
 const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');
 for (const contract of ["requestPath === '/healthz'", "requestPath === '/api/version'", 'TRUST_PROXY', 'logEvent', 'pruneRuntimeState']) if (!serverSource.includes(contract)) errors.push(`adapter resilience: missing ${contract}`);
 if (!serverSource.includes("Location: `/?route=${encodeURIComponent(route)}`")) errors.push('server: local deep links must recover through the root document');
