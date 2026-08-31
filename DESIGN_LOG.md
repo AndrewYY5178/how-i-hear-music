@@ -856,3 +856,36 @@ Implementation commit: `fc76c53`
 ### Intentionally unchanged
 
 - Navigation wording, anddream identity, module colors, sticky behavior, typography families and mobile page layouts remain unchanged.
+
+## Version 3.4.5 — Masthead edition-marker removal
+
+Implementation commit: `dadec23`
+
+### Before
+
+- The right side of the full masthead ended with `READ / 20—`, a non-interactive editorial edition marker that suggested an unfinished 20xx date without conveying the current page, archive state or an available action.
+- The marker added one more label to an already information-dense navigation row and could be mistaken for a destination.
+
+### Decision
+
+- Remove the marker and its dedicated styling from the shell. Keep Search, the language switch and `anddream` as the complete right-side utility group.
+- Retain `HIM / 001` as the project identity and retain the footer's explicit `PERSONAL ARCHIVE / ISSUE 001` wording, where the issue metaphor has enough context to be understood.
+- Advance the offline shell to 0.4.5 so an accepted update cannot continue serving the cached masthead.
+
+### Evidence
+
+- Real-browser checks at 1440px, 1024px and 390px found no `.edition` node, no `READ / 20—` text and zero horizontal overflow.
+- At 1440px, the full Chinese and English navigation and right-side utilities remain visible. At 1024px and 390px, the compact language/Menu controls remain visible.
+- At 390px, the open menu contains all seven destinations in English and Chinese; changing language keeps the menu open.
+- Screenshot review confirmed the simplified desktop masthead and the existing tablet/mobile hierarchy without adding replacement decoration.
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Real browser at 1440 × 900, 1024 × 768 and 390 × 844.
+
+### Intentionally unchanged
+
+- Navigation destinations and wording, Search, the language switch, `HIM / 001`, `anddream`, responsive breakpoints, module colors, typography and sticky behavior remain unchanged.
