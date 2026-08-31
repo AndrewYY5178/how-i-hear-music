@@ -708,3 +708,27 @@ Implementation commit: `1702ec8`
 - `git diff --check`
 - Local `/`, `/api/version` and `/healthz` HTTP response verification.
 - Browser QA deferred only because no browser instance was available.
+
+## Version 3.3.1 — GitHub Pages project-path repair
+
+Implementation commit: `deec2bd`
+
+### Before
+
+- The initial document set `<base href="/">` before loading relative first-party scripts. On a GitHub Pages project site this resolved `./base.js` and `./app.js` to the domain root rather than `/how-i-hear-music/`, producing 404 script requests and a blank routed application.
+
+### Decision
+
+- Use the document-relative initial base, `<base href="./">`. It resolves all first-party assets within the current project directory on Pages while retaining root-relative behaviour for the local Node preview. Runtime `base.js` still establishes the explicit deployment base for generated application links.
+
+### Evidence
+
+- Before the change, the public root script URLs returned HTTP 404 while `https://andrewyy5178.github.io/how-i-hear-music/base.js` and `/app.js` returned HTTP 200.
+- This is a routing/resource-resolution repair only: the editorial palette, typography, component hierarchy, content and module structure are intentionally unchanged.
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Public Pages asset and deep-link response checks after deployment.
