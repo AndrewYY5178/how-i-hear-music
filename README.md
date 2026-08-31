@@ -38,15 +38,17 @@ UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 
 
 ## 在线版本
 
-[打开 GitHub Pages](https://andrewyy5178.github.io/how-i-hear-music/)。模块路由兼容项目站点子路径、直接刷新以及旧版 `/#archive` 等入口。在线静态版本可浏览、评分并保存浏览器本地数据；QQ Music 与 NetEase 的实时公开 metadata 导入仍需下面的本地 Node 服务。
+[打开 GitHub Pages](https://andrewyy5178.github.io/how-i-hear-music/)。模块路由兼容项目站点子路径、直接刷新以及旧版 `/#archive` 等入口。在线静态版本可浏览、评分并保存浏览器本地数据，也可通过已部署的 Cloudflare Worker 读取 QQ Music 与 NetEase 的公开 metadata。
 
-静态页面会在导入表单之前明确显示服务未连接。若已有独立部署的 metadata adapter，可把 `index.html` 中的 `him-api-base` 设置为它的 HTTPS 根地址。adapter 运行环境同时需要：
+生产页面的 `him-api-base` 指向 `https://how-i-hear-music-adapter.bevel-exhaust.workers.dev`，CORS 只允许 `https://andrewyy5178.github.io`。Worker 代码位于 `worker/index.mjs`，部署配置位于 `wrangler.jsonc`；它与下面的本地 Node 服务保持相同的导入接口和公开 metadata 边界。
+
+如需运行本地 Node adapter：
 
 ```bash
 HOST=0.0.0.0 ALLOWED_ORIGIN=https://andrewyy5178.github.io npm start
 ```
 
-可用逗号分隔多个精确 origin。本地默认只监听 `127.0.0.1`；托管平台通常需要显式设置 `HOST=0.0.0.0`。只有在 adapter 位于可信反向代理后方时才设置 `TRUST_PROXY=1`；否则会忽略客户端提供的 `X-Forwarded-For`。`/healthz` 提供运行状态，`/api/version` 提供公开能力版本。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时、结构化请求日志与 CORS 白名单；生产部署仍需由托管平台提供 TLS、日志留存和进程管理。仓库不包含托管账户或部署凭据，因此 GitHub Pages 版本默认保持 metadata service 未连接。
+可用逗号分隔多个精确 origin。本地默认只监听 `127.0.0.1`；托管平台通常需要显式设置 `HOST=0.0.0.0`。只有在 adapter 位于可信反向代理后方时才设置 `TRUST_PROXY=1`；否则会忽略客户端提供的 `X-Forwarded-For`。`/healthz` 提供运行状态，`/api/version` 提供公开能力版本。adapter 自带每个来源地址 10 分钟 30 次的基础限流、5 分钟内存缓存、12 秒上游超时、结构化请求日志与 CORS 白名单。仓库不包含 Cloudflare 登录信息、认领令牌或部署凭据。
 
 ## 预览
 
@@ -72,7 +74,7 @@ npm test
 
 ## 外部依赖
 
-- 在线实时导入需要独立 metadata adapter 的托管环境、HTTPS 域名和部署凭据；这些不应提交到仓库。
+- Cloudflare Worker 使用免费计划的运行额度；扩大公开使用前应检查实际调用量、上游平台条款和 Cloudflare 当前配额。登录信息与部署凭据不应提交到仓库。
 - 在商业化或扩大公开使用之前，`TERMS.md`、第三方平台条款、metadata 使用方式和图片引用仍须由合格法律专业人士复核。代码检查不能替代法律意见。
 
 ## 继续修改
@@ -84,6 +86,6 @@ npm test
 - 修改领域页面：编辑 `modules/archive`、`modules/rating`、`modules/taste`、`modules/import`、`modules/journal`
 - 修改共享数据工具与视觉图形：编辑 `modules/music`、`modules/layout`、`modules/rating/visuals.js`
 - 修改视觉：编辑 `styles.css`
-- 修改 QQ Music / NetEase 公共 metadata adapter：编辑 `server.mjs` 与 `server/providers/`
+- 修改 QQ Music / NetEase 公共 metadata adapter：编辑 `server.mjs`、`server/providers/` 与 `worker/`
 
 评分使用 `Song / Vocal / Production / Overall` 顺序。JSON 里的未知值使用 `null`，页面显示为 `—`；不要自行补全。Overall 不是平均分，11 必须保留为有效分数。

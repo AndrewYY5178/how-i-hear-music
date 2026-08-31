@@ -213,8 +213,8 @@ createServer(async (request, response) => {
   if (request.method === 'POST' && request.url === '/api/import/qq-album-preview') {
     try {
       const body = await readJsonBody(request);
-      const resolved = await parseQQAlbumLink(body.text);
-      const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId));
+      const resolved = await parseQQAlbumLink(body.text, { serviceAgent });
+      const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId, { serviceAgent }));
       json(response, 200, { album, sourceUrl: album.externalUrl || resolved.canonicalUrl });
     } catch (error) {
       logFailure(request, requestId, error);

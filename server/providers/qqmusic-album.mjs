@@ -21,10 +21,11 @@ export const directQQAlbumIdentity = (value) => {
   return { url, id: validIdentity(id) ? id : "" };
 };
 
-const resolveQQShare = async (initial) => {
+const resolveQQShare = async (initial, options = {}) => {
+  const agent = options.serviceAgent || "How-I-Hear-Music metadata importer";
   let current = initial;
   for (let index = 0; index < 4; index += 1) {
-    const response = await fetch(current, { redirect: "manual", headers: { "User-Agent": "How-I-Hear-Music/0.1 metadata importer", Referer: "https://y.qq.com/" }, signal: AbortSignal.timeout(12_000) });
+    const response = await fetch(current, { redirect: "manual", headers: { "User-Agent": agent, Referer: "https://y.qq.com/" }, signal: AbortSignal.timeout(12_000) });
     if (response.status >= 300 && response.status < 400) {
       const location = response.headers.get("location");
       if (!location) throw new Error("QQ Music returned an incomplete share redirect.");
@@ -51,9 +52,9 @@ const resolveQQShare = async (initial) => {
   throw new Error("Could not identify a QQ Music album from this link.");
 };
 
-export const parseQQAlbumLink = async (text) => {
+export const parseQQAlbumLink = async (text, options = {}) => {
   const direct = directQQAlbumIdentity(text);
-  const resolved = direct.id ? { id: direct.id, url: direct.url } : await resolveQQShare(direct.url);
+  const resolved = direct.id ? { id: direct.id, url: direct.url } : await resolveQQShare(direct.url, options);
   return { provider: "qqmusic", type: "album", albumId: resolved.id, canonicalUrl: `https://y.qq.com/n/ryqq/albumDetail/${encodeURIComponent(resolved.id)}` };
 };
 
@@ -100,13 +101,14 @@ export const normalizeQQAlbum = (payload, requestedId = "") => {
   };
 };
 
-export const getQQAlbumDetails = async (albumId) => {
+export const getQQAlbumDetails = async (albumId, options = {}) => {
   if (!validIdentity(albumId)) throw new Error("Could not identify a QQ Music album from this link.");
   const cached = albumCache.get(albumId);
   if (cached && Date.now() - cached.at < cacheTtl) return cached.value;
   const parameter = /^\d+$/.test(albumId) ? "albumid" : "albummid";
   const query = new URLSearchParams({ [parameter]: albumId, format: "json", platform: "yqq.json", needNewCode: "0" });
-  const response = await fetch(`https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg?${query}`, { headers: { "User-Agent": "How-I-Hear-Music/0.1 metadata importer", Referer: "https://y.qq.com/" }, signal: AbortSignal.timeout(12_000) });
+  const agent = options.serviceAgent || "How-I-Hear-Music metadata importer";
+  const response = await fetch(`https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg?${query}`, { headers: { "User-Agent": agent, Referer: "https://y.qq.com/" }, signal: AbortSignal.timeout(12_000) });
   if (!response.ok) throw new Error(`QQ Music album metadata is unavailable right now (${response.status}).`);
   const value = normalizeQQAlbum(await response.json(), albumId);
   albumCache.set(albumId, { at: Date.now(), value });

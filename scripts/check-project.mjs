@@ -105,6 +105,7 @@ const precisionButtons = ratingPages.match(/<button[^>]*data-(?:score-step|album
 if (!precisionButtons.length || precisionButtons.some((button) => !button.includes('type="button"') || !button.includes('aria-label='))) errors.push('rating controls: every precision button must be a labelled non-submit button');
 if (!styles.includes('summary { min-height:40px; align-items:center; }')) errors.push('styles.css: disclosure summaries must expose a 40px interaction target');
 const entryHtml = await readFile(join(root, 'index.html'), 'utf8');
+if (!entryHtml.includes('name="him-api-base" content="https://how-i-hear-music-adapter.bevel-exhaust.workers.dev"')) errors.push('hosted adapter: GitHub Pages API base is missing or incorrect');
 if ([...entryHtml.matchAll(/(?:href|src)="(\/[^\"]+)"/g)].length) errors.push('index.html: root-absolute assets break GitHub project-site deployment');
 const baseSource = await readFile(join(root, 'base.js'), 'utf8');
 if (!entryHtml.includes('<base id="app-base" href="./"') || !entryHtml.includes('src="./base.js"') || !baseSource.includes('document.getElementById("app-base").href') || !baseSource.includes('/how-i-hear-music/')) errors.push('index.html: deployment-aware asset base is missing');
@@ -150,6 +151,10 @@ if (!serverSource.includes("safePath.endsWith('sw.js')") || !serverSource.includ
 const packageData = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 if (!serviceWorker.includes(`how-i-hear-music-shell-${packageData.version}`) || !serviceWorker.includes('key.startsWith(cachePrefix)')) errors.push('offline shell: cache version or scoped cleanup is not aligned with the release');
 if (!serverSource.includes("process.env.HOST") || !serverSource.includes('serviceAgent') || serverSource.includes('How-I-Hear-Music/0.1')) errors.push('adapter: host or service-version identity is not deployable');
+const workerSource = await readFile(join(root, 'worker', 'index.mjs'), 'utf8');
+const workerConfig = await readFile(join(root, 'wrangler.jsonc'), 'utf8');
+for (const contract of ['ALLOWED_ORIGIN', 'SERVICE_VERSION', '/healthz', '/api/version', '/api/import/qq-playlist', '/api/import/netease-playlist', '/api/import/qq-album-preview']) if (!workerSource.includes(contract) && !workerConfig.includes(contract)) errors.push(`hosted adapter: missing ${contract}`);
+if (!workerConfig.includes('https://andrewyy5178.github.io') || !workerConfig.includes(`\"SERVICE_VERSION\": \"${packageData.version}\"`)) errors.push('hosted adapter: production origin or service version is not aligned');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
 else console.log(`Project check passed: ${files.length} JSON files, ${songs?.entries.length || 0} canonical tracks, no invalid internal route literals.`);
