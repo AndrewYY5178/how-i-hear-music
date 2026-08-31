@@ -24,6 +24,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Remove a final Chinese full stop from translated H1–H3 headings without changing the same sentence when it appears as body copy.
 - [x] Preserve question marks and other meaningful title punctuation.
 - [x] Verify representative Home, Archive, Rate, Taste, Import and Journal headings in a real browser.
+- [x] Force each new offline-shell release to fetch fresh first-party assets instead of repopulating its new cache from a still-fresh HTTP cache. *(Delivery repair released as UI 3.4.3.)*
 
 ## Active integrity closure — UI 3.3
 

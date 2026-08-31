@@ -135,6 +135,7 @@ if (!entryHtml.includes('http-equiv="Content-Security-Policy"') || !entryHtml.in
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
 if (!serviceWorker.includes('/api/') || !serviceWorker.includes('request.mode === "navigate"') || !serviceWorker.includes('SKIP_WAITING')) errors.push('offline shell: API exclusion, navigation fallback or explicit update behavior is missing');
 if (!serviceWorker.includes('modules/layout/i18n.js')) errors.push('offline shell: bilingual runtime is missing');
+if (!serviceWorker.includes('new Request(url, { cache: "reload" })')) errors.push('offline shell: release installation must bypass stale HTTP asset caches');
 for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);
 for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
 if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('styles.css: reduced-motion handling is missing');

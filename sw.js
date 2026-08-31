@@ -1,5 +1,5 @@
 const cachePrefix = "how-i-hear-music-shell-";
-const cacheName = "how-i-hear-music-shell-0.4.2";
+const cacheName = "how-i-hear-music-shell-0.4.3";
 const shell = [
   "", "index.html", "base.js", "styles.css", "app.js", "favicon.svg", "og-image.svg",
   "data/music-profile.json", "data/artists.json", "data/songs.json", "data/library.json", "data/catalog.json",
@@ -9,7 +9,7 @@ const shell = [
   "modules/rating/interactions.js", "modules/rating/pages.js", "modules/rating/visuals.js",
 ].map((path) => new URL(path, self.registration.scope).href);
 
-self.addEventListener("install", (event) => { event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(shell))); });
+self.addEventListener("install", (event) => { event.waitUntil(caches.open(cacheName).then((cache) => Promise.all(shell.map((url) => cache.add(new Request(url, { cache: "reload" })))))); });
 self.addEventListener("activate", (event) => { event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith(cachePrefix) && key !== cacheName).map((key) => caches.delete(key))))); });
 self.addEventListener("message", (event) => { if (event.data === "SKIP_WAITING") self.skipWaiting(); });
 self.addEventListener("fetch", (event) => {
