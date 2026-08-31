@@ -12,6 +12,13 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Repair local deep-link preview routing so a directly opened route redirects once into the SPA rather than resolving assets below the route path.
 - [x] Verify the six module roots, language persistence, desktop/mobile overflow, typography, action spacing and saved-rating feedback in a real browser.
 
+## Completed Chinese editorial polish — UI 3.4.1
+
+- [x] Rewrite literal translations around each module's actual task and preserve one consistent first-person editorial voice.
+- [x] Localize dynamic counts, Taste DNA evidence, Inbox states, backup guidance, Memory zones, Year in Music evidence and annual awards.
+- [x] Keep artist, Track and Album names in their recorded language instead of treating them as untranslated interface copy.
+- [x] Audit 33 routes for residual interface English and horizontal overflow; repeat the annual page check at 390 × 844.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity
