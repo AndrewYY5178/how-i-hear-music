@@ -56,7 +56,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Port the public metadata adapter to a free HTTPS Cloudflare Worker without changing the local Node development server.
 - [x] Restrict browser access to `https://andrewyy5178.github.io` and cover health, version, CORS and invalid-request behavior with automated checks.
 - [x] Deploy and claim the Worker, verify a real public QQ Music playlist through the hosted endpoint, then connect `him-api-base`. *(Cloudflare Worker `how-i-hear-music-adapter.bevel-exhaust.workers.dev`, claimed 2026-08-31.)*
-- [ ] Run the complete test suite and verify Import on the published GitHub Pages site before marking the hosted adapter complete.
+- [x] Run the complete test suite and verify Import on the published GitHub Pages site before marking the hosted adapter complete. *(Production preview returned the public 38-Track “随便听听” playlist at 1440, 1024 and 390px with zero horizontal overflow; no Inbox write was performed.)*
 
 ## Active low-friction library flow — UI 3.4.9
 
