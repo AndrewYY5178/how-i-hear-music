@@ -813,3 +813,20 @@ Implementation commit: `2b42395`
 ### Intentionally unchanged
 
 - English punctuation, Chinese body punctuation, question titles, typography, spacing and page composition are unchanged.
+
+## Version 3.4.3 — Fresh offline release assets
+
+Implementation commit: `4e6ece6`
+
+### Before
+
+- Production contained the new punctuation code, but a newly installed versioned Service Worker could repopulate its cache from the browser's still-fresh HTTP cache. Accepting “重新载入更新” could therefore continue to show the previous script for several minutes.
+
+### Decision
+
+- During release installation, request every first-party shell asset with `cache: "reload"` before placing it in the versioned Cache Storage entry. Runtime behavior remains cache-first, and metadata API responses remain excluded.
+
+### Evidence
+
+- The published source was confirmed at version 0.4.2 while an existing controlled tab reproduced the stale 0.4.1 heading, isolating the problem to installation fetch caching rather than Pages deployment.
+- Static checks now require the reload request contract. The release cache advances to 0.4.3; `npm test`, `node --check server.mjs` and `git diff --check` pass.
