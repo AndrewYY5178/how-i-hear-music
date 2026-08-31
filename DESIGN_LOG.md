@@ -1011,3 +1011,43 @@ Implementation commit: `15ce1fc`
 
 - Personal ratings, notes, Inbox, Library and backups remain browser-local. The Worker receives public share links and returns public metadata only; it receives no login Cookie, audio, lyrics or personal archive export.
 - Palette, typography, layout, navigation and Import review presentation remain unchanged.
+
+## Version 3.5.0 — Source-backed metadata review and crawlable delivery
+
+Implementation commit: `2d59986`
+
+### Before
+
+- Archive Metadata could store owner-confirmed field evidence, but the owner had to find and transcribe every source manually. Search results did not expose provider entity identity, disc/track position or recording-version signals.
+- The History API application had one crawler-facing root document. Core route URLs depended on JavaScript or the GitHub Pages recovery redirect, and the social preview existed only as SVG.
+- The configured production Worker address also overrode the same-origin Node adapter during local development, where the Worker's production-only CORS correctly rejected the request.
+
+### Decision
+
+- Add QQ Music candidates inside the existing Metadata maintenance view. Exact title/artist matches may copy facts only after the exact QQ album entity confirms the recording, album release date and official track position. Search results, alternate/live candidates and all copied facts remain visibly pending until the owner saves field evidence.
+- Keep language and region blank when no authoritative field is exposed. Treat QQ version codes as candidate signals, not confirmed semantic labels.
+- Generate static HTML snapshots for eight public route URLs, direct sitemap entries and a 1200 × 630 PNG share image. JavaScript-capable browsers still replace the snapshot with the interactive application.
+- Use the hosted adapter only on `github.io` (or through an explicit runtime override); local development uses the same-origin Node service.
+- Add the new mobile snapshot rule to an existing 760px block instead of creating another repeated media query. Defer full cascade consolidation until a dedicated visual-only pass can compare every route.
+
+### Evidence
+
+- A real QQ Music lookup for “向日葵朝着夜 — 单依纯” returned a base recording and several alternate/live candidates. The exact album entity “纯妹妹” confirmed release date `2025-12-28`, disc 1, track 3 of 10 before those values were copied into the review form.
+- English and Chinese candidate states, placeholders, evidence notes and feedback were checked in the browser. No candidate action saved metadata automatically or changed ratings, notes, Inbox or Library data.
+- Desktop 1440px, tablet 1024px and mobile 390px checks covered Home, Archive Metadata, Rate, Import, Journal and Search. All tested routes reported zero horizontal overflow; desktop candidate cards, tablet navigation and the expanded mobile menu were visually inspected.
+- The generated PNG was visually inspected and its PNG signature and 1200 × 630 dimensions are enforced by the project check. Every generated route is checked for static content, canonical URL and application takeover script.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- `node --check server.mjs`
+- `node --check worker/index.mjs`
+- `git diff --check`
+- Real QQ search and exact-album preview through the local adapter at 1440 / 1024 / 390px.
+
+### Intentionally unchanged
+
+- Personal ratings, notes, corrections, Inbox, Library and backups remain browser-local. The metadata service receives only public lookup text or public share/entity URLs.
+- Candidate facts require an explicit owner save. Ambiguous versions remain unconfirmed, and language/region remain unknown without a qualified source.
+- The established paper/ink/red/olive palette, Libre Baskerville/DM Mono and Chinese font pairing, square artwork, zero-radius geometry, full desktop navigation and compact mobile menu remain unchanged.
