@@ -889,3 +889,35 @@ Implementation commit: `dadec23`
 ### Intentionally unchanged
 
 - Navigation destinations and wording, Search, the language switch, `HIM / 001`, `anddream`, responsive breakpoints, module colors, typography and sticky behavior remain unchanged.
+
+## Version 3.4.6 — Original full-navigation restoration
+
+Implementation commit: `b030d87`
+
+### Correction
+
+- UI 3.4.5 correctly removed `READ / 20—`, but retained UI 3.4.4's earlier decision to collapse the full masthead at 1024px. Owner review clarified that the intended outcome was the original horizontal navigation with only the edition marker removed.
+
+### Decision
+
+- Restore the full masthead at every width above the original 760px mobile breakpoint. At 760px and below, retain the established language/Menu controls and seven-entry compact menu.
+- Place the right-side Search, language switch and `anddream` group in the header grid instead of absolute positioning. This preserves the same visual treatment while allowing the grid to reserve honest space for both navigation groups.
+- Keep `READ / 20—` and all `.edition` styling absent. Advance the offline shell to 0.4.6 so the restored layout is delivered as a distinct update.
+
+### Evidence
+
+- English measurements at 1440, 1024, 960, 900, 860, 820, 800, 768 and 761px show the full navigation with zero brand/navigation overlap, zero navigation/utility overlap and zero horizontal overflow.
+- Chinese measurements at 1024, 820, 768 and 761px show the same zero-overlap result.
+- At 760 and 390px the full groups are hidden, the compact menu is available, and the open 390px menu contains Home, Archive, Rate, Taste, Import, Journal and Search in Chinese.
+- Screenshot review at 1024px confirms the original horizontal masthead appearance. Screenshot review at 390px confirms the existing mobile hierarchy. Neither contains `READ / 20—`.
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Real browser checks at 1440 / 1024 / 960 / 900 / 860 / 820 / 800 / 768 / 761 / 760 / 390px.
+
+### Intentionally unchanged
+
+- Navigation destinations and wording, language control size, utility spacing, `HIM / 001`, Search, `anddream`, module colors, typography, sticky behavior and mobile menu composition remain unchanged.
