@@ -921,3 +921,36 @@ Implementation commit: `b030d87`
 ### Intentionally unchanged
 
 - Navigation destinations and wording, language control size, utility spacing, `HIM / 001`, Search, `anddream`, module colors, typography, sticky behavior and mobile menu composition remain unchanged.
+
+## Version 3.4.7 — Chinese Import dynamic-state closure
+
+Implementation commit: `61ff1e4`
+
+### Before
+
+- Import's initial page copy was localized, but content created after a playlist import still exposed English controls and states such as `SYNC NOW`, snapshot differences, duplicate counts and Inbox lifecycle actions.
+- These strings are inserted after the initial route render, so their absence was most visible only after real user data existed.
+
+### Decision
+
+- Extend the runtime translation vocabulary and numeric patterns across playlist/album previews, Import completion, catalog search, Inbox lifecycle, source labels, removal confirmation, synchronization states and error feedback.
+- Keep recorded playlist, track, album, artist and source names unchanged. Translate only interface roles, counts and explanations.
+- Retain the live-DOM translation approach so switching language still preserves imported records, form state and open synchronization results.
+
+### Evidence
+
+- A real QQ Music public playlist was previewed and imported in an isolated browser origin: “随便听听”, 38 public tracks. Preview counts, confirmation and completion feedback appeared in Chinese.
+- The resulting Inbox showed Chinese lifecycle counts and actions. The source row displayed `保存名称`, `立即同步` and `移除这个来源`; a live sync returned `歌单变化` and `已经是最新状态 · 快照已保存`.
+- Browser checks at 1440, 1024 and 390px found zero horizontal overflow. The 390px screenshot retained the Import editorial hierarchy and readable source actions.
+- Automated translation checks cover `SYNC NOW`, last-checked counts, added/removed counts, reading state, Inbox confirmation and existing-count grammar.
+
+### Verification
+
+- `npm test`
+- `node --check server.mjs`
+- `git diff --check`
+- Real QQ playlist preview/import/sync in Chinese at 1440 / 1024 / 390px.
+
+### Intentionally unchanged
+
+- Import data behavior, matching confidence, provider metadata, Inbox lifecycle rules, localStorage boundaries, module palette and responsive composition remain unchanged.
