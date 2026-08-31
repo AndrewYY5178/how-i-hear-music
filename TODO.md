@@ -23,7 +23,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Version offline caches per release without mutating the active worker's cache.
 - [x] Make adapter host/version configuration deployable and keep the outbound User-Agent aligned with the service version.
 - [x] Expand regression coverage for invalid routes, album persistence, restore conflicts, provenance and neutral analysis.
-- [ ] Complete real desktop/tablet/mobile browser QA and publish UI 3.3 to `main` only after explicit production approval.
+- [ ] Complete real desktop/tablet/mobile browser QA for the published UI 3.3 release. *(Published to `main` as `bf04c77`; browser verification remains open.)*
 - [ ] Curate confirmed Album, release-date, language and region metadata for the 41 canonical Tracks; current canonical coverage remains zero until sources are supplied or verified.
 - [ ] Generate crawlable static snapshots and a broadly supported raster social image for the core routes.
 - [ ] Consolidate the accumulated CSS media-query cascade only after visual baselines can be captured in a real browser.

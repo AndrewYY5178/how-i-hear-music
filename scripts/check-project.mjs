@@ -107,7 +107,7 @@ if (!styles.includes('summary { min-height:40px; align-items:center; }')) errors
 const entryHtml = await readFile(join(root, 'index.html'), 'utf8');
 if ([...entryHtml.matchAll(/(?:href|src)="(\/[^\"]+)"/g)].length) errors.push('index.html: root-absolute assets break GitHub project-site deployment');
 const baseSource = await readFile(join(root, 'base.js'), 'utf8');
-if (!entryHtml.includes('<base id="app-base" href="/"') || !entryHtml.includes('src="./base.js"') || !baseSource.includes('document.getElementById("app-base").href') || !baseSource.includes('/how-i-hear-music/')) errors.push('index.html: deployment-aware asset base is missing');
+if (!entryHtml.includes('<base id="app-base" href="./"') || !entryHtml.includes('src="./base.js"') || !baseSource.includes('document.getElementById("app-base").href') || !baseSource.includes('/how-i-hear-music/')) errors.push('index.html: deployment-aware asset base is missing');
 const fallbackHtml = await readFile(join(root, '404.html'), 'utf8');
 if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.includes('route=${encodeURIComponent')) errors.push('404.html: GitHub Pages route recovery is missing');
 const appSource = await readFile(join(root, 'app.js'), 'utf8');
