@@ -766,3 +766,31 @@ Implementation commit: `eb3c08a`
 - `node --check server.mjs`
 - `git diff --check`
 - Real desktop and 390 × 844 browser interaction checks.
+
+## Version 3.4.1 — Chinese editorial voice
+
+Implementation commit: `6f70afe`
+
+### Before
+
+- The first Chinese release was complete enough to operate but followed English syntax too closely. Phrases such as “一次个人回应”, “让音乐依次通过工作台” and “人的声音应当保持人的存在” read like translated interface copy rather than this archive's own voice.
+- Several evidence-heavy views still exposed English fragments inside dynamic summaries, empty states, Memory zones, Taste DNA explanations and Year in Music awards.
+
+### Decision
+
+- Rewrite by page purpose rather than sentence structure. Home remains spare and lyrical; Archive stays factual; Rate speaks in short listening actions; Import explains consequences directly; Taste uses a personal first-person voice; Journal reads as memory rather than system administration.
+- Prefer idiomatic lines such as “先听，再作出判断”, “人声不该失去人的痕迹”, “给整份档案留一份退路” and “一路听来，什么变了”. Keep technical names only where the concept itself depends on them, including Taste DNA and Archive Entropy.
+- Localize dynamic counts, evidence summaries, annual awards, recovery states and Memory zones. Preserve recorded artist, Track and Album names in their original language.
+- Keep the UI 3.4 Chinese font pairing and every existing layout, palette, spacing and component decision unchanged.
+
+### Evidence
+
+- A real-browser crawl covered 33 module and submodule routes, including Track Rate, metadata coverage, Album comparison, all Taste analysis views, Import/Data Desk, Memory Palace, Archive Entropy, Year in Music and annual Listening Portrait.
+- Residual-English checks exclude only recorded proper names. Follow-up inspection cleared the remaining Taste DNA method, Memory zone and annual-award strings.
+- The 2026 Year in Music view was repeated at 390 × 844 with the mobile language control visible and zero horizontal overflow.
+- Automated checks cover natural-language examples, dynamic queue counts, annual headings, Taste DNA evidence summaries, accessible controls and unchanged artist names. `npm test`, `node --check server.mjs` and `git diff --check` pass.
+
+### Intentionally unchanged
+
+- English remains the canonical content source so switching back restores the original wording without rerendering or losing form state.
+- Music titles, album titles and artist names remain as recorded. The established Noto Serif SC / Noto Sans SC pairing, module backgrounds, paper grain and geometry remain unchanged.
