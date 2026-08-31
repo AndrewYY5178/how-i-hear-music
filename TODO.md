@@ -26,6 +26,13 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Verify representative Home, Archive, Rate, Taste, Import and Journal headings in a real browser.
 - [x] Force each new offline-shell release to fetch fresh first-party assets instead of repopulating its new cache from a still-fresh HTTP cache. *(Delivery repair released as UI 3.4.3.)*
 
+## Completed bilingual masthead fit — UI 3.4.4
+
+- [x] Reduce the language switch's visual width while retaining a usable 40px vertical target.
+- [x] Normalize desktop header utility spacing to the 16px token.
+- [x] Switch to the compact menu masthead at tablet widths before English navigation overlaps the right-side tools.
+- [x] Verify English and Chinese header geometry across desktop, tablet and mobile widths.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity

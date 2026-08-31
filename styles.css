@@ -149,14 +149,13 @@ html[lang="zh-CN"] .mono,html[lang="zh-CN"] .eyebrow,html[lang="zh-CN"] dt,html[
   letter-spacing:.04em;
 }
 .language-toggle {
-  min-width:40px;
+  min-width:32px;
   min-height:40px;
-  padding:8px 0;
+  padding:8px 4px;
   border:0;
-  border-bottom:1px solid currentColor;
   background:transparent;
   color:var(--muted);
-  font:500 9px var(--mono);
+  font:500 8px var(--mono);
   letter-spacing:.05em;
 }
 .language-toggle:hover,.language-toggle:focus-visible { color:var(--red); }
@@ -349,7 +348,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 button,a,input,textarea,select,summary { touch-action:manipulation; }
 
 /* Restored publisher mark from the original archive masthead. */
-.header-end { position:absolute; right:64px; display:flex; align-items:baseline; gap:24px; }
+.header-end { position:absolute; right:64px; display:flex; align-items:baseline; gap:16px; }
 .brand-mark { color:var(--olive); font:italic 400 15px/.9 var(--serif); letter-spacing:-.06em; opacity:.86; }
 .header-search { color:var(--muted); font:9px var(--mono); letter-spacing:.07em; }
 .header-search:hover,.header-search.active { color:var(--red); }
@@ -358,6 +357,32 @@ button,a,input,textarea,select,summary { touch-action:manipulation; }
 @media (max-width:760px) {
   .header-end { display:none; }
   .primary-nav .utility-search { display:inline-flex; }
+}
+
+/* Move the masthead into its compact navigation before English labels collide. */
+@media (max-width:1024px) {
+  .site-header { grid-template-columns:1fr auto; }
+  .header-mobile-actions { display:flex; }
+  .header-mobile-actions .menu-toggle {
+    display:block;
+    border:0;
+    background:transparent;
+    color:var(--red);
+    font:10px var(--mono);
+  }
+  .primary-nav {
+    display:none;
+    grid-column:1/-1;
+    grid-row:2;
+    flex-direction:column;
+    align-items:start;
+    gap:0;
+    padding:16px 0;
+  }
+  .menu-open .primary-nav { display:flex; }
+  .primary-nav a { padding:8px 0; }
+  .primary-nav .utility-search { display:inline-flex; }
+  .header-end { display:none; }
 }
 
 /* Recovered from the pre-modular editorial palette: each module now has a page material. */
