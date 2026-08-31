@@ -2,7 +2,7 @@ const storageKey = "how-i-hear-music:language:v1";
 const supported = new Set(["en", "zh-CN"]);
 
 const zh = {
-  "Home": "首页", "Archive": "档案", "Rate": "评分", "Taste": "审美", "Import": "导入", "Journal": "日志", "Search": "搜索",
+  "Home": "首页", "HOME": "首页", "Archive": "档案", "Rate": "评分", "Taste": "审美", "Import": "导入", "Journal": "日志", "Search": "搜索",
   "Tracks": "单曲", "Albums": "专辑", "Artists": "艺人", "Metadata": "资料", "Profile": "画像", "Philosophy": "理念", "Compare": "对比", "ARCHIVE MAINTENANCE": "档案维护", "MANAGE METADATA →": "管理资料 →", "Source evidence and missing fields stay available when you need to maintain the record.": "来源证据与缺失字段平时收起，需要维护档案时仍可打开。",
   "PERSONAL ARCHIVE / ISSUE 001": "个人音乐档案 / 第 001 期", "How I": "我如何", "hear music.": "听见音乐。",
   "Melody opens the door.": "旋律先把门打开。", "Everything else has to earn its place.": "其他一切，都必须值得留下。",
@@ -24,7 +24,8 @@ const zh = {
   "THIS TRACK ACTIVATES": "这首歌触发了哪些审美基因", "READ TASTE DNA →": "查看审美 DNA →", "WHY THIS WORKS": "它为什么打动我", "MUSICAL MOMENTS": "难忘的瞬间", "LISTENING TEMPERATURE": "声音性格", "VERSIONS": "不同版本", "RATING HISTORY": "评分变化",
   "No explicit listening reasons have been saved yet.": "还没有记下喜欢它的具体原因。", "No confirmed timestamped moments have been recorded yet.": "还没有记下某个确切的音乐瞬间。", "No local rating changes recorded yet.": "这首歌的评分还没有发生过变化。",
   "ARCHIVE / METADATA": "档案 / 资料", "Know what the archive actually knows.": "看清这份档案知道什么，也不知道什么。", "Coverage is reported without filling gaps. Corrections are owner-confirmed and stored only in this browser.": "只呈现已经确认的资料，不擅自填空；你的修正只保存在这个浏览器里。",
-  "COMPLETE RECORDS": "资料完整记录", "ALBUM": "专辑", "RELEASE DATE": "发行日期", "LANGUAGE": "语言", "REGION": "地区", "ALL RECORDS": "全部记录", "MISSING ONLY": "仅看缺失项", "REVIEW QUEUE": "核对队列", "TRACK": "单曲", "REVIEW": "核对", "CONFIRMED VALUE": "已确认内容", "SOURCE URL": "来源网址", "EVIDENCE NOTE": "证据说明", "SAVE FIELD EVIDENCE": "保存字段证据", "No local correction saved.": "尚未保存本地修正。",
+  "PUBLIC SOURCE CANDIDATES": "公开来源候选", "Search QQ Music for exact entities. Results remain unconfirmed until you choose one and save its field evidence.": "从 QQ 音乐查找准确实体；只有你选择候选并保存字段证据后，资料才会被确认。", "FIND QQ CANDIDATES": "查找 QQ 音乐候选", "Searching public QQ Music metadata…": "正在查找 QQ 音乐公开资料……", "No public QQ Music candidates found.": "没有找到 QQ 音乐公开候选。", "EXACT TITLE + ARTIST": "标题与艺人完全匹配", "REVIEW IDENTITY": "请核对身份", "BASE RECORDING CANDIDATE": "基础录音候选", "ALTERNATE / LIVE CANDIDATE": "其他 / 现场版本候选", "USE ALBUM + DATE": "采用专辑与日期", "CHECK OFFICIAL SEQUENCE": "核对官方曲序", "OPEN QQ ENTITY ↗": "打开 QQ 音乐实体 ↗", "Checking the exact QQ Music album entity…": "正在核对准确的 QQ 音乐专辑实体……", "Official album, release date and track position copied. Review them, then save field evidence.": "官方专辑、发行日期与曲序位置已填入；请核对后再保存字段证据。", "Candidate copied into the form. Review it, then save field evidence.": "候选已填入表单；请核对后再保存字段证据。",
+  "COMPLETE RECORDS": "资料完整记录", "ALBUM": "专辑", "RELEASE DATE": "发行日期", "LANGUAGE": "语言", "REGION": "地区", "ALL RECORDS": "全部记录", "MISSING ONLY": "仅看缺失项", "REVIEW QUEUE": "核对队列", "TRACK": "单曲", "REVIEW": "核对", "CONFIRMED VALUE": "已确认内容", "SOURCE URL": "来源网址", "EVIDENCE NOTE": "证据说明", "SAVE FIELD EVIDENCE": "保存字段证据", "No local correction saved.": "尚未保存本地修正。", "Unknown": "未知", "What confirms this field?": "哪项证据能够确认这个字段？", "QQ Music official album release date": "QQ 音乐官方专辑发行日期", "QQ Music public recording entity release date": "QQ 音乐公开录音实体发行日期",
   "RATE": "评分", "Begin with one listening decision.": "先听，再作出判断。", "Choose a shape for one track, or a landscape for an album.": "给一首歌画出形状，沿一张专辑看见起伏。",
   "01 / TRACK": "01 / 单曲", "02 / ALBUM": "02 / 专辑", "Listening Shape": "单曲形状", "Listening Landscape": "专辑地形", "Four dimensions, one personal response.": "四个维度，拼出一次私人的听感。", "Build a score curve from a confirmed track order.": "沿着已确认的曲序，画出整张专辑的评分曲线。", "Import a confirmed track order before rating an album.": "先导入并确认曲序，才能为整张专辑评分。",
   "RATE A TRACK": "为单曲评分", "RATE AN ALBUM": "为专辑评分", "IMPORT AN ALBUM": "导入一张专辑", "UNRATED QUEUE": "待评分队列", "Imported records stay here until listening becomes a rating.": "新导入的歌会先留在这里，等你听过、评过，再决定是否归档。", "OPEN QUEUE": "查看待评分", "CONTINUE RATING": "继续评分", "Choose from a confirmed record:": "从已确认的记录中选择：",
@@ -90,6 +91,8 @@ const patterns = [
   [/^(\d+) artists in view$/, (m) => `共 ${m[1]} 位艺人`],
   [/^(\d+) heard · (\d+) waiting$/, (m) => `听过 ${m[1]} 首 · 还有 ${m[2]} 首待评分`],
   [/^(\d+) tracks have gaps\.$/, (m) => `${m[1]} 首单曲存在资料缺口。`],
+  [/^QQ Music exact title\/artist candidate · album entity (.+?) · disc (\d+), track (\d+) of (\d+)$/, (m) => `QQ 音乐标题与艺人完全匹配候选 · 专辑实体 ${m[1]} · 第 ${m[2]} 碟，第 ${m[3]} / ${m[4]} 首`],
+  [/^QQ Music exact title\/artist candidate · album entity (.+)$/, (m) => `QQ 音乐标题与艺人完全匹配候选 · 专辑实体 ${m[1]}`],
   [/^(\d+) missing$/, (m) => `缺少 ${m[1]} 项`],
   [/^(.+) · (\d+) missing$/, (m) => `${m[1]} · 缺少 ${m[2]} 项`],
   [/^(\d+) RATED · (.+)$/, (m) => `${m[1]} 首已评分 · ${m[2]}`],

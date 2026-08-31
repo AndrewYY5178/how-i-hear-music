@@ -58,6 +58,19 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Deploy and claim the Worker, verify a real public QQ Music playlist through the hosted endpoint, then connect `him-api-base`. *(Cloudflare Worker `how-i-hear-music-adapter.bevel-exhaust.workers.dev`, claimed 2026-08-31.)*
 - [x] Run the complete test suite and verify Import on the published GitHub Pages site before marking the hosted adapter complete. *(Production preview returned the public 38-Track “随便听听” playlist at 1440, 1024 and 390px with zero horizontal overflow; no Inbox write was performed.)*
 
+## Active continuation — metadata, discovery and delivery
+
+- [x] Add a QQ Music source-backed metadata candidate workflow for the 41 canonical Tracks; confirm the exact album entity before copying its public album name, release date and track position into the review form.
+- [ ] Add authoritative public-source candidates when QQ lacks language or region evidence; never infer these fields from artist identity, script, genre or market availability.
+- [x] Keep ambiguous title/artist/version matches pending owner review; never convert a search result into confirmed metadata without an exact provider entity and visible provenance.
+- [x] Extend the adapter and maintenance UI so confirmed album entities can supply official sequence and recording-version evidence without inventing language, region or release facts.
+- [x] Generate crawlable static HTML snapshots for core public routes and replace the SVG-only social preview with a tested 1200 × 630 PNG.
+- [ ] Consolidate repeated CSS media-query overrides while preserving the current 1440 / 1024 / 390 visual baselines.
+- [x] Audit the Home, Archive metadata, Rate, Import, Journal and Search roots for Chinese interface omissions; translate dynamic metadata candidates and collapse the candidate-to-album/date/position check into one action.
+- [ ] Re-run desktop/tablet/mobile QA, adapter smoke checks and GitHub Pages production verification after every release-sized change.
+- [ ] Keep Cloudflare Worker and GitHub Pages dependencies, versions, CORS and deployment documentation aligned.
+- [ ] Design cross-device account and cloud sync only after choosing authentication, encryption, conflict resolution, deletion/export and hosting boundaries; do not upload existing browser data by default.
+
 ## Active low-friction library flow — UI 3.4.9
 
 - [x] Make a completed imported-Track rating archive that Track automatically, with a complete undo that restores its prior Inbox location.
@@ -117,7 +130,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 ### External boundaries
 
-- [ ] Deploy the metadata adapter only after a hosting target, HTTPS origin and credentials are explicitly supplied.
+- [x] Deploy the metadata adapter only after a hosting target, HTTPS origin and credentials are explicitly supplied. *(Claimed Cloudflare Worker connected in UI 3.4.10.)*
 - [x] Retain the documented local-first/no-account boundary; account sync remains intentionally out of scope until the product owner chooses an authentication/privacy model.
 - [ ] Obtain qualified legal review before commercial use or broader public expansion.
 

@@ -6,6 +6,6 @@
   "workers_dev": true,
   "vars": {
     "ALLOWED_ORIGIN": "https://andrewyy5178.github.io",
-    "SERVICE_VERSION": "0.4.10"
+    "SERVICE_VERSION": "0.5.0"
   }
 }

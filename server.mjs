@@ -48,6 +48,7 @@ const readJsonBody = async (request) => {
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
 const publicDate = (value) => {
+  const text = String(value ?? '').trim(); if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
   const timestamp = Number(value); if (!Number.isFinite(timestamp) || timestamp <= 0) return null;
   const date = new Date(timestamp < 10_000_000_000 ? timestamp * 1000 : timestamp);
   return Number.isNaN(date.valueOf()) ? null : date.toISOString().slice(0, 10);
@@ -112,7 +113,7 @@ const fetchQQPlaylist = async (shareUrl) => {
     title: String(song.songname || '').trim(),
     artist: (song.singer || []).map((singer) => singer.name).filter(Boolean).join(' / ') || 'Artist not recorded',
     album: String(song.albumname || '').trim(),
-    releaseDate: publicDate(song.pubtime),
+    releaseDate: publicDate(song.time_public || song.pubtime || song.album?.time_public),
     isrc: null,
     upc: null,
     externalReferences: song.songmid ? [{ provider: 'qqmusic', url: 'https://y.qq.com/n/ryqq/songDetail/' + encodeURIComponent(song.songmid) }] : [],
@@ -189,11 +190,11 @@ const searchQQCatalog = async (query) => {
     title: String(song.songname || song.name || '').trim(),
     artist: (song.singer || []).map((singer) => singer.name).filter(Boolean).join(' / ') || String(song.singername || 'Artist not recorded'),
     album: String(song.albumname || song.album?.name || '').trim(),
-    releaseDate: publicDate(song.pubtime),
+    releaseDate: publicDate(song.time_public || song.pubtime || song.album?.time_public),
     isrc: null,
     upc: null,
     externalReferences: (song.songmid || song.mid) ? [{ provider: 'qqmusic', url: 'https://y.qq.com/n/ryqq/songDetail/' + encodeURIComponent(song.songmid || song.mid) }] : [],
-    provider: { source: 'qqmusic', songMid: song.songmid || song.mid || '', albumMid: song.albummid || song.album?.mid || '', durationSeconds: Number(song.interval) || null },
+    provider: { source: 'qqmusic', songMid: song.songmid || song.mid || '', songId: Number(song.songid || song.id) || null, albumMid: song.albummid || song.album?.mid || '', albumId: Number(song.albumid || song.album?.id) || null, trackNumber: Number(song.index_album) > 0 ? Number(song.index_album) : null, discNumber: Number.isFinite(Number(song.index_cd)) ? Number(song.index_cd) + 1 : null, versionCode: Number(song.version) || 0, durationSeconds: Number(song.interval) || null },
   })).filter((track) => track.title);
 };
 

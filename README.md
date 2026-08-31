@@ -2,7 +2,7 @@
 
 一个零依赖的个人音乐档案产品，使用原生 HTML/CSS/JS 与 History API 多路由结构实现。主页是编辑入口；Archive、Rate、Taste、Import、Journal 各自负责浏览、评分、审美说明、导入和时间线。
 
-本地 Node 服务提供 QQ Music 与 NetEase Cloud Music **公开歌单 metadata** 导入，以及 QQ Music **公开专辑 metadata + 官方曲序**导入。粘贴 QQ 专辑链接或分享文字后，页面会先显示完整曲序和重复分析；确认后才写入浏览器本地 Archive。所有适配器都不使用平台登录、Cookie、音频、封面下载或歌词；因此 GitHub Pages 等纯静态部署无法执行实时拉取。
+本地 Node 服务与线上 Cloudflare Worker 都提供 QQ Music 与 NetEase Cloud Music **公开歌单 metadata** 导入，以及 QQ Music **公开专辑 metadata + 官方曲序**导入。粘贴 QQ 专辑链接或分享文字后，页面会先显示完整曲序和重复分析；确认后才写入浏览器本地 Archive。所有适配器都不使用平台登录、Cookie、音频、封面下载或歌词；GitHub Pages 通过受限 CORS 的 Worker 执行实时公开资料读取。
 
 `MUSIC_TASTE_SOURCE.md` 是对话资料的完整证据与手册；它不由网页直接读取。网站只读取 `data/` 里的结构化 JSON，避免把未经确认的推测写进页面。
 
@@ -31,6 +31,8 @@ UI 3.4.6 恢复了原来的横向完整导航：只有 760px 及以下手机宽�
 UI 3.4.7 补齐了导入完成后动态生成的中文，包括歌单来源同步、Inbox 状态、重复判断、专辑预览和错误反馈。
 
 UI 3.4.9 缩短了从导入到收藏的路径：导入歌曲保存评分后会自动进入档案，撤销评分会完整恢复原来的 Inbox 位置。个人 Library 现已纳入档案单曲列表；已收录歌曲不再继续占据 Inbox。档案维护资料、版本/Sonic/评分历史，以及数据台的加密、诊断和恢复工具默认折叠，核心浏览与普通备份仍直接可见。
+
+UI 3.5.0 在 Archive Metadata 中加入 QQ 音乐公开资料候选：标题与艺人完全匹配后，仍会进一步核对准确的专辑实体，再把专辑名、公开发行日期和曲序位置填入待确认表单；保存仍由用户决定。语言与地区在没有可靠来源时继续留空。核心公开路由同时生成可抓取的静态 HTML，站点分享图改为 1200 × 630 PNG；本地开发固定使用同源 Node adapter，线上 Pages 使用 Cloudflare Worker。
 
 UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 不再生成虚构 Track 或预设分数；错误 Track/Album URL 不再回退到其他记录；完成 Album rating 会验证所有曲目并同步当前 Track ratings。Journal 修订锁定原记录身份，Metadata 来源按字段保存，备份恢复先预览冲突并保留一次完整回滚。Sonic 中性值不再被误分到 Cold/Sparse，离线缓存按版本隔离，静态部署也获得 CSP/referrer 边界。
 
@@ -69,6 +71,8 @@ npm run dev
 ```bash
 npm test
 ```
+
+发布前运行 `npm run build:static`，会更新八个核心路由的静态 HTML、`sitemap.xml` 与 `og-image.png`。该命令需要本机安装 `rsvg-convert`。
 
 该命令覆盖结构与静态无障碍/安全检查、数据迁移、字段级 metadata、Journal 身份、Album/Track 评分一致性、明文与加密备份、冲突预览与完整回滚、Blind Spot 中性区，以及十一个可靠性、检索和分析页面的渲染 smoke test。`npm run check:adapters` 会访问第三方公开接口，只应在允许联网并需要检查上游兼容性时运行。
 

@@ -77,7 +77,7 @@ if (normalizeInsightTags(['VOCAL', "CAN'T EXPLAIN", 'ONE MOMENT']).join() !== 'v
 const latePeakNarrative = albumNarrative([{ overall: 7 }, { overall: 7.2 }, { overall: 8 }, { overall: 8.4 }]);
 if (!latePeakNarrative?.includes('arriving late') || albumNarrative([{ overall: 8 }, { overall: null }, { overall: 9 }]) !== null) errors.push('album narrative: complete evidence gate or peak-position analysis is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'base.js', 'app.js', 'sw.js', 'modules/home.js', 'modules/layout/i18n.js', 'modules/layout/shell.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/search/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'base.js', 'app.js', 'sw.js', 'modules/home.js', 'modules/layout/i18n.js', 'modules/layout/shell.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/search/pages.js', 'modules/music/api.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal|search)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
@@ -118,6 +118,8 @@ if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archiv
 for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
 for (const path of ['/taste/dna', '/taste/blind-spots', '/journal/memory-palace', '/journal/entropy']) if (!appSource.includes(path)) errors.push(`app.js: advanced taste route ${path} is missing`);
 if (!appSource.includes('annualPortrait(') || !appSource.includes('bindYear(')) errors.push('app.js: annual portrait or awards binding is missing');
+const apiSource = await readFile(join(root, 'modules', 'music', 'api.js'), 'utf8');
+if (!apiSource.includes('location.hostname.endsWith("github.io")') || !apiSource.includes('window.__HIM_API_BASE__')) errors.push('metadata adapter: hosted base must not override the local same-origin service');
 const versionSource = await readFile(join(root, 'modules', 'music', 'versions.js'), 'utf8');
 if (!versionSource.includes('confirmedByOwner: true') || !styles.includes('.version-form')) errors.push('versions: explicit owner confirmation and comparison UI are required');
 if (!styles.includes('.version-morph') || !styles.includes('.sonic-map') || !styles.includes('.listening-portrait') || !styles.includes('.personal-awards')) errors.push('styles.css: personal analysis visual contracts are incomplete');
@@ -139,6 +141,21 @@ if (!serviceWorker.includes('modules/layout/i18n.js')) errors.push('offline shel
 if (!serviceWorker.includes('new Request(url, { cache: "reload" })')) errors.push('offline shell: release installation must bypass stale HTTP asset caches');
 for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);
 for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
+const snapshotRoutes = ['/archive', '/archive/tracks', '/archive/albums', '/archive/artists', '/rate', '/taste', '/import', '/journal'];
+for (const route of snapshotRoutes) {
+  try {
+    const snapshot = await readFile(join(root, route.slice(1), 'index.html'), 'utf8');
+    const canonical = `https://andrewyy5178.github.io/how-i-hear-music${route}/`;
+    if (!snapshot.includes('data-static-snapshot') || !snapshot.includes(`rel="canonical" href="${canonical}"`) || !snapshot.includes('src="/how-i-hear-music/app.js"')) errors.push(`delivery: invalid static snapshot ${route}`);
+  } catch { errors.push(`delivery: missing static snapshot ${route}`); }
+}
+try {
+  const socialImage = await readFile(join(root, 'og-image.png'));
+  if (socialImage.length < 24 || socialImage.toString('ascii', 1, 4) !== 'PNG' || socialImage.readUInt32BE(16) !== 1200 || socialImage.readUInt32BE(20) !== 630) errors.push('delivery: og-image.png must be a 1200×630 PNG');
+} catch { errors.push('delivery: missing og-image.png'); }
+const sitemapSource = await readFile(join(root, 'sitemap.xml'), 'utf8');
+for (const route of snapshotRoutes) if (!sitemapSource.includes(`https://andrewyy5178.github.io/how-i-hear-music${route}/`)) errors.push(`delivery: sitemap is missing ${route}`);
+if (sitemapSource.includes('?route=')) errors.push('delivery: sitemap must expose direct crawlable routes');
 if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('styles.css: reduced-motion handling is missing');
 if (styles.includes('before English labels collide') || !styles.includes('@media (max-width:760px)')) errors.push('styles.css: full masthead must remain available above the mobile breakpoint');
 const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
