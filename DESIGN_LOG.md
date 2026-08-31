@@ -794,3 +794,22 @@ Implementation commit: `6f70afe`
 
 - English remains the canonical content source so switching back restores the original wording without rerendering or losing form state.
 - Music titles, album titles and artist names remain as recorded. The established Noto Serif SC / Noto Sans SC pairing, module backgrounds, paper grain and geometry remain unchanged.
+
+## Version 3.4.2 — Chinese heading punctuation
+
+Implementation commit: `2b42395`
+
+### Decision
+
+- Treat punctuation according to typographic role rather than editing shared translations. When Chinese is active, a final `。` is removed from text inside H1–H3, including text nested in emphasis elements; the same translated sentence keeps its full stop when used as body copy.
+- Preserve question marks and other punctuation that materially carries the title's voice.
+
+### Evidence
+
+- Browser checks across Home, Archive, Rate, Taste, Import, Journal, Taste Philosophy and Year in Music found no H1–H3 ending in `。`.
+- Home's nested display heading now reads “我如何 / 听见音乐” while its hero statement and manifesto retain complete sentence punctuation. All checked pages remained free of horizontal overflow.
+- Automated tests distinguish heading and body formatting and confirm that a question-title keeps its `？`. `npm test`, `node --check server.mjs` and `git diff --check` pass.
+
+### Intentionally unchanged
+
+- English punctuation, Chinese body punctuation, question titles, typography, spacing and page composition are unchanged.
