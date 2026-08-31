@@ -2,6 +2,16 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Completed accessibility and feedback — UI 3.4
+
+- [x] Add a persistent English / Simplified Chinese switch to desktop and mobile navigation without clearing unsaved form state.
+- [x] Translate all six module entry points, core subpages, dynamic save/import/error feedback and accessible control labels while leaving music and artist names intact.
+- [x] Match the English editorial hierarchy with Noto Serif SC for Chinese display/body copy and Noto Sans SC for navigation/metadata.
+- [x] Give Rate and Import primary actions a consistent 24px separation from their explanatory copy.
+- [x] Make successful Track and Album saves announce and focus a visible status panel with view/undo actions.
+- [x] Repair local deep-link preview routing so a directly opened route redirects once into the SPA rather than resolving assets below the route path.
+- [x] Verify the six module roots, language persistence, desktop/mobile overflow, typography, action spacing and saved-rating feedback in a real browser.
+
 ## Active integrity closure — UI 3.3
 
 ### Rating and identity integrity

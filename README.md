@@ -16,6 +16,8 @@ UI 3.1 收口了资料可靠性：全站 Search 同时检索 Track、Album、Art
 
 UI 3.2 补齐了本地资料的长期维护路径：Data Desk 可导出可读 JSON 或使用 AES-GCM 与密码保护的备份，并显示浏览器配额；Journal 的历史评分可以独立修订，Album detail 可保存私人专辑笔记，Metadata 可记录 HTTPS 来源、证据说明和修订时间。Blind Spots 只在语言、年代或 Sonic 样本达到门槛时显示覆盖空白。静态页面新增离线壳、显式更新提示、路由 metadata、sitemap 和 manifest；metadata adapter 新增健康/版本端点、结构化日志、可信代理开关和有界运行时缓存。
 
+UI 3.4 增加了不破坏页面状态的中英文切换：语言选择保存在当前浏览器，动态生成的保存、导入和错误反馈也会同步翻译。中文标题与正文使用 Noto Serif SC，导航与元数据使用 Noto Sans SC，分别延续英文 Libre Baskerville 与 DM Mono 的编辑/资料层级。Rate 保存后会出现可聚焦的明确确认框；Rate 与 Import 的主要按钮统一留出 24px 的任务间距。
+
 UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 不再生成虚构 Track 或预设分数；错误 Track/Album URL 不再回退到其他记录；完成 Album rating 会验证所有曲目并同步当前 Track ratings。Journal 修订锁定原记录身份，Metadata 来源按字段保存，备份恢复先预览冲突并保留一次完整回滚。Sonic 中性值不再被误分到 Cold/Sparse，离线缓存按版本隔离，静态部署也获得 CSP/referrer 边界。
 
 未完成的导入、数据库和互动功能记录在 [`TODO.md`](TODO.md) 中，并按优先级整理。

@@ -8,6 +8,7 @@ import { bindImport, importData, importHome, importInbox, importNetEase, importQ
 import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { bindSearch, searchPage } from "./modules/search/pages.js";
+import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -92,6 +93,8 @@ const render = () => {
   bindYear(path, navigate);
   bindTaste(path, navigate);
   bindSearch(path, navigate);
+  bindLanguageToggle(() => setDocumentTitle(pageTitle));
+  applyLanguage();
 };
 
 document.addEventListener("click", (event) => {
@@ -124,6 +127,7 @@ const restorePagesRoute = () => {
 
 migrateLocalData();
 if (!restorePagesRoute()) render();
+observeLanguage();
 
 const registerOfflineShell = async () => {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;

@@ -23,6 +23,14 @@ const { journalEntry, updateJournalEntry } = await import('../modules/music/jour
 const { albumNote, albumNotesKey, saveAlbumNote } = await import('../modules/music/notes.js');
 const { blindSpots, sonicQuadrant } = await import('../modules/music/taste-dna.js');
 const { readRatings, saveAlbumTrackRatings, saveRatingRecord, validScore } = await import('../modules/music/lifecycle.js');
+const { translateText } = await import('../modules/layout/i18n.js');
+
+assert.equal(translateText('Rate', 'zh-CN'), '评分');
+assert.equal(translateText('SONG', 'zh-CN'), '歌曲');
+assert.equal(translateText('Decrease Vocal score', 'zh-CN'), '降低演唱评分');
+assert.equal(translateText('Ariana Grande', 'zh-CN'), 'Ariana Grande');
+assert.equal(translateText('12 heard · 3 waiting', 'zh-CN'), '12 首已听 · 3 首等待评分');
+assert.equal(translateText('Rate', 'en'), 'Rate');
 
 storage.set('how-i-hear-music:journal:v1', [{ type: 'rating', at: '2026-01-01T00:00:00.000Z', title: 'Before IDs' }]);
 const migration = migrateLocalData();

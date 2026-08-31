@@ -77,7 +77,7 @@ if (normalizeInsightTags(['VOCAL', "CAN'T EXPLAIN", 'ONE MOMENT']).join() !== 'v
 const latePeakNarrative = albumNarrative([{ overall: 7 }, { overall: 7.2 }, { overall: 8 }, { overall: 8.4 }]);
 if (!latePeakNarrative?.includes('arriving late') || albumNarrative([{ overall: 8 }, { overall: null }, { overall: 9 }]) !== null) errors.push('album narrative: complete evidence gate or peak-position analysis is incorrect');
 
-const sourceFiles = ['index.html', '404.html', 'terms.html', 'base.js', 'app.js', 'sw.js', 'modules/home.js', 'modules/layout/shell.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/search/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
+const sourceFiles = ['index.html', '404.html', 'terms.html', 'base.js', 'app.js', 'sw.js', 'modules/home.js', 'modules/layout/i18n.js', 'modules/layout/shell.js', 'modules/archive/pages.js', 'modules/rating/pages.js', 'modules/taste/pages.js', 'modules/import/pages.js', 'modules/journal/pages.js', 'modules/search/pages.js', 'modules/music/sync.js', 'modules/music/album-import.js', 'modules/music/versions.js', 'modules/music/insights.js', 'modules/music/sonic.js', 'modules/music/album-narrative.js', 'modules/music/analysis.js', 'modules/music/groups.js', 'modules/music/portrait.js', 'modules/music/taste-dna.js', 'modules/music/entropy.js', 'modules/music/memory.js', 'modules/music/geometry.js'];
 const routePattern = /^\/$|^\/(archive|rate|taste|import|journal|search)(\/.*)?$|^\/terms\.html$/;
 for (const name of sourceFiles) {
   const source = await readFile(join(root, name), 'utf8');
@@ -130,15 +130,19 @@ const geometrySource = await readFile(join(root, 'modules', 'music', 'geometry.j
 for (const primitive of ['trackGlyph', 'albumTerrain', 'artistSignature', 'tasteTraitMark']) if (!geometrySource.includes(`export const ${primitive}`)) errors.push(`Music as Geometry: ${primitive} primitive is missing`);
 if (!styles.includes('.taste-dna') || !styles.includes('.memory-palace') || !styles.includes('.entropy-chart') || !styles.includes('.track-glyph')) errors.push('styles.css: advanced taste visual contracts are incomplete');
 if (!entryHtml.includes('rel="manifest"') || !entryHtml.includes('rel="canonical"') || !entryHtml.includes('id="update-banner"')) errors.push('index.html: install, canonical or explicit update metadata is missing');
+if (!entryHtml.includes('Noto+Serif+SC') || !entryHtml.includes('Noto+Sans+SC')) errors.push('index.html: bilingual type families are missing');
 if (!entryHtml.includes('http-equiv="Content-Security-Policy"') || !entryHtml.includes('name="referrer" content="no-referrer"')) errors.push('index.html: static security and referrer policy are missing');
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
 if (!serviceWorker.includes('/api/') || !serviceWorker.includes('request.mode === "navigate"') || !serviceWorker.includes('SKIP_WAITING')) errors.push('offline shell: API exclusion, navigation fallback or explicit update behavior is missing');
+if (!serviceWorker.includes('modules/layout/i18n.js')) errors.push('offline shell: bilingual runtime is missing');
 for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);
 for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
 if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('styles.css: reduced-motion handling is missing');
 const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');
 for (const contract of ["requestPath === '/healthz'", "requestPath === '/api/version'", 'TRUST_PROXY', 'logEvent', 'pruneRuntimeState']) if (!serverSource.includes(contract)) errors.push(`adapter resilience: missing ${contract}`);
-if (!serverSource.includes("safePath.endsWith('sw.js')") || !serverSource.includes("'Cache-Control': 'no-cache'")) errors.push('delivery: service worker and app shell must revalidate');
+if (!serverSource.includes("Location: `/?route=${encodeURIComponent(route)}`")) errors.push('server: local deep links must recover through the root document');
+if (!serverSource.includes("requestPath === '/' ? '/index.html'")) errors.push('server: route recovery query must resolve to the root document');
+if (!serverSource.includes("safePath.endsWith('sw.js')") || !serverSource.includes("? 'no-cache' : 'public, max-age=300'")) errors.push('delivery: service worker and app shell must revalidate');
 const packageData = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 if (!serviceWorker.includes(`how-i-hear-music-shell-${packageData.version}`) || !serviceWorker.includes('key.startsWith(cachePrefix)')) errors.push('offline shell: cache version or scoped cleanup is not aligned with the release');
 if (!serverSource.includes("process.env.HOST") || !serverSource.includes('serviceAgent') || serverSource.includes('How-I-Hear-Music/0.1')) errors.push('adapter: host or service-version identity is not deployable');

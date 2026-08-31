@@ -254,7 +254,7 @@ createServer(async (request, response) => {
     }
     return;
   }
-  const requested = request.url === '/' ? '/index.html' : request.url.split('?')[0];
+  const requested = requestPath === '/' ? '/index.html' : requestPath;
   const safePath = normalize(requested).replace(/^\.\.(\/|\\|$)/, '');
   const filePath = join(root, safePath);
 
@@ -265,9 +265,10 @@ createServer(async (request, response) => {
     response.end(body);
   } catch {
     if (request.method === 'GET' && !extname(safePath)) {
-      const body = await readFile(join(root, 'index.html'));
-      response.writeHead(200, { 'Content-Type': contentTypes['.html'], 'Cache-Control': 'no-cache' });
-      response.end(body);
+      const requestedUrl = new URL(request.url || '/', 'http://localhost');
+      const route = `${requestedUrl.pathname}${requestedUrl.search}`;
+      response.writeHead(302, { Location: `/?route=${encodeURIComponent(route)}`, 'Cache-Control': 'no-store' });
+      response.end();
       return;
     }
     response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
