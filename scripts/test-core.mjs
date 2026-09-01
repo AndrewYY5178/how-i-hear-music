@@ -33,7 +33,7 @@ assert.equal(translateText('12 heard · 3 waiting', 'zh-CN'), '听过 12 首 · 
 assert.equal(translateText('The human voice stays human.', 'zh-CN'), '人声不该失去人的痕迹。');
 assert.equal(translateText('2026 IN MUSIC', 'zh-CN'), '2026 年的音乐');
 assert.equal(translateText('8 TRACKS · AVG 9.4 VS ARCHIVE 6.6 · 74% CONFIDENCE', 'zh-CN'), '8 首歌 · 平均 9.4，档案基准 6.6 · 可信度 74%');
-assert.equal(translateText('SYNC NOW', 'zh-CN'), '立即同步');
+assert.equal(translateText('CHECK PLAYLIST UPDATES', 'zh-CN'), '检查歌单更新');
 assert.equal(translateText('12 tracks · last checked 8/31/2026', 'zh-CN'), '12 首 · 最近检查于 8/31/2026');
 assert.equal(translateText('3 added · 2 removed', 'zh-CN'), '新增 3 首 · 移除 2 首');
 assert.equal(translateText('READING PLAYLIST…', 'zh-CN'), '正在读取歌单……');

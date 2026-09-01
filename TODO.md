@@ -2,6 +2,13 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active Import status simplification — UI 3.5.2
+
+- [x] Hide the healthy metadata-service notice while preserving disconnected and request-error warnings.
+- [x] Rename playlist-source `SYNC NOW` to the more literal `CHECK PLAYLIST UPDATES` in English and `检查歌单更新` in Chinese, including the post-request reset state.
+- [ ] Update regression coverage, release versions, README and the append-only design record.
+- [x] Verify Import and Inbox at desktop, tablet and mobile widths, then publish Worker and Pages together. *(1440 / 1024 / 390px local browser pass completed with no service-ready notice and no horizontal overflow; publication follows the version record.)*
+
 ## Active presentation and ranking refinement — UI 3.5.1
 
 - [x] Preserve the verified UI 3.5.0 production state as a remote Git tag before changing the next version. *(`ui-3.5.0-production` points to `edf9862`.)*

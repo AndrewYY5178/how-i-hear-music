@@ -53,5 +53,14 @@ localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-sweetener:overa
 localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-yours-truly:overall', '8');
 const albumIndex = archive.archiveAlbums();
 assert.ok(albumIndex.indexOf('ariana-grande-sweetener') < albumIndex.indexOf('ariana-grande-yours-truly'), 'Album index does not default to album rating high–low');
+assert.doesNotMatch(imports.importHome(), /METADATA SERVICE|Hosted adapter configured|Local metadata adapter ready/);
+location.hostname = 'example.github.io';
+assert.match(imports.importHome(), /METADATA SERVICE NOT CONNECTED/);
+location.hostname = 'localhost';
+localStorage.setItem('how-i-hear-music:playlist-snapshots:v1', JSON.stringify({
+  'https://y.qq.com/example': { source: 'qqmusic', sourceLabel: 'QQ Music', sourceUrl: 'https://y.qq.com/example', syncedAt: '2026-09-01T00:00:00.000Z', playlist: { title: 'Fixture playlist', trackCount: 1 }, tracks: [] },
+}));
+assert.match(imports.importInbox(), /CHECK PLAYLIST UPDATES/);
+assert.doesNotMatch(imports.importInbox(), /SYNC NOW/);
 
 console.log(`Route render checks passed: ${renders.length} reliability, retrieval and analysis views.`);
