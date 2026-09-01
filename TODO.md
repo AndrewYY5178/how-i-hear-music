@@ -67,8 +67,8 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Generate crawlable static HTML snapshots for core public routes and replace the SVG-only social preview with a tested 1200 × 630 PNG.
 - [ ] Consolidate repeated CSS media-query overrides while preserving the current 1440 / 1024 / 390 visual baselines.
 - [x] Audit the Home, Archive metadata, Rate, Import, Journal and Search roots for Chinese interface omissions; translate dynamic metadata candidates and collapse the candidate-to-album/date/position check into one action.
-- [ ] Re-run desktop/tablet/mobile QA, adapter smoke checks and GitHub Pages production verification after every release-sized change.
-- [ ] Keep Cloudflare Worker and GitHub Pages dependencies, versions, CORS and deployment documentation aligned.
+- [x] Re-run desktop/tablet/mobile QA, adapter smoke checks and GitHub Pages production verification after every release-sized change. *(UI 3.5.0 verified on GitHub Pages at 1440, 1024 and 390px with no horizontal overflow; production QQ candidates returned exact album and release-date evidence without saving browser data.)*
+- [x] Keep Cloudflare Worker and GitHub Pages dependencies, versions, CORS and deployment documentation aligned. *(Worker and Pages both run app/adapter 0.5.0; production origin restriction and live QQ smoke checks passed on 2026-09-01.)*
 - [ ] Design cross-device account and cloud sync only after choosing authentication, encryption, conflict resolution, deletion/export and hosting boundaries; do not upload existing browser data by default.
 
 ## Active low-friction library flow — UI 3.4.9
