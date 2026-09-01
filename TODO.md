@@ -8,7 +8,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Remove promotional content links from Home and remove the global footer Method link while keeping primary navigation intact.
 - [x] Randomize the rated Tracks and Album used by Home presentation sections on each fresh render without fabricating scores or metadata. *(Album titles may still rotate when no confirmed sequence exists, but the terrain remains explicitly empty.)*
 - [x] Make Track, Album and Artist indexes default to descending evidence-backed ratings, with unrated records last and deterministic ties.
-- [ ] Update automated coverage, version documentation and the append-only design record.
+- [x] Update automated coverage, version documentation and the append-only design record. *(Implementation commit `2e45642`; UI 3.5.1 record appended without changing earlier entries.)*
 - [x] Verify Home and all three Archive indexes at desktop, tablet and mobile widths before publishing. *(1440 / 1024 / 390px; no horizontal overflow, Home has zero content or footer links, and responsive presentation/ranking layouts were visually inspected.)*
 
 ## Completed accessibility and feedback — UI 3.4

@@ -1051,3 +1051,42 @@ Implementation commit: `2d59986`
 - Personal ratings, notes, corrections, Inbox, Library and backups remain browser-local. The metadata service receives only public lookup text or public share/entity URLs.
 - Candidate facts require an explicit owner save. Ambiguous versions remain unconfirmed, and language/region remain unknown without a qualified source.
 - The established paper/ink/red/olive palette, Libre Baskerville/DM Mono and Chinese font pairing, square artwork, zero-radius geometry, full desktop navigation and compact mobile menu remain unchanged.
+
+## Version 3.5.1 — Quieter Home and rating-led Archive
+
+Implementation commit: `2e45642`
+
+### Before
+
+- Home repeated navigation already available in the masthead through method, Track, Album, Archive and About calls to action. Its fixed selections made the presentation feel like a permanent recommendation rather than a changing view into the archive.
+- Track index offered rating order but defaulted to insertion order. Album and Artist indexes had no shared rating-led default.
+- The global footer repeated the Philosophy destination as `METHOD ↗` on every route.
+
+### Decision
+
+- Treat Home as a presentation surface. Remove every content-level link from its hero, current listening, Track shape, Album landscape and closing statement; keep the primary masthead as the sole module navigation.
+- Sample rated Tracks again on each Home render. Sample Albums independently, but draw a landscape only from that Album's confirmed ordered Tracks and actual current scores; an unconfirmed Album stays visibly empty instead of receiving a decorative waveform.
+- Default Tracks to current Overall descending, Albums to saved Album Overall descending and Artists to the mean of their explicitly scored Tracks. Put unknown scores last and use stable text ties so the order remains deterministic.
+- Remove the footer Method link without changing footer identity, palette, typography, spacing or navigation geometry.
+
+### Evidence
+
+- Two fresh Home renders produced different current-listening groups, Track shapes and Album titles. Home contained zero links inside `main`, and the global footer contained zero links.
+- The default Track sort control reported `rating`; the first canonical Track was the 11-point “向日葵朝着夜”. The first Artist was 单依纯, based on the highest available scored-Track average. An isolated Album fixture confirmed that a 10-point Album precedes an 8-point Album.
+- Desktop 1440px, tablet 1024px and mobile 390px checks covered Home and all three Archive indexes with zero horizontal overflow. Desktop Home, tablet Track ranking and mobile Home were visually inspected.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- `node --check modules/home.js`
+- `node --check modules/archive/pages.js`
+- `node --check worker/index.mjs`
+- `git diff --check`
+- Real-browser inspection at 1440 × 900, 1024 × 768 and 390 × 844 on a fresh local origin.
+
+### Intentionally unchanged
+
+- Masthead navigation, Search and bilingual switching remain available on every page. Archive cards continue to open their corresponding records.
+- Personal ratings, Album scores, notes, Inbox, Library and backups remain browser-local. No sorting or Home sampling writes to storage.
+- The established paper/ink/red/olive palette, typography, square artwork, zero-radius geometry and responsive breakpoints remain unchanged.
