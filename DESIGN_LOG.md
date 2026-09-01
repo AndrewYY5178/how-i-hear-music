@@ -1090,3 +1090,37 @@ Implementation commit: `2e45642`
 - Masthead navigation, Search and bilingual switching remain available on every page. Archive cards continue to open their corresponding records.
 - Personal ratings, Album scores, notes, Inbox, Library and backups remain browser-local. No sorting or Home sampling writes to storage.
 - The established paper/ink/red/olive palette, typography, square artwork, zero-radius geometry and responsive breakpoints remain unchanged.
+
+## Version 3.5.2 — Quiet healthy state and explicit playlist checks
+
+Implementation commit: `3a5b0ed`
+
+### Before
+
+- Every Import route displayed a healthy metadata-service panel even though it offered no action and repeated a condition users only need to know when something is wrong.
+- Saved playlist sources used `SYNC NOW / 立即同步`, which could be mistaken for account or cross-device synchronization instead of a manual comparison with the latest public playlist snapshot.
+
+### Decision
+
+- Render no metadata-service panel in the healthy state. Preserve the existing disconnected static-site warning, and continue showing request failures in the relevant Import preview or Inbox status region.
+- Rename the source action to `CHECK PLAYLIST UPDATES / 检查歌单更新` before and after each request. Keep its behavior unchanged: fetch the public source, compare snapshots and let the owner decide whether to import additions.
+
+### Evidence
+
+- Automated rendering confirms healthy Import contains no service-ready copy, a GitHub Pages build without an adapter still displays the disconnected warning, and a saved source exposes the new label without `SYNC NOW`.
+- English and Chinese Import/Inbox were checked at 1440px, 1024px and 390px. Healthy notices remained absent and no tested route had horizontal overflow; desktop Import and mobile Inbox were visually inspected.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- `node --check modules/import/pages.js`
+- `node --check worker/index.mjs`
+- `git diff --check`
+- Real-browser checks at 1440 × 900, 1024 × 768 and 390 × 844 on a fresh local origin.
+
+### Intentionally unchanged
+
+- The metadata adapter remains required for public QQ Music and NetEase reads. Hiding its healthy label does not disable or defer the service.
+- Checking a source never deletes local Tracks, ratings, notes or Library records and remains unrelated to future cross-device account sync.
+- Import structure, review gates, Inbox lifecycle, palette, typography and responsive breakpoints remain unchanged.

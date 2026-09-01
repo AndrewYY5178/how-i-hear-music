@@ -6,7 +6,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 - [x] Hide the healthy metadata-service notice while preserving disconnected and request-error warnings.
 - [x] Rename playlist-source `SYNC NOW` to the more literal `CHECK PLAYLIST UPDATES` in English and `检查歌单更新` in Chinese, including the post-request reset state.
-- [ ] Update regression coverage, release versions, README and the append-only design record.
+- [x] Update regression coverage, release versions, README and the append-only design record. *(Implementation commit `3a5b0ed`; UI 3.5.2 record appended without modifying earlier entries.)*
 - [x] Verify Import and Inbox at desktop, tablet and mobile widths, then publish Worker and Pages together. *(1440 / 1024 / 390px local browser pass completed with no service-ready notice and no horizontal overflow; publication follows the version record.)*
 
 ## Active presentation and ranking refinement — UI 3.5.1
