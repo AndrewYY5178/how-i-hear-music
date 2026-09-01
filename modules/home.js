@@ -1,11 +1,28 @@
-import { data, rating, safe, slug, trackId } from "./music/data.js";
+import { allAlbums, allTracks, rating, safe, storage, trackId } from "./music/data.js";
 import { radar, waveform } from "./rating/visuals.js";
-import { link } from "./layout/shell.js";
+
+const shuffled = (records) => {
+  const result = [...records];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const target = Math.floor(Math.random() * (index + 1));
+    [result[index], result[target]] = [result[target], result[index]];
+  }
+  return result;
+};
+
+const withCurrentScores = (track) => ({
+  ...track,
+  scores: storage.get("how-i-hear-music:rating-sessions:v2", {})[trackId(track)]?.scores || track.scores || {},
+});
 
 export const home = () => {
-  const featuredTrack = data.songs.entries.find((track) => track.title === "向日葵朝着夜") || data.songs.entries[0];
-  const featuredAlbum = data.profile.albumArchive.find((album) => album.title === "Sweetener") || data.profile.albumArchive[0];
-  const current = data.songs.entries.filter((track) => track.scores?.overall !== null && track.scores?.overall !== undefined).slice(0, 4);
-  const draft = [{ title: "01", overall: 7.6 }, { title: "02", overall: 8.4 }, { title: "03", overall: 7.9 }, { title: "04", overall: 9.1 }, { title: "05", overall: 8.6 }, { title: "06", overall: 8.2 }];
-  return `<section class="home-hero"><span class="eyebrow mono">PERSONAL ARCHIVE / ISSUE 001</span><h1>How I<br><em>hear music.</em></h1><p>Melody opens the door.<br>Everything else has to earn its place.</p>${link("/taste/philosophy", "READ THE METHOD ↓", "text-link")}</section><section class="home-section"><span class="eyebrow mono">CURRENTLY LISTENING</span><div class="current-grid">${current.map((track) => `<article><p>${safe(track.artist)}</p><h2>${safe(track.title)}</h2><strong>${rating(track.scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open", "card-link")}</article>`).join("")}</div></section><section class="featured-shape"><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(featuredTrack.title)}</h2><p>${safe(featuredTrack.artist)}</p>${link(`/archive/tracks/${trackId(featuredTrack)}`, "EXPLORE TRACK →", "text-link")}</div><div class="featured-shape-visual">${radar(featuredTrack.scores, { className: "home-radar" })}</div><div class="feature-score" aria-label="Track score breakdown">${["song", "vocal", "production", "overall"].map((field) => `<span>${field}<b>${rating(featuredTrack.scores[field])}</b></span>`).join("")}</div></section><section class="featured-landscape"><div><span class="eyebrow mono">FEATURED LANDSCAPE</span><h2>${safe(featuredAlbum.title)}</h2><p>${safe(featuredAlbum.artist)}</p></div><div>${waveform(draft)}${link(`/archive/albums/${slug(featuredAlbum.artist + "-" + featuredAlbum.title)}`, "EXPLORE ALBUM →", "text-link")}</div></section><section class="home-section enter-archive"><span class="eyebrow mono">ENTER THE ARCHIVE</span><div>${[["TRACKS", "/archive/tracks"], ["ALBUMS", "/archive/albums"], ["ARTISTS", "/archive/artists"]].map(([label, href]) => link(href, label + " →")).join("")}</div></section><section class="short-manifesto"><p>Music can be minimal or maximal, familiar or surprising. The only question is whether it stays alive.</p>${link("/taste", "ABOUT THIS ARCHIVE", "text-link")}</section>`;
+  const ratedTracks = shuffled(allTracks().map(withCurrentScores).filter((track) => Number.isFinite(Number(track.scores?.overall))));
+  const current = ratedTracks.slice(0, 4);
+  const featuredTrack = ratedTracks[4] || ratedTracks[0] || withCurrentScores(allTracks()[0] || {});
+  const albumCandidates = shuffled(allAlbums().map((album) => {
+    const tracks = (album.tracks?.length ? album.tracks : allTracks().filter((track) => track.artist === album.artist && track.album === album.title)).map(withCurrentScores);
+    return { ...album, tracks: tracks.map((track) => ({ title: track.title, overall: track.scores?.overall })) };
+  }));
+  const featuredAlbum = albumCandidates.find((album) => album.tracks.some((track) => Number.isFinite(Number(track.overall)))) || albumCandidates[0] || { title: "—", artist: "", tracks: [] };
+  return `<section class="home-hero"><span class="eyebrow mono">PERSONAL ARCHIVE / ISSUE 001</span><h1>How I<br><em>hear music.</em></h1><p>Melody opens the door.<br>Everything else has to earn its place.</p></section><section class="home-section"><span class="eyebrow mono">CURRENTLY LISTENING</span><div class="current-grid">${current.map((track) => `<article><p>${safe(track.artist)}</p><h2>${safe(track.title)}</h2><strong>${rating(track.scores.overall)}</strong></article>`).join("")}</div></section><section class="featured-shape"><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(featuredTrack.title)}</h2><p>${safe(featuredTrack.artist)}</p></div><div class="featured-shape-visual">${radar(featuredTrack.scores, { className: "home-radar" })}</div><div class="feature-score" aria-label="Track score breakdown">${["song", "vocal", "production", "overall"].map((field) => `<span>${field}<b>${rating(featuredTrack.scores[field])}</b></span>`).join("")}</div></section><section class="featured-landscape"><div><span class="eyebrow mono">FEATURED LANDSCAPE</span><h2>${safe(featuredAlbum.title)}</h2><p>${safe(featuredAlbum.artist)}</p></div><div>${waveform(featuredAlbum.tracks)}</div></section><section class="short-manifesto"><p>Music can be minimal or maximal, familiar or surprising. The only question is whether it stays alive.</p></section>`;
 };
