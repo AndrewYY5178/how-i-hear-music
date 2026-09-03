@@ -27,9 +27,9 @@ const mobileShell = (path) => {
 };
 const accountShell = () => {
   const session = syncSession(); const ready = syncReady(); const signedIn = Boolean(session?.token && session?.user?.login);
-  const title = signedIn ? `Hello, ${safe(session.user.login)}.` : "Carry your archive with you.";
-  const copy = signedIn ? "GitHub identifies this private sync account. Your music data remains in this browser until you choose an encrypted upload." : "No separate registration form. GitHub authorization creates the sync account; your private archive is encrypted with a different password that never leaves the browser.";
-  const actions = signedIn ? `${link("/import/data", "OPEN DATA DESK", "button primary")}<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : ready ? `<button class="button primary" type="button" data-account-sign-in>REGISTER / SIGN IN WITH GITHUB</button>` : `<p class="account-unavailable">Account sign-in is available on the published site.</p>`;
+  const title = signedIn ? `Hello, ${safe(session.user.login)}.` : "GitHub account.";
+  const copy = signedIn ? "Private sync is ready in Data Desk." : "Authorize GitHub once to create or enter a private sync account.";
+  const actions = signedIn ? `${link("/import/data", "DATA DESK", "button primary")}<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : ready ? `<button class="button primary" type="button" data-account-sign-in>REGISTER / SIGN IN WITH GITHUB</button>` : `<p class="account-unavailable">Account sign-in is available on the published site.</p>`;
   return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / PRIVATE SYNC</span><button class="account-close" type="button" aria-label="Close account panel" data-account-close>×</button></div><h2 id="account-panel-title" tabindex="-1">${title}</h2><p>${copy}</p>${signedIn ? `<div class="account-identity"><span class="mono">GITHUB IDENTITY</span><strong>@${safe(session.user.login)}</strong></div>` : ""}<div class="account-actions">${actions}</div><p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking encrypted copy…" : "Registration and sign-in are handled securely by GitHub."}</p></section>`;
 };
 export const link = (href, label, className = "") => `<a class="${className}" href="${withBase(href)}" data-route>${safe(label)}</a>`;

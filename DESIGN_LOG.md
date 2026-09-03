@@ -1347,3 +1347,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account identity, GitHub authorization, encrypted cloud sync, navigation and browser-local music data remain unchanged.
+
+## Version 3.8.2 — Minimal account identity
+
+Implementation commit: pending
+
+### Decision
+
+- Reduce the signed-in popover to a 260px account instrument: identity, one short Data Desk cue, encrypted-copy state and two 44px actions. The account explanation remains only for logged-out visitors.
+- This keeps the account surface within roughly one-third to one-half of the earlier compact panel's visual area without reducing the action targets or forcing touch interaction into a tiny interface.
+
+### Intentionally unchanged
+
+- The account still exposes the same GitHub login, Data Desk and sign-out actions; no local music data is changed.

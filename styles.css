@@ -13,18 +13,18 @@ button { cursor:pointer; }
 .brand-account { display:flex; align-items:center; gap:8px; min-width:max-content; font-family:var(--mono); }
 .account-toggle { min-width:44px; min-height:44px; padding:8px 0; border:0; background:transparent; color:var(--ink); font:500 10px var(--mono); letter-spacing:.07em; text-transform:uppercase; }
 .account-toggle:hover,.account-toggle[aria-expanded="true"] { color:var(--red); }
-.account-panel { position:fixed; z-index:32; top:64px; right:64px; width:min(360px,calc(100vw - 48px)); max-height:calc(100vh - 88px); padding:24px; overflow:auto; border:1px solid var(--ink); border-top:0; background:var(--paper-light); color:var(--ink); }
+.account-panel { position:fixed; z-index:32; top:64px; right:64px; width:min(260px,calc(100vw - 48px)); max-height:calc(100vh - 88px); padding:16px; overflow:auto; border:1px solid var(--ink); border-top:0; background:var(--paper-light); color:var(--ink); }
 .account-panel-head { display:flex; justify-content:space-between; align-items:center; gap:24px; }
 .account-close { display:grid; place-items:center; width:44px; height:44px; padding:0; border:0; background:transparent; color:var(--red); font:300 28px/1 var(--serif); }
-.account-panel h2 { margin:24px 0 12px; outline:0; font:400 clamp(28px,3vw,36px)/1 var(--serif); letter-spacing:-.055em; }
-.account-panel>p { max-width:310px; margin:0; color:var(--muted); font:italic 13px/1.55 var(--serif); }
-.account-identity { display:grid; gap:6px; margin-top:24px; padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.account-panel h2 { margin:16px 0 8px; outline:0; font:400 25px/1.03 var(--serif); letter-spacing:-.05em; }
+.account-panel>p { max-width:220px; margin:0; color:var(--muted); font:italic 12px/1.45 var(--serif); }
+.account-identity { display:grid; gap:4px; margin-top:16px; padding:8px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .account-identity span,.account-status { font-size:8px; }
-.account-identity strong { color:var(--red); font:400 19px/1.2 var(--serif); }
-.account-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:24px; }
+.account-identity strong { overflow:hidden; color:var(--red); font:400 17px/1.2 var(--serif); text-overflow:ellipsis; white-space:nowrap; }
+.account-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:16px; }
 .account-actions .button { min-height:44px; }
 .account-actions .button:only-child { grid-column:1/-1; }
-.account-status { margin-top:12px!important; color:var(--red)!important; font-style:normal!important; }
+.account-status { margin-top:8px!important; color:var(--red)!important; font-size:7px!important; font-style:normal!important; }
 .account-unavailable { margin:0; color:var(--muted); }
 #app { width:min(1180px,calc(100% - 40px)); min-height:calc(100vh - 125px); margin:0 auto; padding:clamp(52px,9vw,120px) 0; outline:0; }.site-footer { display:flex; justify-content:space-between; gap:20px; padding:24px clamp(18px,4vw,64px); border-top:1px solid var(--ink); font-size:10px; font-family:var(--mono); letter-spacing:.06em; }
 .page-head { max-width:760px; margin:0 0 56px; }.eyebrow { display:block; color:var(--red); font-size:10px; }.page-head h1,.home-hero h1,.not-found h1 { margin:18px 0; font:400 clamp(46px,8vw,108px)/.91 var(--serif); letter-spacing:-.075em; }.page-head h1 em,.home-hero h1 em { color:var(--red); }.page-head>p { max-width:580px; margin:0; color:var(--muted); font:italic 18px/1.55 var(--serif); }.page-actions { margin-top:26px; }
@@ -990,8 +990,8 @@ body::before {
   .brand-account { gap:6px; }
   .brand { min-height:44px; }
   .account-toggle { min-height:44px; font-size:9px; }
-  .account-panel { top:calc(56px + env(safe-area-inset-top)); right:16px; bottom:auto; left:16px; width:auto; max-height:calc(100vh - 144px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding:24px; border-top:0; }
-  .account-panel h2 { max-width:280px; font-size:30px; }
+  .account-panel { top:calc(56px + env(safe-area-inset-top)); right:16px; bottom:auto; left:auto; width:260px; max-height:calc(100vh - 144px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding:16px; border-top:0; }
+  .account-panel h2 { max-width:210px; font-size:25px; }
   .account-actions .button { width:100%; min-height:44px; padding-inline:8px; }
   #app { width:min(100% - 32px,1180px); padding:32px 0 40px; }
   .page-head { margin-bottom:32px; }
