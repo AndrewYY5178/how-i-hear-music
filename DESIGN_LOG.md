@@ -1302,3 +1302,29 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Authentication, encryption, conflict handling, D1 storage and all browser-local music data remain unchanged.
+
+## Version 3.8.0 — Account in the masthead
+
+Implementation commit: pending
+
+### Decision
+
+- Replace the masthead's contextless `001` with a real `ACCOUNT` control while keeping `HIM /` as the home identity. The footer retains `ISSUE 001`, where the edition metaphor has explicit context.
+- Open a full-height sheet on phone and a right-aligned editorial panel on larger widths. Use flat paper, ink, brick red, square corners and ruled identity details instead of a rounded avatar menu, glass overlay or generic SaaS profile card.
+- Treat GitHub's first authorization as registration. Logged-out copy explains that there is no separate password account; logged-in copy exposes identity, encrypted-copy status, Data Desk and sign-out without placing the sync password in the masthead.
+- Follow the established accessible disclosure pattern: the trigger exposes expanded state, the panel has a labelled dialog region, Escape and a visible 44px close control both dismiss it, and its primary actions meet the mobile touch target.
+
+### Reference evidence and rejected alternatives
+
+- The [WAI-ARIA dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) informed the labelled panel, explicit close action and focus placement. [GitHub Primer's action-menu guidance](https://primer.style/product/components/action-menu/accessibility/) informed concise account actions and visible state, but the site rejects Primer's rounded product surfaces and avatar-led identity because they would erase the archive's editorial masthead.
+- A dedicated `/login` route and a large homepage registration block were rejected: GitHub owns the actual authentication screen, while duplicating it would imply a second password system and compete with Home's presentation role.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- Real-browser checks at 1440 × 900, 1024 × 768 and 390 × 844 in logged-out and logged-in states.
+
+### Intentionally unchanged
+
+- Routes, Archive ordering, Rate, Taste, Import, Journal, browser-local data and encryption boundaries do not change.

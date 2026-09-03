@@ -1,4 +1,5 @@
 import { data, safe } from "../music/data.js";
+import { beginGithubSync, readSyncStatus, signOutSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
@@ -24,6 +25,13 @@ const mobileShell = (path) => {
   const mobileLink = (href, label, iconName) => `<a class="mobile-tab${pathIsActive(path, href) ? " active" : ""}${href === "/rate" ? " mobile-tab-rate" : ""}" href="${withBase(href)}" data-route>${mobileNavIcon(iconName)}<span>${safe(label)}</span></a>`;
   return `<div class="mobile-more-panel" id="mobile-more-panel" hidden aria-label="More destinations">${link("/import", "Import", pathIsActive(path, "/import") ? "active" : "")}${link("/journal", "Journal", pathIsActive(path, "/journal") ? "active" : "")}${link("/search", "Search", path === "/search" ? "active" : "")}</div><nav class="mobile-tabbar" aria-label="Mobile primary navigation">${mobileNav.map(([href, label, iconName]) => mobileLink(href, label, iconName)).join("")}<button class="mobile-tab mobile-tab-more${moreActive ? " active" : ""}" type="button" data-mobile-more aria-expanded="false" aria-controls="mobile-more-panel">${mobileNavIcon("more")}<span>More</span></button></nav>`;
 };
+const accountShell = () => {
+  const session = syncSession(); const ready = syncReady(); const signedIn = Boolean(session?.token && session?.user?.login);
+  const title = signedIn ? `Hello, ${safe(session.user.login)}.` : "Carry your archive with you.";
+  const copy = signedIn ? "GitHub identifies this private sync account. Your music data remains in this browser until you choose an encrypted upload." : "No separate registration form. GitHub authorization creates the sync account; your private archive is encrypted with a different password that never leaves the browser.";
+  const actions = signedIn ? `${link("/import/data", "OPEN DATA DESK", "button primary")}<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : ready ? `<button class="button primary" type="button" data-account-sign-in>REGISTER / SIGN IN WITH GITHUB</button>` : `<p class="account-unavailable">Account sign-in is available on the published site.</p>`;
+  return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / PRIVATE SYNC</span><button class="account-close" type="button" aria-label="Close account panel" data-account-close>×</button></div><h2 id="account-panel-title" tabindex="-1">${title}</h2><p>${copy}</p>${signedIn ? `<div class="account-identity"><span class="mono">GITHUB IDENTITY</span><strong>@${safe(session.user.login)}</strong></div>` : ""}<div class="account-actions">${actions}</div><p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking encrypted copy…" : "Registration and sign-in are handled securely by GitHub."}</p></section>`;
+};
 export const link = (href, label, className = "") => `<a class="${className}" href="${withBase(href)}" data-route>${safe(label)}</a>`;
 export const pageHeader = (eyebrow, title, copy = "", actions = "") => `<section class="page-head"><span class="eyebrow mono">${safe(eyebrow)}</span><h1>${title}</h1>${copy ? `<p>${safe(copy)}</p>` : ""}${actions ? `<div class="page-actions">${actions}</div>` : ""}</section>`;
 export const secondaryNav = (items) => `<nav class="secondary-nav" aria-label="Section navigation">${items.map(([href, label]) => link(href, label)).join("")}</nav>`;
@@ -35,7 +43,7 @@ export const renderShell = (path) => {
   document.body.dataset.module = moduleName;
   header.classList.remove("menu-open");
   const languageControl = (mobile = false) => `<button class="language-toggle${mobile ? " language-toggle-mobile" : ""}" type="button" data-language-toggle data-i18n-ignore aria-pressed="${currentLanguage() === "zh-CN"}" aria-label="${currentLanguage() === "zh-CN" ? "Switch to English" : "切换到中文"}">${currentLanguage() === "zh-CN" ? "EN" : "中文"}</button>`;
-  header.innerHTML = `<a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span> 001</a><div class="header-mobile-actions">${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}${languageControl()}<span class="brand-mark">anddream</span></div>${mobileShell(path)}`;
+  header.innerHTML = `<div class="brand-account"><a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span></a><button class="account-toggle" type="button" aria-expanded="false" aria-controls="account-panel">ACCOUNT</button></div><div class="header-mobile-actions">${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}${languageControl()}<span class="brand-mark">anddream</span></div>${accountShell()}${mobileShell(path)}`;
   document.getElementById("site-footer").innerHTML = `<span>HOW I HEAR MUSIC</span><span class="mono">PERSONAL ARCHIVE / ISSUE 001</span>`;
   const toggle = header.querySelector(".menu-toggle");
   toggle.addEventListener("click", (event) => {
@@ -57,6 +65,13 @@ export const renderShell = (path) => {
     more.setAttribute("aria-expanded", String(open));
   });
   morePanel.addEventListener("click", closeMore);
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !morePanel.hidden) { closeMore(); more.focus(); } }, { once: true });
+  const accountToggle = header.querySelector(".account-toggle"); const accountPanel = header.querySelector("#account-panel");
+  const closeAccount = () => { accountPanel.hidden = true; accountToggle.setAttribute("aria-expanded", "false"); };
+  const openAccount = async () => { accountPanel.hidden = false; accountToggle.setAttribute("aria-expanded", "true"); accountPanel.querySelector("h2")?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `Encrypted copy available · ${new Date(remote.updatedAt).toLocaleString()}` : "No encrypted copy uploaded yet."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check cloud sync."; } };
+  accountToggle.addEventListener("click", () => accountPanel.hidden ? openAccount() : closeAccount());
+  accountPanel.querySelector("[data-account-close]")?.addEventListener("click", () => { closeAccount(); accountToggle.focus(); });
+  accountPanel.querySelector("[data-account-sign-in]")?.addEventListener("click", () => beginGithubSync());
+  accountPanel.querySelector("[data-account-sign-out]")?.addEventListener("click", async () => { const status = accountPanel.querySelector("#account-status"); try { await signOutSync(); renderShell(path); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not sign out."; } });
+  header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); accountToggle.focus(); } if (!morePanel.hidden) { closeMore(); more.focus(); } });
   setDocumentTitle(path === "/" ? "Home" : path.split("/").filter(Boolean).map((item) => item[0].toUpperCase() + item.slice(1)).join(" / "));
 };

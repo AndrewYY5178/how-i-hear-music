@@ -160,6 +160,8 @@ if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('sty
 if (styles.includes('before English labels collide') || !styles.includes('@media (max-width:760px)')) errors.push('styles.css: full masthead must remain available above the mobile breakpoint');
 const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
 if (shellSource.includes('READ / 20—') || styles.includes('.edition')) errors.push('masthead: obsolete edition marker or styling remains');
+for (const contract of ['account-toggle', 'account-panel', 'REGISTER / SIGN IN WITH GITHUB', 'readSyncStatus', 'signOutSync']) if (!shellSource.includes(contract)) errors.push(`account shell: missing ${contract}`);
+if (!styles.includes('.account-panel') || !styles.includes('.account-toggle')) errors.push('account shell: responsive account presentation is missing');
 const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');
 for (const contract of ["requestPath === '/healthz'", "requestPath === '/api/version'", 'TRUST_PROXY', 'logEvent', 'pruneRuntimeState']) if (!serverSource.includes(contract)) errors.push(`adapter resilience: missing ${contract}`);
 if (!serverSource.includes("Location: `/?route=${encodeURIComponent(route)}`")) errors.push('server: local deep links must recover through the root document');
