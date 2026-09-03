@@ -17,6 +17,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Let the owner fill verified MusicBrainz language/region candidates into the existing field-evidence form in one action; saving the field evidence remains explicit and browser-local.
 - [x] Add optional GitHub-identified, client-side encrypted cloud sync: D1 stores ciphertext only; download previews conflicts before an owner-selected merge and retains the existing local rollback.
 - [x] Replace the masthead's contextless `001` with an Account control; expose GitHub registration/sign-in, identity, encrypted-copy status, Data Desk and sign-out in a responsive editorial account panel.
+- [x] Refine the Account panel into a compact masthead popover at desktop, tablet and phone widths; retain 44px controls without occupying the full mobile screen.
 - [ ] Commit, deploy the selected V13 favicon and UI 3.6.0 to GitHub Pages and Cloudflare Worker, then verify the production update path.
 
 ## Active favicon identity implementation — UI 3.5.3

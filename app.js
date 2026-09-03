@@ -1,4 +1,4 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.8.0";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.8.1";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";

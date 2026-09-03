@@ -1328,3 +1328,22 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Routes, Archive ordering, Rate, Taste, Import, Journal, browser-local data and encryption boundaries do not change.
+
+## Version 3.8.1 — Compact account popover
+
+Implementation commit: pending
+
+### Decision
+
+- Reduce the account surface from a 420px desktop panel and full-height mobile sheet to a compact 360px masthead popover; on phone it keeps 16px side gutters and ends after its content instead of covering the whole screen.
+- Tighten the internal rhythm from 40px to 24px, reduce the display title to 30–36px and place the two signed-in actions in one balanced row. Preserve 44px controls, square corners, thin rules and the existing paper/ink/red palette.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- Real-browser checks at 1440 × 900, 1024 × 768 and 390 × 844 in the signed-in state.
+
+### Intentionally unchanged
+
+- Account identity, GitHub authorization, encrypted cloud sync, navigation and browser-local music data remain unchanged.
