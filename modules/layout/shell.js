@@ -43,7 +43,8 @@ export const renderShell = (path) => {
   document.body.dataset.module = moduleName;
   header.classList.remove("menu-open");
   const languageControl = (mobile = false) => `<button class="language-toggle${mobile ? " language-toggle-mobile" : ""}" type="button" data-language-toggle data-i18n-ignore aria-pressed="${currentLanguage() === "zh-CN"}" aria-label="${currentLanguage() === "zh-CN" ? "Switch to English" : "切换到中文"}">${currentLanguage() === "zh-CN" ? "EN" : "中文"}</button>`;
-  header.innerHTML = `<div class="brand-account"><a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span></a><button class="account-toggle" type="button" aria-expanded="false" aria-controls="account-panel">ACCOUNT</button></div><div class="header-mobile-actions">${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}${languageControl()}<span class="brand-mark">anddream</span></div>${accountShell()}${mobileShell(path)}`;
+  const accountControl = (mobile = false) => `<button class="account-toggle${mobile ? " account-toggle-mobile" : ""}" type="button" aria-expanded="false" aria-controls="account-panel">ACCOUNT</button>`;
+  header.innerHTML = `<div class="brand-account"><a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span></a><span class="brand-mark">anddream</span></div><div class="header-mobile-actions">${accountControl(true)}${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}${languageControl()}${accountControl()}</div>${accountShell()}${mobileShell(path)}`;
   document.getElementById("site-footer").innerHTML = `<span>HOW I HEAR MUSIC</span><span class="mono">PERSONAL ARCHIVE / ISSUE 001</span>`;
   const toggle = header.querySelector(".menu-toggle");
   toggle.addEventListener("click", (event) => {
@@ -65,13 +66,17 @@ export const renderShell = (path) => {
     more.setAttribute("aria-expanded", String(open));
   });
   morePanel.addEventListener("click", closeMore);
-  const accountToggle = header.querySelector(".account-toggle"); const accountPanel = header.querySelector("#account-panel");
-  const closeAccount = () => { accountPanel.hidden = true; accountToggle.setAttribute("aria-expanded", "false"); };
-  const openAccount = async () => { accountPanel.hidden = false; accountToggle.setAttribute("aria-expanded", "true"); accountPanel.querySelector("h2")?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `Encrypted copy available · ${new Date(remote.updatedAt).toLocaleString()}` : "No encrypted copy uploaded yet."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check cloud sync."; } };
-  accountToggle.addEventListener("click", () => accountPanel.hidden ? openAccount() : closeAccount());
-  accountPanel.querySelector("[data-account-close]")?.addEventListener("click", () => { closeAccount(); accountToggle.focus(); });
+  const accountToggles = [...header.querySelectorAll(".account-toggle")]; const accountPanel = header.querySelector("#account-panel");
+  const visibleAccountToggle = () => accountToggles.find((button) => {
+    const bounds = button.getBoundingClientRect();
+    return bounds.width > 0 && bounds.height > 0;
+  }) || accountToggles[0];
+  const closeAccount = () => { accountPanel.hidden = true; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "false")); };
+  const openAccount = async () => { accountPanel.hidden = false; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "true")); accountPanel.querySelector("h2")?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `Encrypted copy available · ${new Date(remote.updatedAt).toLocaleString()}` : "No encrypted copy uploaded yet."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check cloud sync."; } };
+  accountToggles.forEach((button) => button.addEventListener("click", () => accountPanel.hidden ? openAccount() : closeAccount()));
+  accountPanel.querySelector("[data-account-close]")?.addEventListener("click", () => { closeAccount(); visibleAccountToggle().focus(); });
   accountPanel.querySelector("[data-account-sign-in]")?.addEventListener("click", () => beginGithubSync());
   accountPanel.querySelector("[data-account-sign-out]")?.addEventListener("click", async () => { const status = accountPanel.querySelector("#account-status"); try { await signOutSync(); renderShell(path); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not sign out."; } });
-  header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); accountToggle.focus(); } if (!morePanel.hidden) { closeMore(); more.focus(); } });
+  header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); visibleAccountToggle().focus(); } if (!morePanel.hidden) { closeMore(); more.focus(); } });
   setDocumentTitle(path === "/" ? "Home" : path.split("/").filter(Boolean).map((item) => item[0].toUpperCase() + item.slice(1)).join(" / "));
 };

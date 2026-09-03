@@ -1360,3 +1360,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - The account still exposes the same GitHub login, Data Desk and sign-out actions; no local music data is changed.
+
+## Version 3.8.3 — Account / popover alignment
+
+Implementation commit: pending
+
+### Decision
+
+- Move the Account trigger to the right header utility area, directly above the right-aligned account popover. On phone it sits beside the language control, preserving the same spatial relationship.
+- Move `anddream` to the left project lockup beside `HIM /`, where it reads as a quiet publisher signature rather than competing with account actions.
+
+### Intentionally unchanged
+
+- Account panel size, login flow, navigation destinations, profile data and sync behavior remain unchanged.

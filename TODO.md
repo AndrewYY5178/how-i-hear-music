@@ -19,6 +19,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Replace the masthead's contextless `001` with an Account control; expose GitHub registration/sign-in, identity, encrypted-copy status, Data Desk and sign-out in a responsive editorial account panel.
 - [x] Refine the Account panel into a compact masthead popover at desktop, tablet and phone widths; retain 44px controls without occupying the full mobile screen.
 - [x] Reduce signed-in Account content to identity, encrypted-copy state and two actions so the popover occupies roughly one-third to one-half of its prior visual area.
+- [x] Move the Account trigger to the right side of the masthead, adjacent to the account popover; return `anddream` to the left-side project lockup.
 - [ ] Commit, deploy the selected V13 favicon and UI 3.6.0 to GitHub Pages and Cloudflare Worker, then verify the production update path.
 
 ## Active favicon identity implementation — UI 3.5.3
