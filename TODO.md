@@ -2,6 +2,43 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Active touch-first App shell and delivery — UI 3.6.0
+
+- [x] Preserve the six existing routes and module personalities while making the mobile shell touch-first; no route, data-model or local-data boundary may be removed or merged.
+- [x] Add a safe-area-aware five-item mobile bottom navigation: Home, Archive, Rate, Taste and More; More exposes Import, Journal and Search without crowding the bar.
+- [x] Recompose mobile page headers and first screens around one primary task, reducing decorative desktop whitespace and retaining editorial type hierarchy.
+- [x] Give mobile Track Rating, Album Rating, Import and Inbox one accessible lower-screen primary action without hiding alternative controls behind gestures.
+- [x] Make Archive mobile records compact and list-led while keeping its existing filter/sort controls visible and keyboard-accessible; a bottom-sheet reduction remains a later refinement.
+- [x] Restore the pre-line-reduction rules across Import, Archive metadata summaries and Journal at desktop, tablet and phone widths, at the owner's request; no line-density simplification is active.
+- [ ] Adapt Radar, Waveform, Sonic Map, Memory Palace, Taste and Journal for one dominant mobile visual or reading stream at a time, with non-visual alternatives preserved.
+- [ ] Audit 44px minimum touch targets, safe areas, reduced motion, visible tap alternatives and 1440 / 1024 / 390px visual baselines.
+- [ ] Consolidate the media-query cascade into a single maintainable responsive layer while preserving verified desktop, tablet and mobile output.
+- [x] Add source-linked language/region candidates from MusicBrainz releases, explicitly scoped as release market and title/track-title language rather than lyric language; never infer or save them automatically.
+- [x] Let the owner fill verified MusicBrainz language/region candidates into the existing field-evidence form in one action; saving the field evidence remains explicit and browser-local.
+- [x] Add optional GitHub-identified, client-side encrypted cloud sync: D1 stores ciphertext only; download previews conflicts before an owner-selected merge and retains the existing local rollback.
+- [ ] Commit, deploy the selected V13 favicon and UI 3.6.0 to GitHub Pages and Cloudflare Worker, then verify the production update path.
+
+## Active favicon identity implementation — UI 3.5.3
+
+- [x] Preserve V1 and V2 favicon explorations in the dedicated Figma file without changing the published website icon.
+- [x] Save the four-direction V3 comparison source locally as `FAVICON_EXPLORATION_V3.svg`; it remains unpublished and must not be committed accidentally.
+- [x] Save the V4 site-linked comparison source as `FAVICON_EXPLORATION_V4_SITE_LINKED.svg`; it remains unpublished and must not be committed accidentally.
+- [x] Save the V5 one-color revision as `FAVICON_EXPLORATION_V5_SINGLE_COLOR.svg`; proposed icon paths use only `#a44733` so they remain visible on dark and light browser chrome.
+- [x] Save the V6 `Taste listens` concept board as `FAVICON_EXPLORATION_V6_TASTE_LISTENS.svg`; it joins the Taste module, personal listening and the 11-point scale without using black or white in icon paths.
+- [x] Save the V7 contained-form revision as `FAVICON_EXPLORATION_V7_TONGUE_INSIDE_EAR.svg`; every tongue remains fully inside the ear boundary with transparent separation at 16px.
+- [x] Save the V8 readable-action revision as `FAVICON_EXPLORATION_V8_CLEAR_EAR_TONGUE.svg`; retain a recognizable ear, broad tongue, center groove and explicit insertion into the ear canal.
+- [x] Save the V9 cochlear revision as `FAVICON_EXPLORATION_V9_TONGUE_IN_COCHLEA.svg`; keep the tongue entirely inside the cochlea, including a transparent negative-space option.
+- [x] Use text-to-image for a more anatomical V10 shape study: preserve a recognizable ear and place a broad, center-grooved tongue wholly inside the cochlear area. *(Preview only; not a production or repository asset.)*
+- [x] Simplify the accepted V10 structure into a favicon-oriented V11: retain the outer ear and enclosed tongue while reducing the interior to two main ear curves and one tongue groove. *(Preview only; the published favicon remains unchanged.)*
+- [x] Refine V11 into a softer V12 preview with rounder endpoints, smoother curves and slightly lighter visual weight while preserving its ear-and-enclosed-tongue construction. *(Preview only; not yet installed.)*
+- [x] Rebalance V12 into a squarer V13 outer-ear proportion by shortening the vertical silhouette and widening it slightly, while keeping the rounded linework and enclosed tongue intact. *(Preview only; not yet installed.)*
+- [x] Produce a lighter V14 preview by reducing the V13 contour weight while preserving its near-square proportion, rounded endpoints and enclosed-tongue structure. *(Preview only; not yet installed.)*
+- [x] Correct V14's uneven visual weight in V15 by narrowing the solid tongue body and its central groove without changing the already-thin ear contours. *(Preview only; not yet installed.)*
+- [x] Select V13 as the final direction; retire V14 and V15 from further refinement.
+- [x] Create and verify four site-derived transparent, one-color directions at 16px: score trace, album terrain, archive spine and eleventh note. *(Saved as `FAVICON_EXPLORATION_V5_SINGLE_COLOR.svg`; not yet selected or published.)*
+- [x] Extract the selected V13 mark into a genuine transparent `favicon.png`, connect it to the page, manifest and offline shell, and preserve the existing browser-local data boundary.
+- [x] Verify the installed V13 favicon in a real browser at desktop, tablet and phone widths before committing or publishing UI 3.5.3. *(1440×900, 1024×768 and 390×844 all resolved `favicon.png` with zero horizontal overflow; publication remains pending.)*
+
 ## Active Import status simplification — UI 3.5.2
 
 - [x] Hide the healthy metadata-service notice while preserving disconnected and request-error warnings.

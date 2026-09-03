@@ -1,4 +1,6 @@
 import { getQQAlbumDetails, parseQQAlbumLink } from '../server/providers/qqmusic-album.mjs';
+import { searchMusicBrainzReleaseCandidates } from '../server/providers/musicbrainz.mjs';
+import { handleSync } from './sync.mjs';
 
 const defaultOrigin = 'https://andrewyy5178.github.io';
 const serviceName = 'how-i-hear-music-adapter';
@@ -6,7 +8,7 @@ const apiCache = new Map();
 const rateWindows = new Map();
 
 const allowedOrigins = (env) => new Set(String(env.ALLOWED_ORIGIN || defaultOrigin).split(',').map((value) => value.trim()).filter(Boolean));
-const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.5.2');
+const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.7.0');
 const serviceAgent = (env) => `How-I-Hear-Music/${serviceVersion(env)} metadata importer`;
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
@@ -30,8 +32,8 @@ const responseHeaders = (request, env) => {
   const origin = request.headers.get('Origin');
   if (origin && allowedOrigins(env).has(origin)) {
     headers.set('Access-Control-Allow-Origin', origin);
-    headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
     headers.set('Vary', 'Origin');
   }
   return headers;
@@ -225,8 +227,10 @@ export const handleRequest = async (request, env = {}) => {
     return new Response(null, { status: 204, headers: responseHeaders(request, env) });
   }
   if (url.pathname.startsWith('/api/') && origin && !origins.has(origin)) return json(request, env, 403, { error: 'Origin is not allowed.' }, requestId);
+  const syncResponse = await handleSync({ request, url, env, headers: responseHeaders(request, env), origin: [...origins][0] || defaultOrigin });
+  if (syncResponse) return syncResponse;
   if (request.method === 'GET' && url.pathname === '/healthz') return json(request, env, 200, { status: 'ok', version: serviceVersion(env), providers: ['qqmusic', 'netease'] }, requestId);
-  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist'] }, requestId);
+  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'private-cloud-sync'] }, requestId);
 
   const address = request.headers.get('CF-Connecting-IP') || 'unknown';
   if (url.pathname.startsWith('/api/') && !withinRateLimit(address)) return json(request, env, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }, requestId);
@@ -245,6 +249,13 @@ export const handleRequest = async (request, env = {}) => {
       const tracks = await cacheFor(`qq-search:${String(query || '').trim().toLowerCase()}`, () => searchQQCatalog(query, env));
       return json(request, env, 200, { tracks }, requestId);
     } catch (error) { return handleApiError(request, env, requestId, error, 'Could not search QQ Music.'); }
+  }
+  if (request.method === 'GET' && url.pathname === '/api/metadata/musicbrainz-release-candidates') {
+    try {
+      const album = url.searchParams.get('album'); const artist = url.searchParams.get('artist');
+      const candidates = await cacheFor(`musicbrainz-release:${String(album || '').trim().toLowerCase()}:${String(artist || '').trim().toLowerCase()}`, () => searchMusicBrainzReleaseCandidates({ album, artist }, { serviceAgent: serviceAgent(env) }), 3_600_000);
+      return json(request, env, 200, { candidates }, requestId);
+    } catch (error) { return handleApiError(request, env, requestId, error, 'Could not search MusicBrainz release metadata.'); }
   }
   if (request.method === 'POST' && url.pathname === '/api/import/qq-playlist') {
     try {

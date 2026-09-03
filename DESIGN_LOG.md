@@ -1124,3 +1124,162 @@ Implementation commit: `3a5b0ed`
 - The metadata adapter remains required for public QQ Music and NetEase reads. Hiding its healthy label does not disable or defer the service.
 - Checking a source never deletes local Tracks, ratings, notes or Library records and remains unrelated to future cross-device account sync.
 - Import structure, review gates, Inbox lifecycle, palette, typography and responsive breakpoints remain unchanged.
+
+## Version 3.5.3 — V13 listening-taste favicon
+
+Implementation commit: pending
+
+### Before
+
+- The browser tab still used the original paper-backed geometric favicon, which no longer represented the site's listening-and-taste identity.
+- The accepted V13 sketch existed only as a generated preview whose visible checkerboard was baked into an RGB image rather than stored as real transparency.
+
+### Decision
+
+- Adopt the owner-selected V13 direction: a rounded ear with a tongue contained inside the lower cochlear area, using the site's single brick red `#a44733` and a near-square outer proportion.
+- Extract only the red mark from the accepted preview, normalize it to the repository red and place it on a genuinely transparent 512×512 PNG canvas. Keep generous outer padding so the asymmetrical silhouette survives browser downscaling.
+- Replace the favicon reference in the document, install manifest and versioned offline shell. Retire V14 and V15 from further refinement without deleting the preserved exploration history.
+
+### Evidence
+
+- Image inspection reports a 512×512 RGBA PNG with non-opaque alpha; the baked checkerboard is absent on both dark and light inspection backgrounds.
+- The local browser resolved `favicon.png` as `image/png` at 1440×900, 1024×768 and 390×844. Each width retained the existing page composition with zero horizontal overflow.
+- The generated static route snapshots inherited the new favicon URL from the canonical document template.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- `magick identify favicon.png`
+- `git diff --check`
+- Real-browser checks at 1440×900, 1024×768 and 390×844 on the local Node origin.
+
+### Intentionally unchanged
+
+- The favicon change does not alter navigation, content, palette, typography, scoring, Import behavior or responsive breakpoints.
+- Personal ratings, notes, corrections, Inbox, Library, logs and backups remain browser-local and untouched.
+- UI 3.5.3 remains local until the owner explicitly asks to commit and publish it.
+
+## Version 3.6.0 — Touch-first archive shell
+
+Implementation commit: pending
+
+### Decision
+
+- Keep the existing six routes and their separate editorial personalities. On phone widths, replace the crowded masthead navigation with a safe-area-aware five-place bottom bar: Home, Archive, Rate, Taste and More; More contains Import, Journal and Search.
+- Treat Rate as a listening instrument rather than a mini dashboard: retain the Radar and exact score controls, enlarge interaction targets and keep one save action near the lower thumb zone. Recompose Archive records into a dense vertical catalogue without adding rounded cards, glass layers or a generic mobile palette.
+- Keep public metadata evidence reviewable. QQ Music remains the exact-entity path for album/date/order. Add source links from MusicBrainz only as release-level language and country candidates; label its language scope precisely as release title/track-title language, never lyric language.
+
+### Evidence
+
+- Source and Worker contract tests cover the new release-candidate endpoint with a fixture carrying `eng` and `US`; the candidate only fills the existing owner-confirmation form and cannot save itself.
+- The responsive layer preserves the paper/ink/red/olive token system, zero-radius rules and existing desktop route layout while defining mobile safe areas, 44px controls, one-column records and a low-noise tab bar.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- `git diff --check`
+
+### Intentionally unchanged
+
+- No canonical metadata, personal rating, note, Inbox, Library, backup or browser-local record is modified by navigation or candidate lookup.
+- Desktop and tablet retain the primary masthead. No new account, cloud-sync, audio, playback or social feature is introduced.
+
+## Version 3.6.1 — Quiet structural rules
+
+Implementation commit: pending
+
+### Decision
+
+- Remove repeated enclosing and internal rules from Import's Inbox counters and Archive metadata coverage. Use aligned values and the existing spacing scale to group summary facts; retain a single opening rule where it establishes a new section.
+- Remove the redundant rule beneath Import's contextual navigation, because the following content boundary already establishes the transition.
+- Keep rules that encode a real relationship: individual records, rating scales, track order, waveform guides and editable controls are unchanged.
+
+### Evidence
+
+- At 390px, Inbox counters retain their two-column reading order without a four-cell grid or horizontal overflow; the five-place tab bar remains present.
+- At 1024px and 1440px, Archive metadata coverage remains aligned without vertical cell dividers; the desktop masthead remains present and no horizontal overflow occurs.
+
+### Verification
+
+- Real-browser checks at 390×844, 1024×768 and 1440×900 on the local Node origin.
+- `npm run build:static`
+- `npm test`
+- `git diff --check`
+
+### Intentionally unchanged
+
+- Browser chrome controls, including Safari's Back, Forward, Share and tab controls, are not site UI and are not changed by this release.
+- No record, score, note, Inbox item, local backup or metadata evidence is modified.
+
+## Version 3.6.2 — Inbox boundary correction
+
+Implementation commit: pending
+
+### Decision
+
+- Restore the two meaningful Inbox horizontal boundaries that the prior line reduction removed: the line below Import navigation and the line that closes the four lifecycle counts.
+- Keep the lifecycle summary free of all vertical dividers and its mobile internal row divider. The resulting mobile sequence is navigation boundary → summary values → summary end → next-section boundary.
+
+### Evidence
+
+- At 390×844, the navigation, count summary and Playlist Sources retain distinct reading groups with no horizontal overflow and no four-cell-grid treatment.
+
+### Intentionally unchanged
+
+- Playlist Sources and individual Inbox records retain their own boundaries because they identify a new source section and separate actionable records.
+
+## Version 3.6.3 — Journal rhythm, Inbox columns
+
+Implementation commit: pending
+
+### Decision
+
+- Restore Inbox's vertical dividers between lifecycle numbers. Those rules make the four-state summary scannable and are not decoration.
+- Remove only the repeated horizontal rules from the Journal list: its enclosing top rule and the bottom rule repeated on every entry. Preserve the Journal's date, title, score and note hierarchy, increasing vertical separation instead.
+
+### Intentionally unchanged
+
+- Journal's Annual Index boundary, record editing controls and other lines that describe a distinct destination or interactive control remain intact.
+
+## Version 3.6.4 — Restore pre-reduction rule system
+
+Implementation commit: pending
+
+### Decision
+
+- Restore the last approved rule system from before the line-density experiments. This reinstates Inbox summary borders and dividers, Archive metadata coverage rules, Import section rules and Journal list rules exactly as they were under UI 3.6.0.
+- Preserve the touch-first shell, responsive composition and all non-line-related UI 3.6 work.
+
+### Intentionally unchanged
+
+- This restoration does not alter routes, browser-local records, data flows, translations, icons, favicon, navigation or Cloudflare integration.
+
+## Version 3.7.0 — Private sync as a reversible Data Desk action
+
+Implementation commit: pending
+
+### Decision
+
+- Keep cross-device sync out of the Archive, Rate and public browsing surfaces. It belongs in Data Desk, alongside backup, restore and recovery, because it moves a complete personal archive rather than a single music record.
+- Use GitHub only as the account identity layer. Encrypt the archive inside the browser before upload with the existing AES-GCM backup format; the Worker and D1 persist only ciphertext, a revision counter and short-lived account/session plumbing.
+- Make download a two-stage interaction: decrypt and preview compatible groups/conflicts first, then let the owner choose local or cloud values for conflicts and explicitly confirm the merge. Preserve the established whole-restore rollback.
+- Keep the new block typographic and ruled rather than presenting it as a rounded cloud-product card. The page remains an archival desk, not a generic account dashboard.
+
+### Evidence
+
+- The Worker contract suite verifies that the sync capability is advertised but remains unavailable without the D1 binding and OAuth secret.
+- Local `npm run build:static` and `npm test` complete with the encrypted client module included in the offline shell, while API responses remain excluded from Service Worker caching.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- `git diff --check`
+- Production sign-in, encrypted upload, download preview, conflict-policy merge and logout against the owner-controlled Worker/D1 deployment.
+
+### Intentionally unchanged
+
+- No browser-local rating, note, Inbox, Library, Memory, Journal, backup or metadata correction is uploaded automatically.
+- The GitHub Client Secret remains a Cloudflare Worker secret and is not written to this repository, the public site or browser storage.

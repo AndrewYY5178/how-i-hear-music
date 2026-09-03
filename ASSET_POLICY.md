@@ -22,4 +22,4 @@ This policy is operational guidance, not legal advice. Public or commercial expa
 
 ## Fonts and first-party graphics
 
-The current prototype loads Libre Baskerville and DM Mono from Google Fonts. A public-scale deployment should either self-host properly licensed font files or retain the remote service only after reviewing its privacy and availability trade-offs. The favicon and social preview are original repository-owned SVG graphics and may be served locally.
+The current prototype loads Libre Baskerville and DM Mono from Google Fonts. A public-scale deployment should either self-host properly licensed font files or retain the remote service only after reviewing its privacy and availability trade-offs. The transparent PNG favicon and SVG/PNG social preview are original repository-owned graphics and may be served locally.

@@ -4,6 +4,7 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { getQQAlbumDetails, parseQQAlbumLink } from './server/providers/qqmusic-album.mjs';
+import { searchMusicBrainzReleaseCandidates } from './server/providers/musicbrainz.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 3000);
@@ -209,7 +210,7 @@ createServer(async (request, response) => {
   if (origin && allowedOrigins.has(origin)) { response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); response.setHeader('Access-Control-Allow-Headers', 'Content-Type'); response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); }
   if (request.method === 'OPTIONS') { if (origin && !allowedOrigins.has(origin)) { response.writeHead(403); response.end(); } else { response.writeHead(204); response.end(); } return; }
   if (request.method === 'GET' && requestPath === '/healthz') { json(response, 200, { status: 'ok', version: serviceVersion, uptimeSeconds: Math.round(process.uptime()), cacheEntries: apiCache.size, providers: ['qqmusic', 'netease'] }); return; }
-  if (request.method === 'GET' && requestPath === '/api/version') { json(response, 200, { version: serviceVersion, capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist'] }); return; }
+  if (request.method === 'GET' && requestPath === '/api/version') { json(response, 200, { version: serviceVersion, capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates'] }); return; }
   if (request.url?.startsWith('/api/') && !withinRateLimit(clientAddress(request))) { json(response, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }); return; }
   if (request.method === 'POST' && request.url === '/api/import/qq-album-preview') {
     try {
@@ -230,6 +231,16 @@ createServer(async (request, response) => {
     } catch (error) {
       logFailure(request, requestId, error);
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not search QQ Music.' });
+    }
+    return;
+  }
+  if (request.method === 'GET' && requestPath === '/api/metadata/musicbrainz-release-candidates') {
+    try {
+      const requestUrl = new URL(request.url, 'http://localhost'); const album = requestUrl.searchParams.get('album'); const artist = requestUrl.searchParams.get('artist');
+      json(response, 200, { candidates: await cacheFor(`musicbrainz-release:${String(album || '').trim().toLowerCase()}:${String(artist || '').trim().toLowerCase()}`, () => searchMusicBrainzReleaseCandidates({ album, artist }, { serviceAgent }), 3_600_000) });
+    } catch (error) {
+      logFailure(request, requestId, error);
+      json(response, 422, { error: error instanceof Error ? error.message : 'Could not search MusicBrainz release metadata.' });
     }
     return;
   }
