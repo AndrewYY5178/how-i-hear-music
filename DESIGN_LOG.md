@@ -1283,3 +1283,22 @@ Implementation commit: pending
 
 - No browser-local rating, note, Inbox, Library, Memory, Journal, backup or metadata correction is uploaded automatically.
 - The GitHub Client Secret remains a Cloudflare Worker secret and is not written to this repository, the public site or browser storage.
+
+## Version 3.7.1 — Cloud-sync language closure
+
+Implementation commit: pending
+
+### Decision
+
+- Translate the signed-in identity, empty-cloud state, upload revision, download preview, conflict count, merge result and failure states so the Chinese Data Desk never falls back to English during the sync workflow.
+- Keep GitHub usernames unchanged as account identifiers; translate only the surrounding interface language.
+
+### Verification
+
+- `npm run build:static`
+- `npm test`
+- Production Chinese Data Desk check after GitHub authorization.
+
+### Intentionally unchanged
+
+- Authentication, encryption, conflict handling, D1 storage and all browser-local music data remain unchanged.
