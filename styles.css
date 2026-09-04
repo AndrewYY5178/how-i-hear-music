@@ -12,7 +12,7 @@ button { cursor:pointer; }
 .brand { font-size:13px; font-weight:500; }.brand span { color:var(--red); }.primary-nav { display:flex; align-items:center; gap:20px; font-size:10px; }.primary-nav a { position:relative; padding:23px 0 19px; }.primary-nav a::after { content:""; position:absolute; right:0; bottom:0; left:0; height:2px; background:var(--red); transform:scaleX(0); }.primary-nav a:hover::after,.primary-nav a.active::after { transform:scaleX(1); }.menu-toggle { display:none; }
 .brand-account { display:flex; align-items:center; gap:10px; min-width:max-content; font-family:var(--mono); }
 .account-toggle { min-width:44px; min-height:44px; padding:8px 0; border:0; background:transparent; color:var(--ink); font:500 10px var(--mono); letter-spacing:.07em; text-transform:uppercase; }
-.account-toggle.has-nickname { max-width:128px; overflow:hidden; font:italic 400 14px/1.2 var(--serif); letter-spacing:0; text-overflow:ellipsis; text-transform:none; white-space:nowrap; }
+.account-toggle.has-nickname { max-width:156px; padding-right:6px; overflow:hidden; font:italic 400 14px/1.2 var(--serif); letter-spacing:0; text-overflow:ellipsis; text-transform:none; white-space:nowrap; }
 .account-toggle:hover,.account-toggle[aria-expanded="true"] { color:var(--red); }
 .account-panel { position:fixed; z-index:32; top:64px; right:64px; width:min(260px,calc(100vw - 48px)); max-height:calc(100vh - 88px); padding:16px; overflow:auto; border:1px solid var(--ink); border-top:0; background:var(--paper-light); color:var(--ink); }
 .account-panel-head { display:flex; justify-content:space-between; align-items:center; gap:24px; }
@@ -998,7 +998,7 @@ body::before {
   .brand { min-height:44px; }
   .brand-account .brand-mark { display:block; }
   .account-toggle { min-height:44px; font-size:9px; }
-  .account-toggle.has-nickname { min-width:0; max-width:clamp(72px,22vw,96px); font-size:13px; }
+  .account-toggle.has-nickname { min-width:0; max-width:clamp(88px,28vw,128px); padding-right:5px; font-size:13px; }
   .account-panel { top:calc(56px + env(safe-area-inset-top)); right:16px; bottom:auto; left:auto; width:260px; max-height:calc(100vh - 144px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding:16px; border-top:0; }
   .account-panel h2 { max-width:210px; font-size:25px; }
   .account-actions .button { width:100%; min-height:44px; padding-inline:8px; }
@@ -1138,5 +1138,5 @@ body::before {
 
 @media (max-width:360px) {
   .brand-account .brand-mark { display:none; }
-  .account-toggle.has-nickname { max-width:96px; }
+  .account-toggle.has-nickname { max-width:112px; }
 }

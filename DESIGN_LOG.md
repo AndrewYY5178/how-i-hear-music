@@ -1532,3 +1532,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Home composition, random selection, masthead, footer, navigation, account UI and browser-local music data remain unchanged.
+
+## Version 3.8.16 — Nickname terminal clearance
+
+Implementation commit: pending
+
+### Decision
+
+- Add a small right-side breathing allowance and a wider cap to the signed-in masthead nickname control. Italic serif terminals can extend beyond their apparent advance width, so the previous clipping edge visibly cut the final `l` in some names.
+- Keep a bounded mobile width with a slightly larger cap; long nicknames still ellipsize instead of crowding the language or menu controls.
+
+### Intentionally unchanged
+
+- Nickname storage, account popover, GitHub identity, masthead order, typography, navigation and all music data remain unchanged.
