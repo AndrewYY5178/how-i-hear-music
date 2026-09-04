@@ -400,6 +400,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Remove the repeated red section eyebrow above page titles (`ARCHIVE`, `RATE`, `TASTE`, `IMPORT`, `JOURNAL` and nested page-header labels) so each route opens directly on its title. *(UI 0.9.5.)*
 - [x] Remove the `PERSONAL ARCHIVE / ISSUE 001` eyebrow above the Home hero title while retaining the footer issue marker and all content-level labels. *(UI 0.9.6.)*
 - [x] Give the signed-in masthead nickname extra right-side breathing room so italic terminal glyphs (such as a final `l`) are not visually clipped on desktop or phone widths. *(UI 0.9.7.)*
+- [x] Align the account nickname and GitHub identity rows to one shared label/value grid, keeping `SAVE` in the same right-hand action column. *(UI 0.9.8.)*
 - [x] Align the `NICKNAME` label with its editable nickname value on one row, while returning the GitHub username to its own compact identity row. *(UI 0.9.3.)*
 - [x] Place the editable nickname and GitHub username on one aligned account row, preserving the compact panel and Save target while keeping long values safely truncated. *(UI 0.9.1.)*
 - [x] Give the inline GitHub handle enough width to show the normal account name in full while tightening the row gap. *(UI 0.9.2.)*

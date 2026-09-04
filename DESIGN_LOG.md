@@ -1545,3 +1545,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Nickname storage, account popover, GitHub identity, masthead order, typography, navigation and all music data remain unchanged.
+
+## Version 3.8.17 — Account row alignment
+
+Implementation commit: pending
+
+### Decision
+
+- Use one shared label/value grid for the `NICKNAME` and `GITHUB IDENTITY` rows. Both `Coofflll` and `@AndrewYY5178` now begin on the same vertical column.
+- Reserve the rightmost grid column for `SAVE` on the nickname row and let the identity value span that same remaining measure, keeping the action aligned without unnecessarily truncating the GitHub handle.
+
+### Intentionally unchanged
+
+- Account panel dimensions, nickname editing, GitHub authentication, automatic sync, mobile navigation and all music data remain unchanged.
