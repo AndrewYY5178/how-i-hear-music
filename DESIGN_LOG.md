@@ -1558,3 +1558,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account panel dimensions, nickname editing, GitHub authentication, automatic sync, mobile navigation and all music data remain unchanged.
+
+## Version 3.8.18 — Account baseline alignment
+
+Implementation commit: pending
+
+### Decision
+
+- Align both account rows on their text baselines instead of centering the nickname row's label, value and `SAVE` control independently. This keeps the top row visually seated like the `GITHUB IDENTITY` row beneath it.
+- Retain the shared label/value columns and the 44px interactive targets. Only the row alignment changes; the input and button remain easy to tap while their visible text follows the same editorial baseline logic.
+
+### Intentionally unchanged
+
+- Account panel dimensions, nickname storage, GitHub authentication, automatic sync, navigation, typography choices and all music data remain unchanged.

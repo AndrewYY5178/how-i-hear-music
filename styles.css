@@ -20,12 +20,12 @@ button { cursor:pointer; }
 .account-panel h2 { margin:16px 0 8px; outline:0; font:400 25px/1.03 var(--serif); letter-spacing:-.05em; }
 .account-panel>p { max-width:220px; margin:0; color:var(--muted); font:italic 12px/1.45 var(--serif); }
 .account-nickname-form { display:grid; gap:2px; margin-top:12px; }
-.account-nickname-row { display:grid; grid-template-columns:86px minmax(0,1fr) 44px; align-items:center; gap:8px; border-bottom:1px solid var(--ink); }
+.account-nickname-row { display:grid; grid-template-columns:86px minmax(0,1fr) 44px; align-items:baseline; gap:8px; border-bottom:1px solid var(--ink); }
 .account-nickname-form input { width:100%; min-height:44px; padding:7px 0; border:0; outline:0; background:transparent; color:var(--ink); font:400 16px var(--serif); }
 .account-nickname-row:focus-within { border-color:var(--red); }
 .account-nickname-label { color:var(--muted); font-size:7px; white-space:nowrap; }
 .account-nickname-form .text-action { min-width:44px; min-height:44px; padding:0; border:0; background:transparent; color:var(--red); font:500 8px var(--mono); letter-spacing:.06em; }
-.account-identity { display:grid; grid-template-columns:86px minmax(0,1fr); align-items:center; gap:8px; margin-top:8px; padding:2px 0 1px; border-bottom:1px solid var(--line); }
+.account-identity { display:grid; grid-template-columns:86px minmax(0,1fr); align-items:baseline; gap:8px; margin-top:8px; padding:2px 0 1px; border-bottom:1px solid var(--line); }
 .account-identity span,.account-status { font-size:7px; }
 .account-identity strong { grid-column:2; min-width:0; overflow:hidden; color:var(--ink); font:400 13px/1 var(--serif); letter-spacing:-.02em; text-overflow:ellipsis; white-space:nowrap; }
 .account-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:16px; }
