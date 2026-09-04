@@ -1506,3 +1506,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Routes, browser history, masthead navigation, page content, data actions and browser-local music data remain unchanged.
+
+## Version 3.8.14 — Direct page titles
+
+Implementation commit: pending
+
+### Decision
+
+- Remove the repeated red eyebrow above route page titles (`ARCHIVE`, `RATE`, `TASTE`, `IMPORT`, `JOURNAL` and their nested page-header variants). The masthead already identifies the active section, so repeating it immediately above the title made the opening frame feel labeled twice.
+- Keep content-level eyebrows such as `PLAYLIST SOURCES`, `LOCAL DATA`, and `SET THE SHAPE`; those labels organize secondary modules rather than restating the route.
+
+### Intentionally unchanged
+
+- Route navigation, page titles and subtitles, in-page recovery/action links, account UI, visualizations and browser-local music data remain unchanged.
