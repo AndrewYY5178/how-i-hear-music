@@ -25,7 +25,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Refine nickname editing into a quiet single-line control, reduce GitHub identity to compact secondary metadata and render the masthead nickname in serif italic.
 - [x] Keep the account popover build mark in sync with the published 0.9.13 release so Pages cache updates are visible in the UI.
 - [x] Add a compact account-popover update check that refreshes the Service Worker and automatically activates a newer shell when one is found. *(UI 0.9.14.)*
-- [ ] 将 How I Hear Music 制作为真正可安装、可独立运行的跨设备应用，而不只是网页快捷方式或浏览器 PWA；优先评估免费的开源打包方案，保留现有 GitHub 登录、自动同步和浏览器本地数据边界，并先建立可回滚的桌面与移动端发布流程。
+- [ ] 将 How I Hear Music 先制作成真正可安装、可独立运行的 macOS 应用，而不只是网页快捷方式或浏览器 PWA；暂不上任何应用商店，优先采用免费的开源打包方案，通过 GitHub Releases 直接分发与更新，保留现有 GitHub 登录、自动同步和本地数据边界，并先建立可回滚的 macOS 发布流程。
 - [ ] Commit, deploy the selected V13 favicon and UI 3.6.0 to GitHub Pages and Cloudflare Worker, then verify the production update path.
 
 ## Active favicon identity implementation — UI 3.5.3
