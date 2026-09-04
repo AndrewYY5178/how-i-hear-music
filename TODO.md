@@ -396,6 +396,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## P2 — Sync and account features
 
+- [x] Recompose the Journal root: give Rediscover one square editorial boundary, remove the repeated Annual Index rules, and leave the per-track timeline off the overview while preserving every saved record and annual summary. *(UI 0.8.9.)*
 - [x] Refine the compact account identity: remove the redundant signed-in sync sentence and set the GitHub handle in larger editorial serif type without increasing the identity row height. *(UI 0.8.8.)*
 - [x] Add manual `SYNC NOW` for locally stored public QQ Music and NetEase playlist sources.
 - [x] Detect additions and removals between two playlist snapshots, with explicit add-and-save or snapshot-only actions.

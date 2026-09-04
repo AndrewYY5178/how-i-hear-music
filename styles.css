@@ -700,7 +700,7 @@ body::before {
 .long-note summary { display:flex; min-height:40px; cursor:pointer; align-items:center; color:var(--red); font-size:8px; }
 .long-note .listening-note { margin:0 0 16px; }
 .long-note .listening-note textarea { border-top:0; }
-.journal-year-link { display:flex; max-width:760px; align-items:center; justify-content:space-between; margin-bottom:24px; padding:16px 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--line); }
+.journal-year-link { display:flex; max-width:760px; align-items:center; justify-content:space-between; margin:24px 0 0; padding:0; }
 .journal-reasons { margin-top:16px!important; color:var(--red)!important; font-size:8px!important; font-style:normal!important; }
 .journal-list blockquote { margin:16px 0 0; padding-left:16px; border-left:1px solid var(--red); font:italic 16px/1.5 var(--serif); }
 .journal-list blockquote b { color:var(--red); font:10px var(--mono); }
@@ -776,12 +776,12 @@ body::before {
 .rating-change div { padding:8px 8px 0 0; }
 .rating-change dt { font:8px var(--mono); }
 .rating-change dd { margin:8px 0 0; font:24px var(--serif); }
-.rediscover { display:grid; grid-template-columns:1fr auto; gap:24px; align-items:end; max-width:760px; min-height:224px; margin-bottom:40px; padding:40px 0 24px; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
+.rediscover { display:grid; grid-template-columns:1fr auto; gap:24px; align-items:end; max-width:760px; min-height:224px; margin-bottom:0; padding:24px; border:1px solid var(--ink); }
 .rediscover h2 { margin:16px 0 8px; font:400 40px/1 var(--serif); }
 .rediscover p { margin:0; color:var(--muted); }
 .rediscover>strong { grid-row:1; grid-column:2; color:var(--red); font:72px/.8 var(--serif); }
 .rediscover-actions { grid-column:1/-1; display:flex; flex-wrap:wrap; gap:16px; }
-.rediscover-empty { display:block; min-height:0; padding:24px 0; }
+.rediscover-empty { display:block; min-height:0; padding:24px; }
 .rediscover-empty p { margin-top:16px; }
 .taste-analysis-index { display:grid; grid-template-columns:repeat(2,1fr); margin-top:64px; border-top:1px solid var(--ink); }
 .taste-analysis-index a { min-height:64px; padding:24px 24px 16px 0; border-bottom:1px solid var(--line); font:10px var(--mono); }

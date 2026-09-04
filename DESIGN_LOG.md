@@ -1428,3 +1428,17 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - GitHub authentication, nickname editing, automatic synchronization, account actions and compact popover geometry remain unchanged.
+
+## Version 3.8.8 — Journal overview hierarchy
+
+Implementation commit: pending
+
+### Decision
+
+- Give Rediscover a single square 1px frame so it reads as a distinct listening prompt rather than another ruled interval in the Journal stream.
+- Remove the recurring Journal timeline from the overview and retain `ANNUAL INDEX` as the one next destination. The timeline was historical track-level detail, not part of the annual index; its removal here does not delete Journal records, ratings, notes, or the yearly evidence view.
+- Strip the Annual Index's top and bottom rules. The Rediscover frame provides the preceding boundary, so extra parallel lines no longer add useful structure.
+
+### Intentionally unchanged
+
+- Rediscovery selection, rate-again and skip actions, annual evidence calculation, saved Journal data, Archive data and search indexing remain unchanged.
