@@ -1584,3 +1584,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account data, authentication, automatic sync, touch targets, panel width, navigation and all music records remain unchanged.
+
+## Version 3.8.20 — Closer account rules
+
+Implementation commit: pending
+
+### Decision
+
+- Move the nickname rule eight pixels into its 44px control row and reduce the identity row's lower padding to eight pixels. The visible label/value baselines now sit closer to both rules, while the input and `SAVE` hit areas remain unchanged.
+- Keep the rule as a focus-aware pseudo-element so the tighter visual line does not shrink or move the interactive controls. Preserve the muted version mark at the popover's lower-right edge.
+
+### Intentionally unchanged
+
+- Account storage, authentication, automatic sync, panel width, navigation, version typography and all music records remain unchanged.

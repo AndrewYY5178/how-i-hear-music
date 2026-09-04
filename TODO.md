@@ -403,6 +403,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Align the account nickname and GitHub identity rows to one shared label/value grid, keeping `SAVE` in the same right-hand action column. *(UI 0.9.8.)*
 - [x] Baseline-align both account rows so `NICKNAME`, the editable value, `SAVE`, `GITHUB IDENTITY` and the GitHub handle share a consistent text baseline. *(UI 0.9.9.)*
 - [x] Equalize the visual breathing between account-row text and both rules, and add a quiet build version at the popover's lower-right edge. *(UI 0.9.10.)*
+- [x] Pull both account-row rules closer to their visible text while retaining 44px touch targets and the lower-right build mark. *(UI 0.9.11.)*
 - [x] Align the `NICKNAME` label with its editable nickname value on one row, while returning the GitHub username to its own compact identity row. *(UI 0.9.3.)*
 - [x] Place the editable nickname and GitHub username on one aligned account row, preserving the compact panel and Save target while keeping long values safely truncated. *(UI 0.9.1.)*
 - [x] Give the inline GitHub handle enough width to show the normal account name in full while tightening the row gap. *(UI 0.9.2.)*
