@@ -18,7 +18,7 @@ const request = async (path, options = {}) => {
 };
 export const syncSession = () => get();
 export const requestNicknamePrompt = () => { const saved = get(); if (saved?.token) set({ ...saved, promptNickname: true }); };
-export const clearNicknamePrompt = () => { const saved = get(); if (saved?.promptNickname) set({ ...saved, promptNickname: false }); };
+export const clearNicknamePrompt = () => { const saved = get(); if (saved?.promptNickname || !saved?.nicknamePromptSeen) set({ ...saved, promptNickname: false, nicknamePromptSeen: true }); };
 export const syncReady = () => Boolean(base());
 export const beginGithubSync = () => {
   if (!base()) throw new Error("Private sync is not available on this build.");

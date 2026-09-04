@@ -7,7 +7,7 @@ import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree,
 import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
 import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
 import { migrateLocalData } from "./modules/music/resilience.js";
-import { completeGithubSync, requestNicknamePrompt, startAutomaticSync } from "./modules/music/cloud-sync.js";
+import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
 import { accountNickname } from "./modules/music/account.js";
 import { bindSearch, searchPage } from "./modules/search/pages.js";
 import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js";
@@ -133,7 +133,9 @@ if (!restorePagesRoute()) render();
 observeLanguage();
 completeGithubSync().then(async (user) => {
   await startAutomaticSync({ initial: Boolean(user) });
-  if (user) { if (!accountNickname(user.id)) requestNicknamePrompt(); render(); }
+  const activeUser = user || syncSession()?.user; const shouldAskNickname = activeUser && !accountNickname(activeUser.id) && !syncSession()?.nicknamePromptSeen;
+  if (shouldAskNickname) requestNicknamePrompt();
+  if (user || shouldAskNickname) render();
 }).catch((error) => { console.warn("Account sign-in could not be completed.", error); });
 
 const registerOfflineShell = async () => {
