@@ -1387,3 +1387,17 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - GitHub remains the only account identity, personal music data remains private to the account, and no data is uploaded until a signed-in browser establishes the account sync copy.
+
+## Version 3.8.5 — A named archive
+
+Implementation commit: pending
+
+### Decision
+
+- After the first GitHub sign-in and cloud merge, open the existing compact Account popover and focus a single nickname field. Keep registration on GitHub; the nickname is presentation, not a second identity system.
+- Replace the signed-in masthead's generic Account label with the nickname in Libre Baskerville. This creates a direct connection between the person and the account surface while retaining the existing right alignment and popover geometry.
+- Store nicknames under the GitHub user ID and include that key in automatic account sync, so different accounts on one browser do not inherit each other's names. Keep GitHub identity visible inside the popover for unambiguous ownership.
+
+### Intentionally unchanged
+
+- Nicknames do not change authentication, authorization, routes, music records or the automatic-sync privacy boundary. The field is limited to 24 characters and long masthead labels truncate rather than shifting navigation.

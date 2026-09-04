@@ -17,6 +17,7 @@ globalThis.fetch = async (input, options) => {
 };
 
 const { storage, allTracks, trackId } = await import('../modules/music/data.js');
+const { accountNickname, saveAccountNickname } = await import('../modules/music/account.js');
 const { decryptBackup, exportBackup, exportEncryptedBackup, migrateLocalData, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback } = await import('../modules/music/resilience.js');
 const { metadataCoverage, metadataOverrideFor, saveMetadataOverride } = await import('../modules/music/metadata.js');
 const { journalEntry, updateJournalEntry } = await import('../modules/music/journal.js');
@@ -81,14 +82,19 @@ assert.throws(() => saveAlbumTrackRatings({ album: { title: 'Broken' }, tracks: 
 
 saveAlbumNote('album-test', 'The second half keeps opening outward.');
 assert.equal(albumNote('album-test').note, 'The second half keeps opening outward.');
+assert.equal(saveAccountNickname('fixture-user', '  Listening   Self  '), 'Listening Self');
+assert.equal(accountNickname('fixture-user'), 'Listening Self');
+assert.throws(() => saveAccountNickname('fixture-user', '   '), /nickname/);
 
 const backup = exportBackup();
 assert.equal(backup.version, 2);
 assert.ok(backup.data['how-i-hear-music:metadata-overrides:v1']);
 assert.ok(backup.data[albumNotesKey]);
+assert.equal(backup.data['how-i-hear-music:account-nickname:fixture-user:v1'], 'Listening Self');
 localStorage.clear();
 assert.equal(restoreBackup(backup) > 0, true);
 assert.equal(allTracks()[0].album, 'Confirmed Album');
+assert.equal(accountNickname('fixture-user'), 'Listening Self');
 saveAlbumNote('album-test', 'Local conflict value');
 assert.equal(previewRestore(backup).conflicts > 0, true);
 restoreBackup(backup, { conflictPolicy: 'backup' });

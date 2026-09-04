@@ -1,4 +1,5 @@
 import { data, storage } from "./data.js";
+import { accountNicknamePrefix } from "./account.js";
 
 export const backupFormat = "how-i-hear-music-backup";
 export const backupVersion = 2;
@@ -17,10 +18,10 @@ const fixedKeys = [
   "how-i-hear-music:playlist-snapshots:v1", "how-i-hear-music:metadata-overrides:v1",
   "how-i-hear-music:album-notes:v1",
 ];
-export const backupKeys = () => [...new Set([...fixedKeys, ...Object.keys(localStorage).filter((key) => key.startsWith("how-i-hear-music:album-draft:"))])];
+export const backupKeys = () => [...new Set([...fixedKeys, ...Object.keys(localStorage).filter((key) => key.startsWith("how-i-hear-music:album-draft:") || key.startsWith(accountNicknamePrefix))])];
 const identity = (item) => item?.id || `${item?.title || ""}::${item?.artist || ""}::${item?.at || ""}` || JSON.stringify(item);
 const mergeArrays = (current, incoming) => { const result = [...current]; const seen = new Set(current.map(identity)); incoming.forEach((item) => { const id = identity(item); if (!seen.has(id)) { seen.add(id); result.push(item); } }); return result; };
-const compatibleEntries = (payload) => { const allowed = new Set(fixedKeys); return Object.entries(payload?.data || {}).filter(([key]) => allowed.has(key) || key.startsWith("how-i-hear-music:album-draft:")); };
+const compatibleEntries = (payload) => { const allowed = new Set(fixedKeys); return Object.entries(payload?.data || {}).filter(([key]) => allowed.has(key) || key.startsWith("how-i-hear-music:album-draft:") || key.startsWith(accountNicknamePrefix)); };
 
 export const exportBackup = () => ({ format: backupFormat, version: backupVersion, schemaVersion: 1, exportedAt: new Date().toISOString(), data: Object.fromEntries(backupKeys().map((key) => [key, storage.get(key, null)]).filter(([, value]) => value !== null)) });
 const bytesToBase64 = (bytes) => { let binary = ""; bytes.forEach((byte) => { binary += String.fromCharCode(byte); }); return btoa(binary); };
@@ -58,6 +59,7 @@ export const restoreBackup = (payload, { conflictPolicy = "backup", createRollba
     const current = storage.get(key, Array.isArray(value) ? [] : {}); let next = null;
     if (Array.isArray(value)) { const local = Array.isArray(current) ? current : []; next = conflictPolicy === "backup" ? mergeArrays(value, local) : mergeArrays(local, value); }
     else if (value && typeof value === "object") { const local = current && typeof current === "object" ? current : {}; next = conflictPolicy === "backup" ? { ...local, ...value } : { ...value, ...local }; }
+    else if (key.startsWith(accountNicknamePrefix) && typeof value === "string") next = conflictPolicy === "local" && typeof current === "string" && current ? current : value;
     else if (key.startsWith("how-i-hear-music:album-draft:") && Number.isFinite(value)) next = value;
     if (next !== null) { if (!storage.set(key, next)) throw new Error("Browser storage rejected part of the restore."); restored += 1; }
   }); } catch (error) { if (createRollback) restoreLastRollback(); throw error; }

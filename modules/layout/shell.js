@@ -1,5 +1,6 @@
 import { data, safe } from "../music/data.js";
-import { beginGithubSync, readSyncStatus, signOutSync, syncReady, syncSession } from "../music/cloud-sync.js";
+import { accountNickname, saveAccountNickname } from "../music/account.js";
+import { beginGithubSync, clearNicknamePrompt, readSyncStatus, signOutSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
@@ -27,10 +28,12 @@ const mobileShell = (path) => {
 };
 const accountShell = () => {
   const session = syncSession(); const ready = syncReady(); const signedIn = Boolean(session?.token && session?.user?.login);
-  const title = signedIn ? `Hello, ${safe(session.user.login)}.` : "GitHub account.";
+  const nickname = signedIn ? accountNickname(session.user.id) : "";
+  const title = signedIn ? `Hello, ${safe(nickname || session.user.login)}.` : "GitHub account.";
   const copy = signedIn ? "This archive now follows your GitHub account automatically." : "Authorize GitHub once to create one shared music archive.";
   const actions = signedIn ? `${link("/import/data", "DATA DESK", "button primary")}<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : ready ? `<button class="button primary" type="button" data-account-sign-in>REGISTER / SIGN IN WITH GITHUB</button>` : `<p class="account-unavailable">Account sign-in is available on the published site.</p>`;
-  return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / AUTO SYNC</span><button class="account-close" type="button" aria-label="Close account panel" data-account-close>×</button></div><h2 id="account-panel-title" tabindex="-1">${title}</h2><p>${copy}</p>${signedIn ? `<div class="account-identity"><span class="mono">GITHUB IDENTITY</span><strong>@${safe(session.user.login)}</strong></div>` : ""}<div class="account-actions">${actions}</div><p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking account sync…" : "Registration and sign-in are handled securely by GitHub."}</p></section>`;
+  const nicknameForm = signedIn ? `<form class="account-nickname-form"><label><span class="mono">DISPLAY NICKNAME</span><input name="nickname" value="${safe(nickname)}" maxlength="24" autocomplete="nickname" placeholder="How should this archive address you?" required></label><button class="text-action" type="submit">${nickname ? "CHANGE NICKNAME" : "SAVE NICKNAME"}</button></form>` : "";
+  return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / AUTO SYNC</span><button class="account-close" type="button" aria-label="Close account panel" data-account-close>×</button></div><h2 id="account-panel-title" tabindex="-1">${title}</h2><p>${copy}</p>${nicknameForm}${signedIn ? `<div class="account-identity"><span class="mono">GITHUB IDENTITY</span><strong>@${safe(session.user.login)}</strong></div>` : ""}<div class="account-actions">${actions}</div><p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking account sync…" : "Registration and sign-in are handled securely by GitHub."}</p></section>`;
 };
 export const link = (href, label, className = "") => `<a class="${className}" href="${withBase(href)}" data-route>${safe(label)}</a>`;
 export const pageHeader = (eyebrow, title, copy = "", actions = "") => `<section class="page-head"><span class="eyebrow mono">${safe(eyebrow)}</span><h1>${title}</h1>${copy ? `<p>${safe(copy)}</p>` : ""}${actions ? `<div class="page-actions">${actions}</div>` : ""}</section>`;
@@ -39,11 +42,12 @@ export const setDocumentTitle = (label = "Home") => { document.title = `${data.p
 
 export const renderShell = (path) => {
   const header = document.getElementById("site-header");
+  const session = syncSession(); const nickname = session?.user?.id ? accountNickname(session.user.id) : "";
   const moduleName = path.split("/").filter(Boolean)[0] || "home";
   document.body.dataset.module = moduleName;
   header.classList.remove("menu-open");
   const languageControl = (mobile = false) => `<button class="language-toggle${mobile ? " language-toggle-mobile" : ""}" type="button" data-language-toggle data-i18n-ignore aria-pressed="${currentLanguage() === "zh-CN"}" aria-label="${currentLanguage() === "zh-CN" ? "Switch to English" : "切换到中文"}">${currentLanguage() === "zh-CN" ? "EN" : "中文"}</button>`;
-  const accountControl = (mobile = false) => `<button class="account-toggle${mobile ? " account-toggle-mobile" : ""}" type="button" aria-expanded="false" aria-controls="account-panel">ACCOUNT</button>`;
+  const accountControl = (mobile = false) => `<button class="account-toggle${mobile ? " account-toggle-mobile" : ""}${nickname ? " has-nickname" : ""}" type="button" aria-expanded="false" aria-controls="account-panel"${nickname ? " data-i18n-ignore" : ""}>${safe(nickname || "ACCOUNT")}</button>`;
   header.innerHTML = `<div class="brand-account"><a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span></a><span class="brand-mark">anddream</span></div><div class="header-mobile-actions">${accountControl(true)}${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}${languageControl()}${accountControl()}</div>${accountShell()}${mobileShell(path)}`;
   document.getElementById("site-footer").innerHTML = `<span>HOW I HEAR MUSIC</span><span class="mono">PERSONAL ARCHIVE / ISSUE 001</span>`;
   const toggle = header.querySelector(".menu-toggle");
@@ -71,12 +75,14 @@ export const renderShell = (path) => {
     const bounds = button.getBoundingClientRect();
     return bounds.width > 0 && bounds.height > 0;
   }) || accountToggles[0];
-  const closeAccount = () => { accountPanel.hidden = true; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "false")); };
-  const openAccount = async () => { accountPanel.hidden = false; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "true")); accountPanel.querySelector("h2")?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `Automatic sync active · ${new Date(remote.updatedAt).toLocaleString()}` : "Your first local change will create the shared archive."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check account sync."; } };
+  const closeAccount = () => { accountPanel.hidden = true; clearNicknamePrompt(); accountToggles.forEach((button) => button.setAttribute("aria-expanded", "false")); };
+  const openAccount = async ({ focusNickname = false } = {}) => { accountPanel.hidden = false; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "true")); (focusNickname ? accountPanel.querySelector('[name="nickname"]') : accountPanel.querySelector("h2"))?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `Automatic sync active · ${new Date(remote.updatedAt).toLocaleString()}` : "Your first local change will create the shared archive."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check account sync."; } };
   accountToggles.forEach((button) => button.addEventListener("click", () => accountPanel.hidden ? openAccount() : closeAccount()));
   accountPanel.querySelector("[data-account-close]")?.addEventListener("click", () => { closeAccount(); visibleAccountToggle().focus(); });
   accountPanel.querySelector("[data-account-sign-in]")?.addEventListener("click", () => beginGithubSync());
+  accountPanel.querySelector(".account-nickname-form")?.addEventListener("submit", (event) => { event.preventDefault(); const status = accountPanel.querySelector("#account-status"); try { const saved = saveAccountNickname(session.user.id, new FormData(event.currentTarget).get("nickname")); clearNicknamePrompt(); accountToggles.forEach((button) => { button.textContent = saved; button.classList.add("has-nickname"); button.setAttribute("data-i18n-ignore", ""); }); accountPanel.querySelector("#account-panel-title").textContent = `Hello, ${saved}.`; event.currentTarget.querySelector("[type=submit]").textContent = "CHANGE NICKNAME"; status.textContent = "Nickname saved · automatic sync queued."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not save the nickname."; } });
   accountPanel.querySelector("[data-account-sign-out]")?.addEventListener("click", async () => { const status = accountPanel.querySelector("#account-status"); try { await signOutSync(); renderShell(path); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not sign out."; } });
   header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); visibleAccountToggle().focus(); } if (!morePanel.hidden) { closeMore(); more.focus(); } });
+  if (session?.promptNickname && !nickname) { clearNicknamePrompt(); openAccount({ focusNickname: true }); queueMicrotask(() => accountPanel.querySelector('[name="nickname"]')?.focus()); }
   setDocumentTitle(path === "/" ? "Home" : path.split("/").filter(Boolean).map((item) => item[0].toUpperCase() + item.slice(1)).join(" / "));
 };

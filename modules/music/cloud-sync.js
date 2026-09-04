@@ -17,6 +17,8 @@ const request = async (path, options = {}) => {
   return result;
 };
 export const syncSession = () => get();
+export const requestNicknamePrompt = () => { const saved = get(); if (saved?.token) set({ ...saved, promptNickname: true }); };
+export const clearNicknamePrompt = () => { const saved = get(); if (saved?.promptNickname) set({ ...saved, promptNickname: false }); };
 export const syncReady = () => Boolean(base());
 export const beginGithubSync = () => {
   if (!base()) throw new Error("Private sync is not available on this build.");
@@ -49,7 +51,7 @@ const pullCloud = async (conflictPolicy = "backup") => {
   const incoming = await downloadAccountSync();
   if (incoming.empty) return incoming;
   applyingRemote = true;
-  try { incoming.restored = restoreBackup(incoming.backup, { conflictPolicy }); }
+  try { incoming.restored = restoreBackup(incoming.backup, { conflictPolicy }); window.dispatchEvent(new CustomEvent("how-i-hear-music:sync-applied")); }
   finally { applyingRemote = false; }
   return incoming;
 };
