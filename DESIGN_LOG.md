@@ -1493,3 +1493,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Nickname storage, Save behavior, GitHub authentication, automatic sync and account panel dimensions remain unchanged.
+
+## Version 3.8.13 — Quiet page entry
+
+Implementation commit: pending
+
+### Decision
+
+- Remove the global back-path line that appeared above every page title (`← BACK HOME`, `← BACK TO ARCHIVE`, `← BACK TO RATE`, and similar). The masthead remains the persistent route switcher, so repeating the hierarchy before each title added navigation noise without adding a new destination.
+- Keep explicit in-page links used for recovery, empty states, and task completion; only the automatically injected page-entry label is removed.
+
+### Intentionally unchanged
+
+- Routes, browser history, masthead navigation, page content, data actions and browser-local music data remain unchanged.

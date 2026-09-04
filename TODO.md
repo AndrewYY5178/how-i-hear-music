@@ -396,6 +396,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## P2 — Sync and account features
 
+- [x] Remove the redundant global back-path labels above page titles; keep route navigation in the masthead and retain only intentional in-page recovery/action links. *(UI 0.9.4.)*
 - [x] Align the `NICKNAME` label with its editable nickname value on one row, while returning the GitHub username to its own compact identity row. *(UI 0.9.3.)*
 - [x] Place the editable nickname and GitHub username on one aligned account row, preserving the compact panel and Save target while keeping long values safely truncated. *(UI 0.9.1.)*
 - [x] Give the inline GitHub handle enough width to show the normal account name in full while tightening the row gap. *(UI 0.9.2.)*
