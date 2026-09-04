@@ -1519,3 +1519,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Route navigation, page titles and subtitles, in-page recovery/action links, account UI, visualizations and browser-local music data remain unchanged.
+
+## Version 3.8.15 — Quiet Home opening
+
+Implementation commit: pending
+
+### Decision
+
+- Remove the `PERSONAL ARCHIVE / ISSUE 001` eyebrow from the Home hero so the opening begins directly with `How I hear music.` rather than a second identity label above the title.
+- Retain the issue marker in the footer and keep content-level labels such as `CURRENTLY LISTENING`, `FEATURED SHAPE`, and `FEATURED LANDSCAPE` for section orientation.
+
+### Intentionally unchanged
+
+- Home composition, random selection, masthead, footer, navigation, account UI and browser-local music data remain unchanged.
