@@ -4,7 +4,7 @@ import { beginGithubSync, clearNicknamePrompt, readSyncStatus, signOutSync, sync
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
-const appVersion = "0.9.11";
+const appVersion = "0.9.13";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"], ["/journal", "Journal"],

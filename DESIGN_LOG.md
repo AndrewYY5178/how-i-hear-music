@@ -1610,3 +1610,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Archive indexes, metadata evidence, correction storage, search, account sync, navigation and all music records remain unchanged.
+
+## Version 3.8.22 — Synchronized build mark
+
+Implementation commit: pending
+
+### Decision
+
+- Align the account popover's visible build mark with the published 0.9.13 release. The previous shell constant lagged one release behind the Pages asset and Worker versions, making a successful deployment look stale to the owner.
+- Keep the build mark small and quiet; it remains a diagnostic cue rather than a new account control or content element.
+
+### Intentionally unchanged
+
+- Account data, authentication, automatic sync, navigation, layout, typography and all music records remain unchanged.
