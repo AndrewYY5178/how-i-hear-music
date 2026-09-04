@@ -1,4 +1,4 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.8.3";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.8.4";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
@@ -7,7 +7,7 @@ import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree,
 import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
 import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
 import { migrateLocalData } from "./modules/music/resilience.js";
-import { completeGithubSync } from "./modules/music/cloud-sync.js";
+import { completeGithubSync, startAutomaticSync } from "./modules/music/cloud-sync.js";
 import { bindSearch, searchPage } from "./modules/search/pages.js";
 import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js";
 
@@ -129,7 +129,7 @@ const restorePagesRoute = () => {
 migrateLocalData();
 if (!restorePagesRoute()) render();
 observeLanguage();
-completeGithubSync().then((user) => { if (user) render(); }).catch((error) => { console.warn("Account sign-in could not be completed.", error); });
+completeGithubSync().then(async (user) => { await startAutomaticSync({ initial: Boolean(user) }); if (user) render(); }).catch((error) => { console.warn("Account sign-in could not be completed.", error); });
 
 const registerOfflineShell = async () => {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;

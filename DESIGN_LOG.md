@@ -1373,3 +1373,17 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account panel size, login flow, navigation destinations, profile data and sync behavior remain unchanged.
+
+## Version 3.8.4 — Account-driven automatic sync
+
+Implementation commit: pending
+
+### Decision
+
+- Replace the password-gated manual upload/download workflow with GitHub-account automatic sync, following the owner's explicit preference for one shared archive across signed-in devices.
+- Keep the account surface compact: it reports automatic state and retains Data Desk plus sign-out, without adding a dashboard, password field or repeated transfer controls.
+- Encrypt the D1 payload at rest with a Worker-held account key. This removes the per-device password but deliberately changes the boundary from end-to-end encryption to service-processed account sync; the Data Desk continues to provide a local export and complete restore rollback.
+
+### Intentionally unchanged
+
+- GitHub remains the only account identity, personal music data remains private to the account, and no data is uploaded until a signed-in browser establishes the account sync copy.

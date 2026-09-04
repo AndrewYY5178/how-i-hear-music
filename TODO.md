@@ -16,6 +16,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Add source-linked language/region candidates from MusicBrainz releases, explicitly scoped as release market and title/track-title language rather than lyric language; never infer or save them automatically.
 - [x] Let the owner fill verified MusicBrainz language/region candidates into the existing field-evidence form in one action; saving the field evidence remains explicit and browser-local.
 - [x] Add optional GitHub-identified, client-side encrypted cloud sync: D1 stores ciphertext only; download previews conflicts before an owner-selected merge and retains the existing local rollback.
+- [x] Replace password-gated manual cloud copies with GitHub-account automatic sync, at the owner's explicit request; D1 remains encrypted at rest, but the Worker can process account data to synchronize it without a user-held password.
 - [x] Replace the masthead's contextless `001` with an Account control; expose GitHub registration/sign-in, identity, encrypted-copy status, Data Desk and sign-out in a responsive editorial account panel.
 - [x] Refine the Account panel into a compact masthead popover at desktop, tablet and phone widths; retain 44px controls without occupying the full mobile screen.
 - [x] Reduce signed-in Account content to identity, encrypted-copy state and two actions so the popover occupies roughly one-third to one-half of its prior visual area.

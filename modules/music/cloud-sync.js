@@ -1,5 +1,5 @@
 import { configuredApiBase } from "./api.js";
-import { decryptBackup, exportEncryptedBackup, previewRestore, restoreBackup } from "./resilience.js";
+import { exportBackup, previewRestore, restoreBackup } from "./resilience.js";
 
 const sessionKey = "how-i-hear-music:cloud-sync-session:v1";
 const get = () => { try { return JSON.parse(localStorage.getItem(sessionKey) || "null"); } catch { return null; } };
@@ -33,16 +33,49 @@ export const completeGithubSync = async () => {
 export const readSyncStatus = async () => {
   const result = await request("/api/sync/status"); const saved = get(); set({ ...saved, user: result.user, revision: result.revision, updatedAt: result.updatedAt }); return result;
 };
-export const pushEncryptedSync = async (password) => {
+export const pushAccountSync = async () => {
   const saved = get(); if (!saved?.token) throw new Error("Sign in with GitHub before syncing.");
-  const encrypted = await exportEncryptedBackup(password); const result = await request("/api/sync/blob", { method: "PUT", body: JSON.stringify({ encrypted, revision: Number(saved.revision || 0) }) });
+  const result = await request("/api/sync/blob", { method: "PUT", body: JSON.stringify({ backup: exportBackup(), revision: Number(saved.revision || 0) }) });
   set({ ...saved, revision: result.revision, updatedAt: result.updatedAt }); return result;
 };
-export const downloadEncryptedSync = async (password) => {
+export const downloadAccountSync = async () => {
   const saved = get(); if (!saved?.token) throw new Error("Sign in with GitHub before syncing.");
-  const result = await request("/api/sync/blob"); if (!result.encrypted) return { empty: true, revision: 0 };
-  const backup = await decryptBackup(result.encrypted, password); const preview = previewRestore(backup);
+  const result = await request("/api/sync/blob"); if (!result.backup) return { empty: true, revision: 0 };
+  const backup = result.backup; const preview = previewRestore(backup);
   set({ ...saved, revision: result.revision, updatedAt: result.updatedAt }); return { backup, preview, revision: result.revision, updatedAt: result.updatedAt };
 };
-export const applyDownloadedSync = (backup, conflictPolicy = "local") => restoreBackup(backup, { conflictPolicy });
+let automaticStarted = false; let automaticTimer = null; let applyingRemote = false;
+const pullCloud = async (conflictPolicy = "backup") => {
+  const incoming = await downloadAccountSync();
+  if (incoming.empty) return incoming;
+  applyingRemote = true;
+  try { incoming.restored = restoreBackup(incoming.backup, { conflictPolicy }); }
+  finally { applyingRemote = false; }
+  return incoming;
+};
+const reconcile = async ({ initial = false } = {}) => {
+  const before = Number(syncSession()?.revision || 0); const remote = await readSyncStatus();
+  if (!remote.revision) return pushAccountSync();
+  if (initial || Number(remote.revision) > before) return pullCloud("backup");
+  return remote;
+};
+const schedule = () => {
+  if (applyingRemote || !syncSession()?.token) return;
+  clearTimeout(automaticTimer); automaticTimer = setTimeout(async () => {
+    try { await pushAccountSync(); }
+    catch (error) {
+      if (error?.status !== 409) { console.warn("Automatic account sync failed.", error); return; }
+      try { await pullCloud("local"); await pushAccountSync(); } catch (retryError) { console.warn("Automatic account sync retry failed.", retryError); }
+    }
+  }, 900);
+};
+export const startAutomaticSync = async ({ initial = false } = {}) => {
+  if (!syncSession()?.token) return null;
+  if (!automaticStarted) {
+    automaticStarted = true;
+    window.addEventListener("how-i-hear-music:local-change", schedule);
+    window.setInterval(() => reconcile().catch((error) => console.warn("Automatic account sync check failed.", error)), 45_000);
+  }
+  return reconcile({ initial });
+};
 export const signOutSync = async () => { try { await request("/api/sync/logout", { method: "POST", body: "{}" }); } finally { clear(); } };

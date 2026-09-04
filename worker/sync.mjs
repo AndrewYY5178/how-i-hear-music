@@ -18,6 +18,22 @@ const bearer = (request) => {
 };
 const configured = (env) => Boolean(env.SYNC_DB && env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET && env.SYNC_CALLBACK_URL);
 const response = (headers, status, body) => new Response(JSON.stringify(body), { status, headers });
+const bytesToBase64 = (value) => { let binary = ""; new Uint8Array(value).forEach((byte) => { binary += String.fromCharCode(byte); }); return btoa(binary); };
+const base64ToBytes = (value) => Uint8Array.from(atob(String(value || "")), (character) => character.charCodeAt(0));
+const accountKey = async (env, userId, usage) => {
+  const material = await crypto.subtle.digest("SHA-256", encoder.encode(`${env.GITHUB_CLIENT_SECRET}:${userId}:how-i-hear-music-account-sync:v1`));
+  return crypto.subtle.importKey("raw", material, { name: "AES-GCM" }, false, usage);
+};
+const encryptAccountBackup = async (env, userId, backup) => {
+  const iv = crypto.getRandomValues(new Uint8Array(12)); const key = await accountKey(env, userId, ["encrypt"]);
+  const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoder.encode(JSON.stringify(backup)));
+  return { format: "how-i-hear-music-account-sync", version: 1, algorithm: "AES-GCM", iv: bytesToBase64(iv), ciphertext: bytesToBase64(ciphertext) };
+};
+const decryptAccountBackup = async (env, userId, payload) => {
+  if (!payload || payload.format !== "how-i-hear-music-account-sync" || payload.version !== 1) throw new Error("This is a legacy password-encrypted sync copy. Keep it as a local backup, then create a new automatic sync copy.");
+  const key = await accountKey(env, userId, ["decrypt"]); const plaintext = await crypto.subtle.decrypt({ name: "AES-GCM", iv: base64ToBytes(payload.iv) }, key, base64ToBytes(payload.ciphertext));
+  return JSON.parse(new TextDecoder().decode(plaintext));
+};
 
 const session = async (request, env) => {
   const token = bearer(request);
@@ -31,7 +47,7 @@ const requireSession = async (request, env, headers) => {
   const current = await session(request, env);
   return current || response(headers, 401, { error: "Sign in to sync this archive." });
 };
-const validateEncrypted = (value) => value && typeof value === "object" && value.format === "how-i-hear-music-encrypted-backup" && typeof value.ciphertext === "string" && typeof value.salt === "string" && typeof value.iv === "string";
+const validateBackup = (value) => value && typeof value === "object" && value.format === "how-i-hear-music-backup" && [1, 2].includes(value.version) && value.data && typeof value.data === "object" && !Array.isArray(value.data);
 
 export const handleSync = async ({ request, url, env, headers, origin }) => {
   if (!url.pathname.startsWith("/api/sync/")) return null;
@@ -85,19 +101,22 @@ export const handleSync = async ({ request, url, env, headers, origin }) => {
   }
   if (request.method === "GET" && path === "/api/sync/blob") {
     const current = await requireSession(request, env, headers); if (current instanceof Response) return current;
-    const blob = await db.prepare("SELECT revision, encrypted_payload, updated_at FROM sync_blobs WHERE user_id = ?").bind(current.user_id).first();
-    return response(headers, 200, blob ? { revision: Number(blob.revision), encrypted: JSON.parse(blob.encrypted_payload), updatedAt: blob.updated_at } : { revision: 0, encrypted: null, updatedAt: null });
+    try {
+      const blob = await db.prepare("SELECT revision, encrypted_payload, updated_at FROM sync_blobs WHERE user_id = ?").bind(current.user_id).first();
+      return response(headers, 200, blob ? { revision: Number(blob.revision), backup: await decryptAccountBackup(env, current.user_id, JSON.parse(blob.encrypted_payload)), updatedAt: blob.updated_at } : { revision: 0, backup: null, updatedAt: null });
+    } catch (error) { return response(headers, 409, { error: error.message || "Could not read the account sync copy." }); }
   }
   if (request.method === "PUT" && path === "/api/sync/blob") {
     try {
       const current = await requireSession(request, env, headers); if (current instanceof Response) return current;
-      const body = await readBody(request); if (!validateEncrypted(body.encrypted)) throw new Error("Only a valid encrypted archive can be synced.");
+      const body = await readBody(request); if (!validateBackup(body.backup)) throw new Error("Only a valid account archive can be synced.");
       const expected = Math.max(0, Number(body.revision) || 0); const existing = await db.prepare("SELECT revision FROM sync_blobs WHERE user_id = ?").bind(current.user_id).first(); const actual = Number(existing?.revision || 0);
       if (actual !== expected) return response(headers, 409, { error: "A newer encrypted archive is available.", revision: actual });
       const revision = actual + 1; const updatedAt = now();
-      await db.prepare("INSERT INTO sync_blobs (user_id, revision, encrypted_payload, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET revision = excluded.revision, encrypted_payload = excluded.encrypted_payload, updated_at = excluded.updated_at").bind(current.user_id, revision, JSON.stringify(body.encrypted), updatedAt).run();
+      const encrypted = await encryptAccountBackup(env, current.user_id, body.backup);
+      await db.prepare("INSERT INTO sync_blobs (user_id, revision, encrypted_payload, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET revision = excluded.revision, encrypted_payload = excluded.encrypted_payload, updated_at = excluded.updated_at").bind(current.user_id, revision, JSON.stringify(encrypted), updatedAt).run();
       return response(headers, 200, { revision, updatedAt });
-    } catch (error) { return response(headers, 400, { error: error.message || "Could not save the encrypted archive." }); }
+    } catch (error) { return response(headers, 400, { error: error.message || "Could not save the account archive." }); }
   }
   if (request.method === "POST" && path === "/api/sync/logout") {
     const token = bearer(request); if (token) await db.prepare("DELETE FROM sync_sessions WHERE token_hash = ?").bind(await hash(token)).run();
