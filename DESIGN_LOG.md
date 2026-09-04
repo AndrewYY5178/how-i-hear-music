@@ -1455,3 +1455,41 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account popover, nickname storage, GitHub identity, automatic sync, language switching and all music data remain unchanged.
+
+## Version 3.8.10 — Inline account identity
+
+Implementation commit: pending
+
+### Decision
+
+- Keep the `NICKNAME` label as the editor's context, then place the nickname value and `@GitHub` username on the same baseline with Save at the edge. This makes the account's presentation name and authenticated identity readable as one signature rather than two stacked blocks.
+- Keep the handle in the same larger serif treatment and cap both values with ellipsis behavior so long nicknames never push the Save target out of the compact popover.
+
+### Intentionally unchanged
+
+- Nickname storage, GitHub authentication, automatic sync, account actions, language behavior and local music data remain unchanged.
+
+## Version 3.8.11 — Inline handle clearance
+
+Implementation commit: pending
+
+### Decision
+
+- Widen the inline GitHub handle column to 108px and reduce the inter-column gap to 4px. This keeps the common `@AndrewYY5178` identity readable on one line beside the nickname while retaining the 44px Save target.
+
+### Intentionally unchanged
+
+- Nickname editing, account identity, authentication, automatic sync and popover geometry remain unchanged.
+
+## Version 3.8.12 — Nickname label alignment
+
+Implementation commit: pending
+
+### Decision
+
+- Place the `NICKNAME` context label beside the editable nickname on the same underlined row, matching the user's intended reading order.
+- Keep `GITHUB IDENTITY` as a separate compact row beneath it, preserving the full handle and its clear authenticated-identity meaning without crowding the editor.
+
+### Intentionally unchanged
+
+- Nickname storage, Save behavior, GitHub authentication, automatic sync and account panel dimensions remain unchanged.

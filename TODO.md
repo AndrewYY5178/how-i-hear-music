@@ -396,6 +396,9 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## P2 — Sync and account features
 
+- [x] Align the `NICKNAME` label with its editable nickname value on one row, while returning the GitHub username to its own compact identity row. *(UI 0.9.3.)*
+- [x] Place the editable nickname and GitHub username on one aligned account row, preserving the compact panel and Save target while keeping long values safely truncated. *(UI 0.9.1.)*
+- [x] Give the inline GitHub handle enough width to show the normal account name in full while tightening the row gap. *(UI 0.9.2.)*
 - [x] Coordinate the Chinese masthead nickname with language and menu controls: use a responsive account width and reclaim the narrowest phone space from the publisher signature so the nickname is never visually covered. *(UI 0.9.0.)*
 - [x] Recompose the Journal root: give Rediscover one square editorial boundary, remove the repeated Annual Index rules, and leave the per-track timeline off the overview while preserving every saved record and annual summary. *(UI 0.8.9.)*
 - [x] Refine the compact account identity: remove the redundant signed-in sync sentence and set the GitHub handle in larger editorial serif type without increasing the identity row height. *(UI 0.8.8.)*
