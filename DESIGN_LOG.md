@@ -1597,3 +1597,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account storage, authentication, automatic sync, panel width, navigation, version typography and all music records remain unchanged.
+
+## Version 3.8.21 — Quiet Archive entry
+
+Implementation commit: pending
+
+### Decision
+
+- Remove the `ARCHIVE MAINTENANCE` disclosure and its `MANAGE METADATA` button from Archive Home. The primary Archive opening now stays focused on Tracks, Albums and Artists instead of presenting a rarely used maintenance task beside everyday browsing.
+- Keep `/archive/coverage`, field provenance, source candidates, local corrections and all saved metadata available through the existing route. This is an entry-point reduction, not a data or capability removal.
+
+### Intentionally unchanged
+
+- Archive indexes, metadata evidence, correction storage, search, account sync, navigation and all music records remain unchanged.
