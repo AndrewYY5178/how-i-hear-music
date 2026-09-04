@@ -1415,3 +1415,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Nickname storage, editing, automatic sync, GitHub identity and account actions remain functionally identical.
+
+## Version 3.8.7 — Editorial account signature
+
+Implementation commit: pending
+
+### Decision
+
+- Remove the redundant signed-in sentence explaining that the archive follows the GitHub account; the live synchronization status already communicates the same state more precisely.
+- Promote the GitHub handle from tiny mono metadata to a 13px Libre Baskerville signature while preserving the compressed identity row. Keep the `GITHUB IDENTITY` label quiet so the handle carries the hierarchy.
+
+### Intentionally unchanged
+
+- GitHub authentication, nickname editing, automatic synchronization, account actions and compact popover geometry remain unchanged.

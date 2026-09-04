@@ -396,6 +396,7 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## P2 — Sync and account features
 
+- [x] Refine the compact account identity: remove the redundant signed-in sync sentence and set the GitHub handle in larger editorial serif type without increasing the identity row height. *(UI 0.8.8.)*
 - [x] Add manual `SYNC NOW` for locally stored public QQ Music and NetEase playlist sources.
 - [x] Detect additions and removals between two playlist snapshots, with explicit add-and-save or snapshot-only actions.
 - [x] Deliberately keep sync manual; scheduled sync is not added without confirmed platform terms, deployed-server reliability and user consent.
