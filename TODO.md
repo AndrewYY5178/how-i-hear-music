@@ -24,6 +24,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Ask for an account nickname after first GitHub sign-in, allow later edits in the Account popover, sync it with the account archive and replace the masthead Account label with the serif nickname.
 - [x] Refine nickname editing into a quiet single-line control, reduce GitHub identity to compact secondary metadata and render the masthead nickname in serif italic.
 - [x] Keep the account popover build mark in sync with the published 0.9.13 release so Pages cache updates are visible in the UI.
+- [x] Add a compact account-popover update check that refreshes the Service Worker and automatically activates a newer shell when one is found. *(UI 0.9.14.)*
 - [ ] Commit, deploy the selected V13 favicon and UI 3.6.0 to GitHub Pages and Cloudflare Worker, then verify the production update path.
 
 ## Active favicon identity implementation — UI 3.5.3

@@ -8,7 +8,7 @@ const apiCache = new Map();
 const rateWindows = new Map();
 
 const allowedOrigins = (env) => new Set(String(env.ALLOWED_ORIGIN || defaultOrigin).split(',').map((value) => value.trim()).filter(Boolean));
-const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.13');
+const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.14');
 const serviceAgent = (env) => `How-I-Hear-Music/${serviceVersion(env)} metadata importer`;
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';

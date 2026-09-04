@@ -1,4 +1,4 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.13";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.14";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { home } from "./modules/home.js";
 import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
@@ -95,6 +95,52 @@ document.addEventListener("click", (event) => {
 window.addEventListener("popstate", render);
 window.addEventListener("how-i-hear-music:sync-applied", render);
 
+let offlineRegistration = null;
+let showOfflineUpdate = () => {};
+let updateCheckRunning = false;
+const checkForUpdates = async () => {
+  if (updateCheckRunning) return;
+  const button = document.querySelector("[data-check-update]");
+  const status = document.getElementById("account-status");
+  if (!button || !status) return;
+  updateCheckRunning = true;
+  button.disabled = true;
+  status.textContent = "Checking for updates…";
+  try {
+    if (!("serviceWorker" in navigator) || location.protocol === "file:") {
+      status.textContent = "Update checking is available on the published site.";
+      return;
+    }
+    const registration = offlineRegistration || await navigator.serviceWorker.getRegistration();
+    if (!registration) {
+      status.textContent = "Update checking is available after the offline shell is installed.";
+      return;
+    }
+    await registration.update();
+    if (registration.installing) {
+      await new Promise((resolve) => {
+        const worker = registration.installing;
+        const finish = () => { if (["installed", "redundant"].includes(worker.state)) resolve(); };
+        worker.addEventListener("statechange", finish);
+        finish();
+      });
+    }
+    if (registration.waiting) {
+      showOfflineUpdate(registration.waiting);
+      status.textContent = "New archive shell found · updating…";
+      registration.waiting.postMessage("SKIP_WAITING");
+    } else {
+      status.textContent = "You are up to date.";
+    }
+  } catch (error) {
+    status.textContent = error instanceof Error ? error.message : "Could not check for updates.";
+  } finally {
+    button.disabled = false;
+    updateCheckRunning = false;
+  }
+};
+window.addEventListener("how-i-hear-music:check-update", checkForUpdates);
+
 const restorePagesRoute = () => {
   const parameters = new URLSearchParams(location.search);
   const recovered = parameters.get("route");
@@ -125,7 +171,7 @@ completeGithubSync().then(async (user) => {
 const registerOfflineShell = async () => {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
   try {
-    const registration = await navigator.serviceWorker.register(new URL("./sw.js", import.meta.url), { scope: new URL("./", import.meta.url).pathname }); const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; banner.hidden = false; document.getElementById("apply-update").onclick = () => worker.postMessage("SKIP_WAITING"); };
+    const registration = await navigator.serviceWorker.register(new URL("./sw.js", import.meta.url), { scope: new URL("./", import.meta.url).pathname }); offlineRegistration = registration; const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; banner.hidden = false; document.getElementById("apply-update").onclick = () => worker.postMessage("SKIP_WAITING"); }; showOfflineUpdate = showUpdate;
     if (registration.waiting) showUpdate(registration.waiting);
     registration.addEventListener("updatefound", () => registration.installing?.addEventListener("statechange", () => { if (registration.installing?.state === "installed") showUpdate(registration.installing); }));
     let refreshing = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (refreshing) return; refreshing = true; location.reload(); });

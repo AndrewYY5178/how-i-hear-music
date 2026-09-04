@@ -1623,3 +1623,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account data, authentication, automatic sync, navigation, layout, typography and all music records remain unchanged.
+
+## Version 3.8.23 — Account update check
+
+Implementation commit: pending
+
+### Decision
+
+- Place a compact `CHECK FOR UPDATES` action beside the account popover's version mark. It asks the installed Service Worker to check the published shell and automatically activates a waiting worker, so the owner does not need a second confirmation step.
+- Report the three useful outcomes inline in the existing account status area: checking, already current, or an update being activated. The action remains unavailable on local file previews where a Service Worker cannot run.
+
+### Intentionally unchanged
+
+- Account data, authentication, automatic sync, cache contents, navigation, layout, typography and all music records remain unchanged.
