@@ -994,13 +994,13 @@ body::before {
     backdrop-filter:none;
   }
   .site-header .primary-nav,.site-header .menu-toggle { display:none; }
-  .header-mobile-actions { display:flex; gap:8px; }
+  .header-mobile-actions { display:flex; min-width:0; gap:8px; }
   .language-toggle { min-width:44px; min-height:44px; }
   .brand-account { gap:8px; }
   .brand { min-height:44px; }
   .brand-account .brand-mark { display:block; }
   .account-toggle { min-height:44px; font-size:9px; }
-  .account-toggle.has-nickname { max-width:72px; font-size:13px; }
+  .account-toggle.has-nickname { min-width:0; max-width:clamp(72px,22vw,96px); font-size:13px; }
   .account-panel { top:calc(56px + env(safe-area-inset-top)); right:16px; bottom:auto; left:auto; width:260px; max-height:calc(100vh - 144px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding:16px; border-top:0; }
   .account-panel h2 { max-width:210px; font-size:25px; }
   .account-actions .button { width:100%; min-height:44px; padding-inline:8px; }
@@ -1136,4 +1136,9 @@ body::before {
   .journal-list h2 { font-size:24px; }
   .memory-zone:nth-child(n) { padding:24px 0; }
   .memory-zone>p { margin-top:24px; }
+}
+
+@media (max-width:360px) {
+  .brand-account .brand-mark { display:none; }
+  .account-toggle.has-nickname { max-width:96px; }
 }

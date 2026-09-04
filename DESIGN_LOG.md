@@ -1442,3 +1442,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Rediscovery selection, rate-again and skip actions, annual evidence calculation, saved Journal data, Archive data and search indexing remain unchanged.
+
+## Version 3.8.9 — Masthead nickname clearance
+
+Implementation commit: pending
+
+### Decision
+
+- Expand the signed-in masthead nickname from a fixed 72px phone cap to a responsive 72–96px range, so Chinese glyphs do not collide visually with the language and menu controls.
+- At widths below 360px, hide only the secondary `anddream` publisher signature to preserve the product lockup's primary `HIM /` mark and keep the account control readable. The nickname still truncates with an ellipsis when it genuinely exceeds the available space.
+
+### Intentionally unchanged
+
+- Account popover, nickname storage, GitHub identity, automatic sync, language switching and all music data remain unchanged.
