@@ -25,9 +25,10 @@ button { cursor:pointer; }
 .account-nickname-row:focus-within { border-color:var(--red); }
 .account-nickname-label { color:var(--muted); font-size:7px; white-space:nowrap; }
 .account-nickname-form .text-action { min-width:44px; min-height:44px; padding:0; border:0; background:transparent; color:var(--red); font:500 8px var(--mono); letter-spacing:.06em; }
-.account-identity { display:grid; grid-template-columns:86px minmax(0,1fr); align-items:baseline; gap:8px; margin-top:8px; padding:2px 0 1px; border-bottom:1px solid var(--line); }
+.account-identity { display:grid; grid-template-columns:86px minmax(0,1fr); align-items:baseline; gap:8px; margin-top:8px; padding:2px 0 16px; border-bottom:1px solid var(--line); }
 .account-identity span,.account-status { font-size:7px; }
 .account-identity strong { grid-column:2; min-width:0; overflow:hidden; color:var(--ink); font:400 13px/1 var(--serif); letter-spacing:-.02em; text-overflow:ellipsis; white-space:nowrap; }
+.account-version { display:block; margin:16px 0 0 auto; color:var(--muted); font-size:7px; line-height:1; letter-spacing:.04em; text-align:right; }
 .account-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:16px; }
 .account-actions .button { min-height:44px; }
 .account-actions .button:only-child { grid-column:1/-1; }

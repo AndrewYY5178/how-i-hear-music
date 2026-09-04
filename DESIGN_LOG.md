@@ -1571,3 +1571,16 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account panel dimensions, nickname storage, GitHub authentication, automatic sync, navigation, typography choices and all music data remain unchanged.
+
+## Version 3.8.19 — Account rule rhythm and build mark
+
+Implementation commit: pending
+
+### Decision
+
+- Give the compact GitHub identity row the same lower breathing space as the nickname row's 44px control row, so both text-to-rule relationships read as one measured unit instead of two unrelated line heights.
+- Add a small muted `v0.9.10` build mark after the account status, aligned to the popover's lower-right edge. It identifies the running shell without competing with the account identity or actions.
+
+### Intentionally unchanged
+
+- Account data, authentication, automatic sync, touch targets, panel width, navigation and all music records remain unchanged.

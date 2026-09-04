@@ -4,6 +4,8 @@ import { beginGithubSync, clearNicknamePrompt, readSyncStatus, signOutSync, sync
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
+const appVersion = "0.9.10";
+
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"], ["/journal", "Journal"],
 ];
@@ -33,7 +35,7 @@ const accountShell = () => {
   const copy = signedIn ? "" : "Authorize GitHub once to create one shared music archive.";
   const actions = signedIn ? `${link("/import/data", "DATA DESK", "button primary")}<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : ready ? `<button class="button primary" type="button" data-account-sign-in>REGISTER / SIGN IN WITH GITHUB</button>` : `<p class="account-unavailable">Account sign-in is available on the published site.</p>`;
   const nicknameForm = signedIn ? `<form class="account-nickname-form"><div class="account-nickname-row"><span class="mono account-nickname-label">NICKNAME</span><input name="nickname" aria-label="Nickname" value="${safe(nickname)}" maxlength="24" autocomplete="nickname" placeholder="How should this archive address you?" required><button class="text-action" type="submit">SAVE</button></div></form>` : "";
-  return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / AUTO SYNC</span><button class="account-close" type="button" aria-label="Close account panel" data-account-close>×</button></div><h2 id="account-panel-title" tabindex="-1">${title}</h2>${copy ? `<p>${copy}</p>` : ""}${nicknameForm}${signedIn ? `<div class="account-identity"><span class="mono">GITHUB IDENTITY</span><strong>@${safe(session.user.login)}</strong></div>` : ""}<div class="account-actions">${actions}</div><p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking account sync…" : "Registration and sign-in are handled securely by GitHub."}</p></section>`;
+  return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / AUTO SYNC</span><button class="account-close" type="button" aria-label="Close account panel" data-account-close>×</button></div><h2 id="account-panel-title" tabindex="-1">${title}</h2>${copy ? `<p>${copy}</p>` : ""}${nicknameForm}${signedIn ? `<div class="account-identity"><span class="mono">GITHUB IDENTITY</span><strong>@${safe(session.user.login)}</strong></div>` : ""}<div class="account-actions">${actions}</div><p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking account sync…" : "Registration and sign-in are handled securely by GitHub."}</p><span class="account-version mono">v${appVersion}</span></section>`;
 };
 export const link = (href, label, className = "") => `<a class="${className}" href="${withBase(href)}" data-route>${safe(label)}</a>`;
 export const pageHeader = (_eyebrow, title, copy = "", actions = "") => `<section class="page-head"><h1>${title}</h1>${copy ? `<p>${safe(copy)}</p>` : ""}${actions ? `<div class="page-actions">${actions}</div>` : ""}</section>`;
