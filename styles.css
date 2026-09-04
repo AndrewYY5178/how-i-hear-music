@@ -12,22 +12,22 @@ button { cursor:pointer; }
 .brand { font-size:13px; font-weight:500; }.brand span { color:var(--red); }.primary-nav { display:flex; align-items:center; gap:20px; font-size:10px; }.primary-nav a { position:relative; padding:23px 0 19px; }.primary-nav a::after { content:""; position:absolute; right:0; bottom:0; left:0; height:2px; background:var(--red); transform:scaleX(0); }.primary-nav a:hover::after,.primary-nav a.active::after { transform:scaleX(1); }.menu-toggle { display:none; }
 .brand-account { display:flex; align-items:center; gap:10px; min-width:max-content; font-family:var(--mono); }
 .account-toggle { min-width:44px; min-height:44px; padding:8px 0; border:0; background:transparent; color:var(--ink); font:500 10px var(--mono); letter-spacing:.07em; text-transform:uppercase; }
-.account-toggle.has-nickname { max-width:128px; overflow:hidden; font:400 14px/1.2 var(--serif); letter-spacing:0; text-overflow:ellipsis; text-transform:none; white-space:nowrap; }
+.account-toggle.has-nickname { max-width:128px; overflow:hidden; font:italic 400 14px/1.2 var(--serif); letter-spacing:0; text-overflow:ellipsis; text-transform:none; white-space:nowrap; }
 .account-toggle:hover,.account-toggle[aria-expanded="true"] { color:var(--red); }
 .account-panel { position:fixed; z-index:32; top:64px; right:64px; width:min(260px,calc(100vw - 48px)); max-height:calc(100vh - 88px); padding:16px; overflow:auto; border:1px solid var(--ink); border-top:0; background:var(--paper-light); color:var(--ink); }
 .account-panel-head { display:flex; justify-content:space-between; align-items:center; gap:24px; }
 .account-close { display:grid; place-items:center; width:44px; height:44px; padding:0; border:0; background:transparent; color:var(--red); font:300 28px/1 var(--serif); }
 .account-panel h2 { margin:16px 0 8px; outline:0; font:400 25px/1.03 var(--serif); letter-spacing:-.05em; }
 .account-panel>p { max-width:220px; margin:0; color:var(--muted); font:italic 12px/1.45 var(--serif); }
-.account-nickname-form { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:8px; margin-top:16px; padding-top:8px; border-top:1px solid var(--line); }
-.account-nickname-form label { display:grid; gap:4px; }
-.account-nickname-form label span { color:var(--muted); font-size:8px; }
-.account-nickname-form input { width:100%; min-height:44px; padding:7px 0; border:0; border-bottom:1px solid var(--ink); outline:0; background:transparent; color:var(--ink); font:400 16px var(--serif); }
-.account-nickname-form input:focus { border-color:var(--red); }
-.account-nickname-form .text-action { min-height:44px; padding:0; border:0; background:transparent; color:var(--red); font:500 8px var(--mono); letter-spacing:.06em; }
-.account-identity { display:grid; gap:4px; margin-top:16px; padding:8px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-.account-identity span,.account-status { font-size:8px; }
-.account-identity strong { overflow:hidden; color:var(--red); font:400 17px/1.2 var(--serif); text-overflow:ellipsis; white-space:nowrap; }
+.account-nickname-form { display:grid; gap:2px; margin-top:12px; }
+.account-nickname-label { color:var(--muted); font-size:7px; }
+.account-nickname-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; border-bottom:1px solid var(--ink); }
+.account-nickname-form input { width:100%; min-height:44px; padding:7px 0; border:0; outline:0; background:transparent; color:var(--ink); font:400 16px var(--serif); }
+.account-nickname-row:focus-within { border-color:var(--red); }
+.account-nickname-form .text-action { min-width:44px; min-height:44px; padding:0; border:0; background:transparent; color:var(--red); font:500 8px var(--mono); letter-spacing:.06em; }
+.account-identity { display:flex; align-items:baseline; gap:8px; margin-top:8px; padding:3px 0; border-bottom:1px solid var(--line); }
+.account-identity span,.account-status { font-size:7px; }
+.account-identity strong { min-width:0; overflow:hidden; color:var(--muted); font:400 9px/1.2 var(--mono); text-overflow:ellipsis; white-space:nowrap; }
 .account-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:16px; }
 .account-actions .button { min-height:44px; }
 .account-actions .button:only-child { grid-column:1/-1; }

@@ -1401,3 +1401,17 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Nicknames do not change authentication, authorization, routes, music records or the automatic-sync privacy boundary. The field is limited to 24 characters and long masthead labels truncate rather than shifting navigation.
+
+## Version 3.8.6 — Lighter account notation
+
+Implementation commit: pending
+
+### Decision
+
+- Replace the heavy `DISPLAY NICKNAME` form treatment with one quiet `NICKNAME` label, a shared input baseline and a short Save action. Keep the 44px input and action targets without making the editor look like a separate product card.
+- Reduce GitHub identity to approximately one-third of its former visual weight: one compact metadata line, muted handle, smaller mono type and a single closing rule.
+- Set the signed-in masthead nickname in Libre Baskerville italic. Preserve truncation at narrow widths so personality does not displace language or navigation controls.
+
+### Intentionally unchanged
+
+- Nickname storage, editing, automatic sync, GitHub identity and account actions remain functionally identical.
