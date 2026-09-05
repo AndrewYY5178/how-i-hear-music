@@ -15,21 +15,12 @@ import { translateText } from "../layout/i18n.js?v=0.9.61";
 import { withBase } from "../layout/paths.js";
 import { archiveSearch } from "../search/pages.js?ui=3.11.45";
 import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.11.45";
+import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
 const archiveHomeNav = () => `<div class="archive-index-nav archive-index-actions"><button class="archive-search-trigger mono" id="archive-search-trigger" type="button" aria-controls="archive-search-panel" aria-expanded="${new URLSearchParams(location.search).has("q") ? "true" : "false"}">SEARCH</button></div>`;
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
-const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
-const localCoverOverrideKey = "how-i-hear-music:cover-overrides-local:v1";
-const coverSourcesFor = (album, id) => {
-  const override = storage.get(coverOverrideKey, {})[id] || "";
-  const localOverride = storage.get(localCoverOverrideKey, {})[id] || "";
-  const canonical = album.coverUrl || "";
-  const primary = localOverride || override || canonical;
-  const alternate = [override, canonical, album.coverFallback].find((source) => source && source !== primary) || "";
-  return { primary, alternate };
-};
 const journalEntries = () => storage.get("how-i-hear-music:journal:v1", []);
 const savedRatings = () => storage.get("how-i-hear-music:rating-sessions:v2", {});
 const resolvedScores = (track) => savedRatings()[trackId(track)]?.scores || track.scores || {};
@@ -51,25 +42,6 @@ const artistAverage = (artist) => {
 };
 const historyMarkup = (entries) => entries.length ? `<div class="rating-history">${entries.slice(0, 8).map((entry) => `<article><time class="mono">${safe(new Date(entry.at).toLocaleDateString())}${entry.revisedAt ? " · CORRECTED" : ""}</time><strong>${rating(entry.type === "album" ? entry.overall : entry.scores?.overall)}</strong>${entry.note ? `<p>${safe(entry.note)}</p>` : ""}${entry.id ? link(`/taste/journal/edit/${encodeURIComponent(entry.id)}`, "CORRECT HISTORY →", "text-link") : ""}</article>`).join("")}</div>` : "<p>No local rating changes recorded yet.</p>";
 const coverMarkup = (url, alt, loading = false, alternate = "") => url ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" src="${safe(url)}" alt="${safe(alt)}"${loading ? " loading=\"lazy\"" : ""}><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
-const encodeLocalCover = (file) => new Promise((resolve, reject) => {
-  if (!file || !String(file.type || "").startsWith("image/")) { reject(new Error("Choose a JPG, PNG, WebP or AVIF image.")); return; }
-  if (file.size > 20 * 1024 * 1024) { reject(new Error("Choose an image smaller than 20 MB.")); return; }
-  const objectUrl = URL.createObjectURL(file); const image = new Image();
-  const finish = (error, value) => { URL.revokeObjectURL(objectUrl); error ? reject(error) : resolve(value); };
-  image.onerror = () => finish(new Error("This image could not be read in the browser."));
-  image.onload = () => {
-    try {
-      const sourceSize = Math.min(image.naturalWidth, image.naturalHeight); if (!sourceSize) throw new Error("This image has no readable dimensions.");
-      const size = Math.min(1400, sourceSize); const canvas = document.createElement("canvas"); canvas.width = size; canvas.height = size; const context = canvas.getContext("2d");
-      if (!context) throw new Error("This browser cannot prepare a local cover.");
-      context.drawImage(image, (image.naturalWidth - sourceSize) / 2, (image.naturalHeight - sourceSize) / 2, sourceSize, sourceSize, 0, 0, size, size);
-      const candidates = [["image/webp", .86], ["image/jpeg", .84], ["image/jpeg", .72]]; const encoded = candidates.map(([mime, quality]) => { try { return canvas.toDataURL(mime, quality); } catch { return ""; } }).filter(Boolean).sort((left, right) => left.length - right.length)[0];
-      if (!encoded || encoded.length > 2400000) throw new Error("This image is still too large after compression. Choose a smaller cover.");
-      finish(null, encoded);
-    } catch (error) { finish(error instanceof Error ? error : new Error("This image could not be prepared.")); }
-  };
-  image.src = objectUrl;
-});
 const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card" data-settle-key="${safe(trackId(track))}"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `${fieldLabel[field]} ${rating(scores[field])}`).join(" · ") : "NO SCORED GEOMETRY"}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", archiveVisibleAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
@@ -135,10 +107,8 @@ export const archiveAlbumDetail = (id) => {
   const savedNote = albumNote(id);
   const ratingAction = tracks.length ? link(`/rate/album/${id}`, "RATE ALBUM", "button primary") : link("/import/qq", "IMPORT TRACK ORDER", "button primary");
   const { primary: coverUrl, alternate } = coverSourcesFor(album, id);
-  const localCover = storage.get(localCoverOverrideKey, {})[id] || "";
-  const coverReference = `<details><summary>COVER REFERENCE <span>+</span></summary><form class="cover-override-form" data-album-id="${safe(id)}"><label><span class="mono">LOCAL COVER FILE</span><input type="file" name="coverFile" accept="image/jpeg,image/png,image/webp,image/avif"><small>Square images are cropped and compressed in this browser. They are never uploaded.</small></label><div class="cover-local-preview" data-cover-local-preview>${localCover ? `<img src="${safe(localCover)}" alt="Current local cover" referrerpolicy="no-referrer">` : ""}</div><label><span class="mono">REMOTE HTTPS IMAGE URL (OPTIONAL)</span><input type="url" name="coverUrl" value="${safe(storage.get(coverOverrideKey, {})[id] || "")}" placeholder="https://…"></label><div><button class="button" type="submit">SAVE COVER</button><button class="button" type="button" data-clear-cover>USE CANONICAL COVER</button><button class="button" type="button" data-reextract-tone>RE-EXTRACT COLOR</button></div><p data-cover-status>${localCover ? "A local cover is active on this browser. Choose another file or use the canonical cover to remove it." : "Use a local file for complex or cross-domain artwork. It stays in this browser and is never uploaded."}</p><p data-tone-status>Theme color is sampled from the current cover when possible.</p></form></details>`;
   const fallbackTone = album.themeColor || fallbackCoverTone(`${album.artist}-${album.title}`);
-  return `${pageHeader("ALBUM", safe(album.title), safe(album.artist + (album.year ? " · " + album.year : "")), ratingAction)}<section class="album-detail-cover"><div class="album-detail-image" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone};--sleeve-edge-color:${fallbackTone}">${coverMarkup(coverUrl, album.title + " cover", false, alternate)}</div><div><span class="eyebrow mono">LISTENING LANDSCAPE</span>${waveform(landscape)}${summary(landscape)}${narrative ? `<p class="album-narrative">${safe(narrative)}</p>` : ""}</div></section><section><h2>Track list</h2><div class="tracklist">${tracks.length ? orderedTracklist(tracks) : "<p>No confirmed ordered track sequence is available yet.</p>"}</div></section><details><summary>ALBUM CHARACTER <span>+</span></summary><p>${narrative ? safe(narrative) : "A neutral landscape description appears after every track has a confirmed Overall score."}</p></details><details${savedNote ? " open" : ""}><summary>ALBUM NOTES <span>+</span></summary><form class="album-note-form" data-album-id="${safe(id)}"><label><span class="mono">PRIVATE LISTENING NOTE</span><textarea name="note" rows="6" maxlength="2000" placeholder="What stays when the full record ends?">${safe(savedNote?.note || "")}</textarea></label><div><button class="button primary" type="submit">SAVE NOTE</button><button class="button" type="button" data-clear-album-note>CLEAR NOTE</button></div><p data-album-note-status>${savedNote ? `Revised ${safe(new Date(savedNote.revisedAt).toLocaleString())}.` : "Stored locally and included in Data Desk backups."}</p></form></details>${coverReference}<details><summary>RATING HISTORY <span>+</span></summary>${historyMarkup(history)}</details>`;
+  return `${pageHeader("ALBUM", safe(album.title), safe(album.artist + (album.year ? " · " + album.year : "")), ratingAction)}<section class="album-detail-cover"><div class="album-detail-visual"><div class="album-detail-record" data-album-record data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone};--sleeve-edge-color:${fallbackTone}"><span class="album-detail-disc" aria-hidden="true"></span><div class="album-detail-image" data-cover-tone data-cover-source="${safe(coverUrl)}">${coverMarkup(coverUrl, album.title + " cover", false, alternate)}</div></div><div class="album-detail-cover-tools"><button class="button" type="button" data-reextract-tone>RE-EXTRACT COLOR</button><span class="mono" data-tone-status>Theme color is sampled from the current cover.</span><input type="file" name="coverFile" accept="image/jpeg,image/png,image/webp,image/avif" hidden aria-hidden="true"><span class="visually-hidden">Full cover maintenance is available in Data Desk; local cover files are never uploaded.</span></div></div><div><span class="eyebrow mono">LISTENING LANDSCAPE</span>${waveform(landscape)}${summary(landscape)}${narrative ? `<p class="album-narrative">${safe(narrative)}</p>` : ""}</div></section><section><h2>Track list</h2><div class="tracklist">${tracks.length ? orderedTracklist(tracks) : "<p>No confirmed ordered track sequence is available yet.</p>"}</div></section><details><summary>ALBUM CHARACTER <span>+</span></summary><p>${narrative ? safe(narrative) : "A neutral landscape description appears after every track has a confirmed Overall score."}</p></details><details${savedNote ? " open" : ""}><summary>ALBUM NOTES <span>+</span></summary><form class="album-note-form" data-album-id="${safe(id)}"><label><span class="mono">PRIVATE LISTENING NOTE</span><textarea name="note" rows="6" maxlength="2000" placeholder="What stays when the full record ends?">${safe(savedNote?.note || "")}</textarea></label><div><button class="button primary" type="submit">SAVE NOTE</button><button class="button" type="button" data-clear-album-note>CLEAR NOTE</button></div><p data-album-note-status>${savedNote ? `Revised ${safe(new Date(savedNote.revisedAt).toLocaleString())}.` : "Stored locally and included in Data Desk backups."}</p></form></details>`;
 };
 const canonicalAlbumMatch = (track, album) => track.artist === album.artist && (track.album === album.title || false);
 
@@ -220,31 +190,12 @@ export const bindArchive = (path, navigate) => {
   }
   const albumMatch = path.match(/^\/archive\/albums\/(.+)$/);
   if (albumMatch) {
-    const form = document.querySelector(".cover-override-form");
-    const localFile = form?.elements.coverFile; const localPreview = form?.querySelector("[data-cover-local-preview]");
-    localFile?.addEventListener("change", () => {
-      const file = localFile.files?.[0]; const status = form.querySelector("[data-cover-status]");
-      if (!file) { if (localPreview) localPreview.replaceChildren(); return; }
-      if (!String(file.type || "").startsWith("image/")) { localFile.value = ""; status.textContent = "Choose a JPG, PNG, WebP or AVIF image."; return; }
-      if (localPreview) { const previewUrl = URL.createObjectURL(file); localPreview.innerHTML = `<img src="${previewUrl}" alt="Selected local cover preview">`; const previewImage = localPreview.querySelector("img"); previewImage?.addEventListener("load", () => URL.revokeObjectURL(previewUrl), { once: true }); previewImage?.addEventListener("error", () => URL.revokeObjectURL(previewUrl), { once: true }); }
-      status.textContent = `${file.name} ready. Save cover to keep it on this browser.`;
-    });
-    form?.addEventListener("submit", async (event) => {
-      event.preventDefault(); const status = form.querySelector("[data-cover-status]"); const submit = form.querySelector("button[type=submit]"); const file = localFile?.files?.[0]; const value = String(new FormData(form).get("coverUrl") || "").trim();
-      if (submit) submit.disabled = true;
-      try {
-        if (file) {
-          const encoded = await encodeLocalCover(file); const local = { ...storage.get(localCoverOverrideKey, {}), [form.dataset.albumId]: encoded }; if (!storage.set(localCoverOverrideKey, local, { recover: false })) throw new Error("The browser could not store this cover. Try a smaller image or clear browser storage.");
-          const remote = { ...storage.get(coverOverrideKey, {}) }; delete remote[form.dataset.albumId]; storage.set(coverOverrideKey, remote, { recover: false }); navigate(path); return;
-        }
-        if (!value) throw new Error("Choose a local image or enter an HTTPS image URL.");
-        const url = new URL(value); if (url.protocol !== "https:") throw new Error("Only HTTPS image references are allowed.");
-        const remote = { ...storage.get(coverOverrideKey, {}), [form.dataset.albumId]: url.href }; if (!storage.set(coverOverrideKey, remote)) throw new Error("The browser could not store this cover reference.");
-        const local = { ...storage.get(localCoverOverrideKey, {}) }; delete local[form.dataset.albumId]; storage.set(localCoverOverrideKey, local, { recover: false }); navigate(path);
-      } catch (error) { status.textContent = error instanceof Error ? error.message : "The cover could not be saved."; if (submit) submit.disabled = false; }
-    });
-    form?.querySelector("[data-clear-cover]")?.addEventListener("click", () => { const overrides = { ...storage.get(coverOverrideKey, {}) }; const local = { ...storage.get(localCoverOverrideKey, {}) }; delete overrides[form.dataset.albumId]; delete local[form.dataset.albumId]; storage.set(coverOverrideKey, overrides, { recover: false }); storage.set(localCoverOverrideKey, local, { recover: false }); navigate(path); });
-    form?.querySelector("[data-reextract-tone]")?.addEventListener("click", async (event) => { const button = event.currentTarget; const status = form.querySelector("[data-tone-status]"); const target = document.querySelector(".album-detail-image[data-cover-tone]"); if (!target) return; button.disabled = true; status.textContent = translateText("Re-reading cover pixels…"); try { const tones = await reextractCoverTone(target); status.textContent = translateText(tones ? "Color extraction retried. The sleeve will use the new sample when available." : "Could not re-extract the cover color."); } catch (error) { status.textContent = error instanceof Error ? error.message : translateText("Could not re-extract the cover color."); } finally { button.disabled = false; } });
+    const record = document.querySelector("[data-album-record]");
+    const retract = () => { record?.classList.remove("record-is-open"); record?.classList.add("record-is-retracting"); window.clearTimeout(record?._retractTimer); if (record) record._retractTimer = window.setTimeout(() => record.classList.remove("record-is-retracting"), 360); };
+    const reveal = () => { if (!record) return; window.clearTimeout(record._retractTimer); record.classList.remove("record-is-retracting"); record.classList.add("record-is-open"); };
+    record?.addEventListener("pointerenter", reveal); record?.addEventListener("pointerleave", retract); record?.addEventListener("focusin", reveal); record?.addEventListener("focusout", (event) => { if (!record.contains(event.relatedTarget)) retract(); });
+    const reextract = document.querySelector("[data-reextract-tone]");
+    reextract?.addEventListener("click", async (event) => { const button = event.currentTarget; const status = document.querySelector("[data-tone-status]"); if (!record) return; button.disabled = true; if (status) status.textContent = translateText("Re-reading cover pixels…"); try { const tones = await reextractCoverTone(record); if (status) status.textContent = translateText(tones ? "Color extraction retried. The sleeve will use the new sample when available." : "Could not re-extract the cover color."); } catch (error) { if (status) status.textContent = error instanceof Error ? error.message : translateText("Could not re-extract the cover color."); } finally { button.disabled = false; } });
     const noteForm = document.querySelector(".album-note-form"); noteForm?.addEventListener("submit", (event) => { event.preventDefault(); try { saveAlbumNote(noteForm.dataset.albumId, new FormData(noteForm).get("note")); navigate(path); } catch (error) { noteForm.querySelector("[data-album-note-status]").textContent = error.message; } });
     noteForm?.querySelector("[data-clear-album-note]")?.addEventListener("click", () => { const button = noteForm.querySelector("[data-clear-album-note]"); if (!button.dataset.confirmed) { button.dataset.confirmed = "true"; button.textContent = "CONFIRM CLEAR"; return; } saveAlbumNote(noteForm.dataset.albumId, ""); navigate(path); });
   }

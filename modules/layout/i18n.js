@@ -90,6 +90,17 @@ const zh = {
 };
 
 Object.assign(zh, {
+  "COVER MAINTENANCE": "封面维护",
+  "Repair artwork and theme colors without opening every album. Local covers stay in this browser and are never uploaded.": "无需逐张打开专辑即可修复封面和主题色。本地封面只保存在此浏览器，不会上传。",
+  "LOCAL COVER FILE": "本地封面文件",
+  "REMOTE HTTPS IMAGE URL (OPTIONAL)": "远程 HTTPS 图片地址（可选）",
+  "SAVE COVER": "保存封面",
+  "USE CANONICAL COVER": "使用官方封面",
+  "CANONICAL COVER": "官方封面",
+  "LOCAL COVER ACTIVE": "已启用本地封面",
+  "REMOTE OVERRIDE ACTIVE": "已启用远程覆盖",
+  "Full cover maintenance is available in Data Desk; local cover files are never uploaded.": "完整封面维护位于数据台；本地封面文件不会上传。",
+  "RATING HISTORY": "评分历史",
   "RE-EXTRACT COLOR": "重新提取颜色",
   "Theme color is sampled from the current cover when possible.": "主题色会尽量从当前封面像素中提取。",
   "Re-reading cover pixels…": "正在重新读取封面像素……",
