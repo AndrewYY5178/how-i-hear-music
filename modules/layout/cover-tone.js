@@ -1,5 +1,6 @@
 const recordPalette = ["#8f4937", "#65705a", "#566d78", "#796071", "#8b7349", "#72533f", "#4f7068"];
 const toneCache = new Map();
+const artworkProxyHosts = new Set(["y.gtimg.cn", "p1.music.126.net", "p2.music.126.net", "p3.music.126.net", "p4.music.126.net"]);
 
 const hash = (value) => [...String(value || "record")].reduce((total, character) => ((total << 5) - total + character.codePointAt(0)) | 0, 0);
 
@@ -63,22 +64,36 @@ const sampledTones = (image) => {
   return { record, edge: dominantPixelTone(pixels, canvas.width, canvas.height, { edgeOnly: true, maximum: 164 }) || record };
 };
 
+const artworkApiBase = () => {
+  const explicit = globalThis.window?.__HIM_API_BASE__;
+  const hosted = globalThis.location?.hostname?.endsWith("github.io") ? globalThis.document?.querySelector?.('meta[name="him-api-base"]')?.content : "";
+  return String(explicit || hosted || "").replace(/\/$/, "");
+};
+
+export const artworkSamplerSources = (source) => {
+  const value = String(source || "");
+  let parsed;
+  try { parsed = new URL(value, globalThis.location?.href || "http://localhost/"); } catch { return value ? [value] : []; }
+  if (parsed.protocol !== "https:" || !artworkProxyHosts.has(parsed.hostname)) return value ? [value] : [];
+  const proxy = `${artworkApiBase()}/api/artwork?url=${encodeURIComponent(parsed.href)}`;
+  return [proxy, value];
+};
+
+const sampleSource = (source) => new Promise((resolve) => {
+  const sampler = new Image();
+  sampler.crossOrigin = "anonymous";
+  sampler.decoding = "async";
+  sampler.onload = () => {
+    try { resolve(sampledTones(sampler)); }
+    catch { resolve(null); }
+  };
+  sampler.onerror = () => resolve(null);
+  sampler.src = source;
+});
+
 const tonesForSource = (source) => {
   if (toneCache.has(source)) return toneCache.get(source);
-  const result = new Promise((resolve) => {
-    const sampler = new Image();
-    sampler.crossOrigin = "anonymous";
-    sampler.decoding = "async";
-    sampler.onload = () => {
-      try {
-        resolve(sampledTones(sampler));
-      } catch {
-        resolve(null);
-      }
-    };
-    sampler.onerror = () => resolve(null);
-    sampler.src = source;
-  });
+  const result = artworkSamplerSources(source).reduce((attempt, candidate) => attempt.then((tones) => tones || sampleSource(candidate)), Promise.resolve(null));
   toneCache.set(source, result);
   return result;
 };

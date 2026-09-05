@@ -2678,3 +2678,190 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Desktop navigation, route structure, page content and the account panel remain unchanged.
+
+## Version 3.11.28 — One Import entry for both providers
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found the separate `QQ Music Smart Import` and `NetEase` secondary-navigation labels too verbose and asked for one concise Import entry.
+
+### Decision
+
+- Reduce the Import secondary navigation to `Import`, `Inbox` and `Data Desk`.
+- Keep QQ Music and NetEase as provider choices on the Import landing page rather than presenting them as peer navigation modules.
+- Shorten the visible QQ provider name from `QQ Music Smart Import` to `QQ Music`.
+
+### Rejected
+
+- Do not remove NetEase support or split QQ playlist and album importing back into separate routes.
+- Do not rename the internal smart-detection capability or Worker API merely to match the shorter interface label.
+
+### Intentionally unchanged
+
+- Import parsing, provider APIs, Inbox, Data Desk, stored data and review flows remain unchanged.
+
+## Version 3.11.29 — Complete Chinese coverage for Taste
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found English labels and explanatory copy remaining across the Chinese Taste experience after Journal and Insights were merged into it.
+- A rendered-page audit confirmed omissions in the Taste index, Philosophy, DNA method, Compare, Blind Spots, Listening Portrait and Journal states.
+
+### Decision
+
+- Translate the remaining static Taste and merged-Journal copy with natural Chinese rather than literal word substitution.
+- Add reusable translation rules for numbered Taste links, generated blind-spot headings, portrait counts and time-based Journal labels.
+- Add regression assertions for representative static and generated Taste strings.
+
+### Rejected
+
+- Do not translate artist names, track titles or other user/catalog content.
+- Do not change the Taste information architecture as part of this language-only repair.
+
+### Intentionally unchanged
+
+- Taste calculations, Journal records, ratings, routes, navigation structure and English copy remain unchanged.
+
+## Version 3.11.30 — Reliable artwork-derived Import color
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner observed that Import records repeatedly received colors unrelated to their visible artwork.
+- The QQ artwork CDN returns the cover image without an `Access-Control-Allow-Origin` header. Browsers may display that image but cannot read its Canvas pixels; the previous sampler therefore fell back to a title-hash color.
+- MDN documents that cross-origin images require the server's CORS approval before `getImageData()` can read them: https://developer.mozilla.org/en-US/docs/Web/HTML/How_to/CORS_enabled_image
+- Color Thief's maintained reference implementation returns a palette and semantic swatches rather than assuming the single most frequent raw pixel is the most useful visual color: https://github.com/lokesh/color-thief
+
+### Decision
+
+- Add an adapter artwork endpoint restricted to known QQ Music and NetEase artwork hosts, HTTPS, supported raster image types and a 5 MB response limit.
+- Prefer that CORS-readable endpoint for artwork hosts known not to expose browser-readable pixels, then run the existing palette population, saturation and lightness scoring locally.
+- Keep direct browser sampling for artwork hosts that already support it, avoiding unnecessary adapter requests across Home and Archive.
+
+### Rejected
+
+- Do not operate an unrestricted image proxy or accept arbitrary user-supplied hosts.
+- Do not use a title-derived hash as the normal result when real artwork is available.
+- Do not add a large color library when the existing lightweight quantizer is adequate once it receives the actual pixels.
+
+### Intentionally unchanged
+
+- Album artwork, imported metadata, review flow, record material, animation and stored ratings remain unchanged.
+
+## Version 3.11.31 — One directory per listening task
+
+Implementation commit: pending
+
+### Evidence
+
+- Taste presented both a legacy secondary navigation and a newer Overview / Journal / Insights directory, while Profile, Good ≠ Mine and Blind Spots repeated related analysis surfaces.
+- Archive root repeated Tracks, Albums and Artists once as tabs and again as archive gates. Rate presented three competing ways to choose the next track.
+- Saved ratings already move records to Archive automatically, so Inbox's additional Archive action implied a second necessary step.
+
+### Decision
+
+- Keep one grouped Taste directory. Fold Profile into Listening DNA and Good ≠ Mine, recurring boundaries and Blind Spots into Boundaries; preserve previous URLs as aliases.
+- Retain Archive's visual gates as the root choice and keep category tabs only within catalogue pages. Make Rate's next record its single primary track action, with Queue as a secondary escape hatch.
+- Canonicalize internal Journal and QQ album-import links while leaving legacy routes callable. Remove Inbox's redundant manual archive action.
+
+### Rejected
+
+- Do not remove Journal records, alternate Taste analysis, the Queue, Data Desk, provider choices, or legacy URLs merely to reduce visible navigation.
+- Do not merge Archive search with public QQ catalog search: one searches personal records; the other imports public metadata.
+
+### Intentionally unchanged
+
+- Rating data, Journal data, imported records, backups, cloud sync behavior, existing route compatibility and the editorial visual system remain unchanged.
+
+## Version 3.11.32 — Archive gates as one shelf
+
+Implementation commit: pending
+
+### Evidence
+
+- The Archive root rendered Tracks and Albums on the first row but pushed Artists to a second row at medium widths, making the three equivalent destinations feel hierarchically unrelated.
+- The owner requested the three entries to sit side by side.
+
+### Decision
+
+- Use a three-column grid for Archive root gates from tablet through desktop widths. Keep each gate's existing icon, count, title and Enter action aligned; collapse to one column only at phone width.
+
+### Rejected
+
+- Do not remove the Artists destination or turn the gates into a dense tab strip; the root remains an editorial shelf for the three catalogue types.
+
+### Intentionally unchanged
+
+- Archive search, category routes, record data, hover motion, typography and mobile single-column behavior remain unchanged.
+
+## Version 3.11.33 — Archive shelf divider alignment
+
+Implementation commit: pending
+
+### Evidence
+
+- After the three-column Archive shelf was introduced, the generic two-column rule removed the divider after Albums and left a line at the outer right edge.
+- The owner requested the right-side vertical divider to sit at the right one-third boundary.
+
+### Decision
+
+- Restore the divider on the middle gate (Albums) and remove the outer-right border from Artists at non-phone widths. This makes the visible rule land between the second and third entries.
+
+### Rejected
+
+- Do not add a third decorative outer border or alter the single-column mobile presentation.
+
+### Intentionally unchanged
+
+- Gate content, counts, links, grid proportions, search and all catalog data remain unchanged.
+
+## Version 3.11.34 — Home sample deck and complete shapes
+
+Implementation commit: pending
+
+### Evidence
+
+- Home previously rendered every available album, including browser-local imports, regardless of login state. That made the public landing page depend on whichever browser happened to open it.
+- Featured Shape used Overall as its only eligibility signal and could fall back to the first track, which allowed incomplete score shapes to appear.
+- The owner requested a sample deck for signed-out visitors, gradual replacement by the signed-in user's imported albums, and strict four-dimension eligibility for Featured Shape.
+
+### Decision
+
+- Keep a nine-album signed-out sample deck from canonical covers. When signed in, place the user's imported albums first and fill remaining slots with samples; once at least nine imported albums exist, show only the user's imported deck.
+- Require finite Song, Vocal, Production and Overall values before a track enters Featured Shape. If no track qualifies, show a quiet completion prompt instead of an invented radar.
+
+### Rejected
+
+- Do not upload local covers or expose browser-local imports to signed-out visitors.
+- Do not infer missing dimensions from Overall or use an incomplete track as a fallback visual.
+
+### Intentionally unchanged
+
+- Cover fallback handling, album carousel motion, rating storage, account sync, canonical data and all non-Home routes remain unchanged.
+
+## Version 3.11.35 — Featured Shape perimeter values
+
+Implementation commit: pending
+
+### Evidence
+
+- `FEATURED SHAPE` values were positioned from each score node, so the numbers sat inside the radar and visually competed with the drawn shape.
+- The owner requested that each number sit outside its corresponding dimension name.
+
+### Decision
+
+- Add an opt-in radar value placement mode used only by Home `FEATURED SHAPE`. Values use the perimeter label coordinates plus an outward offset, with top/bottom centered and left/right edge-aligned anchors.
+- Keep the existing node-relative placement for interactive Rate and detail radars so their editing and reading behavior does not change.
+
+### Rejected
+
+- Do not remove the radar labels, move values into a separate score table, or apply the new placement globally.
+
+### Intentionally unchanged
+
+- Score eligibility, draw/reveal timing, radar geometry, responsive layout, accessibility labels and all non-Featured Shape radar instances remain unchanged.

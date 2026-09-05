@@ -10,14 +10,20 @@ const point = (value, index, size, radius) => {
 const polygon = (values, size, radius) => values.map((value, index) => point(value, index, size, radius).map((part) => part.toFixed(1)).join(",")).join(" ");
 export const radarPoints = (scores = {}) => polygon(fields.map((field) => scores?.[field] ?? 0), 220, 70);
 
-export const radar = (scores = {}, { interactive = false, className = "", showValues = false } = {}) => {
+export const radar = (scores = {}, { interactive = false, className = "", showValues = false, valuePlacement = "node" } = {}) => {
   scores = scores || {};
   const size = 220; const center = size / 2; const radius = 70;
   const values = fields.map((field) => scores[field] ?? 0);
   const rings = [3.5, 7, 11].map((level) => `<polygon points="${polygon(fields.map(() => level), size, radius)}"></polygon>`).join("");
   const axes = fields.map((_, index) => { const target = point(11, index, size, radius); return `<line x1="${center}" y1="${center}" x2="${target[0]}" y2="${target[1]}"></line>`; }).join("");
   const nodes = values.map((value, index) => { const target = point(value, index, size, radius); const field = fields[index]; return interactive ? `<circle class="control-hit" data-radar-field="${field}" tabindex="0" role="slider" aria-label="${fieldLabel[field]} score" aria-valuemin="0" aria-valuemax="11" aria-valuenow="${rating(value)}" cx="${target[0]}" cy="${target[1]}" r="20"></circle><circle class="control-node" aria-hidden="true" cx="${target[0]}" cy="${target[1]}" r="6"></circle>` : `<circle cx="${target[0]}" cy="${target[1]}" r="4"></circle>`; }).join("");
-  const valueLabels = showValues ? values.map((value, index) => { const target = point(value, index, size, radius + 13); return `<text class="radar-value-label" style="--radar-index:${index}" x="${target[0]}" y="${target[1] + 4}" text-anchor="middle" aria-label="${fieldLabel[fields[index]]} ${rating(value)}">${rating(value)}</text>`; }).join("") : "";
+  const valueLabels = showValues ? values.map((value, index) => {
+    const outside = valuePlacement === "outside";
+    const target = outside ? point(11, index, size, radius + 48) : point(value, index, size, radius + 13);
+    const anchor = outside ? ["middle", "start", "middle", "end"][index] : "middle";
+    const placement = outside ? ` data-radar-placement="outside"` : "";
+    return `<text class="radar-value-label"${placement} style="--radar-index:${index}" x="${target[0]}" y="${target[1] + 4}" text-anchor="${anchor}" aria-label="${fieldLabel[fields[index]]} ${rating(value)}">${rating(value)}</text>`;
+  }).join("") : "";
   const labels = fields.map((field, index) => { const target = point(11, index, size, radius + 28); return `<text x="${target[0]}" y="${target[1] + 3}" text-anchor="middle">${field.toUpperCase()}</text>`; }).join("");
   return `<svg class="radar ${className}" viewBox="0 0 ${size} ${size}" role="${interactive ? "group" : "img"}" aria-label="Listening Shape"><g class="radar-grid">${rings}${axes}</g><polygon class="radar-fill" points="${polygon(values, size, radius)}"></polygon><g class="radar-points">${nodes}</g><g class="radar-values">${valueLabels}</g><g class="radar-labels">${labels}</g></svg>`;
 };

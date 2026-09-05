@@ -8,10 +8,17 @@ const apiCache = new Map();
 const rateWindows = new Map();
 
 const allowedOrigins = (env) => new Set(String(env.ALLOWED_ORIGIN || defaultOrigin).split(',').map((value) => value.trim()).filter(Boolean));
-const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.43');
+const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.51');
 const serviceAgent = (env) => `How-I-Hear-Music/${serviceVersion(env)} metadata importer`;
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
+const artworkHosts = new Set(['y.gtimg.cn', 'p1.music.126.net', 'p2.music.126.net', 'p3.music.126.net', 'p4.music.126.net']);
+const parseArtworkUrl = (value) => {
+  let url;
+  try { url = new URL(String(value || '')); } catch { throw new Error('Artwork URL is invalid.'); }
+  if (url.protocol !== 'https:' || !artworkHosts.has(url.hostname)) throw new Error('Artwork host is not allowed.');
+  return url;
+};
 
 const publicDate = (value) => {
   const text = String(value ?? '').trim();
@@ -45,6 +52,25 @@ const json = (request, env, status, body, requestId) => {
   return new Response(JSON.stringify(body), { status, headers });
 };
 
+const artworkResponse = async (request, env, value, requestId) => {
+  const url = parseArtworkUrl(value);
+  const upstream = await fetch(url, { headers: { 'User-Agent': serviceAgent(env), Referer: url.hostname === 'y.gtimg.cn' ? 'https://y.qq.com/' : 'https://music.163.com/' }, signal: AbortSignal.timeout(12_000) });
+  if (!upstream.ok) throw new Error(`Artwork is unavailable right now (${upstream.status}).`);
+  parseArtworkUrl(upstream.url || url.href);
+  const contentType = upstream.headers.get('content-type') || '';
+  if (!/^image\/(?:jpeg|png|webp|avif)(?:;|$)/i.test(contentType)) throw new Error('Artwork source did not return a supported image.');
+  const declaredLength = Number(upstream.headers.get('content-length') || 0);
+  if (declaredLength > 5_000_000) throw new Error('Artwork is too large to sample.');
+  const body = await upstream.arrayBuffer();
+  if (body.byteLength > 5_000_000) throw new Error('Artwork is too large to sample.');
+  const headers = responseHeaders(request, env);
+  headers.set('Content-Type', contentType);
+  headers.set('Content-Length', String(body.byteLength));
+  headers.set('Cache-Control', 'public, max-age=86400');
+  if (requestId) headers.set('X-Request-Id', requestId);
+  return new Response(body, { status: 200, headers });
+};
+
 const readJsonBody = async (request) => {
   const body = await request.text();
   if (body.length > 20_000) throw new Error('Request body is too large.');
@@ -61,10 +87,10 @@ const cacheFor = async (key, producer, ttl = 300_000) => {
   return value;
 };
 
-const withinRateLimit = (address) => {
+const withinRateLimit = (address, limit = 30) => {
   const now = Date.now();
   const recent = (rateWindows.get(address) || []).filter((at) => now - at < 600_000);
-  if (recent.length >= 30) return false;
+  if (recent.length >= limit) return false;
   recent.push(now);
   rateWindows.set(address, recent);
   return true;
@@ -247,10 +273,16 @@ export const handleRequest = async (request, env = {}) => {
   const syncResponse = await handleSync({ request, url, env, headers: responseHeaders(request, env), origin: [...origins][0] || defaultOrigin });
   if (syncResponse) return syncResponse;
   if (request.method === 'GET' && url.pathname === '/healthz') return json(request, env, 200, { status: 'ok', version: serviceVersion(env), providers: ['qqmusic', 'netease'] }, requestId);
-  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-smart-import', 'qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'account-auto-sync', 'email-code-auth'] }, requestId);
+  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-smart-import', 'qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'artwork-proxy', 'account-auto-sync', 'email-code-auth'] }, requestId);
 
   const address = request.headers.get('CF-Connecting-IP') || 'unknown';
-  if (url.pathname.startsWith('/api/') && !withinRateLimit(address)) return json(request, env, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }, requestId);
+  const artworkRequest = request.method === 'GET' && url.pathname === '/api/artwork';
+  if (url.pathname.startsWith('/api/') && !withinRateLimit(`${artworkRequest ? 'artwork' : 'metadata'}:${address}`, artworkRequest ? 120 : 30)) return json(request, env, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }, requestId);
+
+  if (request.method === 'GET' && url.pathname === '/api/artwork') {
+    try { return await artworkResponse(request, env, url.searchParams.get('url'), requestId); }
+    catch (error) { return handleApiError(request, env, requestId, error, 'Could not read this artwork.'); }
+  }
 
   if (request.method === 'POST' && url.pathname === '/api/import/qq-album-preview') {
     try {

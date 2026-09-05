@@ -16,7 +16,7 @@ const allowedOrigins = new Set(String(process.env.ALLOWED_ORIGIN || '').split(',
 const apiCache = new Map();
 const rateWindows = new Map();
 const cacheFor = async (key, producer, ttl = 300_000) => { const current = apiCache.get(key); if (current && current.expiresAt > Date.now()) return current.value; const value = await producer(); apiCache.set(key, { value, expiresAt: Date.now() + ttl }); if (apiCache.size > 200) { const oldest = apiCache.keys().next().value; apiCache.delete(oldest); } return value; };
-const withinRateLimit = (address) => { const now = Date.now(); const recent = (rateWindows.get(address) || []).filter((at) => now - at < 600_000); if (recent.length >= 30) return false; recent.push(now); rateWindows.set(address, recent); return true; };
+const withinRateLimit = (address, limit = 30) => { const now = Date.now(); const recent = (rateWindows.get(address) || []).filter((at) => now - at < 600_000); if (recent.length >= limit) return false; recent.push(now); rateWindows.set(address, recent); return true; };
 const clientAddress = (request) => trustProxy ? String(request.headers['x-forwarded-for'] || '').split(',')[0].trim() || request.socket.remoteAddress || 'unknown' : request.socket.remoteAddress || 'unknown';
 const pruneRuntimeState = () => { const now = Date.now(); for (const [key, item] of apiCache) if (item.expiresAt <= now) apiCache.delete(key); for (const [key, times] of rateWindows) { const recent = times.filter((at) => now - at < 600_000); if (recent.length) rateWindows.set(key, recent); else rateWindows.delete(key); } };
 setInterval(pruneRuntimeState, 300_000).unref();
@@ -48,6 +48,26 @@ const readJsonBody = async (request) => {
 
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
+const artworkHosts = new Set(['y.gtimg.cn', 'p1.music.126.net', 'p2.music.126.net', 'p3.music.126.net', 'p4.music.126.net']);
+const parseArtworkUrl = (value) => {
+  let url;
+  try { url = new URL(String(value || '')); } catch { throw new Error('Artwork URL is invalid.'); }
+  if (url.protocol !== 'https:' || !artworkHosts.has(url.hostname)) throw new Error('Artwork host is not allowed.');
+  return url;
+};
+const fetchArtwork = async (value) => {
+  const url = parseArtworkUrl(value);
+  const upstream = await fetch(url, { headers: { 'User-Agent': serviceAgent, Referer: url.hostname === 'y.gtimg.cn' ? 'https://y.qq.com/' : 'https://music.163.com/' }, signal: AbortSignal.timeout(12_000) });
+  if (!upstream.ok) throw new Error(`Artwork is unavailable right now (${upstream.status}).`);
+  parseArtworkUrl(upstream.url || url.href);
+  const contentType = upstream.headers.get('content-type') || '';
+  if (!/^image\/(?:jpeg|png|webp|avif)(?:;|$)/i.test(contentType)) throw new Error('Artwork source did not return a supported image.');
+  const declaredLength = Number(upstream.headers.get('content-length') || 0);
+  if (declaredLength > 5_000_000) throw new Error('Artwork is too large to sample.');
+  const body = Buffer.from(await upstream.arrayBuffer());
+  if (body.length > 5_000_000) throw new Error('Artwork is too large to sample.');
+  return { body, contentType };
+};
 const publicDate = (value) => {
   const text = String(value ?? '').trim(); if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
   const timestamp = Number(value); if (!Number.isFinite(timestamp) || timestamp <= 0) return null;
@@ -227,8 +247,21 @@ createServer(async (request, response) => {
   if (origin && allowedOrigins.has(origin)) { response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); response.setHeader('Access-Control-Allow-Headers', 'Content-Type'); response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); }
   if (request.method === 'OPTIONS') { if (origin && !allowedOrigins.has(origin)) { response.writeHead(403); response.end(); } else { response.writeHead(204); response.end(); } return; }
   if (request.method === 'GET' && requestPath === '/healthz') { json(response, 200, { status: 'ok', version: serviceVersion, uptimeSeconds: Math.round(process.uptime()), cacheEntries: apiCache.size, providers: ['qqmusic', 'netease'] }); return; }
-  if (request.method === 'GET' && requestPath === '/api/version') { json(response, 200, { version: serviceVersion, capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates'] }); return; }
-  if (request.url?.startsWith('/api/') && !withinRateLimit(clientAddress(request))) { json(response, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }); return; }
+  if (request.method === 'GET' && requestPath === '/api/version') { json(response, 200, { version: serviceVersion, capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'artwork-proxy'] }); return; }
+  const address = clientAddress(request);
+  const artworkRequest = request.method === 'GET' && requestPath === '/api/artwork';
+  if (request.url?.startsWith('/api/') && !withinRateLimit(`${artworkRequest ? 'artwork' : 'metadata'}:${address}`, artworkRequest ? 120 : 30)) { json(response, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }); return; }
+  if (request.method === 'GET' && requestPath === '/api/artwork') {
+    try {
+      const artwork = await fetchArtwork(new URL(request.url, 'http://localhost').searchParams.get('url'));
+      response.writeHead(200, { 'Content-Type': artwork.contentType, 'Content-Length': artwork.body.length, 'Cache-Control': 'public, max-age=86400' });
+      response.end(artwork.body);
+    } catch (error) {
+      logFailure(request, requestId, error);
+      json(response, 422, { error: error instanceof Error ? error.message : 'Could not read this artwork.' });
+    }
+    return;
+  }
   if (request.method === 'POST' && request.url === '/api/import/qq-album-preview') {
     try {
       const body = await readJsonBody(request);

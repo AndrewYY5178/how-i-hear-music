@@ -20,6 +20,7 @@ const journal = await import('../modules/journal/pages.js');
 const rating = await import('../modules/rating/pages.js');
 const search = await import('../modules/search/pages.js');
 const taste = await import('../modules/taste/pages.js');
+const { translateText } = await import('../modules/layout/i18n.js');
 const stylesheet = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
 const shellSource = await readFile(new URL('../modules/layout/shell.js', import.meta.url), 'utf8');
 const homeSource = await readFile(new URL('../modules/home.js', import.meta.url), 'utf8');
@@ -50,8 +51,18 @@ const homeMarkup = home.home();
 assert.doesNotMatch(homeMarkup, /READ THE METHOD|EXPLORE TRACK|EXPLORE ALBUM|ENTER THE ARCHIVE|ABOUT THIS ARCHIVE|card-link/);
 const mergedTaste = taste.tasteHome();
 assert.match(mergedTaste, /taste-merged-index/);
-assert.match(mergedTaste, /RECENT CHANGES/);
+assert.match(mergedTaste, /LISTENING JOURNAL/);
 assert.match(mergedTaste, /\/taste\/journal/);
+[
+  'One personal listening archive: its overview, history and transparent insights.',
+  '01 / LISTENING DNA →',
+  'The shape of the archive, its method and its recurring signals.',
+  "combines the supporting tracks' average Overall, lift above your archive baseline and score consistency.",
+  'BLIND SPOT 01 · ALBUM BLIND SPOT',
+  '9 TRACK GLYPHS · 0 ALBUM TERRAINS · 4 ARTIST SIGNATURES',
+  'REDISCOVER · 20 MONTHS AGO',
+  '2 MOST RECENT',
+].forEach((label) => assert.notEqual(translateText(label, 'zh-CN'), label, `Taste Chinese translation missing: ${label}`));
 const mergedJournal = journal.journal("/taste/journal");
 assert.match(mergedJournal, /journal-recent/);
 assert.match(mergedJournal, /\/taste\/journal\/year\//);
@@ -103,6 +114,12 @@ assert.match(shellSource, /data-account-email-sign-in[^>]*aria-label="Sign in wi
 assert.doesNotMatch(shellSource, /class="account-close"/);
 assert.match(shellSource, /\["\/import", "Import", "import"\]/);
 assert.doesNotMatch(shellSource, /data-mobile-more|mobile-more-panel/);
+const importHomeMarkup = imports.importHome();
+const importQQMarkup = imports.importQQ();
+assert.match(importHomeMarkup, /class="secondary-nav"[\s\S]*?>Import<\/a>[\s\S]*?>Inbox<\/a>[\s\S]*?>Data Desk<\/a>/);
+assert.match(importHomeMarkup, /<span class="mono">QQ MUSIC<\/span>/);
+assert.match(importQQMarkup, /01 \/ QQ MUSIC/);
+assert.doesNotMatch(importQQMarkup, /QQ MUSIC SMART IMPORT/);
 assert.doesNotMatch(stylesheet, /\.account-login-options \{[^}]*border-top/);
 assert.match(stylesheet, /\.home-record\[data-record-position="left-4"\] \{ z-index:6; opacity:\.5;/);
 assert.match(stylesheet, /\.home-record\[data-record-position="right-3"\] \{ opacity:\.5;/);
@@ -111,6 +128,7 @@ assert.match(stylesheet, /UI 3\.11\.27 — keep every visible side record fully 
 assert.match(stylesheet, /left-4"\],\.home-record\[data-record-position="right-4"\].*opacity:1 !important/);
 assert.doesNotMatch(homeMarkup, /class="feature-score"/);
 assert.match(homeMarkup, /class="radar-value-label"/);
+assert.match(homeMarkup, /data-radar-placement="outside"/);
 assert.match(stylesheet, /\.home-record\.record-is-retracting \.home-record-disc,\.album-card\.record-is-retracting \.album-card-disc \{ transition-duration:280ms,220ms; \}/);
 assert.match(homeSource, /recordMoveTimer = window\.setTimeout\(\(\) => \{/);
 assert.match(homeSource, /\}, 180\);/);

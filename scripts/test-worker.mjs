@@ -1,6 +1,6 @@
 import { handleRequest } from '../worker/index.mjs';
 
-const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.43' };
+const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.51' };
 const allowedOrigin = env.ALLOWED_ORIGIN;
 const request = (path, options = {}) => new Request(`https://adapter.example${path}`, options);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
@@ -12,6 +12,7 @@ expect(health.status === 200 && healthBody.status === 'ok' && healthBody.version
 const version = await handleRequest(request('/api/version', { headers: { Origin: allowedOrigin } }), env);
 const versionBody = await version.json();
 expect(version.status === 200 && versionBody.capabilities.includes('qq-smart-import') && versionBody.capabilities.includes('qq-playlist') && versionBody.capabilities.includes('musicbrainz-release-candidates'), 'Worker version contract failed.');
+expect(versionBody.capabilities.includes('artwork-proxy'), 'Worker artwork proxy capability is not advertised.');
 expect(versionBody.capabilities.includes('account-auto-sync'), 'Worker account auto-sync capability is not advertised.');
 expect(versionBody.capabilities.includes('email-code-auth'), 'Worker email-code authentication capability is not advertised.');
 expect(version.headers.get('Access-Control-Allow-Origin') === allowedOrigin, 'Worker did not return the configured CORS origin.');
@@ -26,6 +27,13 @@ const unconfiguredSync = await handleRequest(request('/api/sync/status', { heade
 expect(unconfiguredSync.status === 503 && (await unconfiguredSync.json()).error.includes('not configured'), 'Worker did not keep private sync unavailable without its database and OAuth secret.');
 
 const nativeFetch = globalThis.fetch;
+globalThis.fetch = async () => new Response(new Uint8Array([255, 216, 255, 217]), { status: 200, headers: { 'Content-Type': 'image/jpeg', 'Content-Length': '4' } });
+const artwork = await handleRequest(request('/api/artwork?url=https%3A%2F%2Fy.gtimg.cn%2Fmusic%2Fphoto_new%2Fcover.jpg', { headers: { Origin: allowedOrigin, 'CF-Connecting-IP': 'fixture-artwork' } }), env);
+expect(artwork.status === 200 && artwork.headers.get('Content-Type') === 'image/jpeg' && artwork.headers.get('Access-Control-Allow-Origin') === allowedOrigin && (await artwork.arrayBuffer()).byteLength === 4, 'Worker artwork proxy did not return a CORS-readable image.');
+const rejectedArtwork = await handleRequest(request('/api/artwork?url=https%3A%2F%2Fexample.com%2Fcover.jpg', { headers: { Origin: allowedOrigin, 'CF-Connecting-IP': 'fixture-artwork-rejected' } }), env);
+expect(rejectedArtwork.status === 422, 'Worker artwork proxy accepted an unapproved host.');
+globalThis.fetch = nativeFetch;
+
 globalThis.fetch = async () => new Response(JSON.stringify({ data: { song: { list: [{ id: 101, mid: 'songMid01', name: 'Fixture Track', time_public: '2025-12-28', version: 3, index_album: 7, index_cd: 1, interval: 180, singer: [{ name: 'Fixture Artist' }], album: { id: 202, mid: 'albumMid01', name: 'Fixture Album' } }] } } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 const search = await handleRequest(request('/api/import/qq-search?q=Fixture', { headers: { Origin: allowedOrigin, 'CF-Connecting-IP': 'fixture-search' } }), env);
 const searchTrack = (await search.json()).tracks?.[0];

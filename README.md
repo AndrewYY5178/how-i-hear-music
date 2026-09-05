@@ -91,6 +91,9 @@ UI 3.11.24 将 Journal 收进 Taste：顶层导航保留 Home、Archive、Rate�
 UI 3.11.25 将 Home 所有可见侧边唱片的最低透明度提高到 80%，保留中心唱片的视觉焦点，不再使用过低透明度模拟景深。
 UI 3.11.26 将 Home 所有可见侧边唱片统一为 100% 不透明度，景深只由尺寸、透视、位置和饱和度表达。
 UI 3.11.27 窄版底部导航移除 `More`，直接显示 `Import`，五个模块均可一键到达。
+UI 3.11.28 将导入区二级导航收束为 `Import / Inbox / Data Desk`；QQ 音乐和网易云音乐改在 Import 首页选择，并将可见名称 `QQ Music Smart Import` 简化为 `QQ Music`。
+UI 3.11.29 补齐 Taste 及其 Journal、Blind Spots、Listening Portrait 等子页面的中文翻译，并为编号目录、动态盲区标签、画像统计和时间状态加入动态翻译规则。
+UI 3.11.30 修复 Import 封面主题色：QQ/网易云封面通过受限同源图片通道读取像素，再使用现有的色板人口、饱和度与明度权重选择代表色；跨域失败不再直接退回随机备用色。
 
 UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 不再生成虚构 Track 或预设分数；错误 Track/Album URL 不再回退到其他记录；完成 Album rating 会验证所有曲目并同步当前 Track ratings。Journal 修订锁定原记录身份，Metadata 来源按字段保存，备份恢复先预览冲突并保留一次完整回滚。Sonic 中性值不再被误分到 Cold/Sparse，离线缓存按版本隔离，静态部署也获得 CSP/referrer 边界。
 
@@ -142,6 +145,16 @@ npm test
 - 在商业化或扩大公开使用之前，`TERMS.md`、第三方平台条款、metadata 使用方式和图片引用仍须由合格法律专业人士复核。代码检查不能替代法律意见。
 
 ## 继续修改
+
+UI 3.11.31 收束了重复入口：`TASTE` 以 Overview / Journal / Insights 作为唯一目录；Listening Profile 合入 DNA，Good ≠ Mine、边界与 Blind Spots 合入 Boundaries；Archive 首页仅保留一次 Tracks / Albums / Artists 入口；Rate 首页仅保留一个继续评分的主操作；保存评分后自动收录，Inbox 不再显示重复的 Archive 按钮。旧的 `/journal`、`/taste/profile`、`/taste/good-not-mine`、`/taste/blind-spots` 与 `/import/qq-album` 地址仍可使用，以保护书签和历史链接。
+
+UI 3.11.32 将 Archive 根页的 Tracks / Albums / Artists 三个入口并排为一排三列；手机宽度继续使用单列布局。
+
+UI 3.11.33 将 Archive 三列入口的分隔线移到 Albums 与 Artists 之间，不再保留最外侧多余的竖线。
+
+UI 3.11.34 为 Home 增加登录状态感知的专辑展示：未登录时使用固定样板专辑，登录后按用户导入专辑数量逐步替换，达到展示容量后完全使用用户自己的专辑。`FEATURED SHAPE` 只展示 Song / Vocal / Production / Overall 四项均已确认的歌曲，不再把未完成评分的曲目作为样板补位。
+
+UI 3.11.35 将 `FEATURED SHAPE` 的四个分数移到对应维度名称的外侧，并按上下左右方向对齐；评分页与详情页的雷达图标注位置保持不变。
 
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`

@@ -4,7 +4,7 @@ import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStat
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
-const appVersion = "0.9.43";
+const appVersion = "0.9.51";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"],
@@ -32,7 +32,7 @@ const accountShell = () => {
   const nickname = signedIn ? accountNickname(session.user.id) : "";
   const title = signedIn ? `Hello, ${safe(nickname || session.user.login)}.` : "Sign in or register.";
   const copy = "";
-  const actions = signedIn ? `${link("/import/data", "DATA DESK", "button primary")}<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : `<div class="account-login-options"><button class="button primary" type="button" data-account-sign-in aria-label="Sign in with GitHub">GITHUB</button><button class="button" type="button" data-account-email-sign-in aria-label="Sign in with email">EMAIL</button></div>`;
+  const actions = signedIn ? `<button class="button" type="button" data-account-sign-out>SIGN OUT</button>` : `<div class="account-login-options"><button class="button primary" type="button" data-account-sign-in aria-label="Sign in with GitHub">GITHUB</button><button class="button" type="button" data-account-email-sign-in aria-label="Sign in with email">EMAIL</button></div>`;
   const nicknameForm = signedIn ? `<form class="account-nickname-form"><div class="account-nickname-row"><span class="mono account-nickname-label">NICKNAME</span><input name="nickname" aria-label="Nickname" value="${safe(nickname)}" maxlength="24" autocomplete="nickname" placeholder="How should this archive address you?" required><button class="text-action" type="submit">SAVE</button></div></form>` : "";
   const emailFlow = signedIn ? "" : `<div class="account-email-flow" hidden><form class="account-email-request"><label><span class="mono">EMAIL</span><input name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"></label><button class="button primary" type="submit">SEND CODE</button></form><form class="account-email-verify" hidden><label><span class="mono">CODE</span><input name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="000000"></label><button class="button primary" type="submit">VERIFY</button></form></div>`;
   return `<section class="account-panel" id="account-panel" role="dialog" aria-modal="false" aria-labelledby="account-panel-title" hidden><div class="account-panel-head"><span class="eyebrow mono">ACCOUNT / AUTO SYNC</span></div><h2 class="account-panel-title${signedIn ? "" : " account-signed-out"}" id="account-panel-title" tabindex="-1">${title}</h2>${copy ? `<p>${copy}</p>` : ""}${nicknameForm}${signedIn ? `<div class="account-identity"><span class="mono">${session.user.provider === "email" ? "EMAIL IDENTITY" : "GITHUB IDENTITY"}</span><strong>${session.user.provider === "email" ? safe(session.user.login) : `@${safe(session.user.login)}`}</strong></div>` : ""}<div class="account-actions">${actions}</div>${emailFlow}<p class="account-status mono" id="account-status" aria-live="polite">${signedIn ? "Checking account sync…" : ""}</p><div class="account-version-row"><span class="account-version mono">v${appVersion}</span><button class="account-version-check mono" type="button" data-check-update>CHECK FOR UPDATES</button></div></section>`;

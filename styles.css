@@ -617,6 +617,7 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .archive-search .global-search-form { max-width:none; margin-bottom:24px; }
 .archive-search .global-search-results { max-width:none; }
 .archive-index-nav { display:flex; align-items:center; gap:24px; margin:-26px 0 44px; padding-bottom:13px; border-bottom:1px solid var(--line); }
+.archive-index-actions { justify-content:flex-end; }
 .archive-index-nav .secondary-nav { flex:1; margin:0; padding:0; border:0; }
 .archive-search-trigger { flex:none; min-width:40px; min-height:40px; padding:8px 0 8px 12px; border:0; background:transparent; color:var(--red); font-size:10px; letter-spacing:.07em; }
 .archive-search-trigger:hover,.archive-search-trigger[aria-expanded="true"] { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:5px; }
@@ -641,13 +642,18 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 
 /* Gate grids use full internal gutters so symbols share the same optical start line. */
 .gate-icon { display:block; }
+.archive-gates { grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media (min-width:761px) {
+  .archive-gates article:nth-child(even) { border-right:1px solid var(--line); }
+  .archive-gates article:last-child { border-right:0; }
+}
 @media (min-width:1025px) {
   .archive-gates { grid-template-columns:repeat(3,1fr); }
   .archive-gates article:first-child,.taste-gates article:first-child { padding-left:24px; }
 }
 @media (min-width:761px) and (max-width:1024px) {
   .featured-shape { grid-template-columns:minmax(0,.8fr) minmax(240px,1fr) minmax(120px,.45fr); }
-  .archive-gates article:last-child { grid-column:1 / -1; }
+  .archive-gates article:last-child { grid-column:auto; }
   .archive-gates article:first-child,.taste-gates article:first-child { padding-left:24px; }
 }
 
@@ -661,6 +667,7 @@ body::before {
 }
 
 @media (max-width:760px) {
+  .archive-gates { grid-template-columns:1fr; }
   .album-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 16px; }
   .archive-tools { grid-template-columns:1fr 1fr; }
   .archive-tools>input { grid-column:1/-1; }

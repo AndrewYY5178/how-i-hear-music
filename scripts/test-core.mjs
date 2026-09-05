@@ -25,7 +25,7 @@ const { albumNote, albumNotesKey, saveAlbumNote } = await import('../modules/mus
 const { blindSpots, sonicQuadrant } = await import('../modules/music/taste-dna.js');
 const { readRatings, saveAlbumTrackRatings, saveRatingRecord, validScore } = await import('../modules/music/lifecycle.js');
 const { formatTranslatedText, translateText } = await import('../modules/layout/i18n.js');
-const { dominantPixelTone } = await import('../modules/layout/cover-tone.js');
+const { artworkSamplerSources, dominantPixelTone } = await import('../modules/layout/cover-tone.js');
 const { normalizeQQAlbum } = await import('../server/providers/qqmusic-album.mjs');
 
 assert.equal(translateText('Rate', 'zh-CN'), '评分');
@@ -57,6 +57,8 @@ const colorfulPixels = new Uint8ClampedArray([
   160, 161, 159, 255, 30, 184, 210, 255, 32, 182, 208, 255,
 ]);
 assert.equal(dominantPixelTone(colorfulPixels, 3, 2), 'rgb(31 183 209)');
+assert.equal(artworkSamplerSources('https://y.gtimg.cn/music/photo_new/cover.jpg')[0], '/api/artwork?url=https%3A%2F%2Fy.gtimg.cn%2Fmusic%2Fphoto_new%2Fcover.jpg');
+assert.deepEqual(artworkSamplerSources('https://is1-ssl.mzstatic.com/image/thumb/cover.jpg'), ['https://is1-ssl.mzstatic.com/image/thumb/cover.jpg']);
 
 const qqAlbumFixture = normalizeQQAlbum({ code: 0, data: { id: 123, mid: 'abc123', name: 'Fixture Album', singername: 'Fixture Artist', aDate: '2026-09-04', list: [{ songmid: 'track123', songname: 'Fixture Track', belongCD: 1, cdIdx: 0, interval: 180, singer: [{ mid: 'artist123', name: 'Fixture Artist' }] }] } }, 'abc123');
 assert.equal(qqAlbumFixture.coverUrl, 'https://y.gtimg.cn/music/photo_new/T002R800x800M000abc123.jpg');
