@@ -11,12 +11,13 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.17";
+import { translateText } from "../layout/i18n.js?v=0.9.18";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.11.1";
-import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.1";
+import { archiveSearch } from "../search/pages.js?ui=3.11.2";
+import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.2";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
+const archiveHomeNav = () => `<div class="archive-index-nav">${archiveNav()}<button class="archive-search-trigger mono" id="archive-search-trigger" type="button" aria-controls="archive-search-panel" aria-expanded="${new URLSearchParams(location.search).has("q") ? "true" : "false"}">SEARCH</button></div>`;
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
@@ -72,7 +73,7 @@ const encodeLocalCover = (file) => new Promise((resolve, reject) => {
 const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card" data-settle-key="${safe(trackId(track))}"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `${fieldLabel[field]} ${rating(scores[field])}`).join(" · ") : "NO SCORED GEOMETRY"}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", allAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
-export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveNav()}${archiveSearch()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
+export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveHomeNav()}${archiveSearch()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
 
 const renderTrackCards = (tracks) => tracks.map(recordCard).join("") || "<p class='empty-state'>No tracks match this view.</p>";
 export const archiveTracks = () => {

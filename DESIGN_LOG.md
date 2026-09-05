@@ -2115,3 +2115,27 @@ Implementation commit: `cf5c470`
 
 - NetEase remains a public-playlist-only import flow.
 - QQ public-data limits, no-login/no-Cookie/no-audio/no-lyrics policy, Inbox lifecycle, album duplicate checks, local-data and sync boundaries remain unchanged.
+
+## Version 3.11.2 — Archive search, present only when needed
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner reviewed the Archive landing page and found the permanently expanded local-index area visually much larger than its occasional retrieval task warranted.
+- The existing `TRACKS / ALBUMS / ARTISTS` section navigation already establishes the Archive's compact catalog rhythm. The prior masthead Search control was familiar precisely because it was a small, secondary action.
+
+### Decision
+
+- Place a quiet red `SEARCH` control on the far right of the Archive section navigation.
+- Keep the complete browser-local index unchanged, but reveal just one compact query row only after the owner activates the control. A supplied `?q=` query opens the row and results immediately, so legacy `/search?q=…` redirects remain useful.
+- Preserve search coverage for Tracks, Albums, Artists, Journal, Album Notes, Memory and Taste DNA. The query remains local and no search text is sent to the Worker.
+
+### Rejected
+
+- Do not restore Search as a masthead route, add a large permanent search desk, or replace the Archive's editorial rules with a modal, card or heavy overlay.
+- Do not narrow retrieval to catalog entities only; the supporting listening evidence remains intentionally searchable.
+
+### Intentionally unchanged
+
+- Archive routes, search grouping, typesetter underline treatment, local data boundaries, navigation consolidation, and every existing result URL remain unchanged.

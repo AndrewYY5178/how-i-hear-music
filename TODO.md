@@ -4,6 +4,8 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## Active touch-first App shell and delivery — UI 3.6.0
 
+- [x] Reduce the Archive landing-page local index to a quiet red `SEARCH` control aligned with `TRACKS / ALBUMS / ARTISTS`; reveal one compact local query row only after activation or when a legacy `?q=` link supplies a query. Keep the complete browser-local scope and `/search?q=…` compatibility. *(UI 3.11.2; render and local-browser interaction verified. Final 390 / 1024 / 1440px browser review remains part of the responsive audit.)*
+
 - [x] Merge Search into the Archive landing page as one built-in local index; remove the duplicate desktop masthead, narrow menu and mobile More Search entries; preserve the complete search scope and redirect old `/search?q=…` links to `/archive?q=…`. *(UI 3.11.0; verified at 390 / 1024 / 1440px in English and Chinese.)*
 
 - [x] Merge QQ Music playlist and album import into one Smart Import desk: resolve public share text (including short links) through the adapter, identify playlist versus album, then retain the existing Inbox preview or official-sequence review. Preserve legacy `/import/qq-album?url=…` links by redirecting them to the unified form. *(UI 3.11.1; worker contract and 390 / 1024 / 1440px form review pending this delivery.)*

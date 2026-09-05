@@ -48,8 +48,12 @@ assert.doesNotMatch(homeMarkup, /READ THE METHOD|EXPLORE TRACK|EXPLORE ALBUM|ENT
 const archiveHome = archive.archiveHome();
 assert.match(archiveHome, /class="archive-search"/);
 assert.match(archiveHome, /SEARCH THE RECORD/);
+assert.match(archiveHome, /id="archive-search-trigger"/);
+assert.match(archiveHome, /id="archive-search-panel"[^>]+ hidden/);
 location.search = '?q=Tattooed';
-assert.match(search.archiveSearch(), /<mark>Tattooed<\/mark> Heart/);
+const searchMarkup = search.archiveSearch();
+assert.match(searchMarkup, /<mark>Tattooed<\/mark> Heart/);
+assert.doesNotMatch(searchMarkup, /id="archive-search-panel"[^>]+ hidden/);
 location.search = '';
 const trackIndex = archive.archiveTracks();
 assert.ok(trackIndex.indexOf('track_000001') < trackIndex.indexOf('track_000002'), 'Track index does not default to rating high–low');
