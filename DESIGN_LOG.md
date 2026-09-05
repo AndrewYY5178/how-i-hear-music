@@ -2118,7 +2118,7 @@ Implementation commit: `cf5c470`
 
 ## Version 3.11.2 — Archive search, present only when needed
 
-Implementation commit: pending
+Implementation commit: `e89ed3b`
 
 ### Evidence
 
