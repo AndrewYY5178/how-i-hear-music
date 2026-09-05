@@ -4,6 +4,14 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## Active touch-first App shell and delivery — UI 3.6.0
 
+- [ ] Replace the uniform dot-like page noise with a restrained, realistic paper surface based primarily on [Jessel Nieman's Grain Layer](https://www.jesselnieman.com/notes/effortlessly-add-a-grain-layer-to-your-website-in-webflow): preserve the existing `#e7dfcf` paper color, combine irregular fine grain with very low-contrast fibers and print variation, keep the overlay non-interactive, avoid obvious tiling or heavy parchment stains, and verify readability and motion at 390 / 1024 / 1440px before publishing.
+
+- [ ] Browser-level visual verification of the album detail local-cover workflow at 390 / 1024 / 1440px. *(UI 3.10.4 implementation applied; verify file selection, preview, persistence and canonical reset when browser access is available.)*
+
+- [ ] Recheck narrow Home Cover Flow after reducing the center sleeve so left and right neighbors remain visible; verify the Spotify-backed `黑色柳丁` artwork and its secondary CDN fallback at 390 / 1024 / 1440px. *(UI 3.10.3 code fix applied; visual browser re-check pending.)*
+
+- [ ] Recompose the narrow Home Cover Flow so the centered album's caption stays in a vertical cover-then-metadata stream, with enough stage height and top breathing room for the title to remain visible above the mobile tab bar; keep a third sleeve visible at each edge so the narrow shelf has the same sense of depth as the wide layout. *(UI 3.10.2 code fix applied; visual browser re-check pending usage-limit recovery.)*
+
 - [x] Normalize Archive record reveals so every column uses the same sleeve/disc trajectory and edge columns move the complete object inward; replace the blocked Tao Zhe cover with its stable Apple Music reference; retry canonical artwork after a broken local override; correct Import record diameter; recompose Home Cover Flow for narrow viewports; and keep Prev/Next above the moving records for uninterrupted clicks. *(UI 3.9.9; verified at 390 / 1024 / 1440px and with the full test suite.)*
 
 - [x] Replace raw population-only cover color selection with population-and-chroma prominence so colorful artwork does not collapse to grey; rebuild Home, Archive and Import sleeves from connected 3D back/side/top/bottom faces after external reference study. *(UI 3.9.8; verified with 《纯妹妹》 and at 390 / 1024 / 1440px.)*
@@ -37,6 +45,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Let the owner fill verified MusicBrainz language/region candidates into the existing field-evidence form in one action; saving the field evidence remains explicit and browser-local.
 - [x] Add optional GitHub-identified, client-side encrypted cloud sync: D1 stores ciphertext only; download previews conflicts before an owner-selected merge and retains the existing local rollback.
 - [x] Replace password-gated manual cloud copies with GitHub-account automatic sync, at the owner's explicit request; D1 remains encrypted at rest, but the Worker can process account data to synchronize it without a user-held password.
+- [ ] Add passwordless email registration and sign-in alongside GitHub OAuth: issue short-lived one-time codes or magic links, hash codes before D1 storage, rate-limit requests, expire and revoke sessions, and provide account export/deletion and recovery boundaries. Email and GitHub remain independent login methods; when the verified email returned by both providers is exactly the same, resolve them to the same account space automatically. Different emails remain separate without a manual binding flow or silent archive merge. This requires a free outbound email provider and a Worker secret/API key before production activation.
 - [x] Replace the masthead's contextless `001` with an Account control; expose GitHub registration/sign-in, identity, encrypted-copy status, Data Desk and sign-out in a responsive editorial account panel.
 - [x] Refine the Account panel into a compact masthead popover at desktop, tablet and phone widths; retain 44px controls without occupying the full mobile screen.
 - [x] Reduce signed-in Account content to identity, encrypted-copy state and two actions so the popover occupies roughly one-third to one-half of its prior visual area.

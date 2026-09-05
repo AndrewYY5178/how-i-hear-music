@@ -57,10 +57,16 @@ assert.ok(albumIndex.indexOf('ariana-grande-sweetener') < albumIndex.indexOf('ar
 assert.doesNotMatch(albumIndex, /Open album|OPEN ALBUM/);
 assert.match(albumIndex, /<a class="album-card"[^>]+data-route/);
 assert.match(albumIndex, /album-card-disc/);
+const albumDetail = archive.archiveAlbumDetail('陶喆-黑色柳丁');
+assert.match(albumDetail, /name="coverFile"/);
+assert.match(albumDetail, /never uploaded/);
 localStorage.setItem('how-i-hear-music:cover-overrides:v1', JSON.stringify({ '陶喆-陶喆': 'https://invalid.example/missing.jpg' }));
 const fallbackAlbumIndex = archive.archiveAlbums();
 assert.match(fallbackAlbumIndex, /data-cover-fallback-source="https:\/\/is1-ssl\.mzstatic\.com\/image\/thumb\/Music125/);
 localStorage.removeItem('how-i-hear-music:cover-overrides:v1');
+localStorage.setItem('how-i-hear-music:cover-overrides-local:v1', JSON.stringify({ '陶喆-陶喆': 'data:image/png;base64,fixture' }));
+assert.match(archive.archiveAlbums(), /data-cover-source="data:image\/png;base64,fixture"/);
+localStorage.removeItem('how-i-hear-music:cover-overrides-local:v1');
 assert.match(stylesheet, /\.album-card:nth-child\(3n\).*\.album-card-record/);
 assert.doesNotMatch(stylesheet, /\.album-card:nth-child\(3n\)[^{]+\.album-card-disc/);
 assert.match(stylesheet, /\.import-album-disc \{ top:1%; right:0; width:98%/);

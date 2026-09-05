@@ -671,6 +671,11 @@ body::before {
 .cover-override-form { padding-top:24px; }
 .cover-override-form label>span { display:block; margin-bottom:8px; color:var(--red); font-size:8px; }
 .cover-override-form input { width:100%; padding:8px 0; border:0; border-bottom:1px solid var(--line); outline:0; background:transparent; color:inherit; }
+.cover-override-form input[type="file"] { padding:12px 0; border-bottom:1px solid var(--line); font:11px/1.4 var(--mono); }
+.cover-override-form label small { display:block; margin-top:8px; color:var(--muted); font:10px/1.5 var(--mono); }
+.cover-local-preview { display:flex; min-height:0; margin:8px 0 24px; }
+.cover-local-preview:empty { display:none; }
+.cover-local-preview img { display:block; width:96px; height:96px; object-fit:cover; border:1px solid var(--line); }
 .cover-override-form>div { display:flex; flex-wrap:wrap; gap:16px; margin-top:24px; }
 .cover-override-form p { margin-top:16px; }
 .listening-note { display:block; margin:24px 0; }
@@ -1459,6 +1464,37 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .journal-year-link { padding:16px 0; border-right:0; border-left:0; }
   .journal-list article::before,.journal-list article::after { display:none; }
   .journal-list article>div { padding-left:0; }
+}
+
+/* UI 3.10.1 — keep narrow Cover Flow captions in the same vertical stream as their cover. */
+@media (max-width:760px) {
+  .home-record-stage { height:clamp(410px,110vw,500px); }
+  .home-record { top:33%; display:block; }
+  .home-record-caption { position:absolute; top:calc(100% + 10px); left:0; width:100%; margin:0; padding-top:0; transform:translateY(8px); }
+  .home-record[data-record-position="front"] .home-record-caption { transform:translateY(0); }
+}
+
+/* UI 3.10.2 — let the narrow shelf continue to the viewport edges. */
+@media (max-width:760px) {
+  .home-record[data-record-position="left-3"],.home-record[data-record-position="right-3"] {
+    visibility:visible;
+    pointer-events:none;
+    opacity:.16;
+    transform:translate(calc(-50% - min(58vw,214px)),-47%) translateZ(-190px) rotateY(58deg) scale(.34);
+  }
+  .home-record[data-record-position="right-3"] { transform:translate(calc(-50% + min(58vw,214px)),-47%) translateZ(-190px) rotateY(-58deg) scale(.34); }
+}
+
+/* UI 3.10.3 — keep the center sleeve compact enough to reveal both neighbors. */
+@media (max-width:760px) {
+  .home-record { width:clamp(132px,44vw,180px); }
+  .home-record[data-record-position="front"] { transform:translate(-50%,-50%) translateZ(70px) scale(1.02); }
+  .home-record[data-record-position="left-1"] { transform:translate(calc(-50% - min(30vw,112px)),-49%) translateZ(-8px) rotateY(45deg) scale(.68); }
+  .home-record[data-record-position="right-1"] { transform:translate(calc(-50% + min(30vw,112px)),-49%) translateZ(-8px) rotateY(-45deg) scale(.68); }
+  .home-record[data-record-position="left-2"] { opacity:.38; transform:translate(calc(-50% - min(48vw,176px)),-48%) translateZ(-120px) rotateY(55deg) scale(.5); }
+  .home-record[data-record-position="right-2"] { opacity:.38; transform:translate(calc(-50% + min(48vw,176px)),-48%) translateZ(-120px) rotateY(-55deg) scale(.5); }
+  .home-record[data-record-position="left-3"] { transform:translate(calc(-50% - min(66vw,242px)),-47%) translateZ(-190px) rotateY(58deg) scale(.34); }
+  .home-record[data-record-position="right-3"] { transform:translate(calc(-50% + min(66vw,242px)),-47%) translateZ(-190px) rotateY(-58deg) scale(.34); }
 }
 
 @media (prefers-reduced-motion:reduce) {

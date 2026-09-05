@@ -6,7 +6,7 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.9.9";
+import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.10.4";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
 
 const inboxKey = data.library.storageKey;
@@ -89,7 +89,7 @@ const showCountedImportProgress = async (output, count, entity = "tracks") => {
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const previewAlbum = (container, album, source) => {
   const analysis = analyzeAlbumImport(album); const meta = [album.artistName, album.year, `${album.trackCount} tracks`].filter(Boolean).join(" · ");
-  const cover = album.coverUrl ? `<img src="${safe(album.coverUrl)}" alt="${safe(`${album.title} cover`)}">` : `<span>${safe(album.title)}</span>`;
+  const cover = album.coverUrl ? `<img referrerpolicy="no-referrer" src="${safe(album.coverUrl)}" alt="${safe(`${album.title} cover`)}">` : `<span>${safe(album.title)}</span>`;
   container.innerHTML = `<div class="import-album-found"><div class="import-album-object" data-cover-tone data-cover-source="${safe(album.coverUrl || "")}" style="--record-color:${fallbackCoverTone(`${album.artistName}-${album.title}`)}"><span class="import-album-disc" aria-hidden="true"></span><span class="import-album-sleeve">${sleeveDepth}${cover}</span></div><div><span class="mono">${analysis.duplicateAlbum ? "ALBUM ALREADY EXISTS" : "ALBUM FOUND"}</span><h2>${safe(album.title)}</h2><p>${safe(meta)}</p><p><b>${analysis.counts.new} new</b> · ${analysis.counts.existing} existing · ${analysis.counts.review} need review</p></div></div><div class="album-preview-list">${albumTrackPreview(analysis.rows)}</div>${analysis.duplicateAlbum ? link(`/archive/albums/${analysis.existingAlbumId}`, "OPEN EXISTING ALBUM", "button") : `<button id="confirm-album-import" class="button primary" type="button">IMPORT ALBUM</button>`}`;
   bindCoverTones(container);
   container.querySelector(".import-album-sleeve img")?.addEventListener("error", (event) => { event.currentTarget.replaceWith(Object.assign(document.createElement("span"), { textContent: album.title })); }, { once: true });

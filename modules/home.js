@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, rating, safe, slug, storage, trackId } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.9.9";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.10.4";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -21,10 +21,15 @@ let stopHomeMotion = () => {};
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
+const localCoverOverrideKey = "how-i-hear-music:cover-overrides-local:v1";
 const coverSourcesForAlbum = (album) => {
   const id = album.id || slug(`${album.artist}-${album.title}`);
   const override = storage.get(coverOverrideKey, {})[id] || "";
-  return { primary: override || album.coverUrl || "", alternate: override && album.coverUrl && override !== album.coverUrl ? album.coverUrl : "" };
+  const localOverride = storage.get(localCoverOverrideKey, {})[id] || "";
+  const canonical = album.coverUrl || "";
+  const primary = localOverride || override || canonical;
+  const alternate = [override, canonical, album.coverFallback].find((source) => source && source !== primary) || "";
+  return { primary, alternate };
 };
 const coverForAlbum = (album) => coverSourcesForAlbum(album).primary;
 const albumScore = (album) => {
@@ -38,7 +43,7 @@ const recordMarkup = (album, index) => {
   const { primary: coverUrl, alternate } = coverSourcesForAlbum(album);
   const score = albumScore(album);
   const fallbackTone = fallbackCoverTone(`${album.artist}-${album.title}`);
-  return `<a class="home-record" data-home-record data-home-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} draggable="false" src="${safe(coverUrl)}" alt=""><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span></span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b>${score === null ? "" : `<strong>${rating(score)}</strong>`}</span></a>`;
+  return `<a class="home-record" data-home-record data-home-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" draggable="false" src="${safe(coverUrl)}" alt=""><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span></span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b>${score === null ? "" : `<strong>${rating(score)}</strong>`}</span></a>`;
 };
 const shapeMarkup = (track, index) => `<article class="featured-shape-slide${index === 0 ? " active" : ""}" data-home-shape-slide${index === 0 ? "" : " hidden"}><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(track.title)}</h2><p>${safe(track.artist)}</p></div><div class="featured-shape-visual">${radar(track.scores, { className: "home-radar ink-draw-radar" })}</div><div class="feature-score" aria-label="Track score breakdown">${["song", "vocal", "production", "overall"].map((field) => `<span>${field}<b>${rating(track.scores[field])}</b></span>`).join("")}</div></article>`;
 
