@@ -4,7 +4,7 @@ import { beginGithubSync, clearNicknamePrompt, readSyncStatus, signOutSync, sync
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
-const appVersion = "0.9.14";
+const appVersion = "0.9.15";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"], ["/journal", "Journal"],
@@ -78,7 +78,7 @@ export const renderShell = (path) => {
     return bounds.width > 0 && bounds.height > 0;
   }) || accountToggles[0];
   const closeAccount = () => { accountPanel.hidden = true; clearNicknamePrompt(); accountToggles.forEach((button) => button.setAttribute("aria-expanded", "false")); };
-  const openAccount = async ({ focusNickname = false } = {}) => { accountPanel.hidden = false; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "true")); (focusNickname ? accountPanel.querySelector('[name="nickname"]') : accountPanel.querySelector("h2"))?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `Automatic sync active · ${new Date(remote.updatedAt).toLocaleString()}` : "Your first local change will create the shared archive."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check account sync."; } };
+  const openAccount = async ({ focusNickname = false } = {}) => { accountPanel.hidden = false; accountToggles.forEach((button) => button.setAttribute("aria-expanded", "true")); (focusNickname ? accountPanel.querySelector('[name="nickname"]') : accountPanel.querySelector("h2"))?.focus(); if (!syncSession()?.token) return; const status = accountPanel.querySelector("#account-status"); try { const remote = await readSyncStatus(); status.textContent = remote.updatedAt ? `SYNCED · ${new Date(remote.updatedAt).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" })}` : "Your first local change will create the shared archive."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not check account sync."; } };
   accountToggles.forEach((button) => button.addEventListener("click", () => accountPanel.hidden ? openAccount() : closeAccount()));
   accountPanel.querySelector("[data-account-close]")?.addEventListener("click", () => { closeAccount(); visibleAccountToggle().focus(); });
   accountPanel.querySelector("[data-account-sign-in]")?.addEventListener("click", () => beginGithubSync());

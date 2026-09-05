@@ -44,7 +44,7 @@ const artistAverage = (artist) => {
 };
 const historyMarkup = (entries) => entries.length ? `<div class="rating-history">${entries.slice(0, 8).map((entry) => `<article><time class="mono">${safe(new Date(entry.at).toLocaleDateString())}${entry.revisedAt ? " · CORRECTED" : ""}</time><strong>${rating(entry.type === "album" ? entry.overall : entry.scores?.overall)}</strong>${entry.note ? `<p>${safe(entry.note)}</p>` : ""}${entry.id ? link(`/journal/edit/${encodeURIComponent(entry.id)}`, "CORRECT HISTORY →", "text-link") : ""}</article>`).join("")}</div>` : "<p>No local rating changes recorded yet.</p>";
 const coverMarkup = (url, alt, loading = false, alternate = "") => url ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} src="${safe(url)}" alt="${safe(alt)}"${loading ? " loading=\"lazy\"" : ""}><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
-const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `${fieldLabel[field]} ${rating(scores[field])}`).join(" · ") : "NO SCORED GEOMETRY"}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
+const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card" data-settle-key="${safe(trackId(track))}"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `${fieldLabel[field]} ${rating(scores[field])}`).join(" · ") : "NO SCORED GEOMETRY"}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", allAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
 export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveNav()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
@@ -135,11 +135,20 @@ export const archiveArtistDetail = (id) => {
   const tracks = tracksForArtist(artist.id);
   const albums = allAlbums().filter((album) => album.artist === artist.name);
   const traits = tasteDNA().filter((trait) => trait.evidence.some((record) => record.artistId === artist.id || record.artist === artist.name)); const scoredTracks = tracks.map((track) => ({ ...track, scores: resolvedScores(track) }));
-  return `${pageHeader("ARTIST", safe(artist.name), artist.role || artist.romanized || "In the archive")}<section class="artist-intro"><div>${artistSignature(scoredTracks, traits, `${artist.name} signature`)}</div><div><span class="eyebrow mono">WHY THEY MATTER</span><p>${safe(artist.role || "Their work has a confirmed place in this archive.")}</p>${traits.length ? `<small class="mono">RECURRING HERE · ${traits.slice(0, 3).map((trait) => safe(trait.label)).join(" · ")}</small>` : ""}</div></section><section><h2>Albums</h2><div class="inline-links">${albums.length ? albums.map((album) => link(`/archive/albums/${slug(album.artist + "-" + album.title)}`, album.title)).join("") : "No confirmed albums recorded."}</div></section><section><h2>Selected tracks</h2><div class="tracklist">${tracks.map((track, index) => `<div><span>${String(index + 1).padStart(2, "0")}</span>${link(`/archive/tracks/${trackId(track)}`, track.title)}<b>${rating(resolvedScores(track).overall)}</b></div>`).join("") || "No scored tracks recorded yet."}</div></section>`;
+  const albumSpines = albums.sort((left, right) => Number(left.year || 9999) - Number(right.year || 9999)).map((album) => `<a href="${withBase(`/archive/albums/${slug(album.artist + "-" + album.title)}`)}" data-route><span class="mono">${safe(album.year || "—")}</span><b>${safe(album.title)}</b></a>`).join("");
+  return `${pageHeader("ARTIST", safe(artist.name), artist.role || artist.romanized || "In the archive")}<section class="artist-intro"><div>${artistSignature(scoredTracks, traits, `${artist.name} signature`)}</div><div><span class="eyebrow mono">WHY THEY MATTER</span><p>${safe(artist.role || "Their work has a confirmed place in this archive.")}</p>${traits.length ? `<small class="mono">RECURRING HERE · ${traits.slice(0, 3).map((trait) => safe(trait.label)).join(" · ")}</small>` : ""}</div></section><section><h2>Albums</h2><div class="artist-album-spines">${albumSpines || "No confirmed albums recorded."}</div></section><section><h2>Selected tracks</h2><div class="tracklist">${tracks.map((track, index) => `<div><span>${String(index + 1).padStart(2, "0")}</span>${link(`/archive/tracks/${trackId(track)}`, track.title)}<b>${rating(resolvedScores(track).overall)}</b></div>`).join("") || "No scored tracks recorded yet."}</div></section>`;
 };
 
 export const bindArchive = (path, navigate) => {
   bindCoverTones();
+  if (path === "/archive/albums") document.querySelector(".album-grid")?.addEventListener("click", (event) => {
+    const card = event.target.closest(".album-card");
+    if (!card || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    card.classList.add("album-is-opening");
+    const target = new URL(card.href, location.href);
+    setTimeout(() => navigate(target.pathname + target.search), matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 220);
+  });
   if (path === "/archive/coverage") {
     document.querySelector(".metadata-picker")?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const id = new FormData(form).get("track"); navigate(`/archive/coverage?track=${encodeURIComponent(id)}${form.dataset.missingOnly === "1" ? "&missing=1" : ""}`); });
     document.querySelector(".metadata-editor")?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const values = Object.fromEntries(new FormData(form)); const missingOnly = new URLSearchParams(location.search).get("missing") === "1"; try { saveMetadataOverride(form.dataset.trackId, values); form.querySelector("[data-metadata-status]").textContent = "Local correction saved."; setTimeout(() => navigate(missingOnly ? "/archive/coverage?missing=1" : `/archive/coverage?track=${encodeURIComponent(form.dataset.trackId)}`), 250); } catch (error) { form.querySelector("[data-metadata-status]").textContent = error.message; } });
@@ -177,6 +186,7 @@ export const bindArchive = (path, navigate) => {
   if (path !== "/archive/tracks") return;
   const search = document.getElementById("track-search"); const filters = document.getElementById("track-filters"); const grid = document.getElementById("track-grid"); const traitFilter = document.getElementById("track-trait-filter"); const sort = document.getElementById("track-sort"); let active = "all";
   const render = () => {
+    const before = new Map([...grid.querySelectorAll("[data-settle-key]")].map((node) => [node.dataset.settleKey, node.getBoundingClientRect()]));
     const query = String(search.value || "").toLowerCase();
     const selectedTrait = tasteDNA().find((trait) => trait.id === traitFilter.value); const evidenceIds = new Set(selectedTrait?.evidence.map(trackId) || []);
     const tracks = allTracks().filter((track) => {
@@ -188,6 +198,12 @@ export const bindArchive = (path, navigate) => {
     if (sort.value === "title") tracks.sort((a, b) => a.title.localeCompare(b.title));
     if (sort.value === "artist") tracks.sort((a, b) => a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title));
     grid.innerHTML = renderTrackCards(tracks);
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(() => grid.querySelectorAll("[data-settle-key]").forEach((node) => {
+      const prior = before.get(node.dataset.settleKey); const next = node.getBoundingClientRect();
+      if (!prior) { node.animate([{ opacity:0, transform:"translateY(14px)" }, { opacity:1, transform:"none" }], { duration:420, easing:"cubic-bezier(.2,.7,.2,1)" }); return; }
+      const x = prior.left - next.left; const y = prior.top - next.top;
+      if (x || y) node.animate([{ transform:`translate(${x}px,${y}px)` }, { transform:"none" }], { duration:560, easing:"cubic-bezier(.2,.7,.2,1)" });
+    }));
   };
   search.addEventListener("input", render);
   traitFilter.addEventListener("change", render); sort.addEventListener("change", render);

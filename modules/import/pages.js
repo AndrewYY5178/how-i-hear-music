@@ -82,6 +82,10 @@ const albumTrackPreview = (tracks) => {
     return `${separator}<div class="album-preview-track"><span>${String(track.trackNumber).padStart(2, "0")}</span><strong>${safe(track.title)}</strong><small>${safe(track.artistName)}</small><em>${track.duplicateStatus === "existing" ? "EXISTS" : track.duplicateStatus === "review" ? "NEEDS REVIEW" : "NEW"}</em></div>`;
   }).join("");
 };
+const showCountedImportProgress = async (output, count, entity = "tracks") => {
+  output.innerHTML = `<span class="mono">CHECKING ${count} ${entity.toUpperCase()}…</span><p>Comparing public metadata with the local archive.</p>`;
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) await new Promise((resolve) => setTimeout(resolve, 220));
+};
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const previewAlbum = (container, album, source) => {
   const analysis = analyzeAlbumImport(album); const meta = [album.artistName, album.year, `${album.trackCount} tracks`].filter(Boolean).join(" · ");
@@ -105,6 +109,7 @@ export const bindImport = (path, navigate) => {
       output.innerHTML = "<span class='mono'>READING ALBUM…</span><p>Resolving the public link and preserving its official sequence.</p>";
       try {
         const result = await apiRequest("/api/import/qq-album-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+        await showCountedImportProgress(output, result.album?.trackCount || result.album?.tracks?.length || 0);
         previewAlbum(output, result.album, result.sourceUrl);
       } catch (error) { output.innerHTML = `<span class="mono">ALBUM NOT AVAILABLE</span><h2>Could not read this album.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music album link.")}</p>`; }
     });
@@ -116,6 +121,7 @@ export const bindImport = (path, navigate) => {
       output.innerHTML = "<span class='mono'>READING PLAYLIST…</span><p>Checking public QQ Music metadata.</p>";
       try {
         const result = await apiRequest("/api/import/qq-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
+        await showCountedImportProgress(output, result.tracks?.length || 0);
         preview(output, result.tracks || [], result.playlist, share);
       } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not read this playlist.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music playlist link.")}</p>`; }
     });
@@ -142,6 +148,7 @@ export const bindImport = (path, navigate) => {
       output.innerHTML = "<span class='mono'>READING PLAYLIST…</span><p>Checking public NetEase playlist metadata.</p>";
       try {
         const result = await apiRequest("/api/import/netease-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
+        await showCountedImportProgress(output, result.tracks?.length || 0);
         preview(output, result.tracks || [], result.playlist, share, { id: "netease", label: "NetEase Cloud Music" });
       } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not read this playlist.</h2><p>${safe(error instanceof Error ? error.message : "Try another public NetEase playlist link.")}</p>`; }
     });

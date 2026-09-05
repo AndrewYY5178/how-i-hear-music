@@ -1881,3 +1881,34 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Archive ordering, album routes, stored cover overrides, carousel timing, rating semantics, account sync, notes, Inbox, Memory and recovery data remain unchanged. The larger DRAW / SLIDE / STAMP / SETTLE motion proposal is recorded in `TODO.md` but is not implemented in this version.
+
+## Version 3.10.0 — The archive moves like printed matter
+
+Implementation commit: pending
+
+### Evidence
+
+- [Editorial New](https://editorialnew.com/) uses a rigid column grid, clipped oversized serif forms and roughly half-second staggered panel travel. The useful principle is that motion belongs to editorial structure rather than floating interface decoration.
+- [Waxxy](https://www.waxxy.online/) treats sleeve, record, light and interaction as one physical system. The useful principle is continuous object causality: a record does not move independently of the space and sleeve that contain it.
+- [Codrops Simple Stack Effects](https://tympanus.net/Development/StackEffects/) demonstrates spread, side-slide, coverflow, leaflet and queue transitions. The useful principle is that a collection can visibly reorganize without becoming a dashboard or losing the user's spatial context.
+
+### Decision
+
+- Limit the whole product to four verbs: `DRAW` for listening geometry, `SLIDE` for records and printed sheets, `STAMP` for completed decisions, and `SETTLE` for collections and analysis points. Keep route movement around 260–340ms, record reordering around 420–560ms and long material reveals separate from ordinary button feedback.
+- Use a six-column paper reveal only for Home, annual Journal and Taste DNA entrances. It plays once, leaves the content still and collapses to four columns on phones.
+- Give Archive Track filtering a FLIP-style shelf reordering, draw compact listening geometry only on hover or keyboard focus, enlarge a selected album briefly before navigation, and unfold artist albums chronologically like record spines. Existing colored-vinyl and sleeve geometry remains the only continuously material object.
+- Redraw an adjusted Rate Radar as red ink, preserve one fading prior outline, roll only the changed numeral, lift the active album waveform point and stamp successful saves. A score at 10 or above receives one quiet paper-colored ink bloom with no glow or celebration.
+- Let Sonic Map points keep stable transition identities when axes change; settle Taste DNA as aligned tracing sheets; draw Listening Portrait only on entry; reveal Blind Spots through a horizontal print mask.
+- Stage Import as a counted read, metadata proof and downward track ledger before a small completion stamp. Present Journal rediscovery as a slightly offset clipping, dates as stamps, annual sections with page-edge marks and changed ratings with the old number faintly remaining underneath.
+- Group Search results by fixed record type, underline only the matching phrase in red, settle result slips in reading order and expose keyboard focus with a short rule. Drop the account panel from the masthead and reduce successful synchronization to `SYNCED · HH:MM`.
+
+### Rejected
+
+- Do not use Codrops Bouncy Grid, Elastic Spread or large random rotations. Their rebound and disorder conflict with the archive's quiet evidence hierarchy.
+- Do not copy Editorial New's monochrome palette, typography or full-screen interaction model, and do not copy Waxxy's dark player chrome, playback controls or tonearm. These references supply motion logic, not a replacement identity or new product capability.
+- Do not add shadows to page groups, search results, account controls or ordinary cards. Existing object-only shadows remain reserved for sleeves, vinyl and other explicitly physical pieces.
+- Do not require animation to understand a score, operate a chart or navigate. Numeric controls, visible buttons, keyboard focus and reduced-motion still expose the complete workflow.
+
+### Intentionally unchanged
+
+- Routes, information architecture, scores, import confirmation, account ownership, cloud merge behavior, local storage keys, notes, Inbox, Memory, metadata evidence and recovery data are unchanged.

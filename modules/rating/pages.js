@@ -64,12 +64,16 @@ export const bindRating = (path, navigate) => {
     const track = findRateTrack(decodeURIComponent(match[1])); if (!track) return; const targetId = rateId(track); let previous = readRatings()[targetId]; let state = { song: 7.5, vocal: 7.5, production: 7.5, overall: 7.5, ...(previous?.scores || {}) }; let reasons = insightTagsOf(previous);
     const radarTarget = document.getElementById("rate-radar");
     const render = (focusField = null) => {
+      const priorShape = radarTarget.querySelector(".radar-fill")?.getAttribute("points");
       radarTarget.innerHTML = radar(state, { interactive: true, className: "large-radar" }) + "<p class='mono'>DRAG A NODE / OR USE PRECISE CONTROLS</p>";
-      fields.forEach((field) => { const output = document.querySelector(`[data-score-output='${field}']`); if (output) output.textContent = rating(state[field]); });
+      const fill = radarTarget.querySelector(".radar-fill");
+      if (priorShape && fill && !matchMedia("(prefers-reduced-motion: reduce)").matches) { const ghost = fill.cloneNode(); ghost.setAttribute("points", priorShape); ghost.classList.add("radar-afterimage"); fill.before(ghost); radarTarget.classList.remove("rating-is-changing"); void radarTarget.offsetWidth; radarTarget.classList.add("rating-is-changing"); }
+      radarTarget.classList.toggle("rating-at-maximum", Number(state.overall) >= 10);
+      fields.forEach((field) => { const output = document.querySelector(`[data-score-output='${field}']`); if (output) { output.textContent = rating(state[field]); output.classList.toggle("score-is-rolling", field === focusField); } });
       if (focusField) radarTarget.querySelector(`[data-radar-field='${focusField}']`)?.focus({ preventScroll: true });
     };
     document.getElementById("track-rate-form").addEventListener("click", (event) => {
-      const step = event.target.closest("[data-score-step]"); if (step) { const field = step.dataset.field; state[field] = clampScore(state[field] + Number(step.dataset.scoreStep)); render(); }
+      const step = event.target.closest("[data-score-step]"); if (step) { const field = step.dataset.field; state[field] = clampScore(state[field] + Number(step.dataset.scoreStep)); render(field); }
       const tag = event.target.closest("[data-tag]"); if (tag) { const value = tag.dataset.tag; reasons = reasons.includes(value) ? reasons.filter((item) => item !== value) : [...reasons, value]; tag.classList.toggle("active", reasons.includes(value)); const hasMoment = reasons.includes("one-moment"); document.getElementById("moment-editor").hidden = !hasMoment; document.getElementById("moment-time").required = hasMoment; document.getElementById("moment-note").required = hasMoment; }
     });
     let activeField = null;
@@ -116,11 +120,11 @@ export const bindRating = (path, navigate) => {
     const waveTarget = document.getElementById("album-wave-session");
     const render = (focusIndex = null) => {
       waveTarget.innerHTML = waveform(draft, { interactive: true }) + summary(draft);
-      document.querySelectorAll(".album-track-controls output").forEach((output, index) => { output.textContent = rating(draft[index].overall); });
+      document.querySelectorAll(".album-track-controls output").forEach((output, index) => { output.textContent = rating(draft[index].overall); output.classList.toggle("score-is-rolling", index === focusIndex); output.closest("label")?.classList.toggle("track-is-active", index === focusIndex); });
       document.getElementById("album-progress").textContent = `${String(draft.filter((track) => Number.isFinite(Number(track.overall))).length).padStart(2, "0")} / ${String(draft.length).padStart(2, "0")}`;
-      if (focusIndex !== null) waveTarget.querySelector(`[data-wave-index='${focusIndex}']`)?.focus({ preventScroll: true });
+      if (focusIndex !== null) { const node = waveTarget.querySelector(`[data-wave-index='${focusIndex}']`); node?.focus({ preventScroll: true }); node?.parentElement?.classList.add("wave-point-is-active"); waveTarget.classList.remove("wave-focus-is-moving"); void waveTarget.offsetWidth; waveTarget.classList.add("wave-focus-is-moving"); }
     };
-    document.getElementById("album-rate-form").addEventListener("click", (event) => { const button = event.target.closest("[data-album-step]"); if (!button) return; const index = Number(button.dataset.index); const current = Number(draft[index].overall); draft[index].overall = Number.isFinite(current) ? clampScore(current + Number(button.dataset.albumStep)) : 7.5; storage.set(draftKey(id), draft); render(); });
+    document.getElementById("album-rate-form").addEventListener("click", (event) => { const button = event.target.closest("[data-album-step]"); if (!button) return; const index = Number(button.dataset.index); const current = Number(draft[index].overall); draft[index].overall = Number.isFinite(current) ? clampScore(current + Number(button.dataset.albumStep)) : 7.5; storage.set(draftKey(id), draft); render(index); });
     let activeWaveIndex = null;
     waveTarget.addEventListener("pointerdown", (event) => {
       const node = event.target.closest("[data-wave-index]"); if (!node) return;
