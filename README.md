@@ -174,6 +174,8 @@ UI 3.11.43 会在 Album 详情的 Listening Landscape 中读取已保存和进�
 
 UI 3.11.44 修正 Album 详情波形的数据字段映射，已保存的曲目 Overall 分数现在会正确改变曲线与节点位置。
 
+UI 3.11.45 登录后的 Home 容量判断会计入已有的正式个人档案专辑，不再要求重新导入旧档案才能移除样板专辑。
+
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`

@@ -3069,3 +3069,25 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Track rating flow, direct album score inputs, album completion validation, visual styling, and all non-album waveform consumers remain unchanged.
+
+## Version 3.11.45 — Count the existing personal archive after sign-in
+
+Implementation commit: pending
+
+### Evidence
+
+- The initial archive contains established personal albums in the canonical profile. Home's signed-in capacity check counted only the imported-album browser store, so an account with an existing 9+ album archive could still receive showcase samples.
+
+### Decision
+
+- Treat every canonical album without `showcaseOnly` as an existing personal record after sign-in, and add imported local records on top.
+- Keep unimported showcase-only albums out of the signed-in Home deck; imported showcase albums remain eligible personal records.
+
+### Rejected
+
+- Do not require users to re-import their pre-existing archive just to remove samples from Home.
+- Do not count showcase-only records toward personal capacity unless they are actually imported.
+
+### Intentionally unchanged
+
+- Signed-out sample deck, Archive visibility filtering, ratings, sync storage, cover fallback behavior, and carousel motion remain unchanged.

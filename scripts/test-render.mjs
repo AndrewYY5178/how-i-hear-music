@@ -145,6 +145,9 @@ assert.match(archiveSource, /openTimer = window\.setTimeout\(\(\) => \{ card\.cl
 assert.match(archiveSource, /openTarget = null; openTimer = null; \}, 180\);/);
 localStorage.setItem('how-i-hear-music:cloud-sync-session:v1', JSON.stringify({ token: 'fixture', user: { id: 1, login: 'fixture' } }));
 localStorage.setItem('how-i-hear-music:album-draft:charli-xcx-brat:overall', '10');
+localStorage.removeItem('how-i-hear-music:imported-albums:v1');
+const signedInCanonicalHome = home.home();
+assert.doesNotMatch(signedInCanonicalHome, /<b>Lover<\/b>/, 'Signed-in Home still shows showcase albums when the existing archive is full');
 localStorage.setItem('how-i-hear-music:imported-albums:v1', JSON.stringify([{ id: 'album_fixture', title: 'Fixture Album', artist: 'Fixture Artist', tracks: [{ id: 'track_fixture', title: 'Fixture Track', artist: 'Fixture Artist', trackNumber: 1 }] }]));
 localStorage.setItem('how-i-hear-music:album-draft:album_fixture', JSON.stringify([{ trackId: 'track_fixture', title: 'Fixture Track', overall: 8.5 }]));
 const albumRateMarkup = rating.rateAlbum('album_fixture');

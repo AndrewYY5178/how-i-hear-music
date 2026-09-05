@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.44";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.45";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -52,9 +52,10 @@ const homeAlbums = () => {
   const albums = allAlbums();
   const imported = importedAlbums();
   const importedKeys = new Set(imported.map(albumKey));
-  // Resolve ownership from the imported-album store first. This keeps the
-  // capacity decision independent of canonical/sample records or cover state.
-  const own = imported.map((record) => albums.find((album) => albumKey(album) === albumKey(record)) || record);
+  // Existing non-showcase archive records are already the owner's albums;
+  // imported records extend that set. Keep the capacity decision independent
+  // of cover state and never count unimported showcase-only samples.
+  const own = albums.filter((album) => !album.showcaseOnly || importedKeys.has(albumKey(album)));
   // Keep the complete showcase deck even when one remote cover is unavailable;
   // the card's fallback state preserves the record instead of silently dropping it.
   const samples = albums.filter((album) => homeSampleAlbumKeys.has(albumKey(album)));
