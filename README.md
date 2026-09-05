@@ -158,6 +158,8 @@ UI 3.11.35 将 `FEATURED SHAPE` 的四个分数移到对应维度名称的外侧
 
 UI 3.11.36 将 Home 未登录样板专辑固定为单依纯《纯妹妹》、Taylor Swift《Lover》、Kanye West《Graduation》、Kacey Musgraves《Golden Hour》、Bad Bunny《Un Verano Sin Ti》、Charli xcx《BRAT》、Rihanna《Loud》、Coldplay《Mylo Xyloto》和 Metallica《72 Seasons》。封面使用可公开访问的 Apple Music 或 Cover Art Archive 正式发行图，样板同时记录主题色作为图片取色失败时的稳定回退；登录后的用户专辑替换逻辑保持不变。
 
+UI 3.11.37 在每个专辑详情的 COVER REFERENCE 中加入 RE-EXTRACT COLOR；它只清除当前封面的运行时取色缓存并重新读取像素，不会改动封面文件、评分或同步资料。
+
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`

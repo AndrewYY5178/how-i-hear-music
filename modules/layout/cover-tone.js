@@ -99,11 +99,19 @@ const tonesForSource = (source) => {
 };
 
 const applyTone = async (target, source) => {
-  if (!source) return;
+  if (!source) return null;
   const tones = await tonesForSource(source);
-  if (!target.isConnected || !tones) return;
+  if (!target.isConnected || !tones) return null;
   if (tones.record) target.style.setProperty("--record-color", tones.record);
   if (tones.edge) target.style.setProperty("--sleeve-edge-color", tones.edge);
+  return tones;
+};
+
+export const reextractCoverTone = (target) => {
+  const source = target?.dataset?.coverSource || "";
+  if (!source) return Promise.resolve(null);
+  toneCache.delete(source);
+  return applyTone(target, source);
 };
 
 const showCoverFallback = (image) => {

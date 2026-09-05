@@ -2888,3 +2888,26 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Carousel timing, record geometry, Archive browsing behavior, score storage, Featured Shape eligibility and all account/sync behavior remain unchanged.
+
+## Version 3.11.37 — Per-album color re-extraction
+
+Implementation commit: pending
+
+### Evidence
+
+- Imported covers can change source, become available after a retry, or be sampled before a CDN response is ready; the cached tone then remains stale.
+- The owner asked for small one-click controls to retry color extraction for their albums.
+
+### Decision
+
+- Add one `RE-EXTRACT COLOR` action to each album detail's existing Cover Reference form.
+- Clear only the in-memory tone cache for the current cover and re-run the existing sampler; keep local/remote cover overrides, ratings and stored archive data untouched.
+
+### Rejected
+
+- Do not add nested buttons to album cards or silently overwrite stored theme colors.
+- Do not upload cover files or modify synced data when retrying a sample.
+
+### Intentionally unchanged
+
+- Cover fallback order, artwork proxy allow-list, carousel motion, rating logic and all non-album-detail routes remain unchanged.

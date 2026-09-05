@@ -96,7 +96,10 @@ assert.match(stylesheet, /\.album-card\.record-is-retracting \.album-card-cover 
 assert.match(stylesheet, /\.album-card\.record-is-open \.album-card-disc \{ opacity:1; transform:translate\(32%,0\) rotateY\(-6deg\) rotateZ\(18deg\) scale\(\.96\); \}/);
 const albumDetail = archive.archiveAlbumDetail('陶喆-黑色柳丁');
 assert.match(albumDetail, /name="coverFile"/);
+assert.match(albumDetail, /data-reextract-tone/);
+assert.match(albumDetail, /class="album-detail-image" data-cover-tone/);
 assert.match(albumDetail, /never uploaded/);
+['RE-EXTRACT COLOR', 'Theme color is sampled from the current cover when possible.', 'Re-reading cover pixels…', 'Color extraction retried. The sleeve will use the new sample when available.', 'Could not re-extract the cover color.'].forEach((label) => assert.notEqual(translateText(label, 'zh-CN'), label, `Archive color extraction translation missing: ${label}`));
 localStorage.setItem('how-i-hear-music:cover-overrides:v1', JSON.stringify({ '陶喆-陶喆': 'https://invalid.example/missing.jpg' }));
 const fallbackAlbumIndex = archive.archiveAlbums();
 assert.match(fallbackAlbumIndex, /data-cover-fallback-source="https:\/\/is1-ssl\.mzstatic\.com\/image\/thumb\/Music125/);

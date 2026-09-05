@@ -89,6 +89,14 @@ const zh = {
   "That page is not in the archive.": "档案中没有这个页面。", "RETURN HOME": "返回首页", "BACK HOME": "返回首页", "BACK TO ARCHIVE": "返回档案", "BACK TO RATE": "返回评分", "BACK TO TASTE": "返回审美", "BACK TO IMPORT": "返回导入", "BACK TO JOURNAL": "返回日志", "MENU": "菜单", "METHOD ↗": "方法 ↗", "HOW I HEAR MUSIC": "我如何听见音乐", "PERSONAL ARCHIVE / ISSUE 001": "个人音乐档案 / 第 001 期", "A newer archive shell is ready.": "网站更新已准备好。", "RELOAD UPDATE": "重新载入更新", "RELOADING…": "正在重新载入……"
 };
 
+Object.assign(zh, {
+  "RE-EXTRACT COLOR": "重新提取颜色",
+  "Theme color is sampled from the current cover when possible.": "主题色会尽量从当前封面像素中提取。",
+  "Re-reading cover pixels…": "正在重新读取封面像素……",
+  "Color extraction retried. The sleeve will use the new sample when available.": "已重新提取颜色；如果成功，唱片套会使用新的取样。",
+  "Could not re-extract the cover color.": "无法重新提取封面颜色。",
+});
+
 const patterns = [
   [/^(\d+) recorded tracks$/, (m) => `已收录 ${m[1]} 首歌`],
   [/^(\d+) albums in view$/, (m) => `共 ${m[1]} 张专辑`],
