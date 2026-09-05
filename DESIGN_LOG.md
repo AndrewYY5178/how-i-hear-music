@@ -1912,3 +1912,152 @@ Implementation commit: `679afec`
 ### Intentionally unchanged
 
 - Routes, information architecture, scores, import confirmation, account ownership, cloud merge behavior, local storage keys, notes, Inbox, Memory, metadata evidence and recovery data are unchanged.
+
+## Version 3.10.1 — A narrow cover flow keeps its caption underneath
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review of the narrow browser found the Home Cover Flow caption appearing beside the centered cover instead of reading as one cover-then-metadata unit.
+- The previous phone stage placed the object too low and allowed the caption to participate in the same transformed block without reserving a clear vertical metadata lane; the mobile tab bar then made the caption appear clipped or displaced.
+
+### Decision
+
+- Keep the existing multi-record Cover Flow and its 3D sleeve/disc treatment unchanged.
+- At widths up to 760px, move the object higher, reserve a taller stage, and pin the caption to the object’s lower edge with a full-width vertical lane. The centered record still reveals its disc and the surrounding records remain quiet.
+- Version the stylesheet and offline shell as UI 3.10.1 so the correction is fetched instead of being hidden behind the previous cached CSS.
+
+### Rejected
+
+- Do not remove album captions, flatten the Cover Flow into a generic horizontal list, or alter the desktop/tablet perspective to compensate for a phone-only layout issue.
+
+### Intentionally unchanged
+
+- Album order, cover sources, sleeve depth, vinyl material, Prev/Next behavior, scoring, sync, routes and stored browser data remain unchanged.
+- A fresh 390px browser screenshot is still required after the local browser usage limit recovers; 1024px and 1440px must be checked alongside it before publishing.
+
+## Version 3.10.2 — The narrow shelf keeps its depth
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review found that the narrow Home shelf stopped at two visible covers on either side, unlike the wide Cover Flow's longer depth sequence.
+- A mismatched cached `cover-tone.js` query could also leave two otherwise identical previews with different artwork-derived record colors.
+
+### Decision
+
+- Keep the mobile center cover and caption geometry from UI 3.10.1, but reveal the third left/right records at low opacity and shared perspective. The edge records remain non-interactive so they cannot steal the swipe or click target.
+- Version the shared cover-tone module query and offline shell together with the responsive CSS so all Home, Archive and Import previews use the same current palette extractor.
+
+### Rejected
+
+- Do not reveal every record at full opacity, allow edge covers to create horizontal overflow, or shrink the centered cover until it loses its listening focus.
+
+### Intentionally unchanged
+
+- Cover ordering, sampled-color algorithm, physical sleeve geometry, rating display, navigation controls, routes and local data remain unchanged.
+- Three-width screenshot verification remains pending until the local browser preview can be captured again.
+
+## Version 3.10.3 — Narrow Cover Flow opens its neighbors
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review found that the phone-sized center sleeve occupied so much of the stage that the neighboring covers were effectively hidden.
+- The previous `黑色柳丁` artwork reference came from a ByteDance image host and repeatedly failed to load in the browser. The exact [Apple Music album page](https://music.apple.com/us/album/%E9%BB%91%E8%89%B2%E6%9F%B3%E4%B8%81/914664926) confirms the David Tao release and its 2002 identity; the matching [Spotify artwork CDN](https://i.scdn.co/image/ab67616d0000b27365b1e21638ebf5f08910eea2) provides a stable direct image URL for the static client.
+
+### Decision
+
+- Reduce only the narrow center sleeve scale and width, then widen the visible side-1/side-2 spacing and keep a quiet side-3 reveal. Desktop and tablet Cover Flow geometry remain unchanged.
+- Replace the broken `黑色柳丁` primary cover with its direct Spotify artwork URL and keep an independent JD CDN image as a browser-level fallback. The fallback is used only when the primary image emits an error; no artwork is downloaded or stored locally.
+- Teach Home and Archive cover source resolution to honor an album-level fallback while preserving any owner-selected local cover override as the first choice.
+- Send cover requests without a page referrer, reducing false hotlink blocks from image CDNs while keeping the artwork as a remote reference.
+- Version the app shell and module imports as UI 3.10.3 so a stale service-worker cache cannot keep the failed URL or old narrow geometry.
+
+### Rejected
+
+- Do not make the phone center sleeve tiny, flatten the 3D perspective, or reveal side covers as interactive controls; the center remains the listening focus and side records remain contextual.
+- Do not add a generic placeholder as the primary artwork or silently download third-party cover art into the repository.
+
+### Intentionally unchanged
+
+- Album order, scoring, sleeve geometry on wider screens, metadata, import data, sync, routes and local browser records remain unchanged.
+- Three-width screenshot verification remains pending until the local browser preview can be captured again.
+
+## Version 3.10.4 — Local artwork stays local
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review identified that some complex or cross-domain artwork cannot be made reliable by changing remote URLs alone; album details need an owner-controlled local source.
+- The existing cover reference form accepted only HTTPS URLs, so it could not solve blocked hosts, expiring links or browser CORS restrictions without asking the owner to host the image elsewhere.
+
+### Decision
+
+- Add a local image-file input on every album detail's `COVER REFERENCE` section. The browser crops the chosen image to a square, compresses it to a bounded WebP/JPEG data URL and stores it only under a separate local-cover key in this browser.
+- Show an immediate temporary preview, persist the optimized cover across reloads, and make `USE CANONICAL COVER` remove both local and remote overrides. A remote HTTPS URL remains available as an optional fallback for owners who prefer a hosted reference.
+- Keep local image data out of the existing encrypted account backup/sync payload; it is not uploaded to the Worker or public repository. Home and Archive resolve local → remote override → canonical → album fallback in that order.
+- Reject non-images, unreadable files, files over 20 MB and encoded covers over roughly 2.4 MB so browser storage remains recoverable instead of failing silently.
+
+### Rejected
+
+- Do not upload local artwork to the Worker, GitHub Pages or a third-party image host.
+- Do not replace the cover with a permanent base64 blob in the catalog JSON; the override must remain editable and device-local.
+
+### Intentionally unchanged
+
+- Canonical metadata, album ordering, rating data, cloud sync semantics, route structure and external artwork references remain unchanged.
+- Browser visual verification remains pending until the local browser can be inspected at all three target widths.
+
+## Version 3.10.5 — Email and GitHub are parallel login paths
+
+Implementation commit: pending (planning clarification; no runtime auth change yet)
+
+### Evidence
+
+- Owner review rejected a mandatory “bind email to GitHub” step. The product needs two convenient sign-in methods, not a second account-management task.
+
+### Decision
+
+- Treat passwordless email and GitHub OAuth as independent authentication providers. Each provider can create or open an account without asking the user to connect the other provider.
+- Use the provider's verified email as the only automatic continuity signal: an exact, case-insensitive email match resolves to the same account space. A different, missing or unverified email stays a separate account and never triggers an archive merge.
+- Keep the authenticated provider identity visible in Account so users can tell whether they entered through GitHub or email. If a provider does not release a verified email, do not guess from a username or display name.
+- Do not add a manual binding/unbinding screen to the first email-login implementation. If a future provider limitation requires recovery, handle it as an explicit support/recovery flow with confirmation and audit evidence.
+
+### Rejected
+
+- Do not require a GitHub sign-in before allowing email registration.
+- Do not silently merge two archives because names look similar, and do not treat a manually typed email as verified ownership.
+
+### Intentionally unchanged
+
+- Existing GitHub OAuth, automatic sync, encrypted payload boundary, D1 schema and local music records remain unchanged until passwordless email authentication is implemented.
+
+## Release record — UI 3.10.4 cover reliability
+
+Implementation commit: `4b40942`
+
+### Evidence
+
+- Owner review found that the narrow Home Cover Flow hid its neighboring sleeves, the `黑色柳丁` artwork host was unreliable, and remote image references alone could not guarantee album artwork across browsers.
+- The staged UI 3.10.1–3.10.4 decisions above describe the individual layout, fallback and local-cover iterations that are consolidated in this implementation commit.
+
+### Decision
+
+- Publish the current narrow Cover Flow composition, stable primary/fallback artwork resolution, no-referrer image requests and browser-local album-cover override as UI 3.10.4.
+- Keep the local override outside account synchronization, the Worker, canonical JSON and GitHub Pages assets. Preserve canonical artwork as the reset destination.
+- Record the owner-selected [Jessel Nieman Grain Layer](https://www.jesselnieman.com/notes/effortlessly-add-a-grain-layer-to-your-website-in-webflow) as the primary reference for a later realistic-paper pass; no new paper treatment is included in this release.
+
+### Rejected
+
+- Do not delay this cover-reliability release by combining it with an unimplemented paper-texture redesign or passwordless email authentication.
+- Do not publish local reference screenshots, favicon exploration boards or handoff files with the site.
+
+### Intentionally unchanged
+
+- Application version remains `0.9.15`; this release advances the UI/cache identifier to 3.10.4.
+- Ratings, notes, Inbox, Memory, account data, synchronization semantics and existing route structure remain unchanged.
