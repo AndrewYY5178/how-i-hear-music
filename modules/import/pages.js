@@ -6,14 +6,14 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.0";
+import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.1";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
 
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;
 const ignoredKey = data.library.ignoredStorageKey;
 const snapshotKey = "how-i-hear-music:playlist-snapshots:v1";
-const importNav = () => secondaryNav([["/import/qq", "QQ Playlist"], ["/import/qq-album", "QQ Album"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"], ["/import/data", "Data Desk"]]) + serviceNotice();
+const importNav = () => secondaryNav([["/import/qq", "QQ Music Smart Import"], ["/import/netease", "NetEase"], ["/import/inbox", "Inbox"], ["/import/data", "Data Desk"]]) + serviceNotice();
 const read = (key) => storage.get(key, []);
 const key = (track) => canonical(track.title) + "::" + canonical(track.artist);
 const sourceUrl = (value) => (String(value || "").match(/https?:\/\/[^\s<>"'）)】]+/i) || [""])[0].replace(/[，。；、]+$/, "");
@@ -22,11 +22,9 @@ const saveSnapshot = (snapshot) => storage.set(snapshotKey, { ...readSnapshots()
 const serviceNotice = () => staticImportUnavailable() ? `<section class="import-service-note"><span class="mono">STATIC SITE / METADATA SERVICE NOT CONNECTED</span><p>Browsing, rating and local data remain available. Public QQ Music and NetEase import requires the local Node server or a configured hosted adapter.</p><a href="https://github.com/AndrewYY5178/how-i-hear-music#preview" target="_blank" rel="noreferrer">LOCAL SETUP ↗</a></section>` : "";
 const apiRequest = metadataApiRequest;
 
-export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "Playlists enter Inbox; a confirmed album import creates its ordered Archive record.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC</span><h2>Playlist or album.</h2><p>Review playlist tracks in Inbox, or preserve an album's official sequence.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article><span class="mono">NETEASE</span><h2>Import a public playlist.</h2><p>Read public playlist metadata through the server, with no login, Cookie, audio or lyrics.</p>${link("/import/netease", "IMPORT FROM NETEASE →", "button primary")}</article></div>`;
+export const importHome = () => `${pageHeader("IMPORT", "Bring music in.", "A playlist enters Inbox; a confirmed album import creates its ordered Archive record.")}${importNav()}<div class="import-choices"><article><span class="mono">QQ MUSIC SMART IMPORT</span><h2>Playlist or album.</h2><p>Paste one public QQ Music share. The desk identifies its type before opening the appropriate review.</p>${link("/import/qq", "IMPORT FROM QQ →", "button primary")}</article><article><span class="mono">NETEASE</span><h2>Import a public playlist.</h2><p>Read public playlist metadata through the server, with no login, Cookie, audio or lyrics.</p>${link("/import/netease", "IMPORT FROM NETEASE →", "button primary")}</article></div>`;
 
-export const importQQ = () => `${pageHeader("IMPORT / QQ MUSIC", "Bring a QQ record in.", "Public metadata only: no QQ login, Cookie, audio or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the share at the desk.</h2><p>One public playlist at a time. Nothing is added until you review the preview.</p></div><form id="qq-import-form"><label><span class="mono">QQ MUSIC PLAYLIST / SHARE CARD</span><textarea id="qq-share" rows="4" placeholder="Paste a QQ Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="qq-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section><section class="catalog-search"><div><span class="eyebrow mono">02 / QQ MUSIC CATALOG</span><p>Looking for one track instead? Search the public catalog and send it straight to Inbox.</p></div><form id="qq-search-form"><input id="qq-search-query" type="search" placeholder="Search tracks, artists or albums"><button class="button" type="submit">SEARCH QQ MUSIC</button></form><div id="qq-search-results"></div></section>`;
-
-export const importQQAlbum = () => { const supplied = new URLSearchParams(location.search).get("url") || ""; return `${pageHeader("IMPORT / QQ ALBUM", "Preserve the record's sequence.", "Paste one public QQ Music album link. Preview every disc and track before the local Archive changes.")}${importNav()}<section class="qq-import-focus album-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">ORDERED ALBUM IMPORT</span><h2>Start with the album itself.</h2><p>Metadata only. Track order comes from the exact QQ Music album entity—never search results or recommendations.</p></div><form id="qq-album-import-form"><label><span class="mono">QQ MUSIC ALBUM / SHARE TEXT</span><textarea id="qq-album-share" rows="4" placeholder="Paste an album URL or the full QQ Music share message">${safe(supplied)}</textarea></label><button class="button primary" type="submit">DETECT ALBUM</button></form><aside id="qq-album-import-result" aria-live="polite"><div class="import-preview-waiting"><div class="import-waiting-object" aria-hidden="true"><span class="import-waiting-disc"></span><span class="import-waiting-sleeve"></span></div><div><span class="mono">ALBUM PREVIEW</span><p>Paste a public album link and choose Detect Album. The real cover and record will appear here.</p></div></div></aside></section>`; };
+export const importQQ = () => { const supplied = new URLSearchParams(location.search).get("url") || ""; return `${pageHeader("IMPORT / QQ MUSIC", "Bring a QQ record in.", "Public metadata only: no QQ login, Cookie, audio or lyrics.")}${importNav()}<section class="qq-import-focus album-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / QQ MUSIC SMART IMPORT</span><h2>Paste the share at the desk.</h2><p>Paste a public QQ Music playlist or album share. The desk identifies it first; nothing changes until you approve the relevant preview.</p></div><form id="qq-import-form"><label><span class="mono">QQ MUSIC PLAYLIST OR ALBUM / SHARE TEXT</span><textarea id="qq-share" rows="4" placeholder="Paste a QQ Music playlist or album link, or the full share text">${safe(supplied)}</textarea></label><button class="button primary" type="submit">RECOGNIZE + PREVIEW</button></form><aside id="qq-import-result" aria-live="polite"><div class="import-preview-waiting"><div class="import-waiting-object" aria-hidden="true"><span class="import-waiting-disc"></span><span class="import-waiting-sleeve"></span></div><div><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public QQ Music playlist or album link.</p></div></div></aside></section><section class="catalog-search"><div><span class="eyebrow mono">02 / QQ MUSIC CATALOG</span><p>Looking for one track instead? Search the public catalog and send it straight to Inbox.</p></div><form id="qq-search-form"><input id="qq-search-query" type="search" placeholder="Search tracks, artists or albums"><button class="button" type="submit">SEARCH QQ MUSIC</button></form><div id="qq-search-results"></div></section>`; };
 
 export const importNetEase = () => `${pageHeader("IMPORT / NETEASE", "Bring a NetEase record in.", "Public metadata only: no NetEase login, Cookie, audio, cover download or lyrics.")}${importNav()}<section class="qq-import-focus"><div class="qq-import-intro"><span class="eyebrow mono">01 / PLAYLIST IMPORT</span><h2>Paste the public share.</h2><p>Playlist metadata enters the same Inbox review workflow as every other source.</p></div><form id="netease-import-form"><label><span class="mono">NETEASE PLAYLIST / SHARE CARD</span><textarea id="netease-share" rows="4" placeholder="Paste a NetEase Cloud Music playlist link or share text"></textarea></label><button class="button primary" type="submit">PREVIEW IMPORT</button></form><aside id="netease-import-result"><span class="mono">IMPORT PREVIEW</span><p>Waiting for a public playlist link.</p></aside></section>`;
 
@@ -102,28 +100,21 @@ const previewAlbum = (container, album, source) => {
 };
 
 export const bindImport = (path, navigate) => {
-  if (path === "/import/qq-album") {
-    document.getElementById("qq-album-import-form").addEventListener("submit", async (event) => {
-      event.preventDefault(); const text = document.getElementById("qq-album-share").value.trim(); const output = document.getElementById("qq-album-import-result");
-      if (!text) { output.innerHTML = "<p>Paste a public QQ Music album link or share message.</p>"; return; }
-      output.innerHTML = "<span class='mono'>READING ALBUM…</span><p>Resolving the public link and preserving its official sequence.</p>";
-      try {
-        const result = await apiRequest("/api/import/qq-album-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
-        await showCountedImportProgress(output, result.album?.trackCount || result.album?.tracks?.length || 0);
-        previewAlbum(output, result.album, result.sourceUrl);
-      } catch (error) { output.innerHTML = `<span class="mono">ALBUM NOT AVAILABLE</span><h2>Could not read this album.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music album link.")}</p>`; }
-    });
-  }
   if (path === "/import/qq") {
     document.getElementById("qq-import-form").addEventListener("submit", async (event) => {
-      event.preventDefault(); const share = sourceUrl(document.getElementById("qq-share").value); const output = document.getElementById("qq-import-result");
-      if (!share) { output.innerHTML = "<p>Please paste a public QQ Music playlist link.</p>"; return; }
-      output.innerHTML = "<span class='mono'>READING PLAYLIST…</span><p>Checking public QQ Music metadata.</p>";
+      event.preventDefault(); const text = document.getElementById("qq-share").value.trim(); const share = sourceUrl(text); const output = document.getElementById("qq-import-result");
+      if (!share) { output.innerHTML = "<p>Please paste a public QQ Music playlist or album link.</p>"; return; }
+      output.innerHTML = "<span class='mono'>RECOGNIZING QQ MUSIC SHARE…</span><p>Resolving the public link before opening the right preview.</p>";
       try {
-        const result = await apiRequest("/api/import/qq-playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ shareUrl: share }) });
-        await showCountedImportProgress(output, result.tracks?.length || 0);
-        preview(output, result.tracks || [], result.playlist, share);
-      } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not read this playlist.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music playlist link.")}</p>`; }
+        const result = await apiRequest("/api/import/qq-smart-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+        if (result.type === "album") {
+          await showCountedImportProgress(output, result.album?.trackCount || result.album?.tracks?.length || 0);
+          previewAlbum(output, result.album, result.sourceUrl || share);
+        } else {
+          await showCountedImportProgress(output, result.tracks?.length || 0);
+          preview(output, result.tracks || [], result.playlist, result.sourceUrl || share);
+        }
+      } catch (error) { output.innerHTML = `<span class="mono">IMPORT NOT AVAILABLE</span><h2>Could not identify this QQ Music share.</h2><p>${safe(error instanceof Error ? error.message : "Try another public QQ Music playlist or album link.")}</p>`; }
     });
     document.getElementById("qq-search-form").addEventListener("submit", async (event) => {
       event.preventDefault(); const query = document.getElementById("qq-search-query").value.trim(); const output = document.getElementById("qq-search-results");

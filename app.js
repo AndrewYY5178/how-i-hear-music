@@ -1,17 +1,17 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.16";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.17";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
-import { bindHome, home } from "./modules/home.js?ui=3.11.0";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.11.0";
-import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.11.0";
-import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.11.0";
-import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js?ui=3.11.0";
-import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.11.0";
+import { bindHome, home } from "./modules/home.js?ui=3.11.1";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.11.1";
+import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.11.1";
+import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.11.1";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.11.1";
+import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.11.1";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
 import { accountNickname } from "./modules/music/account.js";
-import { bindSearch } from "./modules/search/pages.js?ui=3.11.0";
-import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js";
-import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.11.0";
+import { bindSearch } from "./modules/search/pages.js?ui=3.11.1";
+import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.17";
+import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.11.1";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -44,7 +44,7 @@ const route = (path) => {
   if (current === "/taste/portrait") return portrait();
   if (current === "/import") return importHome();
   if (current === "/import/qq") return importQQ();
-  if (current === "/import/qq-album") return importQQAlbum();
+  if (current === "/import/qq-album") return importQQ();
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/import/data") return importData();
@@ -60,7 +60,7 @@ const route = (path) => {
 const navigate = (path, { replace = false, motion = true } = {}) => {
   const requested = new URL(path, location.href);
   const requestedTarget = cleanPath(withoutBase(requested.pathname));
-  const target = requestedTarget === "/search" ? "/archive" : requestedTarget;
+  const target = requestedTarget === "/search" ? "/archive" : requestedTarget === "/import/qq-album" ? "/import/qq" : requestedTarget;
   const browserPath = `${withBase(target)}${requested.search}${requested.hash}`;
   const commit = () => { if (replace) history.replaceState({}, "", browserPath); else history.pushState({}, "", browserPath); render(); };
   if (motion && document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(commit);
@@ -159,6 +159,10 @@ const restorePagesRoute = () => {
   const current = cleanPath(withoutBase(location.pathname));
   if (current === "/search") {
     navigate(`/archive${location.search}${location.hash}`, { replace: true, motion: false });
+    return true;
+  }
+  if (current === "/import/qq-album") {
+    navigate(`/import/qq${location.search}${location.hash}`, { replace: true, motion: false });
     return true;
   }
   const legacy = location.hash.match(/^#(archive|rate|taste|import|journal)(\/.*)?$/);

@@ -2089,3 +2089,29 @@ Implementation commit: `db24530`
 
 - Archive Track filtering remains a focused control on the Track list and is separate from the cross-record Archive index.
 - Search ranking, result grouping, local data, ratings, notes, account synchronization, Import, Journal and Taste routes remain unchanged.
+
+## Version 3.11.1 — One QQ import desk
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner asked to merge QQ Music playlist import and QQ Music album import into one intelligent entry point, rather than requiring users to choose the record type before pasting a share.
+- QQ share text may contain a short or redirected public URL, so simple client-side URL-pattern matching would misclassify some links. The existing local adapter and hosted Worker already resolve public QQ redirects for their separate playlist and album workflows.
+
+### Decision
+
+- Replace the two visible QQ import navigation items with one `QQ Music Smart Import` desk and one share-text field.
+- Add a matched local-Node/Cloudflare-Worker smart-preview endpoint. It resolves the album route first, falls back to playlist resolution when the link is a playlist, and returns an explicit `type` before the browser renders anything.
+- Reuse the existing playlist-to-Inbox preview and album official-sequence/duplicate-analysis preview after classification; no imported data is written before the owner confirms it.
+- Normalize legacy `/import/qq-album?url=…` requests to `/import/qq?url=…`, keeping shared album links usable.
+
+### Rejected
+
+- Do not ask the user to choose “album” or “playlist” before pasting a QQ share.
+- Do not classify short links solely in browser code, or merge the separate downstream review semantics into an opaque one-click import.
+
+### Intentionally unchanged
+
+- NetEase remains a public-playlist-only import flow.
+- QQ public-data limits, no-login/no-Cookie/no-audio/no-lyrics policy, Inbox lifecycle, album duplicate checks, local-data and sync boundaries remain unchanged.

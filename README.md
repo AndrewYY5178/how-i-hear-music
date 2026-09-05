@@ -2,7 +2,7 @@
 
 一个零依赖的个人音乐档案产品，使用原生 HTML/CSS/JS 与 History API 多路由结构实现。主页是编辑入口；Archive、Rate、Taste、Import、Journal 各自负责浏览、评分、审美说明、导入和时间线。
 
-本地 Node 服务与线上 Cloudflare Worker 都提供 QQ Music 与 NetEase Cloud Music **公开歌单 metadata** 导入，以及 QQ Music **公开专辑 metadata + 官方曲序**导入。粘贴 QQ 专辑链接或分享文字后，页面会先显示完整曲序和重复分析；确认后才写入浏览器本地 Archive。所有适配器都不使用平台登录、Cookie、音频、封面下载或歌词；GitHub Pages 通过受限 CORS 的 Worker 执行实时公开资料读取。
+本地 Node 服务与线上 Cloudflare Worker 都提供 QQ Music 智能公开资料导入：粘贴一次公开歌单或专辑链接／分享文字，服务会自动识别其类型；歌单进入 Inbox 预览，专辑显示官方曲序与重复分析，确认后才写入浏览器本地资料。NetEase Cloud Music 保持公开歌单 metadata 导入。所有适配器都不使用平台登录、Cookie、音频、封面下载或歌词；GitHub Pages 通过受限 CORS 的 Worker 执行实时公开资料读取。
 
 `MUSIC_TASTE_SOURCE.md` 是对话资料的完整证据与手册；它不由网页直接读取。网站只读取 `data/` 里的结构化 JSON，避免把未经确认的推测写进页面。
 
@@ -53,6 +53,8 @@ UI 3.10.0 将全站动态收束为 `DRAW / SLIDE / STAMP / SETTLE` 四种语言�
 UI 3.10.4 修正窄窗口首页唱片流：中心封套缩小并为两侧唱片保留景深，标题与资料固定排在封面下方。`黑色柳丁` 改用稳定的专辑封面来源并保留备用地址；专辑详情新增仅存于当前浏览器的本地封面覆盖，可处理跨域、失效或受防盗链限制的图片。本地封面不会上传到 GitHub、Worker 或账号同步空间。
 
 UI 3.11.0 开始依据功能关系图收紧入口：全站 Search 不再作为独立顶层目的地，而是成为 Archive 首页的内置搜索台。桌面页头、窄窗口菜单和手机 More 都移除重复 Search 入口；原有单曲、专辑、艺人、Journal、Memory 与 Taste DNA 检索范围保持不变。旧 `/search?q=…` 地址会自动转到 `/archive?q=…`，避免已有书签失效。
+
+UI 3.11.1 把 QQ 音乐原来的歌单与专辑入口合并为“QQ 音乐智能导入”：一个输入框处理公开歌单、专辑及 QQ 分享文字；资料服务在短链解析后判断实体类型，再复用各自既有的 Inbox 或官方曲序预览。旧 `/import/qq-album?url=…` 地址会自动转到统一入口，已有链接不会失效。
 
 UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 不再生成虚构 Track 或预设分数；错误 Track/Album URL 不再回退到其他记录；完成 Album rating 会验证所有曲目并同步当前 Track ratings。Journal 修订锁定原记录身份，Metadata 来源按字段保存，备份恢复先预览冲突并保留一次完整回滚。Sonic 中性值不再被误分到 Cold/Sparse，离线缓存按版本隔离，静态部署也获得 CSP/referrer 边界。
 

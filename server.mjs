@@ -60,6 +60,7 @@ const parsePublicQQUrl = (value) => {
   if (url.protocol !== 'https:' || !isQQHost(url.hostname)) throw new Error('Only public HTTPS QQ Music links can be imported.');
   return url;
 };
+const qqShareUrlFromText = (value) => (String(value || '').match(/https?:\/\/[^\s<>"'）)】]+/i) || [''])[0].replace(/[，。；、]+$/, '');
 
 const requestQQPage = async (initialUrl) => {
   let current = initialUrl;
@@ -122,6 +123,22 @@ const fetchQQPlaylist = async (shareUrl) => {
   })).filter((track) => track.title);
   if (!tracks.length) throw new Error('QQ Music found the playlist but exposed no importable track metadata.');
   return { playlist: { id: playlistId, title: playlist.dissname || 'QQ Music playlist', creator: playlist.nickname || '', trackCount: tracks.length }, tracks };
+};
+const fetchQQSmartImport = async (text) => {
+  try {
+    const resolved = await parseQQAlbumLink(text, { serviceAgent });
+    const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId, { serviceAgent }));
+    return { type: 'album', album, sourceUrl: album.externalUrl || resolved.canonicalUrl };
+  } catch (albumError) {
+    try {
+      const sourceUrl = qqShareUrlFromText(text);
+      if (!sourceUrl) throw new Error('Paste a complete public QQ Music share link.');
+      const playlist = await cacheFor(`qq-playlist:${sourceUrl}`, () => fetchQQPlaylist(sourceUrl));
+      return { type: 'playlist', ...playlist, sourceUrl };
+    } catch (playlistError) {
+      throw new Error('Could not identify this as a public QQ Music playlist or album.');
+    }
+  }
 };
 
 const parsePublicNetEaseUrl = (value) => {
@@ -221,6 +238,16 @@ createServer(async (request, response) => {
     } catch (error) {
       logFailure(request, requestId, error);
       json(response, 422, { error: error instanceof Error ? error.message : 'Could not import this QQ Music album.' });
+    }
+    return;
+  }
+  if (request.method === 'POST' && request.url === '/api/import/qq-smart-preview') {
+    try {
+      const body = await readJsonBody(request);
+      json(response, 200, await fetchQQSmartImport(body.text));
+    } catch (error) {
+      logFailure(request, requestId, error);
+      json(response, 422, { error: error instanceof Error ? error.message : 'Could not identify this QQ Music share.' });
     }
     return;
   }

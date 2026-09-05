@@ -6,6 +6,8 @@ This file records planned work that is not complete yet. The current site is a p
 
 - [x] Merge Search into the Archive landing page as one built-in local index; remove the duplicate desktop masthead, narrow menu and mobile More Search entries; preserve the complete search scope and redirect old `/search?q=…` links to `/archive?q=…`. *(UI 3.11.0; verified at 390 / 1024 / 1440px in English and Chinese.)*
 
+- [x] Merge QQ Music playlist and album import into one Smart Import desk: resolve public share text (including short links) through the adapter, identify playlist versus album, then retain the existing Inbox preview or official-sequence review. Preserve legacy `/import/qq-album?url=…` links by redirecting them to the unified form. *(UI 3.11.1; worker contract and 390 / 1024 / 1440px form review pending this delivery.)*
+
 - [ ] Replace the uniform dot-like page noise with a restrained, realistic paper surface based primarily on [Jessel Nieman's Grain Layer](https://www.jesselnieman.com/notes/effortlessly-add-a-grain-layer-to-your-website-in-webflow): preserve the existing `#e7dfcf` paper color, combine irregular fine grain with very low-contrast fibers and print variation, keep the overlay non-interactive, avoid obvious tiling or heavy parchment stains, and verify readability and motion at 390 / 1024 / 1440px before publishing.
 
 - [ ] Browser-level visual verification of the album detail local-cover workflow at 390 / 1024 / 1440px. *(UI 3.10.4 implementation applied; verify file selection, preview, persistence and canonical reset when browser access is available.)*

@@ -1,6 +1,6 @@
 import { handleRequest } from '../worker/index.mjs';
 
-const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.16' };
+const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.17' };
 const allowedOrigin = env.ALLOWED_ORIGIN;
 const request = (path, options = {}) => new Request(`https://adapter.example${path}`, options);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
@@ -11,7 +11,7 @@ expect(health.status === 200 && healthBody.status === 'ok' && healthBody.version
 
 const version = await handleRequest(request('/api/version', { headers: { Origin: allowedOrigin } }), env);
 const versionBody = await version.json();
-expect(version.status === 200 && versionBody.capabilities.includes('qq-playlist') && versionBody.capabilities.includes('musicbrainz-release-candidates'), 'Worker version contract failed.');
+expect(version.status === 200 && versionBody.capabilities.includes('qq-smart-import') && versionBody.capabilities.includes('qq-playlist') && versionBody.capabilities.includes('musicbrainz-release-candidates'), 'Worker version contract failed.');
 expect(versionBody.capabilities.includes('account-auto-sync'), 'Worker account auto-sync capability is not advertised.');
 expect(version.headers.get('Access-Control-Allow-Origin') === allowedOrigin, 'Worker did not return the configured CORS origin.');
 
@@ -30,6 +30,23 @@ const search = await handleRequest(request('/api/import/qq-search?q=Fixture', { 
 const searchTrack = (await search.json()).tracks?.[0];
 expect(search.status === 200 && searchTrack?.releaseDate === '2025-12-28', 'Worker did not preserve QQ time_public release metadata.');
 expect(searchTrack?.provider?.albumMid === 'albumMid01' && searchTrack.provider.versionCode === 3 && searchTrack.provider.trackNumber === 7 && searchTrack.provider.discNumber === 2, 'Worker did not preserve QQ entity/version/order evidence.');
+globalThis.fetch = nativeFetch;
+
+globalThis.fetch = async () => new Response(JSON.stringify({ code: 0, data: { id: 101, mid: 'smartAlbum01', name: 'Smart Album', singername: 'Smart Artist', singermid: 'smartArtist01', aDate: '2026-01-02', list: [{ songmid: 'smartTrack01', songname: 'Smart Track', cdIdx: 0, belongCD: 1, interval: 180, singer: [{ name: 'Smart Artist', mid: 'smartArtist01' }] }] } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+const smartAlbum = await handleRequest(request('/api/import/qq-smart-preview', {
+  method: 'POST', headers: { Origin: allowedOrigin, 'Content-Type': 'application/json', 'CF-Connecting-IP': 'fixture-smart-album' },
+  body: JSON.stringify({ text: 'https://y.qq.com/n/ryqq/albumDetail/smartAlbum01' }),
+}), env);
+const smartAlbumBody = await smartAlbum.json();
+expect(smartAlbum.status === 200 && smartAlbumBody.type === 'album' && smartAlbumBody.album?.tracks?.[0]?.title === 'Smart Track', 'Worker smart QQ import did not recognize an album.');
+
+globalThis.fetch = async () => new Response(JSON.stringify({ cdlist: [{ dissname: 'Smart Playlist', nickname: 'Fixture Owner', songlist: [{ songname: 'Playlist Track', singer: [{ name: 'Fixture Artist' }], albumname: 'Fixture Album', songmid: 'playlistTrack01', albummid: 'playlistAlbum01', interval: 180 }] }] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+const smartPlaylist = await handleRequest(request('/api/import/qq-smart-preview', {
+  method: 'POST', headers: { Origin: allowedOrigin, 'Content-Type': 'application/json', 'CF-Connecting-IP': 'fixture-smart-playlist' },
+  body: JSON.stringify({ text: 'https://y.qq.com/n/ryqq/playlist/123456789' }),
+}), env);
+const smartPlaylistBody = await smartPlaylist.json();
+expect(smartPlaylist.status === 200 && smartPlaylistBody.type === 'playlist' && smartPlaylistBody.playlist?.title === 'Smart Playlist', 'Worker smart QQ import did not recognize a playlist.');
 globalThis.fetch = nativeFetch;
 
 globalThis.fetch = async () => new Response(JSON.stringify({ releases: [{ id: 'fixture-release', title: 'Fixture Album', date: '2025-12-28', country: 'US', 'artist-credit': [{ name: 'Fixture Artist' }], 'text-representation': { language: 'eng' } }] }), { status: 200, headers: { 'Content-Type': 'application/json' } });

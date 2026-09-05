@@ -6,7 +6,7 @@
   "workers_dev": true,
   "vars": {
     "ALLOWED_ORIGIN": "https://andrewyy5178.github.io",
-    "SERVICE_VERSION": "0.9.16",
+    "SERVICE_VERSION": "0.9.17",
     "GITHUB_CLIENT_ID": "Ov23lipj7l4Q4aHXWTG2",
     "SYNC_CALLBACK_URL": "https://how-i-hear-music-adapter.bevel-exhaust.workers.dev/api/sync/github/callback"
   },

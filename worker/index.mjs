@@ -8,7 +8,7 @@ const apiCache = new Map();
 const rateWindows = new Map();
 
 const allowedOrigins = (env) => new Set(String(env.ALLOWED_ORIGIN || defaultOrigin).split(',').map((value) => value.trim()).filter(Boolean));
-const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.16');
+const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.17');
 const serviceAgent = (env) => `How-I-Hear-Music/${serviceVersion(env)} metadata importer`;
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
@@ -77,6 +77,7 @@ const parsePublicQQUrl = (value) => {
   if (url.protocol !== 'https:' || !isQQHost(url.hostname)) throw new Error('Only public HTTPS QQ Music links can be imported.');
   return url;
 };
+const qqShareUrlFromText = (value) => (String(value || '').match(/https?:\/\/[^\s<>"'）)】]+/i) || [''])[0].replace(/[，。；、]+$/, '');
 
 const requestQQPage = async (initialUrl, env) => {
   let current = initialUrl;
@@ -137,6 +138,22 @@ const fetchQQPlaylist = async (shareUrl, env) => {
   })).filter((track) => track.title);
   if (!tracks.length) throw new Error('QQ Music found the playlist but exposed no importable track metadata.');
   return { playlist: { id: playlistId, title: playlist.dissname || 'QQ Music playlist', creator: playlist.nickname || '', trackCount: tracks.length }, tracks };
+};
+const fetchQQSmartImport = async (text, env) => {
+  try {
+    const resolved = await parseQQAlbumLink(text, { serviceAgent: serviceAgent(env) });
+    const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId, { serviceAgent: serviceAgent(env) }));
+    return { type: 'album', album, sourceUrl: album.externalUrl || resolved.canonicalUrl };
+  } catch (albumError) {
+    try {
+      const sourceUrl = qqShareUrlFromText(text);
+      if (!sourceUrl) throw new Error('Paste a complete public QQ Music share link.');
+      const playlist = await cacheFor(`qq-playlist:${sourceUrl}`, () => fetchQQPlaylist(sourceUrl, env));
+      return { type: 'playlist', ...playlist, sourceUrl };
+    } catch (playlistError) {
+      throw new Error('Could not identify this as a public QQ Music playlist or album.');
+    }
+  }
 };
 
 const parsePublicNetEaseUrl = (value) => {
@@ -230,7 +247,7 @@ export const handleRequest = async (request, env = {}) => {
   const syncResponse = await handleSync({ request, url, env, headers: responseHeaders(request, env), origin: [...origins][0] || defaultOrigin });
   if (syncResponse) return syncResponse;
   if (request.method === 'GET' && url.pathname === '/healthz') return json(request, env, 200, { status: 'ok', version: serviceVersion(env), providers: ['qqmusic', 'netease'] }, requestId);
-  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'account-auto-sync'] }, requestId);
+  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-smart-import', 'qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'account-auto-sync'] }, requestId);
 
   const address = request.headers.get('CF-Connecting-IP') || 'unknown';
   if (url.pathname.startsWith('/api/') && !withinRateLimit(address)) return json(request, env, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }, requestId);
@@ -242,6 +259,12 @@ export const handleRequest = async (request, env = {}) => {
       const album = await cacheFor(`qq-album:${resolved.albumId}`, () => getQQAlbumDetails(resolved.albumId, { serviceAgent: serviceAgent(env) }));
       return json(request, env, 200, { album, sourceUrl: album.externalUrl || resolved.canonicalUrl }, requestId);
     } catch (error) { return handleApiError(request, env, requestId, error, 'Could not import this QQ Music album.'); }
+  }
+  if (request.method === 'POST' && url.pathname === '/api/import/qq-smart-preview') {
+    try {
+      const body = await readJsonBody(request);
+      return json(request, env, 200, await fetchQQSmartImport(body.text, env), requestId);
+    } catch (error) { return handleApiError(request, env, requestId, error, 'Could not identify this QQ Music share.'); }
   }
   if (request.method === 'GET' && url.pathname === '/api/import/qq-search') {
     try {

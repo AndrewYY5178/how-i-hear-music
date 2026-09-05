@@ -174,7 +174,7 @@ if (!serviceWorker.includes(`how-i-hear-music-shell-${packageData.version}`) || 
 if (!serverSource.includes("process.env.HOST") || !serverSource.includes('serviceAgent') || serverSource.includes('How-I-Hear-Music/0.1')) errors.push('adapter: host or service-version identity is not deployable');
 const workerSource = await readFile(join(root, 'worker', 'index.mjs'), 'utf8');
 const workerConfig = await readFile(join(root, 'wrangler.jsonc'), 'utf8');
-for (const contract of ['ALLOWED_ORIGIN', 'SERVICE_VERSION', '/healthz', '/api/version', '/api/import/qq-playlist', '/api/import/netease-playlist', '/api/import/qq-album-preview']) if (!workerSource.includes(contract) && !workerConfig.includes(contract)) errors.push(`hosted adapter: missing ${contract}`);
+for (const contract of ['ALLOWED_ORIGIN', 'SERVICE_VERSION', '/healthz', '/api/version', '/api/import/qq-smart-preview', '/api/import/qq-playlist', '/api/import/netease-playlist', '/api/import/qq-album-preview']) if (!workerSource.includes(contract) && !workerConfig.includes(contract)) errors.push(`hosted adapter: missing ${contract}`);
 if (!workerConfig.includes('https://andrewyy5178.github.io') || !workerConfig.includes(`\"SERVICE_VERSION\": \"${packageData.version}\"`)) errors.push('hosted adapter: production origin or service version is not aligned');
 
 if (errors.length) { console.error(errors.map((item) => `- ${item}`).join('\n')); process.exitCode = 1; }
