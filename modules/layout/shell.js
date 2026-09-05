@@ -4,7 +4,7 @@ import { beginGithubSync, clearNicknamePrompt, readSyncStatus, signOutSync, sync
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
-const appVersion = "0.9.15";
+const appVersion = "0.9.16";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"], ["/journal", "Journal"],
@@ -24,9 +24,9 @@ const mobileNavIcon = (name) => {
 };
 const pathIsActive = (path, href) => path === href || (href !== "/" && path.startsWith(href));
 const mobileShell = (path) => {
-  const moreActive = ["/import", "/journal", "/search"].some((href) => pathIsActive(path, href));
+  const moreActive = ["/import", "/journal"].some((href) => pathIsActive(path, href));
   const mobileLink = (href, label, iconName) => `<a class="mobile-tab${pathIsActive(path, href) ? " active" : ""}${href === "/rate" ? " mobile-tab-rate" : ""}" href="${withBase(href)}" data-route>${mobileNavIcon(iconName)}<span>${safe(label)}</span></a>`;
-  return `<div class="mobile-more-panel" id="mobile-more-panel" hidden aria-label="More destinations">${link("/import", "Import", pathIsActive(path, "/import") ? "active" : "")}${link("/journal", "Journal", pathIsActive(path, "/journal") ? "active" : "")}${link("/search", "Search", path === "/search" ? "active" : "")}</div><nav class="mobile-tabbar" aria-label="Mobile primary navigation">${mobileNav.map(([href, label, iconName]) => mobileLink(href, label, iconName)).join("")}<button class="mobile-tab mobile-tab-more${moreActive ? " active" : ""}" type="button" data-mobile-more aria-expanded="false" aria-controls="mobile-more-panel">${mobileNavIcon("more")}<span>More</span></button></nav>`;
+  return `<div class="mobile-more-panel" id="mobile-more-panel" hidden aria-label="More destinations">${link("/import", "Import", pathIsActive(path, "/import") ? "active" : "")}${link("/journal", "Journal", pathIsActive(path, "/journal") ? "active" : "")}</div><nav class="mobile-tabbar" aria-label="Mobile primary navigation">${mobileNav.map(([href, label, iconName]) => mobileLink(href, label, iconName)).join("")}<button class="mobile-tab mobile-tab-more${moreActive ? " active" : ""}" type="button" data-mobile-more aria-expanded="false" aria-controls="mobile-more-panel">${mobileNavIcon("more")}<span>More</span></button></nav>`;
 };
 const accountShell = () => {
   const session = syncSession(); const ready = syncReady(); const signedIn = Boolean(session?.token && session?.user?.login);
@@ -50,7 +50,7 @@ export const renderShell = (path) => {
   header.classList.remove("menu-open");
   const languageControl = (mobile = false) => `<button class="language-toggle${mobile ? " language-toggle-mobile" : ""}" type="button" data-language-toggle data-i18n-ignore aria-pressed="${currentLanguage() === "zh-CN"}" aria-label="${currentLanguage() === "zh-CN" ? "Switch to English" : "切换到中文"}">${currentLanguage() === "zh-CN" ? "EN" : "中文"}</button>`;
   const accountControl = (mobile = false) => `<button class="account-toggle${mobile ? " account-toggle-mobile" : ""}${nickname ? " has-nickname" : ""}" type="button" aria-expanded="false" aria-controls="account-panel"${nickname ? " data-i18n-ignore" : ""}>${safe(nickname || "ACCOUNT")}</button>`;
-  header.innerHTML = `<div class="brand-account"><a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span></a><span class="brand-mark">anddream</span></div><div class="header-mobile-actions">${accountControl(true)}${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}${link("/search", "Search", path === "/search" ? "utility-search active" : "utility-search")}</nav><div class="header-end">${link("/search", "SEARCH", path === "/search" ? "header-search active" : "header-search")}${languageControl()}${accountControl()}</div>${accountShell()}${mobileShell(path)}`;
+  header.innerHTML = `<div class="brand-account"><a class="brand" href="${withBase("/")}" data-route>HIM <span>/</span></a><span class="brand-mark">anddream</span></div><div class="header-mobile-actions">${accountControl(true)}${languageControl(true)}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button></div><nav class="primary-nav" id="primary-nav">${nav.map(([href, label]) => link(href, label, pathIsActive(path, href) ? "active" : "")).join("")}</nav><div class="header-end">${languageControl()}${accountControl()}</div>${accountShell()}${mobileShell(path)}`;
   document.getElementById("site-footer").innerHTML = `<span>HOW I HEAR MUSIC</span><span class="mono">PERSONAL ARCHIVE / ISSUE 001</span>`;
   const toggle = header.querySelector(".menu-toggle");
   toggle.addEventListener("click", (event) => {

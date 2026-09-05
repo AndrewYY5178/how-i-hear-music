@@ -113,6 +113,7 @@ const fallbackHtml = await readFile(join(root, '404.html'), 'utf8');
 if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.includes('route=${encodeURIComponent')) errors.push('404.html: GitHub Pages route recovery is missing');
 const appSource = await readFile(join(root, 'app.js'), 'utf8');
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
+if (!appSource.includes('requestedTarget === "/search" ? "/archive"') || !appSource.includes('current === "/search"')) errors.push('routing: old Search links must redirect into Archive');
 if (!appSource.includes('const pageTitle = path === "/" ? "Home"') || !appSource.includes('link[rel="canonical"]')) errors.push('app.js: document titles or route canonical metadata are missing');
 if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
 for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
@@ -160,6 +161,7 @@ if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('sty
 if (styles.includes('before English labels collide') || !styles.includes('@media (max-width:760px)')) errors.push('styles.css: full masthead must remain available above the mobile breakpoint');
 const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
 if (shellSource.includes('READ / 20—') || styles.includes('.edition')) errors.push('masthead: obsolete edition marker or styling remains');
+if (shellSource.includes('link("/search"') || shellSource.includes('header-search') || shellSource.includes('utility-search')) errors.push('navigation: Search must live inside Archive instead of the masthead or mobile More');
 for (const contract of ['account-toggle', 'account-panel', 'REGISTER / SIGN IN WITH GITHUB', 'readSyncStatus', 'signOutSync']) if (!shellSource.includes(contract)) errors.push(`account shell: missing ${contract}`);
 if (!styles.includes('.account-panel') || !styles.includes('.account-toggle')) errors.push('account shell: responsive account presentation is missing');
 const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');

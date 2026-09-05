@@ -25,9 +25,9 @@ localStorage.setItem('how-i-hear-music:journal:v1', JSON.stringify([{ id: 'journ
 
 const renders = [
   ['Home', home.home],
-  ['Archive tracks', archive.archiveTracks], ['Archive metadata', archive.archiveCoverage],
+  ['Archive', archive.archiveHome], ['Archive tracks', archive.archiveTracks], ['Archive metadata', archive.archiveCoverage],
   ['Data Desk', imports.importData], ['Journal', journal.journal], ['Journal correction', () => journal.journalEdit('journal_fixture')], ['Entropy', journal.entropyPage],
-  ['Memory Palace', journal.memoryPalace], ['Rate', rating.rateHome], ['Search', search.searchPage],
+  ['Memory Palace', journal.memoryPalace], ['Rate', rating.rateHome],
   ['Taste DNA', taste.dna], ['Blind Spots', taste.blindSpotPage],
 ];
 for (const [name, render] of renders) {
@@ -45,6 +45,12 @@ assert.doesNotMatch(blockedAlbum, /Track 01|7\.6/);
 
 const homeMarkup = home.home();
 assert.doesNotMatch(homeMarkup, /READ THE METHOD|EXPLORE TRACK|EXPLORE ALBUM|ENTER THE ARCHIVE|ABOUT THIS ARCHIVE|card-link/);
+const archiveHome = archive.archiveHome();
+assert.match(archiveHome, /class="archive-search"/);
+assert.match(archiveHome, /SEARCH THE RECORD/);
+location.search = '?q=Tattooed';
+assert.match(search.archiveSearch(), /<mark>Tattooed<\/mark> Heart/);
+location.search = '';
 const trackIndex = archive.archiveTracks();
 assert.ok(trackIndex.indexOf('track_000001') < trackIndex.indexOf('track_000002'), 'Track index does not default to rating high–low');
 assert.match(trackIndex, /<option value="rating">RATING HIGH–LOW<\/option>/);

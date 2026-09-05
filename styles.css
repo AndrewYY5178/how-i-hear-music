@@ -385,12 +385,8 @@ button,a,input,textarea,select,summary { touch-action:manipulation; }
 /* Restored publisher mark from the original archive masthead. */
 .header-end { display:flex; justify-self:end; align-items:baseline; gap:16px; }
 .brand-mark { color:var(--olive); font:italic 400 15px/.9 var(--serif); letter-spacing:-.06em; opacity:.86; }
-.header-search { color:var(--muted); font:9px var(--mono); letter-spacing:.07em; }
-.header-search:hover,.header-search.active { color:var(--red); }
-.primary-nav .utility-search { display:none; }
 @media (max-width:760px) {
   .header-end { display:none; }
-  .primary-nav .utility-search { display:inline-flex; }
 }
 
 /* Recovered from the pre-modular editorial palette: each module now has a page material. */
@@ -575,14 +571,20 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .global-search-form { max-width:760px; margin-bottom:64px; }
 .global-search-form>div { display:grid; grid-template-columns:1fr auto; gap:16px; }
 .global-search-form input { font:400 24px/1.3 var(--serif); }
+.global-search-form small { display:block; margin-top:8px; color:var(--muted); font-size:8px; }
+.archive-search { margin:64px 0; }
+.archive-search-intro { display:grid; grid-template-columns:minmax(160px,.35fr) minmax(280px,1fr); gap:40px; align-items:baseline; margin-bottom:24px; }
+.archive-search-intro>span { color:var(--red); font-size:9px; letter-spacing:.08em; }
+.archive-search-intro p { max-width:560px; margin:0; color:var(--muted); font:italic 14px/1.5 var(--serif); }
+.archive-search .global-search-form { max-width:none; margin-bottom:24px; }
+.archive-search .global-search-results { max-width:none; }
 .search-count { margin-bottom:16px; color:var(--muted); font-size:9px; }
 .global-search-results { max-width:900px; border-top:1px solid var(--ink); }
 .global-search-results article { display:grid; grid-template-columns:120px 1fr auto; gap:24px; align-items:start; padding:24px 0; border-bottom:1px solid var(--line); }
 .global-search-results article>span { color:var(--red); font-size:8px; }
 .global-search-results h2 { margin:0 0 8px; font:400 25px/1.1 var(--serif); letter-spacing:-.04em; }
-.global-search-results p,.search-prompt p { max-width:560px; margin:0; color:var(--muted); font:italic 14px/1.5 var(--serif); }
+.global-search-results p { max-width:560px; margin:0; color:var(--muted); font:italic 14px/1.5 var(--serif); }
 .global-search-results .text-link { margin-top:0; }
-.search-prompt { max-width:560px; padding:40px 0; border-top:1px solid var(--ink); }
 .update-banner { position:fixed; right:24px; bottom:24px; z-index:30; display:flex; align-items:center; gap:16px; max-width:440px; padding:16px 24px; border:1px solid var(--ink); background:var(--paper-light); color:var(--ink); font:11px/1.4 var(--mono); }
 
 /* Home keeps the score visual subordinate to the track name. */
@@ -646,6 +648,8 @@ body::before {
   .dna-evidence>div>span { grid-row:auto; margin-bottom:8px; }
   .global-search-form>div { grid-template-columns:1fr; }
   .global-search-results article { grid-template-columns:1fr; gap:8px; }
+  .archive-search { margin:40px 0; }
+  .archive-search-intro { grid-template-columns:1fr; gap:8px; margin-bottom:16px; }
   .journal-edit-fields { grid-template-columns:1fr; gap:16px; }
   .journal-edit-note { grid-column:auto; }
   .journal-reason-edit { grid-column:auto; grid-template-columns:1fr; }

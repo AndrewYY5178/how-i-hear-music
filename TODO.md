@@ -4,6 +4,8 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## Active touch-first App shell and delivery — UI 3.6.0
 
+- [x] Merge Search into the Archive landing page as one built-in local index; remove the duplicate desktop masthead, narrow menu and mobile More Search entries; preserve the complete search scope and redirect old `/search?q=…` links to `/archive?q=…`. *(UI 3.11.0; verified at 390 / 1024 / 1440px in English and Chinese.)*
+
 - [ ] Replace the uniform dot-like page noise with a restrained, realistic paper surface based primarily on [Jessel Nieman's Grain Layer](https://www.jesselnieman.com/notes/effortlessly-add-a-grain-layer-to-your-website-in-webflow): preserve the existing `#e7dfcf` paper color, combine irregular fine grain with very low-contrast fibers and print variation, keep the overlay non-interactive, avoid obvious tiling or heavy parchment stains, and verify readability and motion at 390 / 1024 / 1440px before publishing.
 
 - [ ] Browser-level visual verification of the album detail local-cover workflow at 390 / 1024 / 1440px. *(UI 3.10.4 implementation applied; verify file selection, preview, persistence and canonical reset when browser access is available.)*
@@ -33,7 +35,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Translate the approved “living newspaper” styleframes into the existing Home, Archive, Rate, Taste, Import and Journal structures: tangible record depth, restrained ink-draw motion, dense catalog rhythm and reduced-motion fallbacks, without changing routes, data or workflows.
 
 - [x] Preserve the six existing routes and module personalities while making the mobile shell touch-first; no route, data-model or local-data boundary may be removed or merged.
-- [x] Add a safe-area-aware five-item mobile bottom navigation: Home, Archive, Rate, Taste and More; More exposes Import, Journal and Search without crowding the bar.
+- [x] Add a safe-area-aware five-item mobile bottom navigation: Home, Archive, Rate, Taste and More; More exposes Import and Journal without crowding the bar, while Search is built into Archive.
 - [x] Recompose mobile page headers and first screens around one primary task, reducing decorative desktop whitespace and retaining editorial type hierarchy.
 - [x] Give mobile Track Rating, Album Rating, Import and Inbox one accessible lower-screen primary action without hiding alternative controls behind gestures.
 - [x] Make Archive mobile records compact and list-led while keeping its existing filter/sort controls visible and keyboard-accessible; a bottom-sheet reduction remains a later refinement.
