@@ -2092,7 +2092,7 @@ Implementation commit: `db24530`
 
 ## Version 3.11.1 — One QQ import desk
 
-Implementation commit: pending
+Implementation commit: `cf5c470`
 
 ### Evidence
 
