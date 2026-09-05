@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.37";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.39";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -35,6 +35,10 @@ const homeSampleAlbumKeys = new Set([
   "metallica-72-seasons",
 ]);
 const albumKey = (album) => album.id || slug(`${album.artist}-${album.title}`);
+const showcaseFirst = (albums) => {
+  const lead = albums.find((album) => albumKey(album) === "单依纯-纯妹妹");
+  return lead ? [lead, ...shuffled(albums.filter((album) => album !== lead))] : shuffled(albums);
+};
 const coverSourcesForAlbum = (album) => {
   const id = album.id || slug(`${album.artist}-${album.title}`);
   const override = storage.get(coverOverrideKey, {})[id] || "";
@@ -44,16 +48,19 @@ const coverSourcesForAlbum = (album) => {
   const alternate = [override, canonical, album.coverFallback].find((source) => source && source !== primary) || "";
   return { primary, alternate };
 };
-const coverForAlbum = (album) => coverSourcesForAlbum(album).primary;
 const homeAlbums = () => {
   const albums = allAlbums();
   const imported = importedAlbums();
   const importedKeys = new Set(imported.map(albumKey));
-  const own = albums.filter((album) => importedKeys.has(albumKey(album)) && coverForAlbum(album));
-  const samples = albums.filter((album) => homeSampleAlbumKeys.has(albumKey(album)) && !importedKeys.has(albumKey(album)) && coverForAlbum(album));
-  const scoredSamples = samples.filter((album) => albumScore(album) !== null);
-  const unscoredSamples = samples.filter((album) => albumScore(album) === null);
-  if (!syncSession()?.token || !own.length) return shuffled([...scoredSamples, ...unscoredSamples]).slice(0, homeAlbumCapacity);
+  const own = albums.filter((album) => importedKeys.has(albumKey(album)));
+  // Keep the complete showcase deck even when one remote cover is unavailable;
+  // the card's fallback state preserves the record instead of silently dropping it.
+  const samples = albums.filter((album) => homeSampleAlbumKeys.has(albumKey(album)));
+  const availableSamples = samples.filter((album) => !importedKeys.has(albumKey(album)));
+  const scoredSamples = availableSamples.filter((album) => albumScore(album) !== null);
+  const unscoredSamples = availableSamples.filter((album) => albumScore(album) === null);
+  if (!syncSession()?.token) return showcaseFirst(samples).slice(0, homeAlbumCapacity);
+  if (!own.length) return showcaseFirst(samples).slice(0, homeAlbumCapacity);
   if (own.length >= homeAlbumCapacity) return shuffled(own);
   return [...shuffled(own), ...shuffled([...scoredSamples, ...unscoredSamples]).slice(0, homeAlbumCapacity - own.length)];
 };

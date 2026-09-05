@@ -2889,6 +2889,31 @@ Implementation commit: pending
 
 - Carousel timing, record geometry, Archive browsing behavior, score storage, Featured Shape eligibility and all account/sync behavior remain unchanged.
 
+## Version 3.11.38 — Separate showcase deck from user archive
+
+Implementation commit: pending
+
+### Evidence
+
+- The nine Home showcase albums were added to the canonical album list, so Archive and analysis routes treated presentation-only records as the user's own albums.
+- Home excluded a showcase album whenever a browser-local import had the same key, so a signed-out visitor could lose `纯妹妹` from the fixed sample deck.
+- A signed-in user with a full imported deck could still see showcase records when imported album identity or cover availability made the ownership count unreliable.
+
+### Decision
+
+- Mark the eight newly added international showcase records as `showcaseOnly`; keep the pre-existing `纯妹妹` canonical record intact.
+- Add a shared `archiveVisibleAlbums()` view that hides unimported showcase records from Archive, Search, Taste and Journal while retaining imported showcase albums.
+- Make signed-out Home choose directly from the complete nine-record sample pool; make signed-in Home count imported album identities (including records with a temporarily unavailable cover) and switch to the user's deck at capacity.
+
+### Rejected
+
+- Do not delete showcase metadata from the canonical source, because Home needs stable public records and direct sample links.
+- Do not hide an actual imported showcase album from the user's Archive.
+
+### Intentionally unchanged
+
+- Cover URLs, local cover overrides, rating storage, sync data, detail-route compatibility and the Home carousel interaction remain unchanged.
+
 ## Version 3.11.37 — Per-album color re-extraction
 
 Implementation commit: pending
@@ -2911,3 +2936,26 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Cover fallback order, artwork proxy allow-list, carousel motion, rating logic and all non-album-detail routes remain unchanged.
+
+## Version 3.11.39 — Keep the showcase lead visible
+
+Implementation commit: pending
+
+### Evidence
+
+- On narrow or cached-cover sessions, a randomized first position could put `纯妹妹` outside the visible Cover Flow positions, making the required sample feel absent even though it was in the deck.
+- A missing remote image should not remove a showcase record from Home; the record must remain available with its existing fallback state.
+
+### Decision
+
+- Keep `纯妹妹` as the first signed-out/empty-account Home record, then shuffle the remaining showcase records.
+- Keep all nine showcase records in the sample pool regardless of remote cover availability; an unavailable image now falls back in place instead of silently disappearing.
+
+### Rejected
+
+- Do not pin `纯妹妹` for signed-in users once their own imported deck is available.
+- Do not fabricate or silently replace an unavailable cover URL.
+
+### Intentionally unchanged
+
+- Carousel controls, record geometry, local cover overrides, archive visibility rules, and user-owned album ordering remain unchanged.

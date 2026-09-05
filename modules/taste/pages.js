@@ -1,4 +1,4 @@
-import { allAlbums, allArtists, allTracks, data, findTrack, rating, safe, storage, trackId } from "../music/data.js";
+import { allArtists, allTracks, archiveVisibleAlbums, data, findTrack, rating, safe, storage, trackId } from "../music/data.js";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader } from "../layout/shell.js";
 import { antiRecommendationPatterns, currentEvidence } from "../music/analysis.js";
@@ -38,7 +38,7 @@ export const compare = () => {
 
 const boundariesMarkup = () => {
   const patterns = antiRecommendationPatterns();
-  const spots = blindSpots({ albums: allAlbums() });
+  const spots = blindSpots({ albums: archiveVisibleAlbums() });
   const blind = spots.length ? `<section class="blind-spots">${spots.map((spot, index) => `<article><span class="mono">BLIND SPOT ${String(index + 1).padStart(2, "0")} · ${safe(spot.type)}</span><h2>${safe(spot.title)}</h2><p>${safe(spot.copy)}</p><dl><div><dt>${spot.type.includes("COVERAGE") ? "EVIDENCE SIGNAL" : "TRAIT AFFINITY"}</dt><dd>${Math.round(spot.affinity * 100)}</dd></div><div><dt>EXPLORED</dt><dd>${Math.round((1 - spot.coverageGap) * 100)}%</dd></div></dl>${spot.links?.length ? `<div class="blind-spot-entrypoints"><span class="mono">CURRENT EVIDENCE</span>${spot.links.map((item) => link(item.href, `${item.label} →`)).join("")}</div>` : ""}</article>`).join("")}</section>` : `<section class="analysis-empty"><span class="mono">NOT ENOUGH EVIDENCE</span><h2>A blind spot needs both stable taste evidence and a measurable coverage gap.</h2><p>Language and era require confirmed metadata for at least 60% and ten scored records; Sonic gaps require eight explicitly placed tracks.</p>${link("/taste/dna", "READ TASTE DNA →", "text-link")}</section>`;
   return `${pageHeader("TASTE / BOUNDARIES", "What probably won't work for me?", "Patterns describe recurring distance and coverage gaps, never a genre stereotype.")}${goodNotMineMarkup()}<section class="taste-boundary-patterns"><span class="mono">RECURRING BOUNDARIES</span>${patterns.length ? `<section class="anti-patterns">${patterns.map((pattern) => `<article><span class="mono">PATTERN FROM ${pattern.records.length} TRACKS</span><h2>${safe(pattern.title)}</h2><p>${safe(pattern.copy)}</p><div>${pattern.records.slice(0, 5).map((record) => link(`/archive/tracks/${record.id}`, record.title)).join("")}</div></article>`).join("")}</section>` : `<section class="analysis-empty"><span class="mono">NOT ENOUGH EVIDENCE</span><h2>No boundary repeats across three tracks yet.</h2><p>More explicit ratings may reveal a pattern; the site will not manufacture one.</p></section>`}</section><section class="taste-boundary-blind"><span class="mono">BLIND SPOTS</span>${blind}</section>`;
 };

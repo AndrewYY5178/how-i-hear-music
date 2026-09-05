@@ -1,4 +1,4 @@
-import { allAlbums, allTracks, data, findAlbum, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js";
+import { allTracks, archiveVisibleAlbums, data, findAlbum, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js";
 import { fieldLabel, fields, radar, summary, waveform } from "./visuals.js";
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from "./interactions.js";
 import { link, pageHeader } from "../layout/shell.js";
@@ -19,7 +19,7 @@ const scoreControls = (scores) => `<div class="rating-controls">${fields.map((fi
 let pointerController = null;
 
 export const rateHome = () => {
-  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const heard = unrated.filter((track) => track.lifecycleState === "heard").length; const album = allAlbums().find((record) => confirmedAlbumTracks(record).length); const next = unrated[0] || choices[0];
+  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const heard = unrated.filter((track) => track.lifecycleState === "heard").length; const album = archiveVisibleAlbums().find((record) => confirmedAlbumTracks(record).length); const next = unrated[0] || choices[0];
   const albumAction = album ? link(`/rate/album/${album.id || slug(album.artist + "-" + album.title)}`, "RATE AN ALBUM", "button primary") : link("/import/qq", "IMPORT AN ALBUM", "button primary");
   const trackAction = next ? link(`/rate/track/${encodeURIComponent(rateId(next))}`, "CONTINUE RATING", "button primary") : link("/import", "IMPORT MUSIC", "button primary");
   const trackCopy = next ? `${safe(next.title)} · ${safe(next.artist)}${next.lifecycleState ? ` · ${next.lifecycleState.toUpperCase()}` : ""}` : "Bring in one track to begin a listening shape.";

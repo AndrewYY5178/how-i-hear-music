@@ -1,4 +1,4 @@
-import { allAlbums, allArtists, allTracks, safe, slug, storage, trackId } from "../music/data.js";
+import { allArtists, allTracks, archiveVisibleAlbums, safe, slug, storage, trackId } from "../music/data.js";
 import { allMemoryEntries } from "../music/memory.js";
 import { tasteDNA } from "../music/taste-dna.js";
 import { link } from "../layout/shell.js";
@@ -12,10 +12,10 @@ export const archiveSearch = () => {
   const raw = new URLSearchParams(location.search).get("q") || ""; const query = raw.trim().normalize("NFKC").toLowerCase(); const results = [];
   if (query) {
     allTracks().filter((track) => includes([track.title, track.artist, track.album, track.language, track.region], query)).forEach((track) => results.push(row("TRACK", track.title, [track.artist, track.album].filter(Boolean).join(" · "), `/archive/tracks/${trackId(track)}`, query)));
-    allAlbums().filter((album) => includes([album.title, album.artist, album.year], query)).forEach((album) => results.push(row("ALBUM", album.title, album.artist, `/archive/albums/${album.id || slug(album.artist + "-" + album.title)}`, query)));
+  archiveVisibleAlbums().filter((album) => includes([album.title, album.artist, album.year], query)).forEach((album) => results.push(row("ALBUM", album.title, album.artist, `/archive/albums/${album.id || slug(album.artist + "-" + album.title)}`, query)));
     allArtists().filter((artist) => includes([artist.name, artist.romanized, artist.role], query)).forEach((artist) => results.push(row("ARTIST", artist.name, artist.romanized || artist.role || "In the archive", `/archive/artists/${artist.id}`, query)));
     storage.get("how-i-hear-music:journal:v1", []).filter((entry) => includes([entry.title, entry.artist, entry.note, entry.moment?.note], query)).forEach((entry) => results.push(row("JOURNAL", entry.title, entry.note || entry.artist || "Saved listening entry", "/taste/journal", query)));
-    const albumNotes = storage.get("how-i-hear-music:album-notes:v1", {}); allAlbums().forEach((album) => { const id = album.id || slug(album.artist + "-" + album.title); const note = albumNotes[id]?.note; if (note && includes([album.title, album.artist, note], query)) results.push(row("ALBUM NOTE", album.title, note, `/archive/albums/${id}`, query)); });
+  const albumNotes = storage.get("how-i-hear-music:album-notes:v1", {}); archiveVisibleAlbums().forEach((album) => { const id = album.id || slug(album.artist + "-" + album.title); const note = albumNotes[id]?.note; if (note && includes([album.title, album.artist, note], query)) results.push(row("ALBUM NOTE", album.title, note, `/archive/albums/${id}`, query)); });
     allMemoryEntries().filter((entry) => includes([entry.note, entry.zone], query)).forEach((entry) => results.push(row("MEMORY", entry.note || entry.zone, entry.source === "manual" ? "Placed manually" : "Derived from saved evidence", memoryHref(entry), query)));
     tasteDNA().filter((trait) => includes([trait.label, trait.copy], query)).forEach((trait) => results.push(row("TASTE DNA", trait.label, trait.copy, "/taste/dna", query)));
   }

@@ -87,6 +87,7 @@ localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-sweetener:overa
 localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-yours-truly:overall', '8');
 const albumIndex = archive.archiveAlbums();
 assert.ok(albumIndex.indexOf('ariana-grande-sweetener') < albumIndex.indexOf('ariana-grande-yours-truly'), 'Album index does not default to album rating high–low');
+['Lover', 'Graduation', 'Golden Hour', 'Un Verano Sin Ti', 'BRAT', 'Loud', 'Mylo Xyloto', '72 Seasons'].forEach((title) => assert.doesNotMatch(albumIndex, new RegExp(`<h3>${title}`), `Showcase-only album leaked into the Archive: ${title}`));
 assert.doesNotMatch(albumIndex, /Open album|OPEN ALBUM/);
 assert.match(albumIndex, /<a class="album-card"[^>]+data-route/);
 assert.match(albumIndex, /album-card-disc/);
@@ -107,6 +108,10 @@ localStorage.removeItem('how-i-hear-music:cover-overrides:v1');
 localStorage.setItem('how-i-hear-music:cover-overrides-local:v1', JSON.stringify({ '陶喆-陶喆': 'data:image/png;base64,fixture' }));
 assert.match(archive.archiveAlbums(), /data-cover-source="data:image\/png;base64,fixture"/);
 localStorage.removeItem('how-i-hear-music:cover-overrides-local:v1');
+localStorage.setItem('how-i-hear-music:imported-albums:v1', JSON.stringify([{ id: 'taylor-swift-lover', title: 'Lover', artist: 'Taylor Swift' }]));
+const signedOutWithLocalSample = home.home();
+assert.match(signedOutWithLocalSample, /<b>纯妹妹<\/b>/, 'Signed-out showcase lost 纯妹妹 when a local sample album exists');
+localStorage.removeItem('how-i-hear-music:imported-albums:v1');
 assert.match(stylesheet, /\.album-card:nth-child\(3n\).*\.album-card-record/);
 assert.doesNotMatch(stylesheet, /\.album-card:nth-child\(3n\)[^{]+\.album-card-disc/);
 assert.match(stylesheet, /\.import-album-disc \{ top:1%; right:0; width:98%/);
@@ -140,6 +145,20 @@ assert.match(archiveSource, /openTimer = window\.setTimeout\(\(\) => \{ card\.cl
 assert.match(archiveSource, /openTarget = null; openTimer = null; \}, 180\);/);
 localStorage.setItem('how-i-hear-music:cloud-sync-session:v1', JSON.stringify({ token: 'fixture', user: { id: 1, login: 'fixture' } }));
 localStorage.setItem('how-i-hear-music:album-draft:charli-xcx-brat:overall', '10');
+localStorage.setItem('how-i-hear-music:imported-albums:v1', JSON.stringify([
+  { id: '单依纯-纯妹妹', title: '纯妹妹', artist: '单依纯' },
+  { id: '单依纯-勇敢额度', title: '勇敢额度', artist: '单依纯' },
+  { id: '王力宏-十八般武艺', title: '十八般武艺', artist: '王力宏' },
+  { id: '王力宏-不可思议', title: '不可思议', artist: '王力宏' },
+  { id: '王力宏-唯一', title: '唯一', artist: '王力宏' },
+  { id: '陶喆-陶喆', title: '陶喆', artist: '陶喆' },
+  { id: '陶喆-黑色柳丁', title: '黑色柳丁', artist: '陶喆' },
+  { id: '陶喆-soul-power', title: 'Soul Power', artist: '陶喆' },
+  { id: '祁紫檀-世界与孤独女王', title: '世界与孤独女王', artist: '祁紫檀' },
+  { id: 'charli-xcx-brat', title: 'BRAT', artist: 'Charli xcx' },
+]));
+const fullOwnHome = home.home();
+assert.doesNotMatch(fullOwnHome, /<b>Lover<\/b>/, 'Signed-in Home still mixes showcase albums after the user deck is full');
 assert.match(home.home(), /<strong>10<\/strong>/, 'Signed-in Home does not show a confirmed album score');
 assert.doesNotMatch(imports.importHome(), /METADATA SERVICE|Hosted adapter configured|Local metadata adapter ready/);
 location.hostname = 'example.github.io';

@@ -27,11 +27,16 @@ export const storage = {
   remove(key, { recover = true } = {}) { try { const prior = localStorage.getItem(key); if (recover && prior !== null && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1") { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(localStorage.getItem(recoveryKey) || "[]"); } catch {} let value = prior; try { value = JSON.parse(prior); } catch {} localStorage.setItem(recoveryKey, JSON.stringify([{ key, value, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } localStorage.removeItem(key); if (prior !== null) announceStorageChange(key); return true; } catch { return false; } },
 };
 export const importedAlbums = () => storage.get(data.library.albumStorageKey, []);
+const albumKey = (album) => album.id || slug(`${album.artist}-${album.title}`);
 export const localVersions = () => storage.get("how-i-hear-music:recording-versions:v1", []);
 export const allAlbums = () => {
   const local = importedAlbums(); const used = new Set();
   const canonicalAlbums = data.profile.albumArchive.map((album) => { const id = slug(album.artist + "-" + album.title); const supplement = local.find((item) => item.id === id); if (supplement) used.add(supplement.id); return supplement ? { ...album, ...supplement, coverUrl: supplement.coverUrl || album.coverUrl || null, coverSource: supplement.coverSource || album.coverSource || null } : album; });
   return [...canonicalAlbums, ...local.filter((album) => !used.has(album.id))];
+};
+export const archiveVisibleAlbums = () => {
+  const importedKeys = new Set(importedAlbums().map(albumKey));
+  return allAlbums().filter((album) => !album.showcaseOnly || importedKeys.has(albumKey(album)));
 };
 export const baseTracks = () => {
   const result = [...data.songs.entries]; const ids = new Set(result.map(trackId));

@@ -1,4 +1,4 @@
-import { allAlbums, allArtists, allTracks, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js";
+import { allArtists, allTracks, archiveVisibleAlbums, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js";
 import { link, pageHeader } from "../layout/shell.js";
 import { rediscoveryCandidates } from "../music/analysis.js";
 import { insightLabel, insightTags, insightTagsOf } from "../music/insights.js";
@@ -68,7 +68,7 @@ const memoryEntity = (entry) => {
   const record = findTrack(entry.entityId); return record ? { title: record.title, byline: record.artist, href: `/archive/tracks/${trackId(record)}` } : null;
 };
 const memoryOptions = (type) => {
-  const rows = type === "album" ? allAlbums().map((item) => [item.id || slug(item.artist + "-" + item.title), `${item.title} — ${item.artist}`]) : type === "artist" ? allArtists().map((item) => [item.id, item.name]) : allTracks().filter((item) => type === "version" ? item.versionType : true).map((item) => [trackId(item), `${item.title} — ${item.artist}${item.versionType ? ` · ${item.versionType}` : ""}`]);
+  const rows = type === "album" ? archiveVisibleAlbums().map((item) => [item.id || slug(item.artist + "-" + item.title), `${item.title} — ${item.artist}`]) : type === "artist" ? allArtists().map((item) => [item.id, item.name]) : allTracks().filter((item) => type === "version" ? item.versionType : true).map((item) => [trackId(item), `${item.title} — ${item.artist}${item.versionType ? ` · ${item.versionType}` : ""}`]);
   return rows.map(([id, label]) => `<option value="${safe(id)}">${safe(label)}</option>`).join("");
 };
 export const memoryPalace = () => {
