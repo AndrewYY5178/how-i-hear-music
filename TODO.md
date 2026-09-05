@@ -550,4 +550,6 @@ The two owner-approved living-newspaper blueprints remain the visual target. Fut
 - [x] Mark all nine Home showcase records as presentation-only until a matching local import exists, including the pre-existing `纯妹妹` record. *(UI 3.11.40; automated checks passed.)*
 - [x] Base Home's capacity switch on the imported-album store itself so a full user deck cannot be diluted by canonical samples or cover availability. *(UI 3.11.41; automated checks passed.)*
 - [x] Allow direct numeric typing for each album track score while retaining − / +, waveform editing, range validation and draft persistence. *(UI 3.11.42; automated checks passed.)*
+- [x] Reflect saved and in-progress album track Overall values in the Album detail Listening Landscape instead of leaving the waveform on its baseline. *(UI 3.11.43; automated checks passed.)*
+- [x] Normalize nested album scores before passing them to Waveform and summary geometry, so saved values move the landscape instead of rendering at the baseline. *(UI 3.11.44; automated checks passed.)*
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.

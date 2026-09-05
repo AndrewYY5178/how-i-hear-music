@@ -3025,3 +3025,47 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Track rating controls, album completion rules, score storage format, responsive geometry, and accessibility semantics remain unchanged.
+
+## Version 3.11.43 — Reflect album drafts in the landscape
+
+Implementation commit: pending
+
+### Evidence
+
+- The Album detail page built its Listening Landscape only from completed rating-session records or canonical track scores. Scores entered into an in-progress album draft could therefore leave the waveform on the baseline until the completion flow was submitted.
+
+### Decision
+
+- Read the album draft store alongside Journal history when composing Album detail tracks.
+- Prefer finite saved ratings, then finite track scores, then the latest draft value; numeric strings are accepted as valid scores for rendering.
+
+### Rejected
+
+- Do not fabricate scores for tracks without a saved or drafted Overall value.
+- Do not change the final album completion requirement or score storage format.
+
+### Intentionally unchanged
+
+- Waveform geometry, score controls, Album Overall input, Journal entries, and all non-Album detail landscapes remain unchanged.
+
+## Version 3.11.44 — Feed score values into the landscape renderer
+
+Implementation commit: pending
+
+### Evidence
+
+- Album detail tracks store scores under `track.scores.overall`, while the waveform renderer reads the flat `track.overall` field. The result was a baseline line and baseline node positions even when the track list displayed saved scores.
+
+### Decision
+
+- Normalize confirmed Album detail and comparison tracks to a flat `overall` value before rendering Waveform and summary geometry.
+- Keep draft and saved-score precedence intact, including values entered but not yet submitted as a completed album.
+
+### Rejected
+
+- Do not alter score values, album rating storage, or the waveform coordinate formula.
+- Do not hide the track list or require a second save to make the landscape reflect the same data.
+
+### Intentionally unchanged
+
+- Track rating flow, direct album score inputs, album completion validation, visual styling, and all non-album waveform consumers remain unchanged.

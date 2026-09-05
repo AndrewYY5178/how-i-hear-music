@@ -146,9 +146,11 @@ assert.match(archiveSource, /openTarget = null; openTimer = null; \}, 180\);/);
 localStorage.setItem('how-i-hear-music:cloud-sync-session:v1', JSON.stringify({ token: 'fixture', user: { id: 1, login: 'fixture' } }));
 localStorage.setItem('how-i-hear-music:album-draft:charli-xcx-brat:overall', '10');
 localStorage.setItem('how-i-hear-music:imported-albums:v1', JSON.stringify([{ id: 'album_fixture', title: 'Fixture Album', artist: 'Fixture Artist', tracks: [{ id: 'track_fixture', title: 'Fixture Track', artist: 'Fixture Artist', trackNumber: 1 }] }]));
+localStorage.setItem('how-i-hear-music:album-draft:album_fixture', JSON.stringify([{ trackId: 'track_fixture', title: 'Fixture Track', overall: 8.5 }]));
 const albumRateMarkup = rating.rateAlbum('album_fixture');
 assert.match(albumRateMarkup, /class="album-score-input"/);
 assert.match(albumRateMarkup, /data-album-input/);
+assert.match(archive.archiveAlbumDetail('album_fixture'), /M24 79/);
 localStorage.setItem('how-i-hear-music:imported-albums:v1', JSON.stringify([
   { id: '单依纯-纯妹妹', title: '纯妹妹', artist: '单依纯' },
   { id: '单依纯-勇敢额度', title: '勇敢额度', artist: '单依纯' },
