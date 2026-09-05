@@ -2061,3 +2061,31 @@ Implementation commit: `4b40942`
 
 - Application version remains `0.9.15`; this release advances the UI/cache identifier to 3.10.4.
 - Ratings, notes, Inbox, Memory, account data, synchronization semantics and existing route structure remain unchanged.
+
+## Version 3.11.0 — Search belongs to the Archive
+
+Implementation commit: `db24530`
+
+### Evidence
+
+- The owner-approved [button and function relationship diagram](https://www.figma.com/board/04BSlUo6hbYawuDeLARWAl/How-I-Hear-Music-%E2%80%94-%E6%8C%89%E9%94%AE%E4%B8%8E%E5%8A%9F%E8%83%BD%E5%85%B3%E7%B3%BB%E5%9B%BE?node-id=0-1) treats Archive as the browsing and retrieval hub rather than giving Search equal top-level weight.
+- Search was exposed in the desktop masthead, the narrow menu and mobile More while its results already opened Archive records or evidence attached to those records. The repeated entry points added navigation weight without adding another distinct workflow.
+
+### Decision
+
+- Remove Search from the desktop masthead, narrow navigation and mobile More panel. Mobile More now contains only Import and Journal.
+- Place the existing complete local index directly on the Archive landing page, before the Track / Album / Artist gates. Keep the current typesetter-style underline, grouped results and keyboard-accessible controls.
+- Preserve Track, Album, Artist, Journal, Album Note, Memory and Taste DNA search coverage. Queries remain browser-local and are never sent to the Worker.
+- Normalize every legacy `/search?q=…` navigation to `/archive?q=…`, including project-site route recovery, so old bookmarks continue to work without retaining a second page.
+- Advance the application to `0.9.16` and the UI/cache identifier to 3.11.0. Verify 1440 / 1024 / 390px, English and Simplified Chinese, with zero horizontal overflow.
+
+### Rejected
+
+- Do not keep a hidden or secondary Search link in the masthead merely for familiarity; Archive is now its single visible home.
+- Do not reduce the index to Tracks alone, duplicate the search field on every Archive subpage, or delete the old route without a redirect.
+- Do not redesign search results into cards or introduce another modal, drawer or bottom sheet for this consolidation.
+
+### Intentionally unchanged
+
+- Archive Track filtering remains a focused control on the Track list and is separate from the cross-record Archive index.
+- Search ranking, result grouping, local data, ratings, notes, account synchronization, Import, Journal and Taste routes remain unchanged.
