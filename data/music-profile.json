@@ -155,6 +155,7 @@
       "title": "纯妹妹",
       "artist": "单依纯",
       "status": "CONFIRMED",
+      "themeColor": "#ca5a72",
       "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/66/a5/ad/66a5ad30-4106-a2e5-3400-54983e51bfdf/4896004765894.jpg/600x600bb-60.jpg",
       "coverSource": "Apple Music"
     },
@@ -242,6 +243,78 @@
       "status": "CONFIRMED",
       "coverUrl": "https://images.universal-music.de/img/assets/478/478038/4/1200/ariana-grande-thank-u-next-cover.jpg",
       "coverSource": "Universal Music"
+    },
+    {
+      "title": "Lover",
+      "artist": "Taylor Swift",
+      "status": "CONFIRMED",
+      "releaseDate": "2019-08-23",
+      "themeColor": "#d895b4",
+      "coverUrl": "https://coverartarchive.org/release/69e2a04e-46c9-40b7-9e99-fe58a0332ec2/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "Graduation",
+      "artist": "Kanye West",
+      "status": "CONFIRMED",
+      "releaseDate": "2007-09-11",
+      "themeColor": "#c778ad",
+      "coverUrl": "https://coverartarchive.org/release/12c41d35-eb0e-4a9f-8bef-caf943a06ada/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "Golden Hour",
+      "artist": "Kacey Musgraves",
+      "status": "CONFIRMED",
+      "releaseDate": "2018-03-30",
+      "themeColor": "#73aec4",
+      "coverUrl": "https://coverartarchive.org/release/cd0e5972-4e9f-44a8-aea2-5466f5eed457/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "Un Verano Sin Ti",
+      "artist": "Bad Bunny",
+      "status": "CONFIRMED",
+      "releaseDate": "2022-05-06",
+      "themeColor": "#e19a62",
+      "coverUrl": "https://coverartarchive.org/release/aded3f90-b758-451a-aad7-711d5985b05f/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "BRAT",
+      "artist": "Charli xcx",
+      "status": "CONFIRMED",
+      "releaseDate": "2024-06-07",
+      "themeColor": "#9aaa31",
+      "coverUrl": "https://coverartarchive.org/release/9f7a7091-22b3-4fc7-b9aa-ebbed8ca5518/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "Loud",
+      "artist": "Rihanna",
+      "status": "CONFIRMED",
+      "releaseDate": "2010-11-16",
+      "themeColor": "#c64e43",
+      "coverUrl": "https://coverartarchive.org/release/63fb70a1-1fc9-4cb5-8406-e44a9e1f6213/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "Mylo Xyloto",
+      "artist": "Coldplay",
+      "status": "CONFIRMED",
+      "releaseDate": "2011-10-24",
+      "themeColor": "#4b9e9d",
+      "coverUrl": "https://coverartarchive.org/release/08ffff44-2226-4f39-9fb7-559bf30d1729/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
+    },
+    {
+      "title": "72 Seasons",
+      "artist": "Metallica",
+      "status": "CONFIRMED",
+      "releaseDate": "2023-04-14",
+      "themeColor": "#d3ae31",
+      "coverUrl": "https://coverartarchive.org/release/5984bc6c-5950-4850-9bd0-f3ca0621e8d6/front-500.jpg",
+      "coverSource": "Cover Art Archive · MusicBrainz"
     }
   ],
   "notRequirements": {

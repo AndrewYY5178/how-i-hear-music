@@ -2865,3 +2865,26 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Score eligibility, draw/reveal timing, radar geometry, responsive layout, accessibility labels and all non-Featured Shape radar instances remain unchanged.
+
+## Version 3.11.36 — Home showcase album deck
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner supplied a fixed nine-album visual brief for the Home showcase, including the intended color families: rainbow red/pink/cyan/blue, pink/blue, pink/purple/orange, sky/coral, tropical tones, acid green, pure red, fluorescent multicolor and bright yellow/black.
+- The previous signed-out deck drew from the broader canonical archive, so it could omit the requested visual references and use unrelated albums on each load.
+
+### Decision
+
+- Add the nine requested albums to the canonical archive with release dates, stable public cover sources and explicit theme-color fallbacks. Home's signed-out sample pool now uses exactly these nine records; signed-in imported-album progression remains unchanged.
+- Prefer Cover Art Archive release images for the new international records and retain the existing Apple Music image for `纯妹妹`. Use the stored theme color for the sleeve/disc until runtime artwork sampling can provide a more precise color.
+
+### Rejected
+
+- Do not download or commit third-party cover bitmaps; the repository stores source URLs and fallback color metadata only.
+- Do not replace a signed-in user's imported deck with the showcase records once the user's own deck reaches capacity.
+
+### Intentionally unchanged
+
+- Carousel timing, record geometry, Archive browsing behavior, score storage, Featured Shape eligibility and all account/sync behavior remain unchanged.

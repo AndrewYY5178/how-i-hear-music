@@ -156,6 +156,8 @@ UI 3.11.34 为 Home 增加登录状态感知的专辑展示：未登录时使用
 
 UI 3.11.35 将 `FEATURED SHAPE` 的四个分数移到对应维度名称的外侧，并按上下左右方向对齐；评分页与详情页的雷达图标注位置保持不变。
 
+UI 3.11.36 将 Home 未登录样板专辑固定为单依纯《纯妹妹》、Taylor Swift《Lover》、Kanye West《Graduation》、Kacey Musgraves《Golden Hour》、Bad Bunny《Un Verano Sin Ti》、Charli xcx《BRAT》、Rihanna《Loud》、Coldplay《Mylo Xyloto》和 Metallica《72 Seasons》。封面使用可公开访问的 Apple Music 或 Cover Art Archive 正式发行图，样板同时记录主题色作为图片取色失败时的稳定回退；登录后的用户专辑替换逻辑保持不变。
+
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`

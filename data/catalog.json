@@ -243,7 +243,6 @@
       "primaryArtistId": "david-tao",
       "artistName": "陶喆",
       "coverReference": "https://i.scdn.co/image/ab67616d0000b27365b1e21638ebf5f08910eea2",
-      "coverFallback": "https://m.360buyimg.com/mobilecms/s750x750_14169/8a8fdf66-813f-45ad-bc7e-b46da1a9db1a.jpg%21q80.jpg",
       "providerIds": {}
     },
     {
@@ -284,6 +283,70 @@
       "primaryArtistId": "ariana-grande",
       "artistName": "Ariana Grande",
       "coverReference": "https://images.universal-music.de/img/assets/478/478038/4/1200/ariana-grande-thank-u-next-cover.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000014",
+      "title": "Lover",
+      "primaryArtistId": "taylor-swift",
+      "artistName": "Taylor Swift",
+      "coverReference": "https://coverartarchive.org/release/69e2a04e-46c9-40b7-9e99-fe58a0332ec2/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000015",
+      "title": "Graduation",
+      "primaryArtistId": null,
+      "artistName": "Kanye West",
+      "coverReference": "https://coverartarchive.org/release/12c41d35-eb0e-4a9f-8bef-caf943a06ada/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000016",
+      "title": "Golden Hour",
+      "primaryArtistId": null,
+      "artistName": "Kacey Musgraves",
+      "coverReference": "https://coverartarchive.org/release/cd0e5972-4e9f-44a8-aea2-5466f5eed457/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000017",
+      "title": "Un Verano Sin Ti",
+      "primaryArtistId": null,
+      "artistName": "Bad Bunny",
+      "coverReference": "https://coverartarchive.org/release/aded3f90-b758-451a-aad7-711d5985b05f/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000018",
+      "title": "BRAT",
+      "primaryArtistId": null,
+      "artistName": "Charli xcx",
+      "coverReference": "https://coverartarchive.org/release/9f7a7091-22b3-4fc7-b9aa-ebbed8ca5518/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000019",
+      "title": "Loud",
+      "primaryArtistId": null,
+      "artistName": "Rihanna",
+      "coverReference": "https://coverartarchive.org/release/63fb70a1-1fc9-4cb5-8406-e44a9e1f6213/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000020",
+      "title": "Mylo Xyloto",
+      "primaryArtistId": null,
+      "artistName": "Coldplay",
+      "coverReference": "https://coverartarchive.org/release/08ffff44-2226-4f39-9fb7-559bf30d1729/front-500.jpg",
+      "providerIds": {}
+    },
+    {
+      "id": "album_000021",
+      "title": "72 Seasons",
+      "primaryArtistId": null,
+      "artistName": "Metallica",
+      "coverReference": "https://coverartarchive.org/release/5984bc6c-5950-4850-9bd0-f3ca0621e8d6/front-500.jpg",
       "providerIds": {}
     }
   ],
@@ -1269,6 +1332,54 @@
     {
       "id": "release_000013",
       "albumId": "album_000013",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000014",
+      "albumId": "album_000014",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000015",
+      "albumId": "album_000015",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000016",
+      "albumId": "album_000016",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000017",
+      "albumId": "album_000017",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000018",
+      "albumId": "album_000018",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000019",
+      "albumId": "album_000019",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000020",
+      "albumId": "album_000020",
+      "releaseType": "album",
+      "providerIds": {}
+    },
+    {
+      "id": "release_000021",
+      "albumId": "album_000021",
       "releaseType": "album",
       "providerIds": {}
     }

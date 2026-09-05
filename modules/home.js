@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.35";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.36";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -23,6 +23,17 @@ const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record
 const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 const localCoverOverrideKey = "how-i-hear-music:cover-overrides-local:v1";
 const homeAlbumCapacity = 9;
+const homeSampleAlbumKeys = new Set([
+  "单依纯-纯妹妹",
+  "taylor-swift-lover",
+  "kanye-west-graduation",
+  "kacey-musgraves-golden-hour",
+  "bad-bunny-un-verano-sin-ti",
+  "charli-xcx-brat",
+  "rihanna-loud",
+  "coldplay-mylo-xyloto",
+  "metallica-72-seasons",
+]);
 const albumKey = (album) => album.id || slug(`${album.artist}-${album.title}`);
 const coverSourcesForAlbum = (album) => {
   const id = album.id || slug(`${album.artist}-${album.title}`);
@@ -39,7 +50,7 @@ const homeAlbums = () => {
   const imported = importedAlbums();
   const importedKeys = new Set(imported.map(albumKey));
   const own = albums.filter((album) => importedKeys.has(albumKey(album)) && coverForAlbum(album));
-  const samples = albums.filter((album) => !importedKeys.has(albumKey(album)) && coverForAlbum(album));
+  const samples = albums.filter((album) => homeSampleAlbumKeys.has(albumKey(album)) && !importedKeys.has(albumKey(album)) && coverForAlbum(album));
   const scoredSamples = samples.filter((album) => albumScore(album) !== null);
   const unscoredSamples = samples.filter((album) => albumScore(album) === null);
   if (!syncSession()?.token || !own.length) return shuffled([...scoredSamples, ...unscoredSamples]).slice(0, homeAlbumCapacity);
@@ -57,7 +68,8 @@ const recordMarkup = (album, index) => {
   const { primary: coverUrl, alternate } = coverSourcesForAlbum(album);
   const score = albumScore(album);
   const fallbackTone = fallbackCoverTone(`${album.artist}-${album.title}`);
-  return `<a class="home-record" data-home-record data-home-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" draggable="false" src="${safe(coverUrl)}" alt=""><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span></span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b>${score === null ? "" : `<strong>${rating(score)}</strong>`}</span></a>`;
+  const recordColor = album.themeColor || fallbackTone;
+  return `<a class="home-record" data-home-record data-home-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${recordColor};--sleeve-edge-color:${recordColor}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" draggable="false" src="${safe(coverUrl)}" alt=""><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span></span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b>${score === null ? "" : `<strong>${rating(score)}</strong>`}</span></a>`;
 };
 const shapeMarkup = (track, index) => `<article class="featured-shape-slide${index === 0 ? " active" : ""}" data-home-shape-slide${index === 0 ? "" : " hidden"}><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(track.title)}</h2><p>${safe(track.artist)}</p></div><div class="featured-shape-visual">${radar(track.scores, { className: "home-radar ink-draw-radar", showValues: true, valuePlacement: "outside" })}</div></article>`;
 

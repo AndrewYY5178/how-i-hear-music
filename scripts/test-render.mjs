@@ -49,6 +49,7 @@ assert.doesNotMatch(blockedAlbum, /Track 01|7\.6/);
 
 const homeMarkup = home.home();
 assert.doesNotMatch(homeMarkup, /READ THE METHOD|EXPLORE TRACK|EXPLORE ALBUM|ENTER THE ARCHIVE|ABOUT THIS ARCHIVE|card-link/);
+['纯妹妹', 'Lover', 'Graduation', 'Golden Hour', 'Un Verano Sin Ti', 'BRAT', 'Loud', 'Mylo Xyloto', '72 Seasons'].forEach((title) => assert.match(homeMarkup, new RegExp(`<b>${title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}</b>`), `Home showcase is missing ${title}`));
 const mergedTaste = taste.tasteHome();
 assert.match(mergedTaste, /taste-merged-index/);
 assert.match(mergedTaste, /LISTENING JOURNAL/);
@@ -135,6 +136,7 @@ assert.match(homeSource, /\}, 180\);/);
 assert.match(archiveSource, /openTimer = window\.setTimeout\(\(\) => \{ card\.classList\.add\("record-is-open"\)/);
 assert.match(archiveSource, /openTarget = null; openTimer = null; \}, 180\);/);
 localStorage.setItem('how-i-hear-music:cloud-sync-session:v1', JSON.stringify({ token: 'fixture', user: { id: 1, login: 'fixture' } }));
+localStorage.setItem('how-i-hear-music:album-draft:charli-xcx-brat:overall', '10');
 assert.match(home.home(), /<strong>10<\/strong>/, 'Signed-in Home does not show a confirmed album score');
 assert.doesNotMatch(imports.importHome(), /METADATA SERVICE|Hosted adapter configured|Local metadata adapter ready/);
 location.hostname = 'example.github.io';
