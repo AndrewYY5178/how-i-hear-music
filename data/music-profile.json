@@ -155,6 +155,7 @@
       "title": "纯妹妹",
       "artist": "单依纯",
       "status": "CONFIRMED",
+      "showcaseOnly": true,
       "themeColor": "#ca5a72",
       "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/66/a5/ad/66a5ad30-4106-a2e5-3400-54983e51bfdf/4896004765894.jpg/600x600bb-60.jpg",
       "coverSource": "Apple Music"

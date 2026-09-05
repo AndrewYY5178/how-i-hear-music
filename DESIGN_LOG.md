@@ -2959,3 +2959,26 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Carousel controls, record geometry, local cover overrides, archive visibility rules, and user-owned album ordering remain unchanged.
+
+## Version 3.11.40 — Make the full showcase deck non-archival
+
+Implementation commit: pending
+
+### Evidence
+
+- `纯妹妹` was the only one of the nine Home showcase records still marked as a regular canonical album because it predated the showcase deck.
+- That left one presentation sample visible in an unimported user's Album index, while the other eight samples were correctly hidden.
+
+### Decision
+
+- Mark all nine Home showcase records, including `纯妹妹`, as `showcaseOnly`.
+- Keep the shared visibility gate: an item appears in Archive and analysis routes only after a matching local import exists.
+
+### Rejected
+
+- Do not remove `纯妹妹` from the canonical source; Home still needs a stable sample and direct detail routes remain compatible.
+- Do not hide a showcase record after it has been imported by the user.
+
+### Intentionally unchanged
+
+- Signed-out Home ordering, signed-in capacity switching, cover fallback behavior, ratings, track records, and sync data remain unchanged.

@@ -87,7 +87,7 @@ localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-sweetener:overa
 localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-yours-truly:overall', '8');
 const albumIndex = archive.archiveAlbums();
 assert.ok(albumIndex.indexOf('ariana-grande-sweetener') < albumIndex.indexOf('ariana-grande-yours-truly'), 'Album index does not default to album rating high–low');
-['Lover', 'Graduation', 'Golden Hour', 'Un Verano Sin Ti', 'BRAT', 'Loud', 'Mylo Xyloto', '72 Seasons'].forEach((title) => assert.doesNotMatch(albumIndex, new RegExp(`<h3>${title}`), `Showcase-only album leaked into the Archive: ${title}`));
+['纯妹妹', 'Lover', 'Graduation', 'Golden Hour', 'Un Verano Sin Ti', 'BRAT', 'Loud', 'Mylo Xyloto', '72 Seasons'].forEach((title) => assert.doesNotMatch(albumIndex, new RegExp(`<h3>${title}`), `Showcase-only album leaked into the Archive: ${title}`));
 assert.doesNotMatch(albumIndex, /Open album|OPEN ALBUM/);
 assert.match(albumIndex, /<a class="album-card"[^>]+data-route/);
 assert.match(albumIndex, /album-card-disc/);
