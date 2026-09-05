@@ -1008,6 +1008,24 @@ body::before {
   font-weight:700;
 }
 
+/* UI 3.11.47 — keep Home artwork in its source colors; depth comes from geometry. */
+.home-record,
+.home-record[data-record-position="left-1"],
+.home-record[data-record-position="right-1"],
+.home-record[data-record-position="left-2"],
+.home-record[data-record-position="right-2"],
+.home-record[data-record-position="left-3"],
+.home-record[data-record-position="right-3"],
+.home-record[data-record-position="left-4"],
+.home-record[data-record-position="right-4"] {
+  filter:none !important;
+}
+
+.home-record-sleeve img,
+.home-record[data-record-position="front"] .home-record-sleeve img {
+  filter:none !important;
+}
+
 /* UI 3.11.22 — make the 50% side-record floor win over earlier responsive rules. */
 @media (min-width:761px) {
   .home-record[data-record-position="left-3"],.home-record[data-record-position="right-3"] { opacity:.52 !important; }

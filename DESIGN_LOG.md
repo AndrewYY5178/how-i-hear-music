@@ -3112,3 +3112,24 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Score values, validation, storage, animations, layout geometry and the paper / ink / red palette remain unchanged.
+
+## Version 3.11.47 — Return Home artwork to source color
+
+### Evidence
+
+- Home applied `saturate(.76)`, `sepia(.08)` and additional position-based saturation reductions to album sleeves, which made vivid covers look uniformly aged.
+- The requested physical depth is already communicated by Cover Flow scale, perspective, offset and record lighting; color grading is not needed to establish hierarchy.
+
+### Decision
+
+- Remove saturation and sepia filters from every Home sleeve and from all side-positioned Home records.
+- Keep depth cues in geometry, shadows and the extracted record-color variable, so the cover image remains faithful while the vinyl still feels physical.
+
+### Rejected
+
+- Do not alter Archive or Import artwork treatment in this version; those surfaces have separate metadata and preview goals.
+- Do not increase contrast or add a new color overlay to compensate for the removed vintage wash.
+
+### Intentionally unchanged
+
+- Artwork URLs, fallback behavior, theme-color extraction, carousel timing, opacity, layout and stored user data remain unchanged.
