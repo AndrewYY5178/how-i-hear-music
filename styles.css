@@ -1513,6 +1513,9 @@ body[data-module="rate"] .mobile-tab { color:var(--ink); }
 .album-card-terrain { display:flex; flex-wrap:wrap; gap:3px 10px; margin-top:10px; color:var(--muted); font-size:7px; line-height:1.45; }
 .album-card-terrain span { white-space:nowrap; }
 .album-card>p { margin:5px 0 2px; }
+.album-card-terrain { margin-top:8px; gap:16px; border-bottom:0; color:var(--ink); font-size:11px; line-height:1.25; letter-spacing:.03em; }
+.album-card-terrain .album-card-rating { color:var(--red); }
+.album-card-terrain .album-card-release { color:var(--ink); }
 .album-card-record { position:relative; width:100%; aspect-ratio:1; perspective:800px; transition:transform 1800ms cubic-bezier(.16,.72,.14,1); transform-style:preserve-3d; }
 .album-card-cover { position:absolute; inset:0; z-index:2; overflow:visible; perspective:800px; background:#d2c6b2; box-shadow:none; transition:transform 1800ms cubic-bezier(.16,.72,.14,1),box-shadow 900ms ease; transform-origin:50% 100%; transform-style:preserve-3d; }
 .album-card-cover::after { content:""; position:absolute; z-index:4; inset:0; border:1px solid rgba(242,237,227,.18); pointer-events:none; transform:translateZ(2px); }
