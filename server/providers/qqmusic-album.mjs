@@ -85,6 +85,7 @@ export const normalizeQQAlbum = (payload, requestedId = "") => {
   }).filter((track) => track.title && track.providerTrackId);
   if (!tracks.length) throw new Error("Album found, but track data is unavailable.");
   tracks.sort((a, b) => a.discNumber - b.discNumber || a.trackNumber - b.trackNumber || a.sourceIndex - b.sourceIndex);
+  const coverUrl = providerAlbumId ? `https://y.gtimg.cn/music/photo_new/T002R800x800M000${encodeURIComponent(providerAlbumId)}.jpg` : null;
   return {
     provider: "qqmusic",
     providerAlbumId,
@@ -94,7 +95,8 @@ export const normalizeQQAlbum = (payload, requestedId = "") => {
     artistProviderId: String(album.singermid || tracks[0].artistProviderId || "") || null,
     releaseDate: /^\d{4}-\d{2}-\d{2}$/.test(album.aDate || "") ? album.aDate : null,
     year: /^\d{4}/.test(album.aDate || "") ? Number(String(album.aDate).slice(0, 4)) : null,
-    artworkUrl: null,
+    artworkUrl: coverUrl,
+    coverUrl,
     externalUrl: `https://y.qq.com/n/ryqq/albumDetail/${encodeURIComponent(providerAlbumId)}`,
     trackCount: tracks.length,
     tracks: tracks.map(({ sourceIndex, ...track }) => track),

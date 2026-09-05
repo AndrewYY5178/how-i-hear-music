@@ -1636,3 +1636,248 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Account data, authentication, automatic sync, cache contents, navigation, layout, typography and all music records remain unchanged.
+
+## Version 3.9.0 — The living newspaper
+
+Implementation commit: pending
+
+### Evidence
+
+- The selected direction combines the readable 3D cover rotation of [Retro Music Player](https://60fps.design/shots/retro-music-player-ipod-scroll-interaction), Record Room's treatment of albums as tangible objects, and Clairvoyant Design's record-sliding-from-sleeve interaction.
+- Owner-approved generated styleframes established the target composition for Home, Archive, Rate, Taste, Import and Journal: warm printed paper, large serif hierarchy, compact mono evidence and a few illustrations that appear to move inside an otherwise stable page.
+
+### Decision
+
+- Treat motion as evidence on paper coming alive: Currently Listening rotates a slow stack of physical sleeves; Listening Shape draws once in red ink; Album Landscape grows once from left to right. Archive covers lift only on intent, Import reveals a detected album as a sleeve, and analytical charts enter without moving surrounding copy.
+- Keep the existing routes, page hierarchy, controls, local data boundary and module workflows. The styleframes are art direction, not replacement information architecture, and their invented music records never enter the application.
+- Preserve the original module personalities inside one newspaper family: dense Archive catalogue, olive Rate studio, editorial Taste, minimal Import and chronological Journal. Motion stops on interaction and becomes static under `prefers-reduced-motion`.
+
+### Rejected
+
+- Do not reproduce Record Room's navigable 3D environment, the reference mockups' ornamental stars, compass marks, quills, fake dates or dense decorative rules. They would add performance cost and visual noise without improving the archive.
+- Do not reintroduce the Journal overview track list or extra Annual Index rules; both were deliberately removed in earlier versions.
+
+### Intentionally unchanged
+
+- GitHub authentication, automatic sync, metadata provenance, rating semantics, Import review, Archive identity and all browser-local ratings, notes, Inbox, Memory and recovery data remain unchanged.
+
+## Version 3.9.1 — Cover Flow as the moving headline
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner rejected the first four-cover rotation as too slow, too small and insufficiently physical. The requested reference is the classic iPod-style Cover Flow behavior documented by [60fps.design](https://60fps.design/shots/retro-music-player-ipod-scroll-interaction): the centered cover snaps flat and grows, adjacent covers rotate inward, and identity copy updates with the active object.
+- The canonical album archive already contains confirmed HTTPS cover references. Using those covers is both more truthful and more visually specific than inventing typographic sleeves for tracks whose album identity is still unconfirmed.
+
+### Decision
+
+- Fill the Home stage from the complete confirmed-cover album collection. Keep nine covers visible across desktop when space permits, reduce the visible depth on phone, and retain every other album in the rotating sequence. Advance every 2.6 seconds and support previous/next, adjacent-cover selection, horizontal trackpad scrolling and touch dragging.
+- Make the center cover flat, larger and sharply shadowed while progressively rotating, desaturating and lowering the outer covers. Shadows belong only to the moving record objects and detected Import object; the printed page, navigation and content groups remain flat.
+- Cycle six real saved Track ratings through Featured Shape. Each change restarts the red outline draw so the animation is observable rather than a one-time entrance effect. Respect reduced-motion by holding both sequences still.
+- Remove the short red rule beneath every module page heading. In QQ Album Import, show a quiet empty sleeve mechanism and explain that the real cover/reveal appears only after a valid public album is detected.
+
+### Rejected
+
+- Do not assign a canonical album cover to a track merely because the artist matches; many canonical tracks still lack confirmed album metadata. The Home carousel therefore links honestly to album records.
+- Do not add shadows to cards, text, controls or page containers, and do not intercept normal vertical scrolling to operate Cover Flow. These choices would turn a focused physical illusion into generic skeuomorphism or obstruct reading.
+
+### Intentionally unchanged
+
+- Routes, Archive contents, ratings, Import confirmation, account sync, local storage keys and every saved note or listening record remain unchanged.
+
+## Version 3.9.2 — Imported artwork continuity
+
+Implementation commit: pending
+
+### Finding
+
+- The QQ Album result renderer expected `album.coverUrl`, but the provider normalized every public album with `artworkUrl: null`. The sleeve reveal therefore could not show a real cover even after a successful detection.
+
+### Decision
+
+- Derive the documented QQ Music public album image reference from the resolved album identity, expose it as both `coverUrl` and `artworkUrl`, and preserve that HTTPS reference when the reviewed album enters Archive. The application continues to reference the remote image; it does not upload or embed a copy.
+- Keep the empty pre-detection sleeve intentionally neutral. It explains where the result will appear without pretending that an unknown album has already been identified.
+
+### Intentionally unchanged
+
+- Detection still requires a public QQ Music album link, the preview still precedes every local change, and `IMPORT ALBUM` remains the explicit commit step.
+
+## Version 3.9.3 — Physical records, quieter ink
+
+Implementation commit: pending
+
+### Evidence
+
+- The retained Cover Flow reference establishes a clear spatial hierarchy: the centered sleeve is the active object while angled neighbors provide sequence and depth. The owner additionally asked for the restrained material thickness seen in Recent-style album carousels, without changing the archive's flat editorial surface.
+- Owner testing exposed two motion problems in the first preview: focus left the carousel timer paused after center interaction, and the fast Radar trace read as a generic reveal rather than a hand-drawn mark.
+
+### Decision
+
+- Reveal a record only for the centered Home sleeve. Sample the artwork in a separate CORS-safe canvas when the image host permits it, then use that color for the record; retain a deterministic muted album-key color when a host blocks pixel access.
+- Give angled sleeves a narrow paperboard edge and direction-aware object shadow. The depth belongs to the physical sleeve and record only; the surrounding newspaper layout remains flat.
+- Slow the Radar outline to 2.8 seconds, round the ink joins, repeat the render for each real saved Track shape, and crossfade the whole Featured Shape frame between records. Remove the unrelated red diagonal annotation beside the Radar.
+- Make each Archive album entry one direct link. On pointer hover or keyboard focus, its cover shifts aside and reveals the corresponding theme-colored record; remove the redundant `OPEN ALBUM` control.
+- Show an authenticated account's confirmed album score beside the centered Home title only when a saved album score exists. Never infer or average a missing album score.
+- Resume the Home sequence after center click or double-click while retaining touch drag, side-cover selection, previous/next controls and reduced-motion behavior.
+
+### Rejected
+
+- Do not show records behind every neighboring cover, add depth to ordinary cards, or use glossy gradients and floating containers. Those treatments would make the physical cue repetitive and weaken the editorial hierarchy.
+- Do not make artwork sampling a rendering dependency. Cross-origin artwork must remain visible even when its host disallows canvas access.
+
+### Intentionally unchanged
+
+- Routes, random album order, account authentication, cloud sync, Archive sorting, rating semantics, Import confirmation and all browser-local ratings, notes, Inbox, Memory and recovery data remain unchanged.
+
+## Version 3.9.4 — Connected sleeves and unoutlined vinyl
+
+Implementation commit: pending
+
+### Evidence
+
+- [Clairvoyant Design's Online Vinyl Store](https://www.clairvoyantdesign.ch/projects/online-vinyl-store) describes the record continuously sliding in and out of its cover as available horizontal space changes. Its project animation treats the disc as one near-cover-sized physical surface, with shadow and quiet grooves carrying the form rather than a hard circular outline.
+- Owner review found that the first thickness attempt looked assembled from unrelated beige strips: it was too thick, did not meet at the corners, and ignored the artwork color. The center/neighbor size difference also remained too restrained for the intended Cover Flow hierarchy.
+
+### Decision
+
+- Increase the center-to-neighbor scale contrast to approximately 2:1 on desktop and tablet, with an even stronger phone hierarchy where side covers must remain legible without competing with the center.
+- Set the visual disc diameter to 98% of the sleeve edge and extend its reveal to 1.8 seconds. Remove the hard outer border and replace the drawn concentric rings with very low-contrast groove texture and a simple spindle label.
+- Sample two colors from every CORS-readable artwork: a saturation-weighted overall tone for the vinyl and a perimeter-only tone for the sleeve edge. When pixel access is blocked, both fall back to the same deterministic album-key tone.
+- Replace the disconnected strip-and-shadow construction with one complete artwork-colored backing plane offset by 4px right/down, or left/down for left-facing covers. This keeps the top, side and bottom thickness connected through rotation while limiting the apparent depth.
+- Apply the same record surface and connected sleeve construction to Archive hover/focus reveals so Home and Archive describe one physical object system.
+
+### Rejected
+
+- Do not copy Clairvoyant's white commerce shell, turntable interface, navigation, typography or black-only vinyl. The useful evidence is the physical relationship and continuous reveal; this archive retains its paper palette and artwork-derived record colors.
+- Do not simulate thickness with beige borders, multiple unconnected strips, hard strokes or deep extrusions. Those details call attention to CSS construction instead of the record.
+
+### Intentionally unchanged
+
+- Cover sources, album routes, automatic rotation interval, Archive ordering, account scores, reduced-motion behavior and all browser-local or synchronized music data remain unchanged.
+
+## Version 3.9.5 — Pressed grooves and moving light
+
+Implementation commit: pending
+
+### Evidence
+
+- [Clairvoyant Design's Online Vinyl Store](https://www.clairvoyantdesign.ch/projects/online-vinyl-store) lets the vinyl surface remain physically legible while it slides from the sleeve: fine grooves, directional light and depth describe the object without a hard outer stroke.
+- Current music-player interfaces also rely on material cues that survive at thumbnail scale, but this archive needs quieter reflections so the record does not become a glossy application badge or overpower the artwork.
+
+### Decision
+
+- Build the surface from three restrained layers: fine 5px pressed grooves, one broad directional reflection sector and shallow inset light/shade. Because these layers belong to the disc, they rotate and travel with it during the 1.8-second reveal.
+- Retain the sampled artwork color beneath the reflection instead of forcing every release onto black vinyl. Keep the center label small and matte so the changing surface remains the primary physical cue.
+- Share the same surface recipe across Home, Archive and Import. The amount of reflection is fixed and quiet enough to remain readable at 390, 1024 and 1440px without producing horizontal overflow.
+
+### Rejected
+
+- Do not add a circular border, chrome rim, neon flare, glass gradient or high-contrast concentric rings. Those treatments make the disc look illustrated or plastic rather than pressed.
+- Do not copy a commercial music platform's brand colors or controls. Only the broadly established physical cues of groove, light and material depth are carried into the existing editorial system.
+
+### Intentionally unchanged
+
+- Cover artwork, record-color sampling, sleeve-edge sampling, navigation, content order, account state, synchronized data and all browser-local ratings and notes remain unchanged.
+
+## Version 3.9.6 — Dominant color and adaptive Archive reveal
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review found that averaging all artwork pixels produced muddy colors that did not correspond to the most visually prevalent cover field, and that an Archive record could be painted underneath the following grid item.
+- The physical cue established by [Clairvoyant Design's Online Vinyl Store](https://www.clairvoyantdesign.ch/projects/online-vinyl-store) depends on the record, sleeve and available horizontal space behaving as one object; clipping or inter-card stacking breaks that relationship.
+
+### Decision
+
+- Replace saturation-weighted averaging with a reusable 64×64 quantized histogram. Similar RGB pixels are grouped into 24-step buckets and the largest bucket becomes the record color; the sleeve edge runs the same process over the image perimeter. Only extreme brightness is constrained for material visibility.
+- Cache every source result in memory so the same artwork is sampled once across Home, Archive and Import. If a remote host blocks canvas access, retain the deterministic muted fallback rather than failing the cover or inventing metadata.
+- Raise the active Archive card above the grid as one stacking context. The record remains behind its own sleeve but now passes visibly above neighboring cards.
+- Adapt the last column at each layout: four-column desktop, three-column tablet and two-column phone. Shift the sleeve farther left and rotate the disc counter-clockwise; tablet and phone keep the disc farther inward so the reveal does not create horizontal overflow.
+
+### Rejected
+
+- Do not maintain hand-authored colors per album or require future users to classify artwork. That cannot scale with imported libraries.
+- Do not clip the album grid to hide overflow, because that would crop the physical record. Do not force every edge card to reveal leftward; moving the sleeve creates room while preserving a consistent record-on-the-right object model.
+
+### Intentionally unchanged
+
+- Album ordering, routes, cover sources, vinyl groove/light treatment, rating data, account state, synchronized data and all browser-local notes remain unchanged.
+
+## Version 3.9.7 — Tighter Archive album captions
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review identified the miniature album-terrain graphic as two redundant grey rules beneath every cover. Its fixed chart height also separated the artwork from the album identity, especially in the two-column phone layout.
+
+### Decision
+
+- Remove the miniature terrain SVG from Archive album cards rather than cosmetically hiding its individual lines. Place rating availability, artist and album title directly after the cover with a 12px cover-to-status gap and a 5px status-to-artist rhythm.
+- Update the page introduction so it no longer promises a compact terrain. Preserve the full album visualizations on detail and rating routes.
+
+### Rejected
+
+- Do not retain an empty chart spacer or replace the lines with another decorative divider. Cover artwork and aligned typography already establish each catalog entry.
+
+### Intentionally unchanged
+
+- Album sorting, direct card navigation, adaptive record reveal, dominant-color extraction, album detail pages and all stored music data remain unchanged.
+
+## Version 3.9.8 — Prominent color and connected sleeve planes
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review showed the failure of raw pixel population: 《纯妹妹》 is visually saturated, but its largest quantized bucket was a neutral highlight and produced grey vinyl.
+- [Color Thief](https://github.com/lokesh/color-thief/blob/master/README.md) exposes palettes and semantic swatches rather than treating one raw RGB mode as universally representative. [Vibrant.js](https://github.com/jariz/vibrant.js/blob/master/src/Vibrant.coffee) explicitly scores saturation, luminance and population when choosing a prominent swatch.
+- [MDN's `transform-style` reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transform-style) establishes that non-leaf descendants must preserve 3D for separately transformed faces to remain in the same space. The [Recent Album Carousel](https://recent.design/i/x97ktju-album-carousel-ui) makes sleeve depth legible through connected faces, while [Clairvoyant Design's Online Vinyl Store](https://www.clairvoyantdesign.ch/projects/online-vinyl-store) keeps sleeve, record and available horizontal space behaving as one object.
+
+### Decision
+
+- Keep the 64×64 quantized histogram, but score eligible color buckets by population, chroma and usable luminance. A color must still occupy a meaningful share of the artwork; a tiny saturated logo cannot defeat the cover field. Neutral population remains the fallback for genuinely monochrome releases.
+- Continue caching one result per artwork URL. 《纯妹妹》 now resolves to a saturated rose record rather than grey, while monochrome Ariana Grande artwork remains neutral.
+- Replace the offset pseudo-plane with a six-plane sleeve: artwork front, full back, left/right edges and top/bottom edges. All edge faces use the sampled perimeter color with restrained light/dark mixing and `preserve-3d`; the depth remains 4px total.
+- Give the centered Home sleeve a three-degree yaw so its physical edge can be seen without turning the cover into a showcase mockup. Use the same 1.8-second transform timing for Archive sleeve and vinyl.
+- At the right edge of every Archive breakpoint, apply the exact same Y and Z rotations to vinyl and sleeve. Their translation differs to create the reveal, but their planes remain parallel throughout the motion.
+- Reduce Featured Shape dwell time from 5.2 seconds to 4.4 seconds. The 2.8-second hand-drawn Radar and 1.08-second crossfade still complete before the following record.
+
+### Rejected
+
+- Do not choose the most saturated pixel regardless of area, hand-author colors per album, or turn every muted cover into colored vinyl.
+- Do not fake depth with a second flat rectangle, disconnected strips, a thick extrusion or a generic drop shadow. Those approaches fail when the object rotates and expose unjoined corners.
+- Do not let the record and sleeve use unrelated perspective angles at the last column merely to fit the viewport.
+
+### Intentionally unchanged
+
+- Artwork sources, routes, album ordering, record diameter, groove/light texture, rating semantics, synchronization and all browser-local music data remain unchanged.
+
+## Version 3.9.9 — One record trajectory at every edge
+
+Implementation commit: pending
+
+### Evidence
+
+- Owner review found that changing the disc and sleeve rotations in the last Archive column made the same object appear to use a different mechanism. The required behavior is one physical reveal across the grid, with only the available page space changing.
+- The legacy AllMusic reference for 陶喆's 1997 self-titled album could render but did not provide a dependable CORS-readable image for color analysis. [Apple Music identifies the same 1997 release](https://music.apple.com/us/album/%E9%99%B6%E5%96%86%E5%90%8D%E5%B0%88%E8%BC%AF/1416149926) and exposes a stable artwork reference whose blue cover can be sampled by the shared palette extractor.
+- Narrow-browser review showed that fixed pixel offsets and controls beneath the centered object made Cover Flow appear cropped and intermittently blocked repeated Prev/Next input.
+
+### Decision
+
+- Give every Archive album the same 34% disc travel, six-degree shared Y plane and record rotation. At the final column of each breakpoint, move the entire record-and-sleeve wrapper left; do not alter the internal reveal geometry.
+- Replace the single canonical 陶喆 artwork reference in both profile and catalog data with the matching Apple Music artwork. Continue using the shared population/chroma extractor, not an album-specific hard-coded color.
+- If a browser-local cover override fails, retry the canonical reference before showing `NO COVER`; update color sampling to the successful source. If both fail, retain the existing explicit typographic fallback without changing stored user data.
+- Match the Import result disc to 98% of the sleeve edge and use the same 1.6-second physical reveal plane. Recompose phone Cover Flow with viewport-relative offsets, fewer distant covers and an overflow-safe stage.
+- Raise Prev/Next into their own interaction layer, exclude them from drag capture and stop their clicks propagating into the stage, so repeated input remains available throughout cover transitions.
+
+### Rejected
+
+- Do not reverse the final-column record, rotate it onto another plane or shrink only that disc. Those tactics fit the viewport by breaking the shared physical model.
+- Do not clear browser-local cover overrides, ratings, notes or synchronized records to repair an unavailable image. Do not hard-code a vinyl color for 陶喆 or any future imported album.
+
+### Intentionally unchanged
+
+- Archive ordering, album routes, stored cover overrides, carousel timing, rating semantics, account sync, notes, Inbox, Memory and recovery data remain unchanged. The larger DRAW / SLIDE / STAMP / SETTLE motion proposal is recorded in `TODO.md` but is not implemented in this version.

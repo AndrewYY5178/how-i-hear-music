@@ -20,6 +20,7 @@ const journal = await import('../modules/journal/pages.js');
 const rating = await import('../modules/rating/pages.js');
 const search = await import('../modules/search/pages.js');
 const taste = await import('../modules/taste/pages.js');
+const stylesheet = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
 localStorage.setItem('how-i-hear-music:journal:v1', JSON.stringify([{ id: 'journal_fixture', type: 'rating', title: 'Fixture', artist: 'Artist', scores: { song: 8, vocal: 8, production: 8, overall: 8 }, at: '2026-08-31T00:00:00.000Z' }]));
 
 const renders = [
@@ -53,6 +54,19 @@ localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-sweetener:overa
 localStorage.setItem('how-i-hear-music:album-draft:ariana-grande-yours-truly:overall', '8');
 const albumIndex = archive.archiveAlbums();
 assert.ok(albumIndex.indexOf('ariana-grande-sweetener') < albumIndex.indexOf('ariana-grande-yours-truly'), 'Album index does not default to album rating high–low');
+assert.doesNotMatch(albumIndex, /Open album|OPEN ALBUM/);
+assert.match(albumIndex, /<a class="album-card"[^>]+data-route/);
+assert.match(albumIndex, /album-card-disc/);
+localStorage.setItem('how-i-hear-music:cover-overrides:v1', JSON.stringify({ '陶喆-陶喆': 'https://invalid.example/missing.jpg' }));
+const fallbackAlbumIndex = archive.archiveAlbums();
+assert.match(fallbackAlbumIndex, /data-cover-fallback-source="https:\/\/is1-ssl\.mzstatic\.com\/image\/thumb\/Music125/);
+localStorage.removeItem('how-i-hear-music:cover-overrides:v1');
+assert.match(stylesheet, /\.album-card:nth-child\(3n\).*\.album-card-record/);
+assert.doesNotMatch(stylesheet, /\.album-card:nth-child\(3n\)[^{]+\.album-card-disc/);
+assert.match(stylesheet, /\.import-album-disc \{ top:1%; right:0; width:98%/);
+assert.match(stylesheet, /\.home-record-controls \{[^}]+z-index:30/);
+localStorage.setItem('how-i-hear-music:cloud-sync-session:v1', JSON.stringify({ token: 'fixture', user: { id: 1, login: 'fixture' } }));
+assert.match(home.home(), /<strong>10<\/strong>/, 'Signed-in Home does not show a confirmed album score');
 assert.doesNotMatch(imports.importHome(), /METADATA SERVICE|Hosted adapter configured|Local metadata adapter ready/);
 location.hostname = 'example.github.io';
 assert.match(imports.importHome(), /METADATA SERVICE NOT CONNECTED/);

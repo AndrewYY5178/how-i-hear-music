@@ -22,7 +22,7 @@ export const radar = (scores = {}, { interactive = false, className = "" } = {})
 };
 
 const y = (score, height, padding) => padding + (height - padding * 2) - ((Math.max(5, Math.min(11, Number(score) || 5)) - 5) / 6) * (height - padding * 2);
-export const waveform = (tracks, { interactive = false } = {}) => {
+export const waveform = (tracks, { interactive = false, className = "" } = {}) => {
   if (!tracks?.length) return `<div class="empty-wave">No confirmed track scores yet.</div>`;
   const width = 680; const height = 180; const padding = 24;
   const coords = tracks.map((track, index) => [padding + ((width - padding * 2) * index) / Math.max(1, tracks.length - 1), y(track.overall, height, padding)]);
@@ -32,8 +32,8 @@ export const waveform = (tracks, { interactive = false } = {}) => {
     return `${result} C${middle} ${prior[1]},${middle} ${current[1]},${current[0]} ${current[1]}`;
   }, "");
   const guides = [5, 7, 9, 11].map((score) => `<line x1="${padding}" x2="${width - padding}" y1="${y(score, height, padding)}" y2="${y(score, height, padding)}"></line>`).join("");
-  const nodes = coords.map((coord, index) => { const raw = tracks[index].overall; const numeric = raw === null || raw === undefined || raw === "" ? NaN : Number(raw); const ariaValue = Number.isFinite(numeric) ? numeric : 5; const title = `<title>${safe(tracks[index].title)}: ${rating(raw)}</title>`; const circles = interactive ? `<circle class="control-hit" data-wave-index="${index}" tabindex="0" role="slider" aria-label="${safe(tracks[index].title)} score${Number.isFinite(numeric) ? "" : ", not rated"}" aria-valuemin="0" aria-valuemax="11" aria-valuenow="${ariaValue}" cx="${coord[0]}" cy="${coord[1]}" r="20">${title}</circle><circle class="control-node" aria-hidden="true" cx="${coord[0]}" cy="${coord[1]}" r="6"></circle>` : `<circle cx="${coord[0]}" cy="${coord[1]}" r="4">${title}</circle>`; return `${circles}<text x="${coord[0]}" y="${height - 5}" text-anchor="middle">${String(index + 1).padStart(2, "0")}</text>`; }).join("");
-  return `<svg class="waveform" viewBox="0 0 ${width} ${height}" role="${interactive ? "group" : "img"}" aria-label="Listening Landscape"><g class="wave-guides">${guides}</g><path d="${path}"></path><g class="wave-points">${nodes}</g></svg>`;
+  const nodes = coords.map((coord, index) => { const raw = tracks[index].overall; const numeric = raw === null || raw === undefined || raw === "" ? NaN : Number(raw); const ariaValue = Number.isFinite(numeric) ? numeric : 5; const title = `<title>${safe(tracks[index].title)}: ${rating(raw)}</title>`; const circles = interactive ? `<circle class="control-hit" data-wave-index="${index}" tabindex="0" role="slider" aria-label="${safe(tracks[index].title)} score${Number.isFinite(numeric) ? "" : ", not rated"}" aria-valuemin="0" aria-valuemax="11" aria-valuenow="${ariaValue}" cx="${coord[0]}" cy="${coord[1]}" r="20">${title}</circle><circle class="control-node" aria-hidden="true" cx="${coord[0]}" cy="${coord[1]}" r="6"></circle>` : `<circle style="--wave-point:${index}" cx="${coord[0]}" cy="${coord[1]}" r="4">${title}</circle>`; return `${circles}<text style="--wave-point:${index}" x="${coord[0]}" y="${height - 5}" text-anchor="middle">${String(index + 1).padStart(2, "0")}</text>`; }).join("");
+  return `<svg class="waveform ${className}" viewBox="0 0 ${width} ${height}" role="${interactive ? "group" : "img"}" aria-label="Listening Landscape"><g class="wave-guides">${guides}</g><path d="${path}"></path><g class="wave-points">${nodes}</g></svg>`;
 };
 
 export const summary = (tracks) => {

@@ -4,6 +4,26 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## Active touch-first App shell and delivery — UI 3.6.0
 
+- [x] Normalize Archive record reveals so every column uses the same sleeve/disc trajectory and edge columns move the complete object inward; replace the blocked Tao Zhe cover with its stable Apple Music reference; retry canonical artwork after a broken local override; correct Import record diameter; recompose Home Cover Flow for narrow viewports; and keep Prev/Next above the moving records for uninterrupted clicks. *(UI 3.9.9; verified at 390 / 1024 / 1440px and with the full test suite.)*
+
+- [x] Replace raw population-only cover color selection with population-and-chroma prominence so colorful artwork does not collapse to grey; rebuild Home, Archive and Import sleeves from connected 3D back/side/top/bottom faces after external reference study. *(UI 3.9.8; verified with 《纯妹妹》 and at 390 / 1024 / 1440px.)*
+
+- [x] Keep right-edge Archive vinyl and sleeves geometrically parallel at every breakpoint, and shorten Featured Shape dwell time without interrupting its hand-drawn animation. *(UI 3.9.8; 5.2s → 4.4s.)*
+
+- [x] Remove the two-line miniature album terrain from Archive cards and tighten the cover-to-metadata rhythm without changing album detail visualizations. *(UI 3.9.7; verified at 390 / 1024 / 1440px.)*
+
+- [x] Replace artwork averaging with a reusable quantized dominant-color extractor; keep Archive vinyl above neighboring albums and make right-edge reveals adapt their sleeve shift and record angle. *(UI 3.9.6; verified at 390 / 1024 / 1440px.)*
+
+- [x] Add a platform-quality vinyl surface to Home, Archive and Import: fine pressed grooves, restrained sector highlights and moving tonal reflections without restoring a hard outer outline or replacing artwork-derived record colors. *(UI 3.9.5; verified at 390 / 1024 / 1440px.)*
+
+- [x] Rebuild the Cover Flow material treatment after owner review: increase center/neighbor scale contrast, match the record diameter to the sleeve, sample the artwork edge for sleeve thickness, slow the record reveal, and remove the vinyl's hard outer outline. Verify Home and Archive at 390 / 1024 / 1440px. *(UI 3.9.4.)*
+
+- [x] Refine the living Cover Flow and album browsing: show the theme-colored record only behind the centered Home album; slow the hand-drawn Radar and crossfade Featured Shape changes; resume rotation after center interaction; remove the stray Radar slash; make Archive album cards direct links with a theme-colored record reveal; show signed-in album ratings; and add restrained physical sleeve thickness at every verified width. *(UI 3.9.3; verified at 390 / 1024 / 1440px.)*
+
+- [x] Refine the living-newspaper Home after owner review: use the full set of real album covers in a faster, swipeable Cover Flow; cycle and redraw different saved Track Radars; add object-only depth shadows; remove page-head red ticks; and make the QQ Album reveal discoverable before detection.
+
+- [x] Translate the approved “living newspaper” styleframes into the existing Home, Archive, Rate, Taste, Import and Journal structures: tangible record depth, restrained ink-draw motion, dense catalog rhythm and reduced-motion fallbacks, without changing routes, data or workflows.
+
 - [x] Preserve the six existing routes and module personalities while making the mobile shell touch-first; no route, data-model or local-data boundary may be removed or merged.
 - [x] Add a safe-area-aware five-item mobile bottom navigation: Home, Archive, Rate, Taste and More; More exposes Import, Journal and Search without crowding the bar.
 - [x] Recompose mobile page headers and first screens around one primary task, reducing decorative desktop whitespace and retaining editorial type hierarchy.
@@ -25,6 +45,20 @@ This file records planned work that is not complete yet. The current site is a p
 - [x] Refine nickname editing into a quiet single-line control, reduce GitHub identity to compact secondary metadata and render the masthead nickname in serif italic.
 - [x] Keep the account popover build mark in sync with the published 0.9.13 release so Pages cache updates are visible in the UI.
 - [x] Add a compact account-popover update check that refreshes the Service Worker and automatically activates a newer shell when one is found. *(UI 0.9.14.)*
+
+## Approved living-interface motion backlog
+
+The two owner-approved living-newspaper blueprints remain the visual target. Future implementation should reproduce their material rhythm as closely as the existing structure allows, without replacing routes, data or the archive's editorial identity.
+
+- [ ] **Archive — living record catalog:** animate sort/filter as a restrained shelf reordering; wake only the hovered/focused album; keep artwork color driving vinyl and sleeve edges; draw miniature track Radars only on hover/focus; unfold artist albums by year like record spines; and transition a selected cover into album detail with a brief natural enlargement.
+- [ ] **Rate — listening instrument:** redraw Radar changes as red ink; roll score numerals mechanically but quietly; leave a very short ink afterimage on node movement; stamp `SAVED` into the paper; lift the active album-waveform node and move focus along it; push the paper laterally between tracks; and use one restrained ink bloom at 10 or Beyond Scale without glow or celebration effects.
+- [ ] **Taste — transparent analysis layers:** settle Sonic Map points into position and migrate them naturally when axes change; layer Listening DNA like transparent tracing sheets; draw Listening Portrait once on viewport entry; reveal Blind Spots through a print mask; and allow only one major chart to move on a screen at a time.
+- [ ] **Import — record intake ritual:** reveal the detected near-cover-sized colored record with grooves and soft reflection; typeset metadata row by row; unfold the track ledger downward; replace generic spinners with contextual reading/counting messages; mark conflicts as red proofreading notes; and finish with a small `ARCHIVED` stamp rather than a large success modal.
+- [ ] **Journal — printed time:** stamp dates as the timeline enters; unfold `REDISCOVER` as a clipping; retain a faint old score beneath a newly printed score; fade notes in lightly; turn annual views like a new archive stack; and replace repeated Annual Index rules with page-edge month marks.
+- [ ] **Search — typesetter search:** underline matches in hand-drawn red; settle reordered results like index slips without adding card borders; group Tracks, Albums and Artists in fixed metadata order; use a short rule/type change for keyboard focus; and return cleared results to their archive positions.
+- [ ] **Account and sync:** move one fine line beside the nickname during sync; show a quiet `SYNCED · HH:MM` timestamp; confirm nickname saves with a small ink response; drop the current compact panel from the masthead like an archive label; and reserve prominent warnings for automatic-sync failure only.
+- [ ] Keep the global motion vocabulary to `DRAW`, `SLIDE`, `STAMP` and `SETTLE`: button feedback 160–240ms, route transitions 240–360ms, reorder 400–650ms, record reveal 900–1400ms, hand-drawn Radar 1200–1800ms, and no more than one continuously moving region per screen.
+- [ ] Implement in the approved priority order: Rate instrument; Archive shelf/detail transitions; Import intake ritual; Journal clipping/score overprint; Taste Sonic Map/transparent layers.
 - [ ] 将 How I Hear Music 先制作成真正可安装、可独立运行的 macOS 应用，而不只是网页快捷方式或浏览器 PWA；暂不上任何应用商店，优先采用免费的开源打包方案，通过 GitHub Releases 直接分发与更新，保留现有 GitHub 登录、自动同步和本地数据边界，并先建立可回滚的 macOS 发布流程。
 - [ ] Commit, deploy the selected V13 favicon and UI 3.6.0 to GitHub Pages and Cloudflare Worker, then verify the production update path.
 

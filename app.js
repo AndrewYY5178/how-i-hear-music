@@ -1,10 +1,10 @@
 import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.14";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
-import { home } from "./modules/home.js";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js";
+import { bindHome, home } from "./modules/home.js?ui=3.9.9";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.9.9";
 import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js";
 import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js";
-import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ, importQQAlbum } from "./modules/import/pages.js?ui=3.9.9";
 import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
@@ -69,6 +69,8 @@ const render = () => {
   renderShell(path);
   app.dataset.route = path;
   app.innerHTML = route(path);
+  app.classList.remove("page-motion-enter");
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(() => app.classList.add("page-motion-enter"));
   const pageTitle = path === "/" ? "Home" : app.querySelector("h1")?.textContent.trim() || "Page"; setDocumentTitle(pageTitle);
   const description = `${pageTitle} — personal listening evidence in How I Hear Music.`; const publicUrl = new URL(withBase(path), "https://andrewyy5178.github.io").href; document.querySelector('link[rel="canonical"]')?.setAttribute("href", publicUrl); document.querySelector('meta[property="og:url"]')?.setAttribute("content", publicUrl); document.querySelector('meta[property="og:title"]')?.setAttribute("content", pageTitle); document.querySelector('meta[property="og:description"]')?.setAttribute("content", description); document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", pageTitle); document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", description); document.querySelector('meta[name="description"]')?.setAttribute("content", description);
   app.focus({ preventScroll: true });
@@ -79,6 +81,7 @@ const render = () => {
   bindYear(path, navigate);
   bindTaste(path, navigate);
   bindSearch(path, navigate);
+  bindHome();
   bindLanguageToggle(() => setDocumentTitle(pageTitle));
   applyLanguage();
 };

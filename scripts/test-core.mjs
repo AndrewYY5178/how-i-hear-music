@@ -25,6 +25,8 @@ const { albumNote, albumNotesKey, saveAlbumNote } = await import('../modules/mus
 const { blindSpots, sonicQuadrant } = await import('../modules/music/taste-dna.js');
 const { readRatings, saveAlbumTrackRatings, saveRatingRecord, validScore } = await import('../modules/music/lifecycle.js');
 const { formatTranslatedText, translateText } = await import('../modules/layout/i18n.js');
+const { dominantPixelTone } = await import('../modules/layout/cover-tone.js');
+const { normalizeQQAlbum } = await import('../server/providers/qqmusic-album.mjs');
 
 assert.equal(translateText('Rate', 'zh-CN'), '评分');
 assert.equal(translateText('SONG', 'zh-CN'), '歌曲');
@@ -44,6 +46,21 @@ assert.equal(formatTranslatedText('Begin with one listening decision.', { target
 assert.equal(formatTranslatedText('Begin with one listening decision.', { target: 'zh-CN' }), '先听，再作出判断。');
 assert.equal(formatTranslatedText('Taste over time.', { target: 'zh-CN', heading: true }), '一路听来，什么变了？');
 assert.equal(translateText('Rate', 'en'), 'Rate');
+
+const dominantPixels = new Uint8ClampedArray([
+  210, 42, 38, 255, 208, 44, 40, 255, 29, 120, 180, 255,
+  211, 43, 39, 255, 207, 46, 41, 255, 30, 121, 179, 255,
+]);
+assert.equal(dominantPixelTone(dominantPixels, 3, 2), 'rgb(209 44 40)');
+const colorfulPixels = new Uint8ClampedArray([
+  160, 160, 160, 255, 161, 159, 160, 255, 158, 160, 160, 255,
+  160, 161, 159, 255, 30, 184, 210, 255, 32, 182, 208, 255,
+]);
+assert.equal(dominantPixelTone(colorfulPixels, 3, 2), 'rgb(31 183 209)');
+
+const qqAlbumFixture = normalizeQQAlbum({ code: 0, data: { id: 123, mid: 'abc123', name: 'Fixture Album', singername: 'Fixture Artist', aDate: '2026-09-04', list: [{ songmid: 'track123', songname: 'Fixture Track', belongCD: 1, cdIdx: 0, interval: 180, singer: [{ mid: 'artist123', name: 'Fixture Artist' }] }] } }, 'abc123');
+assert.equal(qqAlbumFixture.coverUrl, 'https://y.gtimg.cn/music/photo_new/T002R800x800M000abc123.jpg');
+assert.equal(qqAlbumFixture.artworkUrl, qqAlbumFixture.coverUrl);
 
 storage.set('how-i-hear-music:journal:v1', [{ type: 'rating', at: '2026-01-01T00:00:00.000Z', title: 'Before IDs' }]);
 const migration = migrateLocalData();
