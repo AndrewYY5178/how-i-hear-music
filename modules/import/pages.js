@@ -6,9 +6,10 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.11.50";
+import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.11.51";
 import { coverOverrideKey, localCoverOverrideKey, coverSourcesFor, encodeLocalCover } from "../music/cover-maintenance.js";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
+import { translateText } from "../layout/i18n.js?v=0.9.67";
 
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;
@@ -34,7 +35,7 @@ const coverMaintenanceMarkup = () => {
   const albums = archiveVisibleAlbums().slice().sort((left, right) => `${left.artist} ${left.title}`.localeCompare(`${right.artist} ${right.title}`));
   const records = albums.map((album) => {
     const id = album.id || slug(`${album.artist}-${album.title}`); const { primary, alternate, local, remote } = coverSourcesFor(album, id); const tone = album.themeColor || fallbackCoverTone(`${album.artist}-${album.title}`);
-    const image = primary ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" src="${safe(primary)}" alt="${safe(album.title)} cover"><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
+    const image = primary ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" src="${safe(primary)}" alt="${safe(translateText(`${album.title} cover`))}"><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
     const sourceLabel = local ? "LOCAL COVER ACTIVE" : remote ? "REMOTE OVERRIDE ACTIVE" : "CANONICAL COVER";
     return `<details class="cover-maintenance-record"><summary><span class="mono">${safe(album.artist)}</span><b>${safe(album.title)}</b><small class="mono">${sourceLabel} · +</small></summary><div class="cover-maintenance-body"><div class="cover-maintenance-preview" data-cover-tone data-cover-source="${safe(primary)}" style="--record-color:${tone};--sleeve-edge-color:${tone}">${image}</div><form class="cover-maintenance-form" data-album-id="${safe(id)}"><label><span class="mono">LOCAL COVER FILE</span><input type="file" name="coverFile" accept="image/jpeg,image/png,image/webp,image/avif"><small>Square images are cropped and compressed in this browser. They are never uploaded.</small></label><div class="cover-local-preview" data-cover-local-preview></div><label><span class="mono">REMOTE HTTPS IMAGE URL (OPTIONAL)</span><input type="url" name="coverUrl" value="${safe(remote)}" placeholder="https://…"></label><div><button class="button" type="submit">SAVE COVER</button><button class="button" type="button" data-clear-cover>USE CANONICAL COVER</button><button class="button" type="button" data-reextract-tone>RE-EXTRACT COLOR</button></div><p data-cover-status>${local ? "A local cover is active on this browser." : "Use a local file for complex or cross-domain artwork."}</p><p data-tone-status>Theme color is sampled from the current cover when possible.</p></form></div></details>`;
   }).join("");
