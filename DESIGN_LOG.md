@@ -3091,3 +3091,24 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Signed-out sample deck, Archive visibility filtering, ratings, sync storage, cover fallback behavior, and carousel motion remain unchanged.
+
+## Version 3.11.46 — Give scores a result-like typographic voice
+
+### Evidence
+
+- Scores appeared in several contexts—carousel captions, archive cards, detail lists, rating controls, radar annotations and Journal summaries—but inherited a mix of normal serif and mono styles.
+- The surrounding interface already reserves Libre Baskerville for editorial emphasis and DM Mono for labels, controls and metadata.
+
+### Decision
+
+- Set visible score values to Libre Baskerville 700 across all score-bearing surfaces, including direct album score inputs and radar value annotations.
+- Keep dimension names, dates, navigation and +/- controls in their existing mono or regular text styles so the score remains the visual result of each row.
+
+### Rejected
+
+- Do not bold every numeric value: counts, dates, percentages and storage diagnostics remain metadata and keep their current typographic roles.
+- Do not introduce badges, pills or color changes beyond the existing red score accent.
+
+### Intentionally unchanged
+
+- Score values, validation, storage, animations, layout geometry and the paper / ink / red palette remain unchanged.

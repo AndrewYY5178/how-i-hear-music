@@ -964,6 +964,50 @@ body::before {
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
 }
 
+/* UI 3.11.46 — make every visible listening score read like a result, not metadata. */
+.feature-score b,
+.track-card>strong,
+.score-list dd,
+.tracklist b,
+.metric-row dd,
+.rating-history strong,
+.rating-change dd,
+.year-lead>strong,
+.year-grid article>strong,
+.journal-recent article>b,
+.rediscover>strong,
+.good-not-mine dd,
+.taste-distances em,
+.profile-grid strong,
+.album-comparison-grid article>strong,
+.version-deltas dd span,
+.version-deltas dd strong,
+.album-card-terrain .album-card-rating,
+.home-record-caption strong {
+  font-family:var(--serif);
+  font-weight:700;
+}
+
+.radar-values text {
+  font-weight:700;
+}
+
+.rating-control output {
+  font-family:var(--serif);
+  font-size:16px;
+  font-weight:700;
+}
+
+.album-track-controls .album-score-input {
+  font-family:var(--serif);
+  font-weight:700;
+}
+
+.album-overall input {
+  font-family:var(--serif);
+  font-weight:700;
+}
+
 /* UI 3.11.22 — make the 50% side-record floor win over earlier responsive rules. */
 @media (min-width:761px) {
   .home-record[data-record-position="left-3"],.home-record[data-record-position="right-3"] { opacity:.52 !important; }

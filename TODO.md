@@ -553,4 +553,5 @@ The two owner-approved living-newspaper blueprints remain the visual target. Fut
 - [x] Reflect saved and in-progress album track Overall values in the Album detail Listening Landscape instead of leaving the waveform on its baseline. *(UI 3.11.43; automated checks passed.)*
 - [x] Normalize nested album scores before passing them to Waveform and summary geometry, so saved values move the landscape instead of rendering at the baseline. *(UI 3.11.44; automated checks passed.)*
 - [x] Count existing non-showcase personal albums in the signed-in Home capacity gate, so users with an established 9+ album archive no longer see presentation samples. *(UI 3.11.45; automated checks passed.)*
+- [x] Render listening scores in a bold serif face across Home, Archive, Rate, Taste and Journal while keeping labels and controls in the existing mono system. *(UI 3.11.46; automated checks passed.)*
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.
