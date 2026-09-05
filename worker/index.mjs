@@ -8,7 +8,7 @@ const apiCache = new Map();
 const rateWindows = new Map();
 
 const allowedOrigins = (env) => new Set(String(env.ALLOWED_ORIGIN || defaultOrigin).split(',').map((value) => value.trim()).filter(Boolean));
-const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.18');
+const serviceVersion = (env) => String(env.SERVICE_VERSION || '0.9.42');
 const serviceAgent = (env) => `How-I-Hear-Music/${serviceVersion(env)} metadata importer`;
 const isQQHost = (hostname) => hostname === 'qq.com' || hostname.endsWith('.qq.com');
 const isNetEaseHost = (hostname) => hostname === 'music.163.com' || hostname.endsWith('.music.163.com') || hostname === '163cn.tv';
@@ -247,7 +247,7 @@ export const handleRequest = async (request, env = {}) => {
   const syncResponse = await handleSync({ request, url, env, headers: responseHeaders(request, env), origin: [...origins][0] || defaultOrigin });
   if (syncResponse) return syncResponse;
   if (request.method === 'GET' && url.pathname === '/healthz') return json(request, env, 200, { status: 'ok', version: serviceVersion(env), providers: ['qqmusic', 'netease'] }, requestId);
-  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-smart-import', 'qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'account-auto-sync'] }, requestId);
+  if (request.method === 'GET' && url.pathname === '/api/version') return json(request, env, 200, { version: serviceVersion(env), capabilities: ['qq-smart-import', 'qq-playlist', 'qq-album', 'qq-search', 'netease-playlist', 'musicbrainz-release-candidates', 'account-auto-sync', 'email-code-auth'] }, requestId);
 
   const address = request.headers.get('CF-Connecting-IP') || 'unknown';
   if (url.pathname.startsWith('/api/') && !withinRateLimit(address)) return json(request, env, 429, { error: 'Too many metadata requests. Try again in a few minutes.' }, requestId);

@@ -112,12 +112,14 @@ if (!entryHtml.includes('<base id="app-base" href="./"') || !entryHtml.includes(
 const fallbackHtml = await readFile(join(root, '404.html'), 'utf8');
 if (!fallbackHtml.includes('const base = "/how-i-hear-music"') || !fallbackHtml.includes('route=${encodeURIComponent')) errors.push('404.html: GitHub Pages route recovery is missing');
 const appSource = await readFile(join(root, 'app.js'), 'utf8');
+const emailMigration = await readFile(join(root, 'migrations', '0002_email_auth.sql'), 'utf8');
+if (!emailMigration.includes('email_auth_challenges') || !emailMigration.includes('sync_users_email_hash_idx')) errors.push('email auth: D1 migration is missing challenge or identity schema');
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
 if (!appSource.includes('requestedTarget === "/search" ? "/archive"') || !appSource.includes('current === "/search"')) errors.push('routing: old Search links must redirect into Archive');
 if (!appSource.includes('const pageTitle = path === "/" ? "Home"') || !appSource.includes('link[rel="canonical"]')) errors.push('app.js: document titles or route canonical metadata are missing');
 if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
 for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
-for (const path of ['/taste/dna', '/taste/blind-spots', '/journal/memory-palace', '/journal/entropy']) if (!appSource.includes(path)) errors.push(`app.js: advanced taste route ${path} is missing`);
+for (const path of ['/taste/dna', '/taste/blind-spots', '/journal/memory-palace', '/journal/entropy', '/taste/journal', '/taste/journal/memory-palace', '/taste/journal/entropy']) if (!appSource.includes(path)) errors.push(`app.js: advanced taste route ${path} is missing`);
 if (!appSource.includes('annualPortrait(') || !appSource.includes('bindYear(')) errors.push('app.js: annual portrait or awards binding is missing');
 const apiSource = await readFile(join(root, 'modules', 'music', 'api.js'), 'utf8');
 if (!apiSource.includes('location.hostname.endsWith("github.io")') || !apiSource.includes('window.__HIM_API_BASE__')) errors.push('metadata adapter: hosted base must not override the local same-origin service');
@@ -142,7 +144,7 @@ if (!serviceWorker.includes('modules/layout/i18n.js')) errors.push('offline shel
 if (!serviceWorker.includes('new Request(url, { cache: "reload" })')) errors.push('offline shell: release installation must bypass stale HTTP asset caches');
 for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);
 for (const asset of ['manifest.webmanifest', 'robots.txt', 'sitemap.xml']) { try { await readFile(join(root, asset)); } catch { errors.push(`delivery: missing ${asset}`); } }
-const snapshotRoutes = ['/archive', '/archive/tracks', '/archive/albums', '/archive/artists', '/rate', '/taste', '/import', '/journal'];
+const snapshotRoutes = ['/archive', '/archive/tracks', '/archive/albums', '/archive/artists', '/rate', '/taste', '/taste/journal', '/import', '/journal'];
 for (const route of snapshotRoutes) {
   try {
     const snapshot = await readFile(join(root, route.slice(1), 'index.html'), 'utf8');
@@ -162,7 +164,7 @@ if (styles.includes('before English labels collide') || !styles.includes('@media
 const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
 if (shellSource.includes('READ / 20—') || styles.includes('.edition')) errors.push('masthead: obsolete edition marker or styling remains');
 if (shellSource.includes('link("/search"') || shellSource.includes('header-search') || shellSource.includes('utility-search')) errors.push('navigation: Search must live inside Archive instead of the masthead or mobile More');
-for (const contract of ['account-toggle', 'account-panel', 'REGISTER / SIGN IN WITH GITHUB', 'readSyncStatus', 'signOutSync']) if (!shellSource.includes(contract)) errors.push(`account shell: missing ${contract}`);
+for (const contract of ['account-toggle', 'account-panel', 'GITHUB', 'EMAIL', 'aria-label="Sign in with GitHub"', 'aria-label="Sign in with email"', 'readSyncStatus', 'signOutSync']) if (!shellSource.includes(contract)) errors.push(`account shell: missing ${contract}`);
 if (!styles.includes('.account-panel') || !styles.includes('.account-toggle')) errors.push('account shell: responsive account presentation is missing');
 const serverSource = await readFile(join(root, 'server.mjs'), 'utf8');
 for (const contract of ["requestPath === '/healthz'", "requestPath === '/api/version'", 'TRUST_PROXY', 'logEvent', 'pruneRuntimeState']) if (!serverSource.includes(contract)) errors.push(`adapter resilience: missing ${contract}`);

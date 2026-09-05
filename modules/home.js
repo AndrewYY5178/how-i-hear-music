@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, rating, safe, slug, storage, trackId } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.2";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.11.26";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -45,7 +45,7 @@ const recordMarkup = (album, index) => {
   const fallbackTone = fallbackCoverTone(`${album.artist}-${album.title}`);
   return `<a class="home-record" data-home-record data-home-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" draggable="false" src="${safe(coverUrl)}" alt=""><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span></span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b>${score === null ? "" : `<strong>${rating(score)}</strong>`}</span></a>`;
 };
-const shapeMarkup = (track, index) => `<article class="featured-shape-slide${index === 0 ? " active" : ""}" data-home-shape-slide${index === 0 ? "" : " hidden"}><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(track.title)}</h2><p>${safe(track.artist)}</p></div><div class="featured-shape-visual">${radar(track.scores, { className: "home-radar ink-draw-radar" })}</div><div class="feature-score" aria-label="Track score breakdown">${["song", "vocal", "production", "overall"].map((field) => `<span>${field}<b>${rating(track.scores[field])}</b></span>`).join("")}</div></article>`;
+const shapeMarkup = (track, index) => `<article class="featured-shape-slide${index === 0 ? " active" : ""}" data-home-shape-slide${index === 0 ? "" : " hidden"}><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(track.title)}</h2><p>${safe(track.artist)}</p></div><div class="featured-shape-visual">${radar(track.scores, { className: "home-radar ink-draw-radar", showValues: true })}</div></article>`;
 
 export const home = () => {
   const ratedTracks = shuffled(allTracks().map(withCurrentScores).filter((track) => Number.isFinite(Number(track.scores?.overall))));
@@ -76,6 +76,15 @@ export const bindHome = () => {
   let suppressClick = false;
   let shapeSwapTimer = null;
   let shapeFadeTimer = null;
+  let recordMoveTimer = null;
+  let recordMovePending = 0;
+  let recordMoving = false;
+  const retractRecord = (record) => {
+    if (!record) return;
+    record.classList.add("record-is-retracting");
+    window.clearTimeout(record._retractTimer);
+    record._retractTimer = window.setTimeout(() => record.classList.remove("record-is-retracting"), 420);
+  };
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const arrange = () => records.forEach((record, index) => {
     const clockwise = (index - active + records.length) % records.length;
@@ -85,7 +94,17 @@ export const bindHome = () => {
     record.setAttribute("aria-current", position === "front" ? "true" : "false");
     record.tabIndex = position === "front" ? 0 : -1;
   });
-  const move = (step) => { active = (active + step + records.length) % records.length; arrange(); };
+  const move = (step) => {
+    recordMovePending += step;
+    if (recordMoving) return;
+    const nextStep = recordMovePending; recordMovePending = 0; recordMoving = true;
+    const previous = records[active]; retractRecord(previous);
+    recordMoveTimer = window.setTimeout(() => {
+      active = (active + nextStep + records.length) % records.length;
+      arrange(); recordMoving = false; recordMoveTimer = null;
+      if (recordMovePending) move(recordMovePending);
+    }, 180);
+  };
   const stopRecords = () => { if (recordTimer) window.clearInterval(recordTimer); recordTimer = null; };
   const playRecords = () => { stopRecords(); if (!reduceMotion) recordTimer = window.setInterval(() => move(1), 2600); };
   const showShape = (index) => {
@@ -104,7 +123,7 @@ export const bindHome = () => {
   bindCoverTones(stage);
   arrange(); playRecords();
   if (!reduceMotion && shapeSlides.length > 1) shapeTimer = window.setInterval(() => showShape(shapeActive + 1), 4400);
-  stopHomeMotion = () => { stopRecords(); if (shapeTimer) window.clearInterval(shapeTimer); if (shapeSwapTimer) window.clearTimeout(shapeSwapTimer); if (shapeFadeTimer) window.clearTimeout(shapeFadeTimer); };
+  stopHomeMotion = () => { stopRecords(); if (recordMoveTimer) window.clearTimeout(recordMoveTimer); recordMoveTimer = null; recordMovePending = 0; recordMoving = false; if (shapeTimer) window.clearInterval(shapeTimer); if (shapeSwapTimer) window.clearTimeout(shapeSwapTimer); if (shapeFadeTimer) window.clearTimeout(shapeFadeTimer); };
   stage.querySelector("[data-home-record-previous]")?.addEventListener("click", (event) => { event.stopPropagation(); move(-1); playRecords(); });
   stage.querySelector("[data-home-record-next]")?.addEventListener("click", (event) => { event.stopPropagation(); move(1); playRecords(); });
   stage.addEventListener("wheel", (event) => { if (wheelLocked || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 8) return; event.preventDefault(); wheelLocked = true; move(event.deltaX > 0 ? 1 : -1); playRecords(); window.setTimeout(() => { wheelLocked = false; }, 420); }, { passive: false });
@@ -114,6 +133,6 @@ export const bindHome = () => {
   stage.addEventListener("pointercancel", () => { pointerStart = null; });
   stage.addEventListener("focusin", (event) => { if (event.target.matches?.(":focus-visible")) stopRecords(); });
   stage.addEventListener("focusout", (event) => { if (!stage.contains(event.relatedTarget)) playRecords(); });
-  records.forEach((record, index) => record.addEventListener("click", (event) => { if (suppressClick) { event.preventDefault(); return; } if (index === active) { playRecords(); return; } event.preventDefault(); active = index; arrange(); playRecords(); }));
+  records.forEach((record, index) => record.addEventListener("click", (event) => { if (suppressClick) { event.preventDefault(); return; } if (index === active) { playRecords(); return; } event.preventDefault(); const step = (index - active + records.length) % records.length; move(step > records.length / 2 ? step - records.length : step); playRecords(); }));
   stage.addEventListener("dblclick", playRecords);
 };

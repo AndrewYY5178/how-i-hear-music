@@ -4,6 +4,36 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## Active touch-first App shell and delivery — UI 3.6.0
 
+- [x] Repair the offline update action: always resolve the current waiting Service Worker, show a visible `RELOADING…` state, activate it through `SKIP_WAITING`, and fall back to a reload if `controllerchange` is delayed. Local preview and published-site behavior remain separately scoped. *(UI 3.11.5; automated checks passed.)*
+
+- [x] Accelerate the record return: Home and Archive begin the next rotation after a 300ms halfway-retraction cue, while the vinyl itself completes a roughly 600ms return; keep the previous edge-offset and reduced-motion behavior. *(UI 3.11.6; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Tighten the narrow Home control rhythm: move PREV / NEXT closer to the Cover Flow and remove the redundant Featured Shape top rule without changing the desktop composition. *(UI 3.11.7; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Restore contrast on the olive Rate surface: use dark ink for the Continue Rating panel, its explanatory copy and the inactive narrow navigation labels while retaining the red active state. *(UI 3.11.8; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Refine the Account popover into a compact identity-and-action sheet: remove duplicate signed-out copy, use a narrow red rule and low-contrast separators, preserve the nickname / GitHub rows and keep the update action quiet. *(UI 3.11.9; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Remove the midpoint pause during record rotation: keep Home and Archive on a 600ms disc transition with a 300ms handoff, using a matching opacity crossfade so the outgoing record and incoming record overlap continuously. *(UI 3.11.10; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Rebuild the signed-out Account entry as a direct login/register choice: always show GitHub and email entry points, keep email clearly marked as coming soon until its passwordless backend exists, preserve the version label and `CHECK FOR UPDATES`, and remove redundant availability copy. *(UI 3.11.11; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Keep the record handoff continuous and inside the sleeve: align Home and Archive's closed/retract transform to the sleeve's 0 position so the vinyl never crosses the left boundary while retaining the 300ms handoff and 600ms crossfade. *(UI 3.11.12; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Re-anchor narrow Home PREV / NEXT controls to the Cover Flow content band for phone and small-tablet widths, with a final cascade guard so they cannot fall back to the stage bottom. *(UI 3.11.13; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Simplify the signed-out Account panel: keep `Sign in or register.` on one line, use compact side-by-side `GITHUB` and `EMAIL` actions with accessible labels, and remove the redundant close-cross control while retaining header toggle and Escape dismissal. *(UI 3.11.14; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Separate record speeds: keep Home and Archive vinyl reveal at roughly 1 second, accelerate withdrawal to 280ms, and hand off to the next record after 180ms so the return is shorter than the reveal without an idle gap. *(UI 3.11.15; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Raise narrow Home side-record opacity: keep near-side sleeves at 52% and the outer visible pair at 28% so the Cover Flow retains depth without the neighboring artwork disappearing into the paper. *(UI 3.11.16; automated checks passed; browser-width review remains part of the responsive audit.)*
+
+- [ ] Add passwordless email registration and sign-in: the Worker, D1 migration and Account-panel code path are now implemented, but production activation still requires applying `migrations/0002_email_auth.sql`, adding a `RESEND_API_KEY` Worker secret, verifying the sender domain/from address, deploying the Worker, and testing a real inbox. Email and GitHub remain independent methods and share a space only when their verified email hashes match. *(UI 3.11.17 implementation; deployment and real-inbox verification pending.)*
+
+- [x] Sequence record retraction before Cover Flow changes: Home waits for the previous disc to withdraw halfway before changing the centered album; Archive waits through the same return phase before opening the next sleeve, keeps edge offsets during retraction, and keeps the disc inside the sleeve's lower boundary. *(UI 3.11.4; full test suite passed; browser-width review remains part of the responsive audit.)*
+
+- [x] Complete the physical record gesture: when a Home sleeve leaves center or an Archive album loses hover/focus, keep the object above neighboring sleeves long enough for the disc to visibly withdraw into its jacket. *(UI 3.11.3; reduced-motion fallback retained; final 390 / 1024 / 1440px browser review remains part of the responsive audit.)*
+
 - [x] Reduce the Archive landing-page local index to a quiet red `SEARCH` control aligned with `TRACKS / ALBUMS / ARTISTS`; reveal one compact local query row only after activation or when a legacy `?q=` link supplies a query. Keep the complete browser-local scope and `/search?q=…` compatibility. *(UI 3.11.2; render and local-browser interaction verified. Final 390 / 1024 / 1440px browser review remains part of the responsive audit.)*
 
 - [x] Merge Search into the Archive landing page as one built-in local index; remove the duplicate desktop masthead, narrow menu and mobile More Search entries; preserve the complete search scope and redirect old `/search?q=…` links to `/archive?q=…`. *(UI 3.11.0; verified at 390 / 1024 / 1440px in English and Chinese.)*
@@ -493,4 +523,14 @@ The two owner-approved living-newspaper blueprints remain the visual target. Fut
 - Musical Moments require Andrew to enter a timestamp; the interface never invents one.
 - Alternate recordings must still be named and typed by Andrew; the interface never infers a version from a title.
 - Album comparison remains empty until two albums have a confirmed ordered sequence or album-level score.
+
+- [x] Remove the unnecessary divider above signed-out Account login buttons while preserving the compact two-action layout and update footer. *(UI 3.11.18; automated checks passed; browser-width review remains part of the responsive audit.)*
+- [x] Raise the minimum opacity of visible Home side records to 50% without flattening the center-focused Cover Flow. *(UI 3.11.19; automated checks passed.)*
+- [x] Use Archive album Terrain for explicit rating/release metadata and synchronize sleeve return timing so retracting discs cannot flash through their sleeves. *(UI 3.11.20; automated checks passed.)*
+- [x] Keep Archive album discs within the sleeve's top boundary during hover reveal. *(UI 3.11.21; automated checks passed.)*
+- [x] Enforce a final 50% minimum opacity for all visible Home side records across responsive widths. *(UI 3.11.22; automated checks passed.)*
+- [x] Move FEATURED SHAPE score values into the radar visualization and reveal each value as its node is drawn. *(UI 3.11.23; automated checks passed.)*
+- [x] Merge Journal into the Taste reading layer, remove Journal from top-level navigation, preserve legacy `/journal` routes, and expose Overview / Journal / Insights groupings inside Taste. *(UI 3.11.24; automated checks passed; browser-width review remains part of the responsive audit.)*
+- [x] Raise the minimum opacity of every visible Home side record to 80% so the physical sleeves and artwork do not appear artificially faded. *(UI 3.11.25; automated checks passed; browser-width review remains part of the responsive audit.)*
+- [x] Set every visible Home side record to 100% opacity; use geometry and color treatment—not transparency—for physical depth. *(UI 3.11.26; automated checks passed; browser-width review remains part of the responsive audit.)*
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.

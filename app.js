@@ -1,17 +1,17 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.18";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.42";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
-import { bindHome, home } from "./modules/home.js?ui=3.11.2";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.11.2";
-import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.11.2";
-import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.11.2";
-import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.11.2";
-import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.11.2";
+import { bindHome, home } from "./modules/home.js?ui=3.11.26";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.11.26";
+import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.11.26";
+import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.11.26";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.11.26";
+import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.11.26";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
 import { accountNickname } from "./modules/music/account.js";
-import { bindSearch } from "./modules/search/pages.js?ui=3.11.2";
-import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.18";
-import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.11.2";
+import { bindSearch } from "./modules/search/pages.js?ui=3.11.26";
+import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.42";
+import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.11.26";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -32,6 +32,12 @@ const route = (path) => {
   if (/^\/rate\/track\/.+/.test(current)) return rateTrack(decodeURIComponent(current.split("/").pop()));
   if (/^\/rate\/album\/.+/.test(current)) return rateAlbum(decodeURIComponent(current.split("/").pop()));
   if (current === "/taste") return tasteHome();
+  if (current === "/taste/journal") return journal("/taste/journal");
+  if (/^\/taste\/journal\/edit\/.+/.test(current)) return journalEdit(decodeURIComponent(current.split("/").pop()), "/taste/journal");
+  if (current === "/taste/journal/memory-palace") return memoryPalace();
+  if (current === "/taste/journal/entropy") return entropyPage();
+  if (/^\/taste\/journal\/year\/\d{4}\/portrait$/.test(current)) return annualPortrait(Number(current.split("/")[4]));
+  if (/^\/taste\/journal\/year\/\d{4}$/.test(current)) return yearInMusic(Number(current.split("/").pop()), "/taste/journal");
   if (current === "/taste/philosophy") return philosophy();
   if (current === "/taste/profile") return profile();
   if (current === "/taste/good-not-mine") return goodNotMine();
@@ -48,7 +54,7 @@ const route = (path) => {
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/import/data") return importData();
-  if (current === "/journal") return journal();
+  if (current === "/journal") return journal("/journal");
   if (/^\/journal\/edit\/.+/.test(current)) return journalEdit(decodeURIComponent(current.split("/").pop()));
   if (current === "/journal/memory-palace") return memoryPalace();
   if (current === "/journal/entropy") return entropyPage();
@@ -104,6 +110,21 @@ window.addEventListener("how-i-hear-music:sync-applied", render);
 
 let offlineRegistration = null;
 let showOfflineUpdate = () => {};
+let pendingOfflineWorker = null;
+let offlineReloading = false;
+const activateOfflineUpdate = async () => {
+  if (offlineReloading) return;
+  const banner = document.getElementById("update-banner"); const button = document.getElementById("apply-update");
+  try {
+    const registration = offlineRegistration || await navigator.serviceWorker.getRegistration();
+    const worker = registration?.waiting || pendingOfflineWorker;
+    if (!worker) { banner.hidden = true; location.reload(); return; }
+    offlineReloading = true; pendingOfflineWorker = worker; button.disabled = true; button.textContent = "RELOADING…"; worker.postMessage("SKIP_WAITING");
+    window.setTimeout(() => { if (offlineReloading) location.reload(); }, 1800);
+  } catch (error) {
+    offlineReloading = false; button.disabled = false; button.textContent = "RELOAD UPDATE"; banner.setAttribute("data-update-error", error instanceof Error ? error.message : "Could not reload update.");
+  }
+};
 let updateCheckRunning = false;
 const checkForUpdates = async () => {
   if (updateCheckRunning) return;
@@ -186,10 +207,10 @@ completeGithubSync().then(async (user) => {
 const registerOfflineShell = async () => {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
   try {
-    const registration = await navigator.serviceWorker.register(new URL("./sw.js", import.meta.url), { scope: new URL("./", import.meta.url).pathname }); offlineRegistration = registration; const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; banner.hidden = false; document.getElementById("apply-update").onclick = () => worker.postMessage("SKIP_WAITING"); }; showOfflineUpdate = showUpdate;
+    const registration = await navigator.serviceWorker.register(new URL("./sw.js", import.meta.url), { scope: new URL("./", import.meta.url).pathname }); offlineRegistration = registration; const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; pendingOfflineWorker = worker; banner.hidden = false; document.getElementById("apply-update").onclick = activateOfflineUpdate; }; showOfflineUpdate = showUpdate;
     if (registration.waiting) showUpdate(registration.waiting);
-    registration.addEventListener("updatefound", () => registration.installing?.addEventListener("statechange", () => { if (registration.installing?.state === "installed") showUpdate(registration.installing); }));
-    let refreshing = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (refreshing) return; refreshing = true; location.reload(); });
+    registration.addEventListener("updatefound", () => { const installing = registration.installing; installing?.addEventListener("statechange", () => { if (installing.state === "installed") showUpdate(registration.waiting || installing); }); });
+    let refreshing = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (refreshing) return; refreshing = true; offlineReloading = false; location.reload(); });
   } catch (error) { console.warn("Offline shell registration failed.", error); }
 };
 registerOfflineShell();

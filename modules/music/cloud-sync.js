@@ -25,6 +25,12 @@ export const beginGithubSync = () => {
   const returnTo = new URL(location.href); returnTo.hash = "";
   location.assign(`${base()}/api/sync/github/start?return_to=${encodeURIComponent(returnTo.toString())}`);
 };
+export const requestEmailCode = async (email) => request("/api/sync/email/request", { method: "POST", body: JSON.stringify({ email }) });
+export const completeEmailSignIn = async (challenge, code) => {
+  const result = await request("/api/sync/email/verify", { method: "POST", body: JSON.stringify({ challenge, code }) });
+  set({ token: result.token, user: result.user, revision: 0, expiresAt: result.expiresAt });
+  return result.user;
+};
 export const completeGithubSync = async () => {
   const match = location.hash.match(/(?:^#|&)sync-exchange=([^&]+)/); if (!match) return null;
   const result = await request("/api/sync/exchange", { method: "POST", body: JSON.stringify({ exchangeCode: decodeURIComponent(match[1]) }) });

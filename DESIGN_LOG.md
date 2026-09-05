@@ -2139,3 +2139,520 @@ Implementation commit: `e89ed3b`
 ### Intentionally unchanged
 
 - Archive routes, search grouping, typesetter underline treatment, local data boundaries, navigation consolidation, and every existing result URL remain unchanged.
+
+## Version 3.11.3 — Let the record return home
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner noticed that a record leaving Home's center or an Archive album losing hover appeared to vanish instead of completing the physical gesture of returning to its sleeve.
+- In Archive, the card's stacking context reverted as soon as hover ended, allowing neighboring covers to hide the final part of the disc's withdrawal.
+
+### Decision
+
+- Keep the existing sleeve and disc trajectories, but make the retraction state explicit: the disc returns to its closed-sleeve transform and opacity while the leaving Archive card retains its elevated stacking context for the transition window.
+- Trigger Home retraction whenever the active center changes, including timed rotation, controls, swipe and direct record selection. Trigger Archive retraction on pointer leave and focus leave; pointer/focus return cancels a pending cleanup.
+- Keep the interaction fully CSS-driven visually and preserve the existing reduced-motion behavior.
+
+### Rejected
+
+- Do not leave records permanently protruding after hover, add a separate close control, or use a sudden display/visibility toggle that hides the return gesture.
+
+### Intentionally unchanged
+
+- Import's one-time intake reveal, album navigation, cover colors, rating data and route structure remain unchanged.
+
+## Version 3.11.4 — Return before the next record arrives
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found that Home changed albums before the previous disc had visibly returned, and Archive could open a neighboring disc while the previous one was still retracting.
+- Archive's angled disc transform also allowed the lower edge of the circular record to pass below the square sleeve.
+
+### Decision
+
+- Add a 900ms return phase before Home changes its active index. The previous center disc begins its existing withdrawal first; queued control, swipe and timed steps are processed after the halfway point so rapid controls remain usable without skipping the physical cue.
+- Gate Archive's reveal behind an explicit open state. When hover or focus moves to a different card, the current card retracts and remains on top for the return window; the next card opens after the same 900ms phase.
+- Keep the Archive right-edge offset during both open and retract states, and reduce the open disc transform to a slightly smaller, upward-shifted, less-rotated position so it stays within the sleeve's lower boundary.
+
+### Rejected
+
+- Do not block the entire page during a transition, remove rapid-input support, or hide the disc instantly with `display`/`visibility` changes.
+
+### Intentionally unchanged
+
+- Import's one-time reveal, cover colors, album data, reduced-motion fallback and route structure remain unchanged.
+
+## Version 3.11.5 — Make Reload Update observable
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner reported that the `RELOAD UPDATE` button sometimes did nothing, especially when the update callback had captured an installing Worker that was no longer the registration's waiting Worker.
+- A silent `postMessage` leaves users without a visible confirmation if the browser delays `controllerchange` or the Worker is no longer waiting.
+
+### Decision
+
+- Resolve the latest `registration.waiting` Worker at click time, retain the pending Worker as a fallback, disable the button and change its label to `RELOADING…` while activation is underway.
+- Rebind `RELOAD UPDATE` to the activation routine whenever a new Worker reaches `installed`, prefer `registration.waiting`, and keep the existing `SKIP_WAITING` message contract.
+- Reload on `controllerchange` as before, with a short timeout fallback so a delayed event cannot leave the interface in a silent state. Translate the new transient label in Simplified Chinese.
+
+### Rejected
+
+- Do not clear caches directly from the page, unregister the Service Worker, or force a destructive data reset when an update activation is delayed.
+
+### Intentionally unchanged
+
+- Local ratings, notes, account data, cache contents before activation and the existing update-check semantics remain unchanged.
+
+## Version 3.11.6 — Faster return, same physical cue
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found that the vinyl return was still too slow during Home rotation and Archive hover changes, even though the halfway sequencing was correct.
+
+### Decision
+
+- Home starts the next cover-flow step after 300ms, the halfway point of a 600ms disc retraction; Archive uses the same 300ms reveal gate so both surfaces share one rhythm.
+- Keep the physical sleeve/retraction states, edge-column stacking protection, artwork-derived colors and reduced-motion behavior unchanged.
+- Keep Import's one-time intake reveal on its existing timing; only Home and Archive use the accelerated return transition.
+
+### Rejected
+
+- Do not remove the return gesture, switch records instantly, or shorten the sleeve/depth treatment until the disc has visibly begun withdrawing.
+
+### Intentionally unchanged
+
+- Cover artwork fallback, rating data, route structure, local storage and the Service Worker update contract remain unchanged.
+
+## Version 3.11.7 — A tighter narrow Home rhythm
+
+Implementation commit: pending
+
+### Evidence
+
+- On the narrow Rate/Home-sized viewport, PREV and NEXT sat at the bottom of the tall Cover Flow stage, leaving an oversized gap below the centered sleeve and caption.
+- The Featured Shape module repeated a top rule that added visual weight after the page rhythm had already established the section boundary.
+
+### Decision
+
+- Anchor narrow Home's control row to the cover-and-caption stream with a responsive cover-relative offset, keeping the 44px touch target and the lower rule while bringing the actions into the reading zone.
+- Remove only the narrow Featured Shape top border; desktop and tablet retain the existing editorial boundary.
+
+### Rejected
+
+- Do not remove the control row, reduce its touch target, or change the desktop Cover Flow stage height to solve a narrow-only spacing issue.
+
+### Intentionally unchanged
+
+- Album order, record motion timing, Archive behavior, rating data, route structure and reduced-motion fallbacks remain unchanged.
+
+## Version 3.11.8 — Ink contrast on the Rate studio
+
+Implementation commit: pending
+
+### Evidence
+
+- The olive Rate surface used pale gray-white copy in the Continue Rating panel and inactive narrow navigation labels, reducing legibility against the background.
+
+### Decision
+
+- Set the Continue Rating panel and explanatory copy to the Rate page's dark ink variable so the existing olive field carries readable editorial text without adding a new color system.
+- Set inactive narrow navigation labels to dark ink; keep the active Rate tab's red field and light label as the sole emphasis.
+
+### Rejected
+
+- Do not brighten the entire Rate page, add text shadows, or replace the olive studio background.
+
+### Intentionally unchanged
+
+- Rating controls, radar geometry, button hierarchy, navigation structure and reduced-motion behavior remain unchanged.
+
+## Version 3.11.9 — A compact Account sheet
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found the Account popover visually heavy: the signed-out state repeated two explanations, the title block dominated the narrow panel, and identity/actions did not read as one compact surface.
+- Reference review: Linear groups Account settings into a dedicated, navigable section and hides infrequent destinations behind More ([https://linear.app/changelog/2024-12-18-personalized-sidebar](https://linear.app/changelog/2024-12-18-personalized-sidebar)); Happy's documented account popover measures about 282×176px and uses low-contrast separators rather than a large framed card ([https://github.com/slopus/happy/blob/main/packages/codium/design-system.md](https://github.com/slopus/happy/blob/main/packages/codium/design-system.md), Account Popover section).
+
+### Decision
+
+- Keep the existing fixed popover and account actions, but tighten the information hierarchy: a small `ACCOUNT / AUTO SYNC` masthead, a single title, one concise state message, identity rows, then actions and the quiet update footer.
+- Use a 2px red top rule, a 280px maximum width and 20px inner rhythm; use the project's paper, ink, red and zero-radius language instead of rounded cards, avatars or shadows.
+- Hide the signed-out descriptive sentence when the hosted account flow is unavailable so the panel does not explain the same limitation twice.
+
+### Rejected
+
+- Do not copy Linear's sidebar settings shell, Happy's dark translucent surface, avatar-led profile menus or rounded SaaS cards; those patterns would break the archive's editorial identity and existing account route.
+
+### Intentionally unchanged
+
+- GitHub OAuth, nickname editing, automatic sync, Data Desk, sign-out, update checks and mobile safe-area behavior remain unchanged.
+
+## Version 3.11.10 — No pause at the handoff
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner observed a short pause after the outgoing vinyl seemed to finish returning, even though the JavaScript handoff occurred at 300ms. The old 300ms opacity fade made the disc disappear before the incoming disc had become visible.
+
+### Decision
+
+- Keep the 300ms handoff and 600ms physical transition, but synchronize opacity to the full 600ms transform. At the handoff midpoint both records remain partially visible, creating a continuous crossfade instead of an empty interval.
+- Apply the same transition to Home and Archive; Import's dedicated reveal timing remains untouched.
+
+### Rejected
+
+- Do not shorten the physical transform below 600ms, switch before the halfway cue, or hide the old record with an instantaneous opacity/display change.
+
+### Intentionally unchanged
+
+- Cover Flow positions, Archive edge offsets, sleeve geometry, rating data, route structure and reduced-motion behavior remain unchanged.
+
+## Version 3.11.11 — Direct login choices
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner could not find a login action in the signed-out Account panel. The previous local-only state displayed a large GitHub explanation and a hosted-site availability message instead of an obvious entry point.
+
+### Decision
+
+- Make `Sign in or register.` the signed-out heading and present two direct choices underneath: `SIGN IN WITH GITHUB` and `SIGN IN WITH EMAIL`.
+- Keep the GitHub action visible even when the local adapter is unavailable; clicking it reports the connection state instead of removing the entry point. The email action remains visible but reports that passwordless email sign-in is coming soon, matching the existing TODO boundary and avoiding a fake authentication flow.
+- Keep the version label and `CHECK FOR UPDATES` footer unchanged, and leave signed-in nickname, identity, Data Desk, automatic sync and sign-out behavior intact.
+
+### Rejected
+
+- Do not hide login behind a large explanatory essay, remove the email choice, or claim email authentication is production-ready before the Worker email-code flow exists.
+
+### Intentionally unchanged
+
+- OAuth scopes, sync storage, D1 records, local ratings, nickname persistence, update activation and mobile safe areas remain unchanged.
+
+## Version 3.11.12 — Retract inside the sleeve
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner still saw a pause and noticed the vinyl cross the left edge of the sleeve during Home rotation. The closed/retract transform used `translateX(-10%)`, which intentionally moved the disc outside the sleeve even while opacity was fading.
+
+### Decision
+
+- Set Home and Archive's closed and retraction transforms to `translateX(0)`, keeping the vinyl inside the sleeve's left boundary throughout the 600ms transition.
+- Preserve the 300ms halfway handoff and 600ms opacity/transform crossfade so the next record begins while the outgoing disc is still withdrawing.
+
+### Rejected
+
+- Do not clip the entire stage, hide overflow on the sleeve, or shorten the handoff to conceal the boundary error; those approaches would mask the physical relationship and could cut neighboring covers.
+
+### Intentionally unchanged
+
+- Sleeve depth, right-edge offsets, record colors, Archive hover/focus semantics, Import reveal timing, route structure and reduced-motion behavior remain unchanged.
+
+## Version 3.11.13 — Anchor narrow Home controls to content
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner still saw `PREV / NEXT` at the bottom of the narrow Home stage, even though the intended position is directly below the Cover Flow and its caption. The existing mobile declaration could lose to a later cascade or fail when the browser reports a small-tablet viewport.
+
+### Decision
+
+- Add a final `max-width:900px` override that explicitly positions `.home-record-controls` by `top` within the Cover Flow stage and clears `bottom`, using `!important` only on the competing inset properties. This keeps the controls in the same content band on phone and small-tablet widths while preserving the desktop bottom rule.
+- Bump the shell and UI query to `0.9.29 / UI 3.11.13` so the offline cache and hosted static snapshots cannot continue serving the prior mobile cascade.
+
+### Rejected
+
+- Do not change the controls to normal document flow or add a second fixed mobile bar; both approaches would alter the stage height and break the editorial relationship between the records, caption and actions.
+
+### Intentionally unchanged
+
+- Cover Flow transforms, record timing, desktop/tablet wide composition, button semantics and reduced-motion behavior remain unchanged.
+
+## Version 3.11.14 — Compact signed-out Account entry
+
+Implementation commit: pending
+
+### Evidence
+
+- The signed-out panel wrapped `Sign in or register.` into a large multi-line heading, stacked verbose login labels, and used a visually heavy red close cross. This displaced the useful version/update row and made the entry feel like an interruption rather than a small account control.
+
+### Decision
+
+- Keep the signed-out heading on one line at the panel's compact width by giving it a dedicated single-line style.
+- Replace the verbose button labels with `GITHUB` and `EMAIL`, retain explicit accessible `aria-label` values, and place the two actions side by side in one full-width row.
+- Remove the decorative close-cross button. The existing Account trigger and Escape key continue to close the panel, so no dismissal capability is lost.
+
+### Rejected
+
+- Do not enlarge the popover to fit a desktop-style heading, add explanatory copy, or introduce provider logos; those choices would restore the density and visual noise the owner asked to remove.
+
+### Intentionally unchanged
+
+- GitHub OAuth behavior, email-coming-soon status, signed-in nickname editing, automatic sync, version/update check and data boundaries remain unchanged.
+
+## Version 3.11.15 — Faster record withdrawal than reveal
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner noticed that record withdrawal felt as long as—or longer than—the reveal. Both directions inherited the same 600ms transition, and the handoff waited 300ms, making the return read as a pause before the next sleeve moved.
+
+### Decision
+
+- Use a slower approximately 1000ms transform for the normal reveal, but a dedicated 280ms transform and 220ms fade for `record-is-retracting` on Home and Archive.
+- Move the Home rotation handoff and Archive hover-open delay to 180ms: the next record begins while the outgoing record is already more than halfway home, preserving continuity without waiting for the full return.
+
+### Rejected
+
+- Do not speed up the reveal to match the return, remove the return motion, or hide the disc with clipping; those options erase the physical sleeve relationship instead of making its timing legible.
+
+### Intentionally unchanged
+
+- Record geometry, sleeve depth, theme colors, edge-column offsets, button behavior and reduced-motion fallback remain unchanged.
+
+## Version 3.11.16 — Restore side-record presence
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found the left and right Home records too transparent on narrow screens. The previous Cover Flow values (`.38` for the near outer pair and `.16` for the far visible pair) preserved depth at the cost of making the neighboring covers difficult to read.
+
+### Decision
+
+- Raise the narrow near-side pair to `opacity:.52` and the far visible pair to `opacity:.28`. This keeps the center record dominant while restoring recognizable artwork and the shelf's continuous rhythm.
+
+### Rejected
+
+- Do not make every side record fully opaque or remove the depth filters; that would flatten the Cover Flow and compete with the centered album.
+
+### Intentionally unchanged
+
+- Center scale, record motion, desktop/tablet opacity, sleeve colors and stage overflow remain unchanged.
+
+## Version 3.11.17 — Passwordless email sign-in foundation
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner approved adding email registration and sign-in alongside GitHub. The existing Account panel only exposed an email placeholder, while the Worker had no challenge, delivery or verification contract.
+
+### Decision
+
+- Add a two-step Account flow: request a six-digit code for an email address, then verify it without leaving the current page. Codes are hashed in D1, expire after ten minutes, allow at most five attempts, and are rate-limited by both IP and normalized email.
+- Use a free Resend-compatible Worker delivery path (`RESEND_API_KEY` secret and `EMAIL_FROM` variable). Do not put an email API key in the repository.
+- Store only a normalized email hash on the account identity. GitHub OAuth now requests `user:email`, reads a verified address, and reuses an existing email account when the hashes match exactly; different addresses remain separate.
+- Keep the existing session-token hashing and encrypted sync blob model. Email login returns the same short-lived handoff-free session shape as GitHub, so automatic sync starts after the normal app reload.
+
+### Rejected
+
+- Do not treat an unverified GitHub profile email as proof, silently merge different addresses, store plaintext verification codes, or claim production email delivery before the D1 migration and Resend secret are configured.
+
+### Intentionally unchanged
+
+- GitHub OAuth identity, automatic sync merge behavior, local browser data, nickname prompt, Account visual language and the encrypted D1 blob boundary remain unchanged.
+
+## Version 3.11.18 — Remove signed-out Account divider
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found the border between the one-line sign-in heading and compact provider actions visually disconnected.
+
+### Decision
+
+- Remove only `.account-login-options` `border-top` and its divider padding. Retain the 18px rhythm, side-by-side actions, the email-flow separator when that second step opens, and the version/update footer.
+
+### Rejected
+
+- Do not remove all spacing or remove the email-flow separator; the latter still establishes the second-step form.
+
+### Intentionally unchanged
+
+- Account width, typography, GitHub/email behavior, identity linking, D1 challenge storage and update check remain unchanged.
+
+## Version 3.11.19 — Restore a 50% side-record visibility floor
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner still found the outer Home records too faint and requested that no visible side record fall below 50% opacity.
+
+### Decision
+
+- Set the visible third and fourth desktop positions to `.52` and `.5`, and lift the narrow outer positions to `.5`. Hidden `back` positions remain invisible and are not part of the visible shelf.
+
+### Rejected
+
+- Do not make every record fully opaque; the center record must remain the visual anchor.
+
+### Intentionally unchanged
+
+- Cover Flow positions, scales, rotations, filters, cover colors and motion timing remain unchanged.
+
+## Version 3.11.20 — Clarify album Terrain and synchronize retract
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner asked what Archive album Terrain represented and requested that this compact area show album rating and release timing. They also observed a brief disc-through-sleeve flash during retraction.
+
+### Decision
+
+- Replace the ambiguous track-range-only label with three compact fields: confirmed album `RATING`, `RELEASE` from the album/year or confirmed track evidence, and the existing scored-track range.
+- Give the retracting album sleeve the same short return duration as its disc so the cover closes with the disc instead of leaving a moving stacking-context mismatch.
+
+### Rejected
+
+- Do not infer an album score from the average of track scores; an unconfirmed album rating remains `—`.
+
+### Intentionally unchanged
+
+- Album ordering, cover source fallback, hover-only reveal, local rating evidence and detailed album pages remain unchanged.
+
+## Version 3.11.21 — Keep Archive discs below the sleeve top edge
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner observed that a revealed Archive disc rose above the album sleeve's top boundary.
+
+### Decision
+
+- Remove the `-7%` vertical reveal offset and keep the disc at its sleeve-top baseline while preserving its horizontal slide, rotation, scale and shadow.
+
+### Rejected
+
+- Do not reduce the disc diameter or clip the top edge; those choices would make the physical record feel undersized or artificially masked.
+
+### Intentionally unchanged
+
+- Album Terrain metadata, cover colors, edge-column avoidance, retract timing and hover/focus behavior remain unchanged.
+
+## Version 3.11.22 — Enforce the responsive 50% opacity floor
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner reiterated that the faintest visible side record must be at least 50% opaque.
+
+### Decision
+
+- Add a final responsive cascade after all earlier Cover Flow media queries: desktop outer positions resolve to `.52`/`.5`, while narrow near and outer positions resolve to `.52`/`.5` with `!important` so legacy rules cannot lower them.
+
+### Rejected
+
+- Do not remove the hidden `back` state or make the center and all side records identical; hidden records are not visible and the center remains the visual anchor.
+
+### Intentionally unchanged
+
+- Cover art, record color extraction, scale, perspective, rotation, sleeve geometry and navigation remain unchanged.
+
+## Version 3.11.23 — Place Featured Shape scores inside the radar
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner found the four score columns below FEATURED SHAPE repetitive and visually detached from the radar that already expresses the same four dimensions.
+
+### Decision
+
+- Remove the separate score row from each FEATURED SHAPE slide.
+- Add compact red score labels beside the radar nodes and reveal them sequentially with the radar drawing, so each value appears as its corresponding point is reached.
+- Keep the outer axis labels (`SONG`, `VOCAL`, `PRODUCTION`, `OVERALL`) for orientation and retain accessible labels on each numeric value.
+
+### Rejected
+
+- Do not place all values in a legend or replace the radar with a table; both options restore the detached four-column treatment.
+
+### Intentionally unchanged
+
+- Radar geometry, score data, slide rotation, reduced-motion behavior and other Home sections remain unchanged.
+
+## Version 3.11.24 — Merge Journal into Taste
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner approved consolidating Journal and Taste because both summarize personal listening, reasons and change over time.
+
+### Decision
+
+- Remove Journal from desktop and mobile top-level navigation.
+- Make Taste the single top-level reading layer with Overview, Journal and Insights groupings.
+- Add `/taste/journal` aliases while preserving `/journal` URLs for existing bookmarks and data.
+- Keep Recent changes, Rediscover, Annual Index, Sonic Map, Blind Spots and Memory Palace available without deleting stored journal records.
+
+### Rejected
+
+- Do not collapse all pages into one undifferentiated dashboard or delete old `/journal` paths.
+
+### Intentionally unchanged
+
+- Archive, Rate, Import, rating storage, journal storage, local sync and existing analysis routes remain unchanged.
+
+## Version 3.11.25 — Raise visible side-record opacity
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner observed that real physical sleeves and records do not become translucent as they move sideways, and that the earlier low-opacity treatment made the Cover Flow look synthetic.
+
+### Decision
+
+- Set every visible Home side-record position to an opacity floor of 80% across desktop, tablet and phone cascades.
+- Keep the center record at full opacity and retain depth through scale, perspective, position and saturation rather than transparency.
+- Keep the hidden back position fully hidden.
+
+### Rejected
+
+- Do not flatten all records to the same scale or remove the Cover Flow depth cues; opacity is the only variable being corrected.
+
+### Intentionally unchanged
+
+- Album order, sleeve geometry, disc motion, record colors and Archive opacity remain unchanged.
+
+## Version 3.11.26 — Full opacity for visible Home records
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner confirmed that moving physical records should not lower their transparency; the previous 80% floor still looked artificial.
+
+### Decision
+
+- Set every visible Home side record to `opacity: 1` on desktop, tablet and phone.
+- Preserve depth through scale, perspective, position, z-index and saturation only.
+
+### Rejected
+
+- Do not use translucent side records as a Cover Flow shortcut.
+
+### Intentionally unchanged
+
+- Hidden back records, Archive behavior, sleeve geometry, record colors and motion timing remain unchanged.

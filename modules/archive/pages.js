@@ -11,10 +11,10 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.18";
+import { translateText } from "../layout/i18n.js?v=0.9.42";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.11.2";
-import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.2";
+import { archiveSearch } from "../search/pages.js?ui=3.11.26";
+import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.26";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
 const archiveHomeNav = () => `<div class="archive-index-nav">${archiveNav()}<button class="archive-search-trigger mono" id="archive-search-trigger" type="button" aria-controls="archive-search-panel" aria-expanded="${new URLSearchParams(location.search).has("q") ? "true" : "false"}">SEARCH</button></div>`;
@@ -112,7 +112,7 @@ const versionComparison = (versions) => { if (versions.length < 2) return `<p>No
 const versionForm = (track) => `<form class="version-form" data-base-track-id="${safe(baseTrackId(track))}"><span class="mono">CONFIRM ANOTHER RECORDING</span><label><span>TYPE</span><select name="versionType">${versionTypes.map((type) => `<option value="${type}">${type}</option>`).join("")}</select></label><label><span>IDENTIFYING LABEL</span><input name="versionLabel" maxlength="80" required placeholder="Live at… / 2024 remaster"></label><button class="button" type="submit">ADD VERSION</button><p data-version-status>Stored locally. Nothing is inferred from the title.</p></form>`;
 const sonicForm = (track) => { const values = sonicFor(trackId(track)) || {}; return `<form class="sonic-form" data-sonic-track-id="${safe(trackId(track))}"><p>Character only—neither side is better.</p>${Object.entries(sonicDimensions).map(([key, dimension]) => `<label><span>${dimension.low}</span><input type="range" name="${key}" min="-1" max="1" step="0.1" value="${values[key] ?? 0}" aria-label="${dimension.label}"><span>${dimension.high}</span><output>${Number(values[key] ?? 0).toFixed(1)}</output></label>`).join("")}<button class="button" type="submit">SAVE SONIC CHARACTER</button><p data-sonic-status>${sonicFor(trackId(track)) ? "Saved locally." : "No sonic character saved yet."}</p></form>`; };
 
-export const archiveAlbums = () => `${pageHeader("ARCHIVE / ALBUMS", "Albums in view.", "A cover, artist, and overall response.", link("/archive/compare/albums", "COMPARE ALBUMS", "button"))}${archiveNav()}<div class="album-grid">${allAlbums().sort((left, right) => ratingDescending(left, right, albumOverall, (album) => `${album.artist} ${album.title}`)).map((album) => { const id = album.id || slug(album.artist + "-" + album.title); const { primary: coverUrl, alternate } = coverSourcesFor(album, id); const tracks = (album.tracks?.length ? album.tracks : data.songs.entries.filter((track) => canonicalAlbumMatch(track, album))).map((track) => ({ ...track, scores: resolvedScores(track) })); const scores = tracks.map((track) => Number(track.scores?.overall)).filter(Number.isFinite); const terrainText = scores.length ? `${scores.length} RATED · ${rating(Math.min(...scores))}–${rating(Math.max(...scores))}` : "NO RATED TERRAIN"; return `<a class="album-card" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><div class="album-card-record" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackCoverTone(`${album.artist}-${album.title}`)}"><span class="album-card-disc" aria-hidden="true"></span><div class="album-card-cover">${sleeveDepth}${coverMarkup(coverUrl, album.artist + " — " + album.title + " cover", true, alternate)}</div></div><span class="geometry-note mono">${terrainText}</span><p>${safe(album.artist)}</p><h3>${safe(album.title)}</h3></a>`; }).join("")}</div>`;
+export const archiveAlbums = () => `${pageHeader("ARCHIVE / ALBUMS", "Albums in view.", "A cover, artist, and overall response.", link("/archive/compare/albums", "COMPARE ALBUMS", "button"))}${archiveNav()}<div class="album-grid">${allAlbums().sort((left, right) => ratingDescending(left, right, albumOverall, (album) => `${album.artist} ${album.title}`)).map((album) => { const id = album.id || slug(album.artist + "-" + album.title); const { primary: coverUrl, alternate } = coverSourcesFor(album, id); const tracks = (album.tracks?.length ? album.tracks : data.songs.entries.filter((track) => canonicalAlbumMatch(track, album))).map((track) => ({ ...track, scores: resolvedScores(track) })); const scores = tracks.map((track) => Number(track.scores?.overall)).filter(Number.isFinite); const albumScore = albumOverall(album); const releaseDate = album.releaseDate || album.year || tracks.map((track) => track.releaseDate).find(Boolean) || "—"; const trackRange = scores.length ? `${scores.length} TRACKS · ${rating(Math.min(...scores))}–${rating(Math.max(...scores))}` : "NO RATED TRACKS"; return `<a class="album-card" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><div class="album-card-record" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackCoverTone(`${album.artist}-${album.title}`)}"><span class="album-card-disc" aria-hidden="true"></span><div class="album-card-cover">${sleeveDepth}${coverMarkup(coverUrl, album.artist + " — " + album.title + " cover", true, alternate)}</div></div><span class="album-card-terrain mono"><span>RATING ${rating(albumScore)}</span><span>RELEASE ${safe(releaseDate)}</span><span>${trackRange}</span></span><p>${safe(album.artist)}</p><h3>${safe(album.title)}</h3></a>`; }).join("")}</div>`;
 
 const orderedTracklist = (tracks) => {
   const multipleDiscs = new Set(tracks.map((track) => track.discNumber || 1)).size > 1; let disc = null;
@@ -177,6 +177,34 @@ export const bindArchive = (path, navigate) => {
     const target = new URL(card.href, location.href);
     setTimeout(() => navigate(target.pathname + target.search), matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 220);
   });
+  if (path === "/archive/albums") {
+    let activeCard = null; let openTimer = null; let openTarget = null;
+    document.querySelectorAll(".album-card").forEach((card) => {
+      const retract = () => {
+      if (openTarget === card && openTimer) { window.clearTimeout(openTimer); openTimer = null; openTarget = null; }
+      if (activeCard === card) activeCard = null;
+      card.classList.remove("record-is-open");
+      card.classList.add("record-is-retracting");
+      window.clearTimeout(card._retractTimer);
+      card._retractTimer = window.setTimeout(() => card.classList.remove("record-is-retracting"), 420);
+      };
+      const restore = () => {
+        window.clearTimeout(card._retractTimer); card.classList.remove("record-is-retracting");
+        if (activeCard === card) { card.classList.add("record-is-open"); return; }
+        if (activeCard && activeCard !== card) {
+          const previous = activeCard; activeCard = null; previous.classList.remove("record-is-open"); previous.classList.add("record-is-retracting");
+          window.clearTimeout(previous._retractTimer); previous._retractTimer = window.setTimeout(() => previous.classList.remove("record-is-retracting"), 420);
+        }
+        if (openTimer) window.clearTimeout(openTimer);
+        openTarget = card;
+        openTimer = window.setTimeout(() => { card.classList.add("record-is-open"); activeCard = card; openTarget = null; openTimer = null; }, 180);
+      };
+    card.addEventListener("pointerenter", restore);
+    card.addEventListener("pointerleave", retract);
+    card.addEventListener("focusin", restore);
+    card.addEventListener("focusout", (event) => { if (!card.contains(event.relatedTarget)) retract(); });
+    });
+  }
   if (path === "/archive/coverage") {
     document.querySelector(".metadata-picker")?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const id = new FormData(form).get("track"); navigate(`/archive/coverage?track=${encodeURIComponent(id)}${form.dataset.missingOnly === "1" ? "&missing=1" : ""}`); });
     document.querySelector(".metadata-editor")?.addEventListener("submit", (event) => { event.preventDefault(); const form = event.currentTarget; const values = Object.fromEntries(new FormData(form)); const missingOnly = new URLSearchParams(location.search).get("missing") === "1"; try { saveMetadataOverride(form.dataset.trackId, values); form.querySelector("[data-metadata-status]").textContent = "Local correction saved."; setTimeout(() => navigate(missingOnly ? "/archive/coverage?missing=1" : `/archive/coverage?track=${encodeURIComponent(form.dataset.trackId)}`), 250); } catch (error) { form.querySelector("[data-metadata-status]").textContent = error.message; } });

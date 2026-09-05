@@ -1,7 +1,6 @@
 import { allAlbums, allArtists, allTracks, data, findTrack, rating, safe, storage, trackId } from "../music/data.js";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { icon } from "../layout/icons.js";
 import { antiRecommendationPatterns, currentEvidence } from "../music/analysis.js";
 import { insightLabel, insightStats } from "../music/insights.js";
 import { readSonic, sonicDimensions } from "../music/sonic.js";
@@ -11,9 +10,12 @@ import { blindSpots, tasteDNA } from "../music/taste-dna.js";
 import { tasteTraitMark } from "../music/geometry.js";
 
 const tasteNav = () => secondaryNav([["/taste/philosophy", "Philosophy"], ["/taste/profile", "Profile"], ["/taste/good-not-mine", "Good ≠ Mine"], ["/taste/compare", "Compare"]]);
-const tasteGates = [["LISTENING PHILOSOPHY", "/taste/philosophy", "The parts that need a reason to exist.", "philosophy"], ["MY TASTE PROFILE", "/taste/profile", "A visual summary, not a personality test.", "profile"], ["GOOD ≠ MINE", "/taste/good-not-mine", "Respect and resonance are different things.", "resonance"], ["COMPARE WITH ME", "/taste/compare", "Rate a track, then reveal the distance.", "compare"]];
-const analysisRoutes = [["TASTE DNA", "/taste/dna"], ["BLIND SPOTS", "/taste/blind-spots"], ["BOUNDARIES", "/taste/anti-recommendation"], ["SONIC MAP", "/taste/sonic-map"], ["TASTE CONSTELLATION", "/taste/family-tree"], ["LISTENING PORTRAIT", "/taste/portrait"]];
-export const tasteHome = () => `${pageHeader("TASTE", "How I hear music.", "The listening method behind the archive.")}${tasteNav()}<div class="taste-gates">${tasteGates.map(([title, href, copy, iconName]) => `<article><span class="taste-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${copy}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div><nav class="taste-analysis-index" aria-label="Personal analysis">${analysisRoutes.map(([label, href], index) => link(href, `${String(index + 1).padStart(2, "0")} / ${label} →`)).join("")}</nav>`;
+const mergedTasteSections = [
+  ["OVERVIEW", "The shape of the archive, its method and its recurring signals.", [["LISTENING DNA", "/taste/dna"], ["LISTENING PORTRAIT", "/taste/portrait"], ["MY TASTE PROFILE", "/taste/profile"], ["LISTENING PHILOSOPHY", "/taste/philosophy"], ["COMPARE WITH ME", "/taste/compare"]]],
+  ["JOURNAL", "The time layer: what changed, resurfaced and earned a place in memory.", [["RECENT CHANGES", "/taste/journal"], ["REDISCOVER", "/taste/journal"], ["ANNUAL INDEX", `/taste/journal/year/${new Date().getFullYear()}`]]],
+  ["INSIGHTS", "Transparent analysis of the boundaries, movement and gaps in your listening.", [["SONIC MAP", "/taste/sonic-map"], ["BLIND SPOTS", "/taste/blind-spots"], ["BOUNDARIES", "/taste/anti-recommendation"], ["MEMORY PALACE", "/taste/journal/memory-palace"], ["ARCHIVE ENTROPY", "/taste/journal/entropy"], ["TASTE CONSTELLATION", "/taste/family-tree"]]],
+];
+export const tasteHome = () => `${pageHeader("TASTE", "How I hear music.", "One personal listening archive: its overview, history and transparent insights.")}${tasteNav()}<section class="taste-merged-index" aria-label="Personal listening archive">${mergedTasteSections.map(([title, copy, items]) => `<article class="taste-merged-section"><span class="mono">${title}</span><p>${copy}</p><nav aria-label="${title}">${items.map(([label, href], index) => link(href, `${String(index + 1).padStart(2, "0")} / ${label} →`, "taste-merged-link")).join("")}</nav></article>`).join("")}</section>`;
 
 export const philosophy = () => `${pageHeader("TASTE / PHILOSOPHY", "Every element needs a reason.", data.profile.methodCopy)}${tasteNav()}<div class="essay-stack"><article><span>01</span><h2>Melody opens the door.</h2><p>${safe(data.profile.firstGateCopy)}</p></article>${data.profile.listeningOrder.map((item, index) => `<article><span>${String(index + 2).padStart(2, "0")}</span><h2>${safe(item.name)}</h2><p>${safe(item.note)}</p></article>`).join("")}<article><span>06</span><h2>Surprise belongs to the song.</h2><p>${safe(data.profile.surpriseFactor.latePayoffNote)}</p></article><article><span>07</span><h2>The human voice stays human.</h2><p>${safe(data.profile.humanVoice.refusal)}</p></article></div>`;
 

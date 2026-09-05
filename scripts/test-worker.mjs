@@ -1,6 +1,6 @@
 import { handleRequest } from '../worker/index.mjs';
 
-const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.18' };
+const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.42' };
 const allowedOrigin = env.ALLOWED_ORIGIN;
 const request = (path, options = {}) => new Request(`https://adapter.example${path}`, options);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
@@ -13,6 +13,7 @@ const version = await handleRequest(request('/api/version', { headers: { Origin:
 const versionBody = await version.json();
 expect(version.status === 200 && versionBody.capabilities.includes('qq-smart-import') && versionBody.capabilities.includes('qq-playlist') && versionBody.capabilities.includes('musicbrainz-release-candidates'), 'Worker version contract failed.');
 expect(versionBody.capabilities.includes('account-auto-sync'), 'Worker account auto-sync capability is not advertised.');
+expect(versionBody.capabilities.includes('email-code-auth'), 'Worker email-code authentication capability is not advertised.');
 expect(version.headers.get('Access-Control-Allow-Origin') === allowedOrigin, 'Worker did not return the configured CORS origin.');
 
 const preflight = await handleRequest(request('/api/import/qq-playlist', { method: 'OPTIONS', headers: { Origin: allowedOrigin } }), env);
