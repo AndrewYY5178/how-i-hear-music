@@ -549,4 +549,5 @@ The two owner-approved living-newspaper blueprints remain the visual target. Fut
 - [x] Keep `纯妹妹` as the first signed-out showcase record and preserve every showcase slot when a remote cover is unavailable, allowing the card fallback to remain visible. *(UI 3.11.39; automated checks passed.)*
 - [x] Mark all nine Home showcase records as presentation-only until a matching local import exists, including the pre-existing `纯妹妹` record. *(UI 3.11.40; automated checks passed.)*
 - [x] Base Home's capacity switch on the imported-album store itself so a full user deck cannot be diluted by canonical samples or cover availability. *(UI 3.11.41; automated checks passed.)*
+- [x] Allow direct numeric typing for each album track score while retaining − / +, waveform editing, range validation and draft persistence. *(UI 3.11.42; automated checks passed.)*
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.

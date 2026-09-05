@@ -3003,3 +3003,25 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Showcase visibility rules, signed-out sample ordering, archive filtering, ratings, and sync storage remain unchanged.
+
+## Version 3.11.42 — Type album track scores directly
+
+Implementation commit: pending
+
+### Evidence
+
+- Album track rows exposed only − / + controls, making precise values slower to enter and requiring repeated taps for a known score.
+
+### Decision
+
+- Replace each album track row's visual score output with a compact numeric input (`0–11`, `0.1` step) while retaining the existing − / + buttons and waveform interaction.
+- Validate typed values on change, persist the draft immediately, and restore the prior value with native validity feedback when the entry is outside the allowed range.
+
+### Rejected
+
+- Do not remove the − / + controls or waveform drag interaction.
+- Do not change the separate album-level Overall input or final save validation.
+
+### Intentionally unchanged
+
+- Track rating controls, album completion rules, score storage format, responsive geometry, and accessibility semantics remain unchanged.

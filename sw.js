@@ -1,10 +1,10 @@
 const cachePrefix = "how-i-hear-music-shell-";
-const cacheName = "how-i-hear-music-shell-0.9.57-ui3.11.41";
+const cacheName = "how-i-hear-music-shell-0.9.58-ui3.11.42";
 const shell = [
-  "", "index.html", "base.js", "styles.css", "styles.css?v=0.9.57-ui3.11.41", "app.js", "favicon.png", "og-image.svg",
+  "", "index.html", "base.js", "styles.css", "styles.css?v=0.9.58-ui3.11.42", "app.js", "favicon.png", "og-image.svg",
   "data/music-profile.json", "data/artists.json", "data/songs.json", "data/library.json", "data/catalog.json",
-  "modules/home.js", "modules/home.js?ui=3.11.41", "modules/archive/pages.js", "modules/archive/pages.js?ui=3.11.41", "modules/import/pages.js", "modules/import/pages.js?ui=3.11.41", "modules/journal/pages.js", "modules/journal/pages.js?ui=3.11.41", "modules/search/pages.js", "modules/search/pages.js?ui=3.11.41", "modules/taste/pages.js", "modules/taste/pages.js?ui=3.11.41", "modules/rating/pages.js?ui=3.11.41",
-  "modules/layout/cover-tone.js", "modules/layout/cover-tone.js?ui=3.11.41", "modules/layout/motion.js", "modules/layout/motion.js?ui=3.11.41", "modules/layout/i18n.js", "modules/layout/i18n.js?v=0.9.57", "modules/layout/icons.js", "modules/layout/paths.js", "modules/layout/shell.js",
+  "modules/home.js", "modules/home.js?ui=3.11.42", "modules/archive/pages.js", "modules/archive/pages.js?ui=3.11.42", "modules/import/pages.js", "modules/import/pages.js?ui=3.11.42", "modules/journal/pages.js", "modules/journal/pages.js?ui=3.11.42", "modules/search/pages.js", "modules/search/pages.js?ui=3.11.42", "modules/taste/pages.js", "modules/taste/pages.js?ui=3.11.42", "modules/rating/pages.js?ui=3.11.42",
+  "modules/layout/cover-tone.js", "modules/layout/cover-tone.js?ui=3.11.42", "modules/layout/motion.js", "modules/layout/motion.js?ui=3.11.42", "modules/layout/i18n.js", "modules/layout/i18n.js?v=0.9.58", "modules/layout/icons.js", "modules/layout/paths.js", "modules/layout/shell.js",
   "modules/music/account.js", "modules/music/album-import.js", "modules/music/album-narrative.js", "modules/music/analysis.js", "modules/music/api.js", "modules/music/cloud-sync.js", "modules/music/data.js", "modules/music/entropy.js", "modules/music/geometry.js", "modules/music/groups.js", "modules/music/insights.js", "modules/music/journal.js", "modules/music/lifecycle.js", "modules/music/matching.js", "modules/music/memory.js", "modules/music/metadata.js", "modules/music/notes.js", "modules/music/portrait.js", "modules/music/resilience.js", "modules/music/sonic.js", "modules/music/sync.js", "modules/music/taste-dna.js", "modules/music/versions.js",
   "modules/rating/interactions.js", "modules/rating/pages.js", "modules/rating/visuals.js",
 ].map((path) => new URL(path, self.registration.scope).href);
