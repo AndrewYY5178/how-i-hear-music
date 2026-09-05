@@ -2982,3 +2982,24 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Signed-out Home ordering, signed-in capacity switching, cover fallback behavior, ratings, track records, and sync data remain unchanged.
+
+## Version 3.11.41 — Count the imported album store directly
+
+Implementation commit: pending
+
+### Evidence
+
+- A full imported deck could still be treated as incomplete when the merged canonical view and a local imported record used different object shapes, even though the imported-album store already contained the user's albums.
+
+### Decision
+
+- Resolve Home ownership directly from the imported-album store, using the merged record only as presentation data; the nine-record capacity gate no longer depends on canonical sample rows or cover availability.
+
+### Rejected
+
+- Do not count arbitrary canonical albums as user-owned.
+- Do not require a cover request to decide whether the user's deck is full.
+
+### Intentionally unchanged
+
+- Showcase visibility rules, signed-out sample ordering, archive filtering, ratings, and sync storage remain unchanged.

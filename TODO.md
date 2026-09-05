@@ -548,4 +548,5 @@ The two owner-approved living-newspaper blueprints remain the visual target. Fut
 - [x] Separate Home's showcase-only albums from the user's Archive: signed-out Home always keeps the nine-image sample deck, while signed-in Home switches fully to imported albums once the deck is full; Archive, Search, Taste and Journal hide unimported showcase records. *(UI 3.11.38; automated checks passed.)*
 - [x] Keep `纯妹妹` as the first signed-out showcase record and preserve every showcase slot when a remote cover is unavailable, allowing the card fallback to remain visible. *(UI 3.11.39; automated checks passed.)*
 - [x] Mark all nine Home showcase records as presentation-only until a matching local import exists, including the pre-existing `纯妹妹` record. *(UI 3.11.40; automated checks passed.)*
+- [x] Base Home's capacity switch on the imported-album store itself so a full user deck cannot be diluted by canonical samples or cover availability. *(UI 3.11.41; automated checks passed.)*
 - The terms and rights notice requires review by qualified legal counsel before commercial or public expansion; repository work cannot substitute for that advice.

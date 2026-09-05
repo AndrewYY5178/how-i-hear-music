@@ -166,6 +166,8 @@ UI 3.11.39 让未登录首页稳定以 `纯妹妹` 作为样板首张，并在�
 
 UI 3.11.40 将 Home 的九张样板统一标记为展示记录；只有用户实际导入后，它们才会出现在个人 Archive、Search、Taste 或 Journal 的专辑列表中。
 
+UI 3.11.41 直接按已导入专辑存储判断 Home 展示容量，不再受样板记录合并方式或封面加载状态影响。
+
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`
