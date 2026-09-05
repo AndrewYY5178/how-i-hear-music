@@ -4,13 +4,13 @@ import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStat
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
 
-const appVersion = "0.9.42";
+const appVersion = "0.9.43";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"],
 ];
 const mobileNav = [
-  ["/", "Home", "home"], ["/archive", "Archive", "archive"], ["/rate", "Rate", "rate"], ["/taste", "Taste", "taste"],
+  ["/", "Home", "home"], ["/archive", "Archive", "archive"], ["/rate", "Rate", "rate"], ["/taste", "Taste", "taste"], ["/import", "Import", "import"],
 ];
 const mobileNavIcon = (name) => {
   const paths = {
@@ -18,15 +18,14 @@ const mobileNavIcon = (name) => {
     archive: '<path d="M4 5h16v14H4z"/><path d="M7 9h10M7 13h10M7 17h6"/>',
     rate: '<path d="M12 3 20 8v8l-8 5-8-5V8z"/><path d="M7.5 15.5 12 8l4.5 7.5z"/>',
     taste: '<path d="M5 7c2.5-3 12.5-3 14 0v10c-1.5 3-11.5 3-14 0z"/><path d="M8 11c2-2 6-2 8 0M8 15c2 2 6 2 8 0"/>',
-    more: '<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>',
+    import: '<path d="M4 5h16v14H4z"/><path d="M8 12h8M12 8v8"/>',
   };
   return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths[name]}</svg>`;
 };
 const pathIsActive = (path, href) => path === href || (href !== "/" && path.startsWith(href));
 const mobileShell = (path) => {
-  const moreActive = ["/import"].some((href) => pathIsActive(path, href));
   const mobileLink = (href, label, iconName) => `<a class="mobile-tab${pathIsActive(path, href) ? " active" : ""}${href === "/rate" ? " mobile-tab-rate" : ""}" href="${withBase(href)}" data-route>${mobileNavIcon(iconName)}<span>${safe(label)}</span></a>`;
-  return `<div class="mobile-more-panel" id="mobile-more-panel" hidden aria-label="More destinations">${link("/import", "Import", pathIsActive(path, "/import") ? "active" : "")}</div><nav class="mobile-tabbar" aria-label="Mobile primary navigation">${mobileNav.map(([href, label, iconName]) => mobileLink(href, label, iconName)).join("")}<button class="mobile-tab mobile-tab-more${moreActive ? " active" : ""}" type="button" data-mobile-more aria-expanded="false" aria-controls="mobile-more-panel">${mobileNavIcon("more")}<span>More</span></button></nav>`;
+  return `<nav class="mobile-tabbar" aria-label="Mobile primary navigation">${mobileNav.map(([href, label, iconName]) => mobileLink(href, label, iconName)).join("")}</nav>`;
 };
 const accountShell = () => {
   const session = syncSession(); const signedIn = Boolean(session?.token && session?.user?.login);
@@ -64,15 +63,6 @@ export const renderShell = (path) => {
     toggle.setAttribute("aria-expanded", "false");
     toggle.focus();
   };
-  const more = header.querySelector("[data-mobile-more]");
-  const morePanel = header.querySelector("#mobile-more-panel");
-  const closeMore = () => { morePanel.hidden = true; more.setAttribute("aria-expanded", "false"); };
-  more.addEventListener("click", () => {
-    const open = morePanel.hidden;
-    morePanel.hidden = !open;
-    more.setAttribute("aria-expanded", String(open));
-  });
-  morePanel.addEventListener("click", closeMore);
   const accountToggles = [...header.querySelectorAll(".account-toggle")]; const accountPanel = header.querySelector("#account-panel");
   const visibleAccountToggle = () => accountToggles.find((button) => {
     const bounds = button.getBoundingClientRect();
@@ -89,7 +79,7 @@ export const renderShell = (path) => {
   accountPanel.querySelector("[data-check-update]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("how-i-hear-music:check-update")));
   accountPanel.querySelector(".account-nickname-form")?.addEventListener("submit", (event) => { event.preventDefault(); const status = accountPanel.querySelector("#account-status"); try { const saved = saveAccountNickname(session.user.id, new FormData(event.currentTarget).get("nickname")); clearNicknamePrompt(); accountToggles.forEach((button) => { button.textContent = saved; button.classList.add("has-nickname"); button.setAttribute("data-i18n-ignore", ""); }); accountPanel.querySelector("#account-panel-title").textContent = `Hello, ${saved}.`; status.textContent = "Nickname saved · automatic sync queued."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not save the nickname."; } });
   accountPanel.querySelector("[data-account-sign-out]")?.addEventListener("click", async () => { const status = accountPanel.querySelector("#account-status"); try { await signOutSync(); renderShell(path); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not sign out."; } });
-  header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); visibleAccountToggle().focus(); } if (!morePanel.hidden) { closeMore(); more.focus(); } });
+  header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); visibleAccountToggle().focus(); } });
   if (session?.promptNickname && !nickname) { clearNicknamePrompt(); openAccount({ focusNickname: true }); queueMicrotask(() => accountPanel.querySelector('[name="nickname"]')?.focus()); }
   setDocumentTitle(path === "/" ? "Home" : path.split("/").filter(Boolean).map((item) => item[0].toUpperCase() + item.slice(1)).join(" / "));
 };

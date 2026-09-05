@@ -175,7 +175,7 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
   .snapshot-list li { grid-template-columns:1fr; gap:4px; }
 }
 
-/* UI 3.11.26 — merge Journal into the Taste reading layer without changing stored routes. */
+/* UI 3.11.24 — merge Journal into the Taste reading layer without changing stored routes. */
 .taste-merged-index { display:grid; grid-template-columns:repeat(3,1fr); margin-top:32px; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
 .taste-merged-section { min-width:0; min-height:300px; padding:24px 24px 28px; border-right:1px solid var(--line); }
 .taste-merged-section:first-child { padding-left:0; }
@@ -921,7 +921,7 @@ body::before {
   .home-record[data-record-position="left-3"],.home-record[data-record-position="right-3"] { opacity:.5 !important; }
 }
 
-/* UI 3.11.26 — keep every visible side record fully opaque. */
+/* UI 3.11.27 — keep every visible side record fully opaque. */
 @media (min-width:761px) {
   .home-record[data-record-position="left-1"],.home-record[data-record-position="right-1"],.home-record[data-record-position="left-2"],.home-record[data-record-position="right-2"],.home-record[data-record-position="left-3"],.home-record[data-record-position="right-3"],.home-record[data-record-position="left-4"],.home-record[data-record-position="right-4"] { opacity:1 !important; }
 }

@@ -101,11 +101,13 @@ assert.match(shellSource, /class="account-panel-title\$\{signedIn \? "" : " acco
 assert.match(shellSource, /data-account-sign-in[^>]*aria-label="Sign in with GitHub">GITHUB/);
 assert.match(shellSource, /data-account-email-sign-in[^>]*aria-label="Sign in with email">EMAIL/);
 assert.doesNotMatch(shellSource, /class="account-close"/);
+assert.match(shellSource, /\["\/import", "Import", "import"\]/);
+assert.doesNotMatch(shellSource, /data-mobile-more|mobile-more-panel/);
 assert.doesNotMatch(stylesheet, /\.account-login-options \{[^}]*border-top/);
 assert.match(stylesheet, /\.home-record\[data-record-position="left-4"\] \{ z-index:6; opacity:\.5;/);
 assert.match(stylesheet, /\.home-record\[data-record-position="right-3"\] \{ opacity:\.5;/);
 assert.match(stylesheet, /UI 3\.11\.22 — make the 50% side-record floor win/);
-assert.match(stylesheet, /UI 3\.11\.26 — keep every visible side record fully opaque/);
+assert.match(stylesheet, /UI 3\.11\.27 — keep every visible side record fully opaque/);
 assert.match(stylesheet, /left-4"\],\.home-record\[data-record-position="right-4"\].*opacity:1 !important/);
 assert.doesNotMatch(homeMarkup, /class="feature-score"/);
 assert.match(homeMarkup, /class="radar-value-label"/);

@@ -2656,3 +2656,25 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Hidden back records, Archive behavior, sleeve geometry, record colors and motion timing remain unchanged.
+
+## Version 3.11.27 — Direct Import in narrow navigation
+
+Implementation commit: pending
+
+### Evidence
+
+- The owner prefers all five active modules to be reachable directly in a narrow window and finds the extra More step unnecessary.
+
+### Decision
+
+- Replace the narrow `More` destination with a direct `Import` tab.
+- Keep the five-item mobile bar consistent with the five top-level modules: Home, Archive, Rate, Taste and Import.
+- Remove the More panel interaction and preserve direct route links and active-state styling.
+
+### Rejected
+
+- Do not keep Import behind a secondary sheet when it is a primary product module.
+
+### Intentionally unchanged
+
+- Desktop navigation, route structure, page content and the account panel remain unchanged.

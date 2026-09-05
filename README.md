@@ -90,6 +90,7 @@ UI 3.11.23 移除 FEATURED SHAPE 下方的四栏分数，改为在雷达图节�
 UI 3.11.24 将 Journal 收进 Taste：顶层导航保留 Home、Archive、Rate、Taste、Import；Taste 内分为 Overview、Journal 和 Insights。旧 `/journal` 路由继续兼容，新增 `/taste/journal` 及其年度、记忆与熵分析入口。
 UI 3.11.25 将 Home 所有可见侧边唱片的最低透明度提高到 80%，保留中心唱片的视觉焦点，不再使用过低透明度模拟景深。
 UI 3.11.26 将 Home 所有可见侧边唱片统一为 100% 不透明度，景深只由尺寸、透视、位置和饱和度表达。
+UI 3.11.27 窄版底部导航移除 `More`，直接显示 `Import`，五个模块均可一键到达。
 
 UI 3.3 把数据可信度放在功能数量之前：没有确认曲序的 Album 不再生成虚构 Track 或预设分数；错误 Track/Album URL 不再回退到其他记录；完成 Album rating 会验证所有曲目并同步当前 Track ratings。Journal 修订锁定原记录身份，Metadata 来源按字段保存，备份恢复先预览冲突并保留一次完整回滚。Sonic 中性值不再被误分到 Cold/Sparse，离线缓存按版本隔离，静态部署也获得 CSP/referrer 边界。
 

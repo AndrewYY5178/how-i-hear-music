@@ -11,10 +11,10 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.42";
+import { translateText } from "../layout/i18n.js?v=0.9.43";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.11.26";
-import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.26";
+import { archiveSearch } from "../search/pages.js?ui=3.11.27";
+import { bindCoverTones, fallbackCoverTone } from "../layout/cover-tone.js?ui=3.11.27";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
 const archiveHomeNav = () => `<div class="archive-index-nav">${archiveNav()}<button class="archive-search-trigger mono" id="archive-search-trigger" type="button" aria-controls="archive-search-panel" aria-expanded="${new URLSearchParams(location.search).has("q") ? "true" : "false"}">SEARCH</button></div>`;
