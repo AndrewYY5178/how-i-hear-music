@@ -1884,7 +1884,7 @@ Implementation commit: pending
 
 ## Version 3.10.0 — The archive moves like printed matter
 
-Implementation commit: pending
+Implementation commit: `679afec`
 
 ### Evidence
 
