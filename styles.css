@@ -1008,7 +1008,7 @@ body::before {
   font-weight:700;
 }
 
-/* UI 3.11.51 — keep Home artwork in its source colors; depth comes from geometry. */
+/* UI 3.11.52 — complete the Chinese UI audit; keep Home artwork in its source colors. */
 .home-record,
 .home-record[data-record-position="left-1"],
 .home-record[data-record-position="right-1"],

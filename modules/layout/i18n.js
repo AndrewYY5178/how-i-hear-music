@@ -94,6 +94,15 @@ Object.assign(zh, {
   "Sign in with email": "使用邮箱登录",
   "Mobile primary navigation": "移动端主导航",
   "Section navigation": "分区导航",
+  "PEAK": "峰值",
+  "LOW": "最低",
+  "AVERAGE": "平均",
+  "CONSISTENCY": "一致性",
+  "RANGE": "范围",
+  "OPEN ALBUM": "打开专辑",
+  "OPEN ALBUM →": "打开专辑 →",
+  "Imported album artist": "导入专辑艺人",
+  "counted from saved listening reasons": "根据已保存的喜欢理由统计",
   "Search the record": "搜索整份档案",
   "No alternate recording has been confirmed. Add one only when its identity is known.": "还没有确认其他录音版本；只有身份明确时才添加。",
   "FROM": "从",
@@ -173,6 +182,11 @@ Object.assign(zh, {
 });
 
 const patterns = [
+  [/^(\d+) OF (\d+) TAGGED TRACKS$/, (m) => `${m[1]} / ${m[2]} 个已标记单曲`],
+  [/^(\d+) more shared tracks?\.$/, (m) => `还差 ${m[1]} 首共同单曲。`],
+  [/^(.+) · highest saved Overall$/, (m) => `${m[1]} · 已保存的最高总体评分`],
+  [/^(.+) · highest saved album Overall$/, (m) => `${m[1]} · 已保存的最高专辑总评分`],
+  [/^(.+) · gap between Overall and the mean of Song, Vocal and Production$/, (m) => `${m[1]} · 总体评分与歌曲、演唱、制作平均分的差值`],
   [/^(\d+) HEARD$/, (m) => `已听过 ${m[1]} 首`],
   [/^(\d+) WAITING$/, (m) => `待处理 ${m[1]} 首`],
   [/^(\d+) RATED$/, (m) => `已评分 ${m[1]} 首`],
