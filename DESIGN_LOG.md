@@ -3476,3 +3476,26 @@ Implementation commit: 8cfbac3
 ### Verification
 
 - Project, core, render and Worker checks pass; the project check asserts versioned Worker registration, cache bypass, automatic activation and client claiming.
+
+## Version 3.12.27 — Refresh the archive after logout
+
+Implementation commit: fa94862
+
+### Evidence
+
+- Signing out only re-rendered the current shell. Route content that had been produced under the signed-in account could remain in the document until another navigation or refresh.
+- The signed-out experience must immediately switch to the isolated showcase account so sample albums appear and private ratings do not leak into the guest view.
+
+### Decision
+
+- Always reload the page in the sign-out handler's `finally` path, after `signOutSync` clears the local session even if the remote logout request fails.
+- Let the normal boot path select the guest catalog on the fresh document; no private album or rating data is copied into the showcase state.
+
+### Rejected alternatives
+
+- Re-rendering only the header is insufficient because Home, Archive and Taste may already contain account-specific content.
+- Manually replacing individual sections would duplicate the existing signed-out data boundary and risk leaving stale state in another route.
+
+### Verification
+
+- Project, core, render and Worker checks pass; the project check asserts the logout reload contract.
