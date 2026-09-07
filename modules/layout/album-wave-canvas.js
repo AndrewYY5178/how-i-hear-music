@@ -22,6 +22,8 @@ export const bindAlbumWaveCanvas = (field) => {
   let frame = 0;
   let visible = !document.hidden;
   let colors = paletteFor(field);
+  const introStarted = performance.now();
+  const introDuration = 1200;
   const resize = () => {
     const scale = Math.min(window.devicePixelRatio || 1, 1.5);
     canvas.width = Math.max(1, Math.round(innerWidth * scale));
@@ -33,6 +35,12 @@ export const bindAlbumWaveCanvas = (field) => {
   const paintOrbit = (time) => {
     const width = innerWidth;
     const height = innerHeight;
+    const introLinear = reducedMotion() ? 1 : Math.min(1, Math.max(0, (time - introStarted) / introDuration));
+    const intro = 1 - Math.pow(1 - introLinear, 3);
+    const cover = field.querySelector(".album-detail-image");
+    const coverBounds = cover?.getBoundingClientRect();
+    const originX = coverBounds?.width ? coverBounds.left + coverBounds.width / 2 : width / 2;
+    const originY = coverBounds?.height ? coverBounds.top + coverBounds.height / 2 : height / 2;
     const paper = document.documentElement.dataset.theme === "chromatic" ? [210, 211, 215] : [231, 223, 207];
     context.clearRect(0, 0, width, height);
     context.fillStyle = color(paper, 1);
@@ -41,16 +49,19 @@ export const bindAlbumWaveCanvas = (field) => {
     context.globalCompositeOperation = "multiply";
     colors.forEach((tone, index) => {
       const phase = time * (.000075 + index * .000012) + index * 2.1;
-      const x = width * (.23 + index * .29) + Math.sin(phase * 1.17) * width * .12;
-      const y = height * (.30 + (index % 2) * .34) + Math.cos(phase * .93) * height * .11;
+      const targetX = width * (.23 + index * .29) + Math.sin(phase * 1.17) * width * .12;
+      const targetY = height * (.30 + (index % 2) * .34) + Math.cos(phase * .93) * height * .11;
+      const x = originX + (targetX - originX) * intro;
+      const y = originY + (targetY - originY) * intro;
       const radius = Math.min(width, height) * (.34 + index * .035);
-      const disc = context.createRadialGradient(x, y, radius * .08, x, y, radius);
+      const currentRadius = radius * (.08 + intro * .92);
+      const disc = context.createRadialGradient(x, y, currentRadius * .08, x, y, currentRadius);
       const alpha = document.documentElement.dataset.theme === "chromatic" ? .25 : .16;
       disc.addColorStop(0, color(tone, alpha));
       disc.addColorStop(.62, color(tone, alpha * .72));
       disc.addColorStop(1, color(tone, 0));
       context.beginPath();
-      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.arc(x, y, currentRadius, 0, Math.PI * 2);
       context.fillStyle = disc;
       context.fill();
     });

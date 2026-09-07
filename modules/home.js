@@ -1,6 +1,6 @@
-import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js?v=0.9.101";
+import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js?v=0.9.102";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.27";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.28";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 

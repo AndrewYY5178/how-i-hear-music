@@ -165,6 +165,8 @@ if (!styles.includes('@media (prefers-reduced-motion:reduce)')) errors.push('sty
 if (styles.includes('before English labels collide') || !styles.includes('@media (max-width:760px)')) errors.push('styles.css: full masthead must remain available above the mobile breakpoint');
 const shellSource = await readFile(join(root, 'modules', 'layout', 'shell.js'), 'utf8');
 if (!shellSource.includes('signOutSync(); } catch') || !shellSource.includes('finally { location.reload(); }')) errors.push('account shell: sign-out must reload after clearing the session');
+const albumFieldSource = await readFile(join(root, 'modules', 'layout', 'album-wave-canvas.js'), 'utf8');
+if (!albumFieldSource.includes('introDuration') || !albumFieldSource.includes('album-detail-image') || !albumFieldSource.includes('currentRadius')) errors.push('album color field: album-centered expansion transition is missing');
 if (shellSource.includes('READ / 20—') || styles.includes('.edition')) errors.push('masthead: obsolete edition marker or styling remains');
 if (shellSource.includes('link("/search"') || shellSource.includes('header-search') || shellSource.includes('utility-search')) errors.push('navigation: Search must live inside Archive instead of the masthead or mobile More');
 for (const contract of ['account-toggle', 'account-panel', 'GITHUB', 'EMAIL', 'aria-label="Sign in with GitHub"', 'aria-label="Sign in with email"', 'readSyncStatus', 'signOutSync']) if (!shellSource.includes(contract)) errors.push(`account shell: missing ${contract}`);
