@@ -3429,6 +3429,30 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.30 — Align featured Home modules
+
+Implementation commit: 0d25f7c
+
+### Evidence
+
+- The owner wanted FEATURED SHAPE and FEATURED LANDSCAPE to share one row on wide Home layouts.
+- The local preview exposed a duplicate short rule under the right-side NEXT / PREV controls, making the shared bottom edge look uneven.
+
+### Decision
+
+- Wrap both feature sections in one `.home-feature-row` grid: two equal columns above 900px, one column below.
+- Keep a single shared bottom rule and central divider; remove the landscape control bar's redundant bottom border.
+- Preserve the existing feature modules, carousel controls, radar, waveform and mobile stacked behavior.
+
+### Rejected alternatives
+
+- Do not force the two internal feature compositions into one shared content grid; their radar and album/wave content have different reading rhythms.
+- Do not keep the duplicate control border; it creates a heavier right edge than the left.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.25 — Remove outlines from album color discs
 
 Implementation commit: dc10d7d
