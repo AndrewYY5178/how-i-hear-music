@@ -3779,3 +3779,28 @@ Implementation commit: a0b1799
 ### Verification
 
 - Project, core, render and Worker checks pass before publication.
+
+## Version 3.12.41 — Add restrained paper fibre texture
+
+Implementation commit: pending
+
+### Evidence
+
+- The previous page surface used a regular dot pattern, which read as a repeated digital grid rather than paper.
+- The Paper Archive treatment needs physical grain without stains, heavy contrast or interference with the grayscale theme.
+
+### Decision
+
+- Layer seeded fine noise, low-frequency fibre variation and broad print variation over the existing paper color.
+- Keep the texture fixed, pointer-transparent and static; use a quieter neutral variant in CHROMATIC.
+- Preserve the existing reduced-motion contract because the texture has no animation.
+
+### Rejected alternatives
+
+- Do not use a photographic paper bitmap; it would add an unnecessary asset and visible tiling.
+- Do not animate the noise; continuous movement would compete with album and radar motion.
+- Do not increase opacity until it becomes parchment-like; the texture must remain subordinate to typography.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.

@@ -2,7 +2,7 @@
 * { box-sizing:border-box; }
 html { background:var(--paper); color:var(--ink); scroll-behavior:smooth; }
 body { margin:0; min-width:320px; font:15px/1.55 var(--serif); }
-body::before { content:""; position:fixed; inset:0; z-index:-1; opacity:.12; pointer-events:none; background-image:radial-gradient(#5d594f .45px, transparent .6px); background-size:5px 5px; }
+body::before { content:""; position:fixed; inset:0; z-index:20; pointer-events:none; background:none; }
 a { color:inherit; text-decoration:none; }
 button, input, textarea, select { font:inherit; }
 button { cursor:pointer; }
@@ -127,13 +127,13 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
 .rate-choices article { display:flex; flex-direction:column; }
 .rate-choices article>.button { margin-top:auto; }
 
-/* UI 3.12.39 — final cascade guard keeps boundary radar cards transparent in every theme. */
+/* UI 3.12.41 — final cascade guard keeps boundary radar cards transparent in every theme. */
 .good-not-mine article,html[data-theme="chromatic"] .good-not-mine article { background:transparent!important; }
 
-/* UI 3.12.39 — keep the Home Featured Shape radar on the CHROMATIC page surface. */
+/* UI 3.12.41 — keep the Home Featured Shape radar on the CHROMATIC page surface. */
 html[data-theme="chromatic"] .featured-shape-visual { background:transparent!important; }
 
-/* UI 3.12.39 — override the later CHROMATIC card token so boundary radars stay transparent. */
+/* UI 3.12.41 — override the later CHROMATIC card token so boundary radars stay transparent. */
 html[data-theme="chromatic"] body .good-not-mine article { background:transparent; }
 .qq-import-focus {
   display:grid;
@@ -646,7 +646,7 @@ body[data-module="rate"] .tag-picker button.active { border-color:#e7aa8d; backg
 .archive-search-inline { display:grid; grid-template-columns:minmax(0,260px) auto; gap:16px; align-items:end; margin:0; }
 .archive-search-inline input { width:100%; min-height:40px; padding:8px 0; border:0; border-bottom:1px solid var(--ink); outline:0; background:transparent; color:inherit; font:400 20px/1.3 var(--serif); }
 .archive-search-inline .archive-search-trigger { min-height:40px; padding-left:0; }
-/* UI 3.12.39 — let boundary radar images sit directly on the page surface. */
+/* UI 3.12.41 — let boundary radar images sit directly on the page surface. */
 .good-not-mine article { background:transparent; }
 html[data-theme="chromatic"] .good-not-mine article { background:transparent; }
 .archive-search { margin:-20px 0 48px; }
@@ -688,10 +688,15 @@ html[data-theme="chromatic"] .good-not-mine article { background:transparent; }
 /* Original archive paper fibre: quiet enough to read through, visible enough to feel physical. */
 body::before {
   z-index:20;
-  opacity:.035;
+  opacity:.085;
   mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size:auto;
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78 .92' numOctaves='4' seed='17' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.28 0 0 0 .08 .25 0 0 0 .07 .2 0 0 0 .05 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-grain)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 520 520' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-fibre'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .22' numOctaves='3' seed='71' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.22 0 0 0 .04 .2 0 0 0 .035 .18 0 0 0 .03 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-fibre)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 18% 16%, rgba(255,255,255,.08), transparent 44%),
+    radial-gradient(ellipse at 84% 78%, rgba(91,84,70,.035), transparent 50%);
+  background-size:320px 320px, 520px 520px, 100% 100%, 100% 100%;
+  background-attachment:fixed;
 }
 
 @media (max-width:760px) {
@@ -765,7 +770,7 @@ body::before {
 .album-detail-cover-tools { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:14px; }
 .album-detail-cover-tools .button { min-height:32px; padding:7px 10px; font-size:8px; }
 .album-detail-cover-tools .mono { color:var(--muted); font-size:8px; }
-/* UI 3.12.39 — cover-derived colors drift as restrained circular record fields. */
+/* UI 3.12.41 — cover-derived colors drift as restrained circular record fields. */
 body.album-detail-page { background:var(--paper); }
 body.album-detail-page .site-header,body.album-detail-page .site-footer { position:relative; z-index:2; background:transparent; }
 body.album-detail-page #app { position:relative; z-index:1; }
@@ -1022,7 +1027,7 @@ html[data-theme="chromatic"] {
   --red:#ed1675;
   --page:var(--paper);
 }
-html[data-theme="chromatic"] body::before { opacity:.1; background-image:radial-gradient(#555a62 .45px, transparent .6px); }
+html[data-theme="chromatic"] body::before { opacity:.06; }
 html[data-theme="chromatic"] body[data-module="archive"] { --page:#cfd1d4; }
 html[data-theme="chromatic"] body[data-module="taste"] { --page:#ececee; }
 html[data-theme="chromatic"] body[data-module="import"] { --page:#dfe1e4; }
@@ -1382,7 +1387,7 @@ html[data-theme="chromatic"] body[data-module="rate"] {
 .blind-spot-entrypoints { display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; margin-top:24px; }
 .blind-spot-entrypoints span { width:100%; color:var(--muted); font-size:8px; }
 .blind-spot-entrypoints a { color:var(--red); font:10px var(--mono); }
-/* UI 3.12.39 — make boundary evidence a distinct closing section of Listening DNA. */
+/* UI 3.12.41 — make boundary evidence a distinct closing section of Listening DNA. */
 .taste-dna-boundaries { max-width:800px; margin-top:96px; padding-top:40px; border-top:1px solid var(--ink); }
 .taste-dna-boundaries>span { color:var(--red); font-size:8px; }
 .taste-dna-boundaries>p { max-width:560px; margin:16px 0 40px; color:var(--muted); font-style:italic; }
@@ -1953,7 +1958,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
 .essay-stack .essay-item-index { color:var(--red); font:10px var(--mono); }
 .essay-stack .essay-item-title { margin:0; color:var(--ink); font:400 29px/1.1 var(--serif); letter-spacing:-.05em; }
 .essay-stack .essay-item p { margin:12px 0 0; color:var(--muted); font:italic 15px/1.6 var(--serif); }
-/* UI 3.12.39 — keep the revealed Listening Principles quieter than their section heading. */
+/* UI 3.12.41 — keep the revealed Listening Principles quieter than their section heading. */
 .essay-stack .essay-item-title { font-size:24px; }
 .essay-stack .essay-item p { font-size:13px; line-height:1.5; }
 @media (max-width:760px) {
@@ -1970,8 +1975,21 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-listening + .featured-shape { margin-top:24px; }
 }
 
-/* UI 3.12.39 — Rate choices keep their primary actions on one shared baseline. */
+/* UI 3.12.41 — Rate choices keep their primary actions on one shared baseline. */
 .rate-choices article>.button { margin-top:auto; }
 
-/* UI 3.12.39 — final cascade guard keeps boundary radar cards transparent in every theme. */
+/* UI 3.12.41 — final cascade guard keeps boundary radar cards transparent in every theme. */
 .good-not-mine article,html[data-theme="chromatic"] .good-not-mine article { background:transparent!important; }
+
+/* UI 3.12.41 — make the paper fibre finer and quieter on CHROMATIC surfaces. */
+html[data-theme="chromatic"] body::before {
+  opacity:.06;
+  mix-blend-mode:multiply;
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78 .92' numOctaves='4' seed='23' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.24 0 0 0 .08 .23 0 0 0 .08 .22 0 0 0 .09 0 0 0 .82 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-grain)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 520 520' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-fibre'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .22' numOctaves='3' seed='97' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.18 0 0 0 .035 .18 0 0 0 .035 .18 0 0 0 .035 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-fibre)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 18% 16%, rgba(255,255,255,.045), transparent 44%),
+    radial-gradient(ellipse at 84% 78%, rgba(76,81,90,.025), transparent 50%);
+  background-size:320px 320px, 520px 520px, 100% 100%, 100% 100%;
+  background-attachment:fixed;
+}

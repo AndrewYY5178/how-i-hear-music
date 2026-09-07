@@ -1,4 +1,4 @@
-import { storage } from "./data.js?v=0.9.113";
+import { storage } from "./data.js?v=0.9.115";
 
 const nicknamePrefix = "how-i-hear-music:account-nickname:";
 const nicknameKey = (userId) => `${nicknamePrefix}${String(userId || "unknown")}:v1`;
