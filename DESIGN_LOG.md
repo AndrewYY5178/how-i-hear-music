@@ -3452,3 +3452,27 @@ Implementation commit: dc10d7d
 ### Verification
 
 - Project, core, render and Worker checks pass before publication.
+
+## Version 3.12.26 — Make release updates immediate and deterministic
+
+Implementation commit: 8cfbac3
+
+### Evidence
+
+- A published update could remain behind an older offline Worker, leaving the owner to refresh multiple times before a new visual release appeared.
+- The previous Worker script URL did not identify its release, and a successful install intentionally waited for a manual activation step.
+
+### Decision
+
+- Register each Worker at a release-specific URL and bypass the browser's HTTP script cache while checking for it.
+- Activate a fully cached Worker immediately, claim active pages, and perform one controlled reload through the existing controller-change handler.
+- Retain the update banner only as a fallback if automatic activation does not finish.
+
+### Rejected alternatives
+
+- Removing the Service Worker would avoid the delay but discard the archive's offline shell.
+- Continuing to ask the owner to press an update control would keep the release state ambiguous.
+
+### Verification
+
+- Project, core, render and Worker checks pass; the project check asserts versioned Worker registration, cache bypass, automatic activation and client claiming.
