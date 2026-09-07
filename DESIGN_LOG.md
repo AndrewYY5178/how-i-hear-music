@@ -3499,3 +3499,27 @@ Implementation commit: fa94862
 ### Verification
 
 - Project, core, render and Worker checks pass; the project check asserts the logout reload contract.
+
+## Version 3.12.28 — Expand album color fields from the cover
+
+Implementation commit: d255446
+
+### Evidence
+
+- The owner wanted the color field to feel connected to the clicked album rather than appearing as an unrelated background after navigation.
+- The album sleeve is the clear spatial origin for the page's three extracted colors.
+
+### Decision
+
+- Start all three radial fields at the displayed cover center when an album-detail page binds.
+- Ease their centers and radii outward over 1.2 seconds, then continue the existing independent slow drift.
+- Use the existing reduced-motion contract to skip the expansion and show the settled field immediately.
+
+### Rejected alternatives
+
+- A full-page fade would hide the source relationship between cover and color.
+- A literal waveform or visible outline would reintroduce the visual language the owner asked to remove.
+
+### Verification
+
+- Project, core, render and Worker checks pass; the project check asserts the album-centered expansion contract.
