@@ -3378,3 +3378,29 @@ Implementation commit: pending
 ### Verification
 
 - Render checks assert the final Rate action baseline rule.
+
+## Version 3.12.23 — Make cover colors a full album-page field
+
+Implementation commit: f2e0075
+
+### Evidence
+
+- The owner clarified that the referenced Blue Waves treatment is a full-page environmental background, not a small decorative layer behind the sleeve.
+- The previous 3.12.16 SVG treatment localized the cover colors to one section, so it did not satisfy the intended page-scale relationship.
+
+### Decision
+
+- Replace the local SVG bands with one native Canvas field that is fixed across the full album-detail viewport.
+- Draw broad, slowly drifting color bands and soft overlap from the same three cover-derived colors already cached per album and source.
+- Keep all archive content, cover sleeve, record, scores, rules and controls above that field; the Paper and Chromatic modes tune the field through their existing base surfaces rather than importing the reference palette.
+- Reuse the existing extraction path for imported records and signed-out sample records. When an image source changes or the owner invokes re-extraction, the canvas reads the refreshed palette immediately.
+
+### Rejected alternatives
+
+- Retaining the local SVG treatment would preserve the earlier implementation but continue to misstate the effect as a component decoration.
+- Copying the linked component's React, Tailwind or external UI setup would conflict with this project's native, dependency-free architecture.
+- A generic blue backdrop would defeat the requirement that each album's own cover colors drive the page.
+
+### Verification
+
+- Render checks assert full-page canvas markup and the fixed background layer; project, core and Worker checks remain required before release.

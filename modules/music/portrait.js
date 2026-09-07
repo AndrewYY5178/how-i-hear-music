@@ -1,4 +1,4 @@
-import { safe } from "./data.js";
+import { safe } from "./data.js?v=0.9.97";
 import { geometryFields, glyphPoints, terrainPoints } from "./geometry.js";
 
 export const listeningPortrait = ({ tracks = [], albums = [], year = "ALL TIME" } = {}) => {
