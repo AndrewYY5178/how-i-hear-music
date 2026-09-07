@@ -182,6 +182,8 @@ UI 3.11.47 移除 Home 专辑封面的复古滤镜，恢复远程或本地封面
 
 UI 3.12.4 将 Taste Philosophy 说明并入 Taste Overview；`/taste/philosophy` 重定向到 `/taste`，重复的 `/taste/profile` 重定向到 `/taste/dna`，旧 `/journal` 及其嵌套地址重定向到 `Taste → Journal`。站点地图只保留合并后的规范 Journal 地址。
 
+UI 3.12.5 将 Archive 首页的 Tracks、Albums、Artists 三个区域改为整块点击进入，并移除每块内部重复的 `Enter →` 操作文字；键盘用户仍可通过焦点轮廓识别当前入口。
+
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`

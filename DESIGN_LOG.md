@@ -3205,3 +3205,14 @@ Implementation commit: pending
 ### Verification
 
 - Render tests assert that the merged Taste Overview contains the philosophy essay, no longer links to `/taste/philosophy`, and that all three legacy route families normalize to their new destinations.
+
+## Version 3.12.5 — Make Archive index regions fully clickable
+
+### Decision
+
+- Treat each Tracks / Albums / Artists gate as one interaction region instead of presenting a second `Enter →` control inside it.
+- Keep the visible editorial layout unchanged while using an accessible full-area route link with a visible keyboard focus ring.
+
+### Verification
+
+- Render tests assert exactly three full-area gate links and no remaining `Enter →` labels.

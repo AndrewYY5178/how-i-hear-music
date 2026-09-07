@@ -11,10 +11,10 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.78";
+import { translateText } from "../layout/i18n.js?v=0.9.79";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.4";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.4";
+import { archiveSearch } from "../search/pages.js?ui=3.12.5";
+import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.5";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
@@ -45,7 +45,7 @@ const coverMarkup = (url, alt, loading = false, alternate = "") => url ? `<img d
 const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card" data-settle-key="${safe(trackId(track))}"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `<span>${translateText(fieldLabel[field])} ${rating(scores[field])}</span>`).join(" · ") : translateText("NO SCORED GEOMETRY")}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", archiveVisibleAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
-export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveHomeNav()}${archiveSearch()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p>${link(href, "Enter →", "text-link")}</article>`).join("")}</div>`;
+export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveHomeNav()}${archiveSearch()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article class="archive-gate"><a class="archive-gate-link" href="${withBase(href)}" data-route aria-label="Open ${title.toLowerCase()} — ${note}"></a><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p></article>`).join("")}</div>`;
 
 const renderTrackCards = (tracks) => tracks.map(recordCard).join("") || "<p class='empty-state'>No tracks match this view.</p>";
 export const archiveTracks = () => {

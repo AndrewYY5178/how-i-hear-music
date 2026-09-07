@@ -6,10 +6,10 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.4";
+import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.5";
 import { coverOverrideKey, localCoverOverrideKey, coverSourcesFor, encodeLocalCover } from "../music/cover-maintenance.js";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
-import { translateText } from "../layout/i18n.js?v=0.9.78";
+import { translateText } from "../layout/i18n.js?v=0.9.79";
 
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;

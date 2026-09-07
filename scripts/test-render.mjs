@@ -83,6 +83,8 @@ assert.match(archiveHome, /class="archive-search"/);
 assert.match(archiveHome, /SEARCH THE RECORD/);
 assert.match(archiveHome, /id="archive-search-trigger"/);
 assert.match(archiveHome, /id="archive-search-panel"[^>]+ hidden/);
+assert.equal((archiveHome.match(/class="archive-gate-link"/g) || []).length, 3);
+assert.doesNotMatch(archiveHome, /Enter →/);
 location.search = '?q=Tattooed';
 const searchMarkup = search.archiveSearch();
 assert.match(searchMarkup, /<mark>Tattooed<\/mark> Heart/);
