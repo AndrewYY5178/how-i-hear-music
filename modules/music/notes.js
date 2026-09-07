@@ -1,4 +1,4 @@
-import { accountSignedIn, storage } from "./data.js?v=0.9.97";
+import { accountSignedIn, storage } from "./data.js?v=0.9.98";
 
 export const albumNotesKey = "how-i-hear-music:album-notes:v1";
 export const albumNote = (albumId) => accountSignedIn() ? storage.get(albumNotesKey, {})[albumId] || null : null;

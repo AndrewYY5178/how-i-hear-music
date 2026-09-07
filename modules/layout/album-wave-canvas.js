@@ -30,7 +30,7 @@ export const bindAlbumWaveCanvas = (field) => {
     canvas.style.height = `${innerHeight}px`;
     context.setTransform(scale, 0, 0, scale, 0, 0);
   };
-  const paintWave = (time) => {
+  const paintOrbit = (time) => {
     const width = innerWidth;
     const height = innerHeight;
     const paper = document.documentElement.dataset.theme === "chromatic" ? [210, 211, 215] : [231, 223, 207];
@@ -38,51 +38,37 @@ export const bindAlbumWaveCanvas = (field) => {
     context.fillStyle = color(paper, 1);
     context.fillRect(0, 0, width, height);
     context.save();
-    context.filter = `blur(${Math.max(54, Math.round(Math.min(width, height) * .085))}px)`;
     context.globalCompositeOperation = "multiply";
     colors.forEach((tone, index) => {
-      const phase = time * (.00011 + index * .000017) + index * 2.18;
-      const bandHeight = height * (.34 + index * .05);
-      const y = height * (.16 + index * .29) + Math.sin(phase * 1.7) * height * .12;
-      const amplitude = height * (.11 + index * .022);
+      const phase = time * (.000075 + index * .000012) + index * 2.1;
+      const x = width * (.23 + index * .29) + Math.sin(phase * 1.17) * width * .12;
+      const y = height * (.30 + (index % 2) * .34) + Math.cos(phase * .93) * height * .11;
+      const radius = Math.min(width, height) * (.34 + index * .035);
+      const disc = context.createRadialGradient(x, y, radius * .08, x, y, radius);
+      const alpha = document.documentElement.dataset.theme === "chromatic" ? .25 : .16;
+      disc.addColorStop(0, color(tone, alpha));
+      disc.addColorStop(.62, color(tone, alpha * .72));
+      disc.addColorStop(1, color(tone, 0));
       context.beginPath();
-      context.moveTo(-width * .18, y + Math.sin(phase) * amplitude);
-      for (let x = -width * .18; x <= width * 1.18; x += Math.max(28, width / 22)) {
-        const progress = x / width;
-        const crest = Math.sin(progress * Math.PI * (1.35 + index * .22) + phase) * amplitude;
-        const drift = Math.cos(progress * Math.PI * 3.1 - phase * 1.38) * amplitude * .31;
-        context.lineTo(x, y + crest + drift);
-      }
-      context.lineTo(width * 1.18, y + bandHeight);
-      context.lineTo(-width * .18, y + bandHeight);
-      context.closePath();
-      context.fillStyle = color(tone, document.documentElement.dataset.theme === "chromatic" ? .73 : .54);
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.fillStyle = disc;
       context.fill();
-    });
-    context.restore();
-    context.save();
-    context.globalCompositeOperation = "screen";
-    colors.forEach((tone, index) => {
-      const phase = time * (.00016 + index * .000021) + index * 1.6;
-      const x = width * (.22 + index * .31) + Math.sin(phase) * width * .17;
-      const y = height * (.44 + (index % 2) * .24) + Math.cos(phase * 1.24) * height * .16;
-      const radius = Math.max(width, height) * (.30 + index * .04);
-      const glow = context.createRadialGradient(x, y, 0, x, y, radius);
-      glow.addColorStop(0, color(tone, document.documentElement.dataset.theme === "chromatic" ? .26 : .15));
-      glow.addColorStop(1, color(tone, 0));
-      context.fillStyle = glow;
-      context.fillRect(0, 0, width, height);
+      context.beginPath();
+      context.arc(x, y, radius * .72, 0, Math.PI * 2);
+      context.strokeStyle = color(tone, alpha * .34);
+      context.lineWidth = 1;
+      context.stroke();
     });
     context.restore();
   };
   const animate = (time) => {
     if (!field.isConnected) return;
-    paintWave(time);
+    paintOrbit(time);
     if (!reducedMotion() && visible) frame = requestAnimationFrame(animate);
   };
   const restart = () => {
     cancelAnimationFrame(frame);
-    paintWave(performance.now());
+    paintOrbit(performance.now());
     if (!reducedMotion() && visible) frame = requestAnimationFrame(animate);
   };
   const onVisibilityChange = () => { visible = !document.hidden; if (visible) restart(); else cancelAnimationFrame(frame); };

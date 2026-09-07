@@ -750,7 +750,7 @@ body::before {
 .album-detail-cover-tools { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:14px; }
 .album-detail-cover-tools .button { min-height:32px; padding:7px 10px; font-size:8px; }
 .album-detail-cover-tools .mono { color:var(--muted); font-size:8px; }
-/* UI 3.12.23 — cover-derived colors occupy the whole album detail as a slow, living field. */
+/* UI 3.12.24 — cover-derived colors drift as restrained circular record fields. */
 body.album-detail-page { background:var(--paper); }
 body.album-detail-page .site-header,body.album-detail-page .site-footer { position:relative; z-index:2; background:color-mix(in srgb,var(--paper) 78%,transparent); }
 body.album-detail-page #app { position:relative; z-index:1; }
@@ -1929,5 +1929,5 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-listening + .featured-shape { margin-top:24px; }
 }
 
-/* UI 3.12.23 — Rate choices keep their primary actions on one shared baseline. */
+/* UI 3.12.24 — Rate choices keep their primary actions on one shared baseline. */
 .rate-choices article>.button { margin-top:auto; }
