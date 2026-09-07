@@ -1,11 +1,11 @@
-import { data, safe } from "../music/data.js?v=0.9.99";
+import { data, safe } from "../music/data.js?v=0.9.100";
 import { accountNickname, saveAccountNickname } from "../music/account.js";
-import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStatus, requestEmailCode, signOutSync, syncSession } from "../music/cloud-sync.js?v=0.9.99";
+import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStatus, requestEmailCode, signOutSync, syncSession } from "../music/cloud-sync.js?v=0.9.100";
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
-import { bindThemeControls, currentTheme } from "./theme.js?v=0.9.99";
+import { bindThemeControls, currentTheme } from "./theme.js?v=0.9.100";
 
-const appVersion = "0.9.99";
+const appVersion = "0.9.100";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"],

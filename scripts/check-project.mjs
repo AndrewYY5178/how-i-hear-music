@@ -117,6 +117,7 @@ if (!emailMigration.includes('email_auth_challenges') || !emailMigration.include
 if (!appSource.includes('withoutBase(location.pathname)') || !appSource.includes('location.hash.match')) errors.push('app.js: project base or legacy hash routing is missing');
 if (!appSource.includes('requestedTarget === "/search" ? "/archive"') || !appSource.includes('current === "/search"')) errors.push('routing: old Search links must redirect into Archive');
 if (!appSource.includes('const pageTitle = path === "/" ? "Home"') || !appSource.includes('link[rel="canonical"]')) errors.push('app.js: document titles or route canonical metadata are missing');
+if (!appSource.includes('workerUrl.searchParams.set("v"') || !appSource.includes('updateViaCache: "none"')) errors.push('app.js: offline worker must use a release URL and bypass HTTP script caches');
 if (!appSource.includes('archiveAlbumCompare()') || !appSource.includes('/archive/compare/albums')) errors.push('app.js: evidence-gated album comparison route is missing');
 for (const path of ['/taste/anti-recommendation', '/taste/sonic-map', '/taste/family-tree', '/taste/portrait']) if (!appSource.includes(path)) errors.push(`app.js: personal analysis route ${path} is missing`);
 for (const path of ['/taste/dna', '/taste/blind-spots', '/journal/memory-palace', '/journal/entropy', '/taste/journal', '/taste/journal/memory-palace', '/taste/journal/entropy']) if (!appSource.includes(path)) errors.push(`app.js: advanced taste route ${path} is missing`);
@@ -140,6 +141,7 @@ if (!entryHtml.includes('Noto+Serif+SC') || !entryHtml.includes('Noto+Sans+SC'))
 if (!entryHtml.includes('http-equiv="Content-Security-Policy"') || !entryHtml.includes('name="referrer" content="no-referrer"')) errors.push('index.html: static security and referrer policy are missing');
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
 if (!serviceWorker.includes('/api/') || !serviceWorker.includes('request.mode === "navigate"') || !serviceWorker.includes('SKIP_WAITING')) errors.push('offline shell: API exclusion, navigation fallback or explicit update behavior is missing');
+if (!serviceWorker.includes('.then(() => self.skipWaiting())') || !serviceWorker.includes('self.clients.claim()')) errors.push('offline shell: completed releases must automatically activate and claim their clients');
 if (!serviceWorker.includes('modules/layout/i18n.js')) errors.push('offline shell: bilingual runtime is missing');
 if (!serviceWorker.includes('new Request(url, { cache: "reload" })')) errors.push('offline shell: release installation must bypass stale HTTP asset caches');
 for (const source of sourceFiles.filter((file) => file.endsWith('.js') && file !== 'sw.js')) if (!serviceWorker.includes(`"${source}"`)) errors.push(`offline shell: missing ${source} from the first-load shell`);

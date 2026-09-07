@@ -1,4 +1,4 @@
-import { allTracks, storage, trackId, visibleJournal, visibleRatings } from "./data.js?v=0.9.99";
+import { allTracks, storage, trackId, visibleJournal, visibleRatings } from "./data.js?v=0.9.100";
 import { insightTagsOf } from "./insights.js";
 
 export const journalStorageKey = "how-i-hear-music:journal:v1";
