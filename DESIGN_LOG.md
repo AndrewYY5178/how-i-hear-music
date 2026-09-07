@@ -3429,6 +3429,28 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.34 — Tighten Archive search field
+
+Implementation commit: 600460d
+
+### Evidence
+
+- The owner wanted the single Archive search line to take less horizontal space and avoid instructional placeholder copy.
+
+### Decision
+
+- Reduce the top search field's wide-layout column to 260px.
+- Remove the visible placeholder while retaining the accessible `SEARCH THE RECORD` label and aria label.
+
+### Rejected alternatives
+
+- Do not remove the accessible label; the field still needs a clear name for assistive technology.
+- Do not shrink the SEARCH action itself; it remains the primary control and stays easy to target.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.33 — Simplify Archive search control
 
 Implementation commit: 02c13a9
