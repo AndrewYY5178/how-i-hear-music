@@ -3429,6 +3429,29 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.36 — Fix CHROMATIC boundary transparency
+
+Implementation commit: 9e366e2
+
+### Evidence
+
+- The previous transparent-card rule worked in the paper theme, but a later CHROMATIC-specific card rule restored the pale fill.
+- The screenshot showed the radar still sitting on a distinct rectangular surface in the grayscale theme.
+
+### Decision
+
+- Add a later, higher-specificity CHROMATIC override that keeps GOOD ≠ MINE radar cards transparent.
+- Leave the radar SVG, page surface, grid structure and other CHROMATIC cards unchanged.
+
+### Rejected alternatives
+
+- Do not remove the CHROMATIC theme card rule globally; other archive surfaces still intentionally use the light paper token.
+- Do not hide the entire card; only its redundant background fill is removed.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.35 — Remove boundary radar panel fill
 
 Implementation commit: 105982b
