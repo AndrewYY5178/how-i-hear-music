@@ -3429,6 +3429,29 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.38 — Fix CHROMATIC boundary card fill
+
+Implementation commit: d9d7570
+
+### Evidence
+
+- The pale rectangle only appeared in the grayscale CHROMATIC theme; PAPER was already visually correct.
+- The remaining fill came from a theme rule that was still later in the cascade than the earlier transparency fixes.
+
+### Decision
+
+- Place the final transparent override at the end of `styles.css`, after all theme and responsive declarations.
+- Keep the correction scoped to GOOD ≠ MINE radar cards so other CHROMATIC paper surfaces retain their intended treatment.
+
+### Rejected alternatives
+
+- Do not change the PAPER theme; it does not exhibit the issue.
+- Do not remove all CHROMATIC light surfaces; the defect is isolated to these radar cards.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.37 — Guard boundary transparency cascade
 
 Implementation commit: 19d5c3f
