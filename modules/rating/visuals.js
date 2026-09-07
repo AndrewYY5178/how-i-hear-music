@@ -1,4 +1,4 @@
-import { rating, safe } from "../music/data.js?v=0.9.107";
+import { rating, safe } from "../music/data.js?v=0.9.108";
 
 export const fields = ["song", "vocal", "production", "overall"];
 export const fieldLabel = { song: "Song", vocal: "Vocal", production: "Production", overall: "Overall" };

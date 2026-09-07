@@ -1,4 +1,4 @@
-import { allTracks, trackId } from "./data.js?v=0.9.107";
+import { allTracks, trackId } from "./data.js?v=0.9.108";
 import { insightTagsOf } from "./insights.js";
 
 const clamp01 = (value) => Math.max(0, Math.min(1, value));
