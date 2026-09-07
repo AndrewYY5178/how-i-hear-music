@@ -3429,6 +3429,30 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.33 — Simplify Archive search control
+
+Implementation commit: 02c13a9
+
+### Evidence
+
+- The Archive home showed `SEARCH` once as the top-right trigger and again beside the input line below it.
+- The owner wanted one visible SEARCH action with the query line placed beside it.
+
+### Decision
+
+- Move the search input into the top Archive navigation row beside the single SEARCH submit button.
+- Keep the search results section below the row and preserve Enter / native form submission.
+- Remove the second visible SEARCH control from the results panel while retaining the hidden accessible field label.
+
+### Rejected alternatives
+
+- Do not keep a separate open/close trigger; the search line is now immediately available and does not need a second toggle state.
+- Do not remove the submit button entirely; a visible action remains useful for pointer and keyboard users.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.32 — Consolidate Taste insights
 
 Implementation commit: 440a385
