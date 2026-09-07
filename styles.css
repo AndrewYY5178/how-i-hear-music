@@ -1860,6 +1860,12 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .featured-landscape-wave { grid-column:auto; }
 }
 
+@media (prefers-reduced-motion:reduce) {
+  .home-landscape-cycle.landscape-is-changing,
+  .home-landscape-cycle .featured-landscape-slide.active .featured-landscape-copy,
+  .home-landscape-cycle .featured-landscape-slide.active .featured-landscape-wave { animation:none; }
+}
+
 /* UI 3.11.13 — anchor narrow Home controls to the Cover Flow content band. */
 @media (max-width:900px) {
   .home-record-controls {
