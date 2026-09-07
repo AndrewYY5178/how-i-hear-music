@@ -3182,3 +3182,14 @@ Implementation commit: pending
 ### Verification
 
 - Browser check confirms `CHROMATIC` background + `CHROMATIC` active state, then returns cleanly to `PAPER`.
+
+## Version 3.12.3 — Living Featured Landscape waveform
+
+### Decision
+
+- Let the Home `FEATURED LANDSCAPE` waveform continue with a very small vertical drift and staggered point pulse after its one-time ink draw, keeping the movement editorial and legible rather than turning it into an audio visualizer.
+- Start the live phase after the draw completes and disable it under `prefers-reduced-motion`.
+
+### Verification
+
+- Render checks assert the Home landscape waveform remains present; browser motion timing is isolated to the live waveform class.

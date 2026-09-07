@@ -66,6 +66,11 @@ export const bindLivingMotion = (root, path) => {
       const timer = setTimeout(() => columns.remove(), 1100);
       cleanups.push(() => { clearTimeout(timer); columns.remove(); });
     }
+
+    root.querySelectorAll(".featured-landscape .ink-draw-wave").forEach((wave) => {
+      const timer = setTimeout(() => wave.classList.add("wave-is-live"), 2200);
+      cleanups.push(() => { clearTimeout(timer); wave.classList.remove("wave-is-live"); });
+    });
   }
 
   const dynamicTargets = ["rate-save-message", "album-save-message", "qq-album-import-result", "qq-import-result", "netease-import-result", "sync-status"];

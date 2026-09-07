@@ -1,17 +1,17 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.76";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.77";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
-import { bindHome, home } from "./modules/home.js?ui=3.12.2";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.2";
-import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.12.2";
-import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.12.2";
-import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.12.2";
-import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.12.2";
+import { bindHome, home } from "./modules/home.js?ui=3.12.3";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.3";
+import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.12.3";
+import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.12.3";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.12.3";
+import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.12.3";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
 import { accountNickname } from "./modules/music/account.js";
-import { bindSearch } from "./modules/search/pages.js?ui=3.12.2";
-import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.76";
-import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.2";
+import { bindSearch } from "./modules/search/pages.js?ui=3.12.3";
+import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.77";
+import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.3";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";

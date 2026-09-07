@@ -964,7 +964,7 @@ body::before {
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
 }
 
-/* UI 3.12.2 — intentional paper / chromatic contrast themes. The artwork and vinyl stay original-color in both modes. */
+/* UI 3.12.3 — intentional paper / chromatic contrast themes. The artwork and vinyl stay original-color in both modes. */
 .account-theme { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
 .account-theme-options { display:flex; gap:6px; }
 .theme-option { min-height:32px; padding:6px 8px; border:1px solid var(--line); background:transparent; color:var(--muted); font:9px var(--mono); letter-spacing:.06em; }
@@ -1060,7 +1060,7 @@ html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active 
   font-weight:700;
 }
 
-/* UI 3.12.2 — give Chromatic Contrast each module its own paper-gray gradient. */
+/* UI 3.12.3 — give Chromatic Contrast each module its own paper-gray gradient. */
 html[data-theme="chromatic"] body {
   background:linear-gradient(132deg,#d6d7d9 0%,#e8e9eb 46%,#c9cbd0 100%);
   background-attachment:fixed;
@@ -1079,6 +1079,32 @@ html[data-theme="chromatic"] body[data-module="journal"] {
 }
 html[data-theme="chromatic"] body[data-module="rate"] {
   background:linear-gradient(138deg,#55585f 0%,#686b73 48%,#45484f 100%);
+}
+
+/* UI 3.12.3 — let the Home Featured Landscape keep breathing after its ink draw. */
+.featured-landscape .wave-is-live > path {
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:featuredWaveDrift 5.6s ease-in-out infinite alternate;
+}
+.featured-landscape .wave-is-live .wave-points circle {
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:featuredWavePoint 2.8s ease-in-out infinite;
+  animation-delay:calc(var(--wave-point,0) * 120ms);
+}
+@keyframes featuredWaveDrift {
+  0% { transform:translateY(0) scaleY(.97); }
+  50% { transform:translateY(-2px) scaleY(1.015); }
+  100% { transform:translateY(1px) scaleY(.985); }
+}
+@keyframes featuredWavePoint {
+  0%,100% { transform:scale(1); }
+  50% { transform:scale(1.18); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .featured-landscape .wave-is-live > path,
+  .featured-landscape .wave-is-live .wave-points circle { animation:none; }
 }
 
 /* UI 3.11.56 — constrain detail records, mobile columns and simplify Rate prompt. */

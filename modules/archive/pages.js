@@ -11,10 +11,10 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.76";
+import { translateText } from "../layout/i18n.js?v=0.9.77";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.2";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.2";
+import { archiveSearch } from "../search/pages.js?ui=3.12.3";
+import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.3";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
