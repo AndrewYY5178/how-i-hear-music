@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.7";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.8";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -50,7 +50,8 @@ const coverSourcesForAlbum = (album) => {
 };
 const homeAlbums = () => {
   const albums = allAlbums();
-  if (!syncSession()?.token) return showcaseFirst(albums).slice(0, homeAlbumCapacity);
+  const samples = albums.filter((album) => homeSampleAlbumKeys.has(albumKey(album)) || homeSampleAlbumKeys.has(slug(`${album.artist}-${album.title}`)));
+  if (!syncSession()?.token) return showcaseFirst(samples).slice(0, homeAlbumCapacity);
   const imported = importedAlbums();
   const importedKeys = new Set(imported.map(albumKey));
   // Existing non-showcase archive records are already the owner's albums;
@@ -59,7 +60,6 @@ const homeAlbums = () => {
   const own = albums.filter((album) => !album.showcaseOnly || importedKeys.has(albumKey(album)));
   // Keep the complete showcase deck even when one remote cover is unavailable;
   // the card's fallback state preserves the record instead of silently dropping it.
-  const samples = albums.filter((album) => homeSampleAlbumKeys.has(albumKey(album)));
   const availableSamples = samples.filter((album) => !importedKeys.has(albumKey(album)));
   const scoredSamples = availableSamples.filter((album) => albumScore(album) !== null);
   const unscoredSamples = availableSamples.filter((album) => albumScore(album) === null);

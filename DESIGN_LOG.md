@@ -3238,3 +3238,13 @@ Implementation commit: pending
 ### Verification
 
 - Project and core checks pass; all changed modules pass syntax validation. The next browser smoke check should verify signed-out and signed-in sessions against separate local-storage states.
+
+## Version 3.12.8 — Preserve the showcase deck during compatibility renders
+
+### Decision
+
+- Keep the signed-out Home deck limited to the nine approved showcase albums even when a static/test renderer has no browser session API.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.
