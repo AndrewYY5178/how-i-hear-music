@@ -3,12 +3,24 @@ const albumCache = new Map();
 const cacheTtl = 30 * 60 * 1000;
 
 const firstUrl = (value) => (String(value || "").match(/https?:\/\/[^\s<>"'）)】]+/i) || [""])[0].replace(/[，。；、]+$/, "");
+const decode = (value) => { try { return decodeURIComponent(String(value || "")); } catch { return String(value || ""); } };
+const idsFromUrl = (url) => {
+  const queryId = [...url.searchParams.entries()].find(([key]) => /^(?:album[_-]?mid|albumid)$/i.test(key))?.[1] || "";
+  const pathId = url.pathname.match(/(?:albumDetail|album)(?:\/|%2F)([A-Za-z0-9]{6,32})(?:\.html)?/i)?.[1] || "";
+  return [queryId, pathId].filter(Boolean);
+};
 const albumIdentity = (url) => {
-  const pathMatch = url.pathname.match(/(?:albumDetail|album)\/([A-Za-z0-9]{6,32})(?:\.html)?/i);
-  return url.searchParams.get("albummid") || url.searchParams.get("albumMid") || url.searchParams.get("albumid") || url.searchParams.get("albumId") || pathMatch?.[1] || "";
+  return idsFromUrl(url)[0] || "";
 };
 const resourceType = (url) => /(?:playlist|taoge)/i.test(url.pathname) || url.searchParams.has("disstid") ? "playlist" : /(?:songDetail|song\/)/i.test(url.pathname) || url.searchParams.has("songmid") ? "track" : "unknown";
 const validIdentity = (value) => /^[A-Za-z0-9]{6,32}$/.test(value);
+const idsFromMarkup = (value) => {
+  const text = decode(value);
+  return [
+    ...Array.from(text.matchAll(/(?:album[_-]?mid|albumid)\s*(?:=|:|%3D|%3A)\s*["']?([A-Za-z0-9]{6,32})/gi), (match) => match[1]),
+    ...Array.from(text.matchAll(/(?:albumDetail|album)(?:\/|%2F)([A-Za-z0-9]{6,32})(?:\.html)?/gi), (match) => match[1]),
+  ];
+};
 
 export const directQQAlbumIdentity = (value) => {
   let url;
@@ -40,11 +52,7 @@ const resolveQQShare = async (initial, options = {}) => {
     }
     if (!response.ok) throw new Error(`QQ Music could not open this public share link (${response.status}).`);
     const html = await response.text();
-    const candidates = [
-      albumIdentity(current),
-      ...Array.from(html.matchAll(/(?:albummid|albumMid)["'\s:=\\]+([A-Za-z0-9]{6,32})/gi), (match) => match[1]),
-      ...Array.from(html.matchAll(/albumDetail\/([A-Za-z0-9]{6,32})/gi), (match) => match[1]),
-    ];
+    const candidates = [albumIdentity(current), ...idsFromMarkup(html)];
     const id = candidates.find(validIdentity);
     if (id) return { id, url: current };
     break;
@@ -60,21 +68,22 @@ export const parseQQAlbumLink = async (text, options = {}) => {
 
 const positive = (value, fallback) => Number.isFinite(Number(value)) && Number(value) > 0 ? Number(value) : fallback;
 export const normalizeQQAlbum = (payload, requestedId = "") => {
-  const album = payload?.data;
+  const album = Array.isArray(payload?.data) ? payload.data[0] : payload?.data?.album || payload?.data;
   if (payload?.code !== 0 || !album) throw new Error("QQ Music did not return a readable public album.");
-  if (!Array.isArray(album.list) || !album.list.length) throw new Error("Album found, but track data is unavailable.");
+  const sourceTracks = album.list || album.songlist || album.song?.list || payload?.data?.songlist;
+  if (!Array.isArray(sourceTracks) || !sourceTracks.length) throw new Error("Album found, but track data is unavailable.");
   const providerAlbumId = String(album.mid || requestedId || album.id || "");
-  const tracks = album.list.map((song, sourceIndex) => {
+  const tracks = sourceTracks.map((song, sourceIndex) => {
     const zeroBasedDisc = Number(song.cdIdx ?? song.index_cd);
     const discNumber = Number.isFinite(zeroBasedDisc) && zeroBasedDisc >= 0 ? zeroBasedDisc + 1 : 1;
     const trackNumber = positive(song.belongCD ?? song.index_album, sourceIndex + 1);
     const singers = Array.isArray(song.singer) ? song.singer : [];
     return {
-      providerTrackId: String(song.songmid || song.songid || ""),
+      providerTrackId: String(song.songmid || song.mid || song.songid || song.id || `${providerAlbumId}:${sourceIndex + 1}`),
       title: String(song.songname || song.name || "").trim(),
-      artistName: singers.map((singer) => singer.name).filter(Boolean).join(" / ") || String(album.singername || "Artist not recorded"),
+      artistName: singers.map((singer) => singer.name).filter(Boolean).join(" / ") || String(song.singername || album.singername || album.artistname || "Artist not recorded"),
       artistProviderId: String(singers[0]?.mid || album.singermid || "") || null,
-      albumName: String(album.name || "Untitled album"),
+      albumName: String(album.name || album.albumname || album.title || "Untitled album"),
       albumProviderId: providerAlbumId,
       trackNumber,
       discNumber,
@@ -90,11 +99,11 @@ export const normalizeQQAlbum = (payload, requestedId = "") => {
     provider: "qqmusic",
     providerAlbumId,
     providerNumericAlbumId: Number(album.id) || null,
-    title: String(album.name || "Untitled album"),
-    artistName: String(album.singername || tracks[0].artistName || "Artist not recorded"),
-    artistProviderId: String(album.singermid || tracks[0].artistProviderId || "") || null,
-    releaseDate: /^\d{4}-\d{2}-\d{2}$/.test(album.aDate || "") ? album.aDate : null,
-    year: /^\d{4}/.test(album.aDate || "") ? Number(String(album.aDate).slice(0, 4)) : null,
+    title: String(album.name || album.albumname || album.title || "Untitled album"),
+    artistName: String(album.singername || album.artistname || tracks[0].artistName || "Artist not recorded"),
+    artistProviderId: String(album.singermid || album.artistmid || tracks[0].artistProviderId || "") || null,
+    releaseDate: /^\d{4}-\d{2}-\d{2}$/.test(album.aDate || album.pubtime || "") ? (album.aDate || album.pubtime) : null,
+    year: /^\d{4}/.test(album.aDate || album.pubtime || "") ? Number(String(album.aDate || album.pubtime).slice(0, 4)) : null,
     artworkUrl: coverUrl,
     coverUrl,
     externalUrl: `https://y.qq.com/n/ryqq/albumDetail/${encodeURIComponent(providerAlbumId)}`,

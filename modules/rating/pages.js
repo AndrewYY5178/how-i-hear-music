@@ -19,11 +19,11 @@ const scoreControls = (scores) => `<div class="rating-controls">${fields.map((fi
 let pointerController = null;
 
 export const rateHome = () => {
-  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const heard = unrated.filter((track) => track.lifecycleState === "heard").length; const album = archiveVisibleAlbums().find((record) => confirmedAlbumTracks(record).length); const next = unrated[0] || choices[0];
+  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const album = archiveVisibleAlbums().find((record) => confirmedAlbumTracks(record).length); const next = unrated[0] || choices[0];
   const albumAction = album ? link(`/rate/album/${album.id || slug(album.artist + "-" + album.title)}`, "RATE AN ALBUM", "button primary") : link("/import/qq", "IMPORT AN ALBUM", "button primary");
   const trackAction = next ? link(`/rate/track/${encodeURIComponent(rateId(next))}`, "CONTINUE RATING", "button primary") : link("/import", "IMPORT MUSIC", "button primary");
   const trackCopy = next ? `${safe(next.title)} · ${safe(next.artist)}${next.lifecycleState ? ` · ${next.lifecycleState.toUpperCase()}` : ""}` : "Bring in one track to begin a listening shape.";
-  return `${pageHeader("RATE", "Begin with one listening decision.", "Choose a shape for one track, or a landscape for an album.")}<div class="rate-choices"><article><span class="mono">01 / TRACK</span><h2>Listening Shape</h2><p>${trackCopy}</p>${trackAction}${link("/rate/queue", `${heard} HEARD · ${unrated.length} WAITING · VIEW QUEUE →`, "text-link")}</article><article><span class="mono">02 / ALBUM</span><h2>Listening Landscape</h2><p>${album ? "Build a score curve from a confirmed track order." : "Import a confirmed track order before rating an album."}</p>${albumAction}</article></div>`;
+  return `${pageHeader("RATE", "Begin with one listening decision.", "Choose a shape for one track, or a landscape for an album.")}<div class="rate-choices"><article><span class="mono">01 / TRACK</span><h2>Listening Shape</h2><p>${trackCopy}</p>${trackAction}</article><article><span class="mono">02 / ALBUM</span><h2>Listening Landscape</h2><p>${album ? "Build a score curve from a confirmed track order." : "Import a confirmed track order before rating an album."}</p>${albumAction}</article></div>`;
 };
 
 export const unratedQueue = () => {

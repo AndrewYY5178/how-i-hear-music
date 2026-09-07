@@ -728,12 +728,12 @@ body::before {
 .album-detail-image { position:absolute; inset:0; z-index:2; overflow:visible; background:#d2c6b2; box-shadow:none; transform-origin:50% 100%; transform-style:preserve-3d; transition:transform 720ms cubic-bezier(.18,.78,.16,1),box-shadow 520ms ease; }
 .album-detail-image::after { content:""; position:absolute; z-index:4; inset:0; border:1px solid rgba(242,237,227,.18); pointer-events:none; transform:translateZ(2px); }
 .album-detail-image img,.album-detail-image .cover-fallback { position:relative; z-index:3; transform:translateZ(2px); }
-.album-detail-disc { position:absolute; z-index:1; top:1%; right:0; width:98%; aspect-ratio:1; border-radius:50%; opacity:0; transform:translateX(0) rotate(0) scale(.98); background:radial-gradient(circle at 42% 36%,rgba(255,255,255,.1),transparent 34%),conic-gradient(from 214deg,transparent 0 8%,rgba(255,255,255,.17) 12%,rgba(255,255,255,.025) 20%,transparent 29% 53%,rgba(17,17,14,.14) 61%,transparent 70%),var(--record-color,#24241f); box-shadow:10px 18px 30px rgba(32,27,20,.22),inset -8px -10px 18px rgba(17,17,14,.08),inset 5px 6px 14px rgba(255,255,255,.05); transition:transform 680ms cubic-bezier(.18,.78,.16,1),opacity 420ms ease; }
+.album-detail-disc { position:absolute; z-index:1; top:2%; right:0; width:94%; aspect-ratio:1; border-radius:50%; opacity:0; transform:translateX(0) rotate(0) scale(.98); background:radial-gradient(circle at 42% 36%,rgba(255,255,255,.1),transparent 34%),conic-gradient(from 214deg,transparent 0 8%,rgba(255,255,255,.17) 12%,rgba(255,255,255,.025) 20%,transparent 29% 53%,rgba(17,17,14,.14) 61%,transparent 70%),var(--record-color,#24241f); box-shadow:10px 18px 30px rgba(32,27,20,.22),inset -8px -10px 18px rgba(17,17,14,.08),inset 5px 6px 14px rgba(255,255,255,.05); transition:transform 680ms cubic-bezier(.18,.78,.16,1),opacity 420ms ease; }
 .album-detail-disc::before,.album-detail-disc::after { content:""; position:absolute; border-radius:50%; }
 .album-detail-disc::before { inset:2.5%; background:linear-gradient(124deg,transparent 16%,rgba(255,255,255,.025) 27%,rgba(255,255,255,.13) 34%,rgba(255,255,255,.025) 42%,transparent 55%),repeating-radial-gradient(circle,rgba(255,255,255,.045) 0 1px,rgba(16,16,13,.035) 1px 2px,transparent 2px 5px); opacity:.78; }
 .album-detail-disc::after { inset:41%; background:radial-gradient(circle,#d6cbb8 0 5%,var(--red) 7% 100%); }
 .album-detail-record.record-is-open .album-detail-image { transform:translateX(-8%) translateY(-7px) rotateY(-6deg) rotateZ(-.5deg); box-shadow:0 20px 32px rgba(37,30,20,.22); }
-.album-detail-record.record-is-open .album-detail-disc { opacity:1; transform:translate(32%,0) rotateY(-6deg) rotateZ(18deg) scale(.96); }
+.album-detail-record.record-is-open .album-detail-disc { opacity:1; transform:translate(34%,-1%) rotateY(-6deg) rotateZ(4deg) scale(.96); }
 .album-detail-record.record-is-retracting { z-index:8; }
 .album-detail-record.record-is-retracting .album-detail-image { transform:none; box-shadow:none; transition-duration:220ms,180ms; }
 .album-detail-record.record-is-retracting .album-detail-disc { opacity:0; transform:translateX(0) rotate(0) scale(.98); transition-duration:220ms,180ms; }
@@ -1008,7 +1008,7 @@ body::before {
   font-weight:700;
 }
 
-/* UI 3.11.53 — complete the Chinese UI audit; keep Home artwork in its source colors. */
+/* UI 3.11.55 — constrain detail records and simplify Rate prompt; keep Home artwork in its source colors. */
 .home-record,
 .home-record[data-record-position="left-1"],
 .home-record[data-record-position="right-1"],
