@@ -3804,3 +3804,28 @@ Implementation commit: a351620
 ### Verification
 
 - Project, core, render and Worker checks pass before publication.
+
+## Version 3.12.42 — Make the grain layer perceptible
+
+Implementation commit: pending
+
+### Evidence
+
+- The first fibre pass was technically present but visually imperceptible at normal viewing distance.
+- The referenced editorial grain treatment uses one full-viewport overlay above the page, with `pointer-events:none`, so the material is felt across the whole surface without blocking interaction.
+
+### Decision
+
+- Increase the seeded noise contrast and overlay opacity enough for a visible paper surface while keeping it below the typography and album artwork.
+- Keep the layer entirely texture-based: no regular dots, ruled lines, circles or animated movement.
+- Preserve a quieter neutral treatment for CHROMATIC and keep the overlay fixed across scrolling.
+
+### Rejected alternatives
+
+- Do not import a remote photographic asset; the texture should remain deterministic, cacheable and dependency-free.
+- Do not use a geometric repeating pattern; it reads as a UI grid rather than paper.
+- Do not animate the grain; the reference treatment is a static material layer and motion belongs to the listening visuals.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication; both themes are verified in the browser with the cache-busted version.

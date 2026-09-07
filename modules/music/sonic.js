@@ -1,4 +1,4 @@
-import { accountSignedIn, storage } from "./data.js?v=0.9.115";
+import { accountSignedIn, storage } from "./data.js?v=0.9.116";
 
 export const sonicStorageKey = "how-i-hear-music:sonic-descriptors:v1";
 export const sonicDimensions = {

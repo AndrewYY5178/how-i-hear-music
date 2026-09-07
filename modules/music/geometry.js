@@ -1,4 +1,4 @@
-import { safe } from "./data.js?v=0.9.115";
+import { safe } from "./data.js?v=0.9.116";
 
 export const geometryFields = ["song", "vocal", "production", "overall"];
 const point = (value, index, cx, cy, radius) => { const angle = -Math.PI / 2 + Math.PI * 2 * index / 4; const distance = Math.max(0, Math.min(11, Number(value) || 0)) / 11 * radius; return [cx + Math.cos(angle) * distance, cy + Math.sin(angle) * distance]; };
