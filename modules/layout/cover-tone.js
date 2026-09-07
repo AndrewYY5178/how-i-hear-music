@@ -1,10 +1,15 @@
 const recordPalette = ["#8f4937", "#65705a", "#566d78", "#796071", "#8b7349", "#72533f", "#4f7068"];
 const toneCache = new Map();
+const coverPaletteStorageKey = "how-i-hear-music:cover-palettes:v1";
 const artworkProxyHosts = new Set(["y.gtimg.cn", "p1.music.126.net", "p2.music.126.net", "p3.music.126.net", "p4.music.126.net"]);
 
 const hash = (value) => [...String(value || "record")].reduce((total, character) => ((total << 5) - total + character.codePointAt(0)) | 0, 0);
 
 export const fallbackCoverTone = (key) => recordPalette[Math.abs(hash(key)) % recordPalette.length];
+export const fallbackCoverPalette = (key) => {
+  const index = Math.abs(hash(key)) % recordPalette.length;
+  return [recordPalette[index], recordPalette[(index + 3) % recordPalette.length], recordPalette[(index + 5) % recordPalette.length]];
+};
 
 const quantizedChannel = (value) => Math.min(255, Math.round(value / 24) * 24);
 
@@ -52,6 +57,49 @@ export const dominantPixelTone = (pixels, width, height, { edgeOnly = false, max
   return `rgb(${values.map((value) => Math.round(Math.max(0, Math.min(255, value * scale)))).join(" ")})`;
 };
 
+const normalizedColor = (values, minimum = 42, maximum = 198) => {
+  const lightness = values.reduce((total, value) => total + value, 0) / 3;
+  const targetLightness = Math.max(minimum, Math.min(maximum, lightness));
+  const scale = lightness ? targetLightness / lightness : 1;
+  return `rgb(${values.map((value) => Math.round(Math.max(0, Math.min(255, value * scale)))).join(" ")})`;
+};
+const colorDistance = (left, right) => Math.hypot(...left.map((value, index) => value - right[index]));
+
+export const dominantPixelPalette = (pixels, width, height, { count = 3 } = {}) => {
+  const buckets = new Map();
+  for (let index = 0; index < pixels.length; index += 4) {
+    if (pixels[index + 3] < 180) continue;
+    const red = pixels[index]; const green = pixels[index + 1]; const blue = pixels[index + 2];
+    const key = `${quantizedChannel(red)}-${quantizedChannel(green)}-${quantizedChannel(blue)}`;
+    const bucket = buckets.get(key) || { red: 0, green: 0, blue: 0, count: 0 };
+    bucket.red += red; bucket.green += green; bucket.blue += blue; bucket.count += 1;
+    buckets.set(key, bucket);
+  }
+  const swatches = [...buckets.values()];
+  if (!swatches.length) return [];
+  const largestPopulation = Math.max(...swatches.map((bucket) => bucket.count));
+  const candidates = swatches.map((bucket) => {
+    const values = [bucket.red, bucket.green, bucket.blue].map((value) => value / bucket.count);
+    const high = Math.max(...values) / 255; const low = Math.min(...values) / 255;
+    const lightness = (high + low) / 2;
+    const saturation = high === low ? 0 : (high - low) / (1 - Math.abs(2 * lightness - 1));
+    const population = bucket.count / largestPopulation;
+    const prominence = Math.pow(population, .58) * (.3 + 1.5 * Math.pow(saturation, 1.12)) * (.7 + .3 * (1 - Math.abs(lightness - .5)));
+    return { values, population, saturation, lightness, prominence };
+  }).sort((left, right) => right.prominence - left.prominence);
+  const colorful = candidates.filter((candidate) => candidate.population >= .018 && candidate.saturation >= .12 && candidate.lightness >= .05 && candidate.lightness <= .94);
+  const ordered = [...colorful, ...candidates.filter((candidate) => !colorful.includes(candidate))];
+  const selected = [];
+  ordered.forEach((candidate) => {
+    if (selected.length >= count || selected.some((picked) => colorDistance(picked.values, candidate.values) < 66)) return;
+    selected.push(candidate);
+  });
+  if (!selected.length) selected.push(candidates[0]);
+  const colors = selected.map((candidate) => normalizedColor(candidate.values));
+  while (colors.length < count) colors.push(colors[colors.length - 1]);
+  return colors;
+};
+
 const sampledTones = (image) => {
   const canvas = document.createElement("canvas");
   canvas.width = 64;
@@ -61,7 +109,7 @@ const sampledTones = (image) => {
   context.drawImage(image, 0, 0, canvas.width, canvas.height);
   const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
   const record = dominantPixelTone(pixels, canvas.width, canvas.height);
-  return { record, edge: dominantPixelTone(pixels, canvas.width, canvas.height, { edgeOnly: true, maximum: 164 }) || record };
+  return { record, edge: dominantPixelTone(pixels, canvas.width, canvas.height, { edgeOnly: true, maximum: 164 }) || record, palette: dominantPixelPalette(pixels, canvas.width, canvas.height) };
 };
 
 const artworkApiBase = () => {
@@ -107,6 +155,57 @@ const applyTone = async (target, source) => {
   return tones;
 };
 
+const paletteStore = () => {
+  try { return JSON.parse(localStorage.getItem(coverPaletteStorageKey) || "{}"); }
+  catch { return {}; }
+};
+const savePalette = (albumId, source, colors) => {
+  if (!albumId || !source || !colors?.length) return;
+  try { localStorage.setItem(coverPaletteStorageKey, JSON.stringify({ ...paletteStore(), [albumId]: { source, colors } })); }
+  catch {}
+};
+const clearPalette = (albumId) => {
+  if (!albumId) return;
+  try { const palettes = paletteStore(); delete palettes[albumId]; localStorage.setItem(coverPaletteStorageKey, JSON.stringify(palettes)); }
+  catch {}
+};
+const applyPaletteValues = (target, colors) => {
+  if (!target?.isConnected || !colors?.length) return;
+  colors.slice(0, 3).forEach((color, index) => target.style.setProperty(`--album-color-${index + 1}`, color));
+  target.dataset.paletteReady = "true";
+};
+const paletteFromTones = (tones, key) => tones?.palette?.length ? tones.palette.slice(0, 3) : fallbackCoverPalette(key);
+
+export const bindCoverPalette = async (coverTarget, paletteTarget = coverTarget, { force = false } = {}) => {
+  const source = coverTarget?.dataset?.coverSource || "";
+  const albumId = coverTarget?.dataset?.coverAlbumId || paletteTarget?.dataset?.coverAlbumId || "";
+  const fallback = fallbackCoverPalette(albumId || source);
+  if (!source) { applyPaletteValues(paletteTarget, fallback); return fallback; }
+  const stored = paletteStore()[albumId];
+  if (!force && stored?.source === source && Array.isArray(stored.colors) && stored.colors.length >= 3) {
+    applyPaletteValues(paletteTarget, stored.colors);
+    return stored.colors;
+  }
+  const tones = await tonesForSource(source);
+  const colors = paletteFromTones(tones, albumId || source);
+  applyPaletteValues(paletteTarget, colors);
+  savePalette(albumId, source, colors);
+  return colors;
+};
+
+export const reextractCoverAppearance = async (target, paletteTarget = target) => {
+  const source = target?.dataset?.coverSource || "";
+  const albumId = target?.dataset?.coverAlbumId || paletteTarget?.dataset?.coverAlbumId || "";
+  if (!source) return null;
+  toneCache.delete(source);
+  clearPalette(albumId);
+  const tones = await applyTone(target, source);
+  const colors = paletteFromTones(tones, albumId || source);
+  applyPaletteValues(paletteTarget, colors);
+  savePalette(albumId, source, colors);
+  return { tones, colors };
+};
+
 export const reextractCoverTone = (target) => {
   const source = target?.dataset?.coverSource || "";
   if (!source) return Promise.resolve(null);
@@ -131,6 +230,7 @@ const bindCoverImage = (image) => {
       if (toneTarget) {
         toneTarget.dataset.coverSource = alternate;
         applyTone(toneTarget, alternate);
+        toneTarget.dispatchEvent?.(new CustomEvent("him:cover-source-change", { bubbles: true, detail: { source: alternate } }));
       }
       return;
     }

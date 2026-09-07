@@ -750,6 +750,20 @@ body::before {
 .album-detail-cover-tools { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:14px; }
 .album-detail-cover-tools .button { min-height:32px; padding:7px 10px; font-size:8px; }
 .album-detail-cover-tools .mono { color:var(--muted); font-size:8px; }
+/* UI 3.12.16 — a cover-derived, three-color field stays behind the existing album object. */
+.album-detail-colorfield { position:relative; isolation:isolate; overflow:hidden; margin-bottom:64px; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); background:var(--paper-light); }
+.album-detail-colorfield>.album-detail-cover { position:relative; z-index:1; margin-bottom:0; padding:clamp(24px,4vw,56px); }
+.album-color-waves { position:absolute; z-index:0; inset:-24% -12%; overflow:hidden; opacity:.22; pointer-events:none; }
+.album-color-waves svg { display:block; width:100%; height:100%; }
+.album-color-wave { transform-box:fill-box; transform-origin:center; }
+.album-color-waves .wave-one { fill:var(--album-color-1,#8f4937); animation:albumColorWaveOne 15s ease-in-out infinite alternate; }
+.album-color-waves .wave-two { fill:var(--album-color-2,#65705a); animation:albumColorWaveTwo 19s ease-in-out infinite alternate; }
+.album-color-waves .wave-three { fill:var(--album-color-3,#566d78); animation:albumColorWaveThree 17s ease-in-out infinite alternate; }
+@keyframes albumColorWaveOne { from { transform:translate3d(-5%,3%,0) scale(1.04,.96); } to { transform:translate3d(7%,-5%,0) scale(1.13,1.08); } }
+@keyframes albumColorWaveTwo { from { transform:translate3d(6%,-3%,0) scale(1.08,1); } to { transform:translate3d(-6%,6%,0) scale(1.15,.92); } }
+@keyframes albumColorWaveThree { from { transform:translate3d(-3%,5%,0) scale(1.1,.94); } to { transform:translate3d(5%,-4%,0) scale(1.03,1.1); } }
+html[data-theme="chromatic"] .album-detail-colorfield { background:linear-gradient(135deg,#d8d8db,#babcc1); }
+html[data-theme="chromatic"] .album-color-waves { opacity:.42; }
 .album-note-form { max-width:720px; padding:16px 0 24px; }
 .album-note-form label>span { display:block; margin-bottom:8px; color:var(--red); font-size:8px; }
 .album-note-form textarea { width:100%; padding:16px 0; border:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); outline:0; background:transparent; color:inherit; resize:vertical; }
@@ -771,6 +785,8 @@ body::before {
 .cover-override-form p { margin-top:16px; }
 .cover-maintenance { margin-top:64px; }
 .cover-maintenance>p { max-width:620px; margin:0 0 24px; color:var(--muted); font:italic 13px/1.5 var(--serif); }
+.cover-maintenance-batch { display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px; margin:0 0 24px; }
+.cover-maintenance-batch p { margin:0; color:var(--muted); font-size:8px; }
 .cover-maintenance-list { border-top:1px solid var(--ink); }
 .cover-maintenance-record { border-bottom:1px solid var(--line); }
 .cover-maintenance-record>summary { display:grid; grid-template-columns:minmax(140px,.45fr) minmax(180px,1fr) auto; gap:16px; align-items:baseline; padding:16px 0; cursor:pointer; list-style:none; }
@@ -1141,6 +1157,9 @@ html[data-theme="chromatic"] body[data-module="rate"] {
   .home-record[data-record-position="left-4"],.home-record[data-record-position="right-4"] { opacity:.5 !important; }
 }
 @media (max-width:760px) {
+  .album-detail-colorfield { margin-bottom:40px; }
+  .album-detail-colorfield>.album-detail-cover { padding:24px 0; }
+  .album-color-waves { inset:-16% -55%; opacity:.18; }
   .home-record[data-record-position="left-2"],.home-record[data-record-position="right-2"] { opacity:.52 !important; }
   .home-record[data-record-position="left-3"],.home-record[data-record-position="right-3"] { opacity:.5 !important; }
 }
@@ -1827,7 +1846,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-shape-cycle.shape-is-changing { animation:none; }
 }
 
-/* UI 3.12.15 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
+/* UI 3.12.16 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
 .home-landscape-cycle { position:relative; display:block; max-width:none; margin:clamp(70px,10vw,130px) 0; padding:clamp(32px,5vw,65px) 0 62px; overflow:hidden; }
 .featured-landscape-slide { display:grid; grid-template-columns:minmax(170px,.42fr) minmax(220px,.72fr) minmax(360px,1.45fr); gap:clamp(28px,5vw,88px); align-items:end; }
 .featured-landscape-slide[hidden] { display:none; }
@@ -1864,6 +1883,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-landscape-cycle.landscape-is-changing,
   .home-landscape-cycle .featured-landscape-slide.active .featured-landscape-copy,
   .home-landscape-cycle .featured-landscape-slide.active .featured-landscape-wave { animation:none; }
+  .album-color-waves .album-color-wave { animation:none; }
 }
 
 /* UI 3.11.13 — anchor narrow Home controls to the Cover Flow content band. */
@@ -1904,7 +1924,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .essay-stack .essay-item-body { grid-template-columns:40px minmax(0,1fr) auto; gap:16px; padding-bottom:20px; }
 }
 
-/* UI 3.12.15 — tighten the handoff from Home album rotation into Featured Shape. */
+/* UI 3.12.16 — tighten the handoff from Home album rotation into Featured Shape. */
 .home-listening { padding-bottom:32px; }
 .home-listening + .featured-shape { margin-top:32px; }
 @media (max-width:760px) {

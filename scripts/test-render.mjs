@@ -14,6 +14,7 @@ const nativeFetch = globalThis.fetch;
 globalThis.fetch = async (input, options) => { const url = input instanceof URL ? input : new URL(input); if (url.protocol !== 'file:') return nativeFetch(input, options); try { return new Response(await readFile(url), { status: 200, headers: { 'Content-Type': 'application/json' } }); } catch { return new Response('', { status: 404 }); } };
 
 const archive = await import('../modules/archive/pages.js');
+const coverTone = await import('../modules/layout/cover-tone.js');
 const home = await import('../modules/home.js');
 const imports = await import('../modules/import/pages.js');
 const journal = await import('../modules/journal/pages.js');
@@ -118,7 +119,16 @@ const albumDetail = archive.archiveAlbumDetail('陶喆-黑色柳丁');
 assert.match(albumDetail, /name="coverFile"/);
 assert.match(albumDetail, /data-reextract-tone/);
 assert.match(albumDetail, /class="album-detail-image" data-cover-tone/);
+assert.match(albumDetail, /data-album-colorfield/);
+assert.match(albumDetail, /class="album-color-waves"/);
+assert.match(albumDetail, /data-cover-album-id="陶喆-黑色柳丁"/);
 assert.match(albumDetail, /never uploaded/);
+const extractedPalette = coverTone.dominantPixelPalette(new Uint8ClampedArray([
+  238, 40, 54, 255, 37, 178, 199, 255, 236, 180, 34, 255,
+  238, 40, 54, 255, 37, 178, 199, 255, 236, 180, 34, 255,
+]), 6, 1);
+assert.equal(extractedPalette.length, 3);
+assert.equal(new Set(extractedPalette).size, 3);
 const blackOrangeDetail = albumDetail;
 assert.match(blackOrangeDetail, /data-cover-fallback-source="https:\/\/m\.360buyimg\.com\/mobilecms\/s750x750_14169\/8a8fdf66-813f-45ad-bc7e-b46da1a9db1a\.jpg%21q80\.jpg"/);
 const artistDetail = archive.archiveArtistDetail('shan-yichun');
@@ -176,6 +186,9 @@ assert.match(importHomeMarkup, /class="secondary-nav"[\s\S]*?>Import<\/a>[\s\S]*
 assert.match(importHomeMarkup, /<span class="mono">QQ MUSIC<\/span>/);
 assert.match(importQQMarkup, /01 \/ QQ MUSIC/);
 assert.doesNotMatch(importQQMarkup, /QQ MUSIC SMART IMPORT/);
+assert.match(imports.importData(), /id="reextract-all-cover-palettes"/);
+assert.match(stylesheet, /\.album-detail-colorfield \{ position:relative;/);
+assert.match(stylesheet, /\.album-color-waves \.wave-one \{ fill:var\(--album-color-1/);
 assert.doesNotMatch(stylesheet, /\.account-login-options \{[^}]*border-top/);
 assert.match(stylesheet, /\.home-record\[data-record-position="left-4"\] \{ z-index:6; opacity:\.5;/);
 assert.match(stylesheet, /\.home-record\[data-record-position="right-3"\] \{ opacity:\.5;/);

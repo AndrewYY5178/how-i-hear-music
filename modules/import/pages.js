@@ -6,10 +6,10 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.15";
+import { bindCoverTones, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.16";
 import { coverOverrideKey, localCoverOverrideKey, coverSourcesFor, encodeLocalCover } from "../music/cover-maintenance.js";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
-import { translateText } from "../layout/i18n.js?v=0.9.89";
+import { translateText } from "../layout/i18n.js?v=0.9.90";
 
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;
@@ -37,9 +37,9 @@ const coverMaintenanceMarkup = () => {
     const id = album.id || slug(`${album.artist}-${album.title}`); const { primary, alternate, local, remote } = coverSourcesFor(album, id); const tone = album.themeColor || fallbackCoverTone(`${album.artist}-${album.title}`);
     const image = primary ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" src="${safe(primary)}" alt="${safe(translateText(`${album.title} cover`))}"><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
     const sourceLabel = local ? "LOCAL COVER ACTIVE" : remote ? "REMOTE OVERRIDE ACTIVE" : "CANONICAL COVER";
-    return `<details class="cover-maintenance-record"><summary><span class="mono">${safe(album.artist)}</span><b>${safe(album.title)}</b><small class="mono">${sourceLabel} · +</small></summary><div class="cover-maintenance-body"><div class="cover-maintenance-preview" data-cover-tone data-cover-source="${safe(primary)}" style="--record-color:${tone};--sleeve-edge-color:${tone}">${image}</div><form class="cover-maintenance-form" data-album-id="${safe(id)}"><label><span class="mono">LOCAL COVER FILE</span><input type="file" name="coverFile" accept="image/jpeg,image/png,image/webp,image/avif"><small>Square images are cropped and compressed in this browser. They are never uploaded.</small></label><div class="cover-local-preview" data-cover-local-preview></div><label><span class="mono">REMOTE HTTPS IMAGE URL (OPTIONAL)</span><input type="url" name="coverUrl" value="${safe(remote)}" placeholder="https://…"></label><div><button class="button" type="submit">SAVE COVER</button><button class="button" type="button" data-clear-cover>USE CANONICAL COVER</button><button class="button" type="button" data-reextract-tone>RE-EXTRACT COLOR</button></div><p data-cover-status>${local ? "A local cover is active on this browser." : "Use a local file for complex or cross-domain artwork."}</p><p data-tone-status>Theme color is sampled from the current cover when possible.</p></form></div></details>`;
+    return `<details class="cover-maintenance-record"><summary><span class="mono">${safe(album.artist)}</span><b>${safe(album.title)}</b><small class="mono">${sourceLabel} · +</small></summary><div class="cover-maintenance-body"><div class="cover-maintenance-preview" data-cover-tone data-cover-album-id="${safe(id)}" data-cover-source="${safe(primary)}" style="--record-color:${tone};--sleeve-edge-color:${tone}">${image}</div><form class="cover-maintenance-form" data-album-id="${safe(id)}"><label><span class="mono">LOCAL COVER FILE</span><input type="file" name="coverFile" accept="image/jpeg,image/png,image/webp,image/avif"><small>Square images are cropped and compressed in this browser. They are never uploaded.</small></label><div class="cover-local-preview" data-cover-local-preview></div><label><span class="mono">REMOTE HTTPS IMAGE URL (OPTIONAL)</span><input type="url" name="coverUrl" value="${safe(remote)}" placeholder="https://…"></label><div><button class="button" type="submit">SAVE COVER</button><button class="button" type="button" data-clear-cover>USE CANONICAL COVER</button><button class="button" type="button" data-reextract-tone>RE-EXTRACT COLOR</button></div><p data-cover-status>${local ? "A local cover is active on this browser." : "Use a local file for complex or cross-domain artwork."}</p><p data-tone-status>Theme color is sampled from the current cover when possible.</p></form></div></details>`;
   }).join("");
-  return `<details class="data-advanced cover-maintenance"><summary>COVER MAINTENANCE <span>+</span></summary><p>Repair artwork and theme colors without opening every album. Local covers stay in this browser and are never uploaded.</p><div class="cover-maintenance-list">${records || `<p class="empty-state">No albums are available for cover maintenance yet.</p>`}</div></details>`;
+  return `<details class="data-advanced cover-maintenance"><summary>COVER MAINTENANCE <span>+</span></summary><p>Repair artwork and theme colors without opening every album. Local covers stay in this browser and are never uploaded.</p><div class="cover-maintenance-batch"><button class="button" type="button" id="reextract-all-cover-palettes">REFRESH ALL COVER COLORS</button><p class="mono" id="cover-palette-batch-status" aria-live="polite">Cover palette refresh runs only in this browser and never uploads artwork.</p></div><div class="cover-maintenance-list">${records || `<p class="empty-state">No albums are available for cover maintenance yet.</p>`}</div></details>`;
 };
 export const importData = () => {
   const health = dataHealth(); const snapshots = recoverySnapshots();
@@ -196,7 +196,22 @@ const bindDataDesk = (navigate) => {
         } catch (error) { if (message) message.textContent = error instanceof Error ? error.message : "The cover could not be saved."; if (submit) submit.disabled = false; }
       });
       form.querySelector("[data-clear-cover]")?.addEventListener("click", () => { const overrides = { ...storage.get(coverOverrideKey, {}) }; const local = { ...storage.get(localCoverOverrideKey, {}) }; delete overrides[coverId]; delete local[coverId]; storage.set(coverOverrideKey, overrides, { recover: false }); storage.set(localCoverOverrideKey, local, { recover: false }); navigate("/import/data"); });
-      form.querySelector("[data-reextract-tone]")?.addEventListener("click", async (event) => { const button = event.currentTarget; const message = form.querySelector("[data-tone-status]"); const target = form.closest(".cover-maintenance-record")?.querySelector("[data-cover-tone]"); if (!target) return; button.disabled = true; if (message) message.textContent = translateText("Re-reading cover pixels…"); try { const tones = await reextractCoverTone(target); if (message) message.textContent = translateText(tones ? "Color extraction retried. The sleeve will use the new sample when available." : "Could not re-extract the cover color."); } catch (error) { if (message) message.textContent = error instanceof Error ? error.message : translateText("Could not re-extract the cover color."); } finally { button.disabled = false; } });
+      form.querySelector("[data-reextract-tone]")?.addEventListener("click", async (event) => { const button = event.currentTarget; const message = form.querySelector("[data-tone-status]"); const target = form.closest(".cover-maintenance-record")?.querySelector("[data-cover-tone]"); if (!target) return; button.disabled = true; if (message) message.textContent = translateText("Re-reading cover colors…"); try { const appearance = await reextractCoverAppearance(target); if (message) message.textContent = translateText(appearance ? "Cover colors refreshed locally." : "Could not re-extract the cover colors."); } catch (error) { if (message) message.textContent = error instanceof Error ? error.message : translateText("Could not re-extract the cover colors."); } finally { button.disabled = false; } });
+    });
+    const refreshAll = document.getElementById("reextract-all-cover-palettes"); const batchStatus = document.getElementById("cover-palette-batch-status");
+    refreshAll?.addEventListener("click", async () => {
+      const targets = [...coverDesk.querySelectorAll("[data-cover-tone][data-cover-album-id]")];
+      if (!targets.length) return;
+      refreshAll.disabled = true;
+      let refreshed = 0;
+      try {
+        for (const [index, target] of targets.entries()) {
+          if (batchStatus) batchStatus.textContent = `${translateText("Refreshing cover colors…")} ${index + 1} / ${targets.length}`;
+          const appearance = await reextractCoverAppearance(target);
+          if (appearance) refreshed += 1;
+        }
+        if (batchStatus) batchStatus.textContent = `${refreshed} / ${targets.length} ${translateText("cover palettes refreshed locally.")}`;
+      } finally { refreshAll.disabled = false; }
     });
   }
   const syncStatus = document.getElementById("cloud-sync-status");

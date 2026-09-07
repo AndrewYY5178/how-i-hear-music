@@ -3332,3 +3332,26 @@ Implementation commit: pending
 ### Verification
 
 - Project and render checks pass.
+
+## Version 3.12.16 — Derive album-detail waves from cover artwork
+
+### Evidence
+
+- The referenced 21st.dev Blue Waves treatment demonstrates a moving, layered field whose value comes from continuous contour motion rather than added interface chrome.
+- HIM already treats the sleeve and record as the primary album-detail object, so any surrounding color should be sourced from that same cover rather than introducing a separate palette.
+
+### Decision
+
+- Sample three distinct, suitably visible colors from the displayed cover after its canonical, local override, remote override and fallback source resolution.
+- Use those values only as low-opacity moving SVG wave fields behind the existing album-detail composition. The artwork, record, typography, rules and paper/Chromatic theme system remain intact.
+- Cache the derived palette locally by album ID and resolved cover source. The existing per-album re-extraction control invalidates it; Data Desk offers a sequential local-only refresh for the full active catalog.
+- Use the same path for the signed-out showcase catalog, whose `demo-album-*` IDs keep its palettes separate from a signed-in archive.
+
+### Rejected alternatives
+
+- A generic blue gradient would be visually attractive but unrelated to each album and would import the reference’s color language.
+- Canvas/WebGL background rendering would add rendering cost and obscure the editorial page structure without improving the data relationship.
+
+### Verification
+
+- Render checks assert album-detail wave markup, the three-color extractor and the Data Desk batch action.
