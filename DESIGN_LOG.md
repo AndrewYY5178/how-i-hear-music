@@ -3381,7 +3381,7 @@ Implementation commit: pending
 
 ## Version 3.12.23 — Make cover colors a full album-page field
 
-Implementation commit: f2e0075
+Implementation commit: 50aff43
 
 ### Evidence
 
