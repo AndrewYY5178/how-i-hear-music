@@ -1,4 +1,4 @@
-import { allTracks, storage, trackId } from "./data.js";
+import { allTracks, storage, trackId, visibleJournal } from "./data.js";
 import { currentEvidence, ratingChanges } from "./analysis.js";
 import { insightTagsOf } from "./insights.js";
 import { readSonic } from "./sonic.js";
@@ -39,7 +39,7 @@ const contextFor = (records) => {
 
 export const tasteDNA = ({ records = currentEvidence(), minimumEvidence = 5, now = new Date() } = {}) => {
   const scored = records.filter((record) => Number.isFinite(overall(record))); const baseline = scored.length ? scored.reduce((sum, record) => sum + overall(record), 0) / scored.length : 0; const context = contextFor(scored);
-  const journal = storage.get("how-i-hear-music:journal:v1", []); const latestByTrack = new Map();
+  const journal = visibleJournal(); const latestByTrack = new Map();
   journal.filter((entry) => entry.trackId && Number.isFinite(new Date(entry.at).getTime())).forEach((entry) => { if (!latestByTrack.has(entry.trackId) || new Date(entry.at) > new Date(latestByTrack.get(entry.trackId))) latestByTrack.set(entry.trackId, entry.at); });
   return tasteTraitDefinitions.map((definition) => {
     const evidence = scored.filter((record) => definition.match(record, context)); const values = evidence.map(overall); const average = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0; const deviation = values.length ? Math.sqrt(values.reduce((sum, value) => sum + (value - average) ** 2, 0) / values.length) : 0;
@@ -56,7 +56,7 @@ export const activatedTraits = (record, traits = tasteDNA()) => {
   return traits.filter((trait) => trait.match(record, context));
 };
 
-export const blindSpots = ({ records = currentEvidence(), traits = tasteDNA(), albums = [], journal = storage.get("how-i-hear-music:journal:v1", []) } = {}) => {
+export const blindSpots = ({ records = currentEvidence(), traits = tasteDNA(), albums = [], journal = visibleJournal() } = {}) => {
   const spots = [];
   traits.forEach((trait) => {
     const artists = [...new Set(trait.evidence.map((record) => record.artist).filter(Boolean))]; const coverageGap = clamp01(1 - artists.length / 5);

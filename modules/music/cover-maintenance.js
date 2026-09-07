@@ -1,11 +1,11 @@
-import { storage } from "./data.js";
+import { accountSignedIn, storage } from "./data.js";
 
 export const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 export const localCoverOverrideKey = "how-i-hear-music:cover-overrides-local:v1";
 
 export const coverSourcesFor = (album, id) => {
-  const override = storage.get(coverOverrideKey, {})[id] || "";
-  const localOverride = storage.get(localCoverOverrideKey, {})[id] || "";
+  const override = accountSignedIn() ? storage.get(coverOverrideKey, {})[id] || "" : "";
+  const localOverride = accountSignedIn() ? storage.get(localCoverOverrideKey, {})[id] || "" : "";
   const canonical = album.coverUrl || "";
   const primary = localOverride || override || canonical;
   const alternate = [override, canonical, album.coverFallback].find((source) => source && source !== primary) || "";

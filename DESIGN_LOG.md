@@ -3226,3 +3226,15 @@ Implementation commit: pending
 ### Verification
 
 - Full project, core, render and Worker contract tests pass.
+
+## Version 3.12.7 — Isolate the signed-out showcase account
+
+### Decision
+
+- Keep signed-out Home, Archive and Taste views on a dedicated virtual showcase account rather than reading the browser's private archive.
+- Use the nine approved showcase albums with deterministic demo scores, tracks and taste tags; local ratings, Journal entries, imported albums, sonic descriptors, notes, cover overrides and custom groups remain invisible until an account session is active.
+- Keep the real account data path unchanged after sign-in so cloud-backed albums and ratings continue to replace the showcase naturally.
+
+### Verification
+
+- Project and core checks pass; all changed modules pass syntax validation. The next browser smoke check should verify signed-out and signed-in sessions against separate local-storage states.

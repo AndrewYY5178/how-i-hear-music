@@ -11,7 +11,7 @@ const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;
 const saveRating = (id, value) => saveRatingRecord(id, value);
 const appendJournal = (entry) => { const saved = { id: entry.id || `journal_${crypto.randomUUID()}`, ...entry }; storage.set(journalKey, [saved, ...storage.get(journalKey, [])]); return saved; };
-const choices = data.songs.entries.filter((track) => track.scores && Object.values(track.scores).some((value) => value !== null));
+const choices = () => allTracks().filter((track) => track.scores && Object.values(track.scores).some((value) => value !== null));
 const localTracks = () => [...storage.get(inboxKey, []), ...storage.get(libraryKey, [])];
 const findRateTrack = (id) => findTrack(id) || localTracks().find((track) => track.id === id) || null;
 const rateId = (track) => track?.id || trackId(track);
@@ -19,7 +19,7 @@ const scoreControls = (scores) => `<div class="rating-controls">${fields.map((fi
 let pointerController = null;
 
 export const rateHome = () => {
-  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const album = archiveVisibleAlbums().find((record) => confirmedAlbumTracks(record).length); const next = unrated[0] || choices[0];
+  const unrated = lifecycleTracks().filter((track) => ["imported", "heard"].includes(track.lifecycleState)); const album = archiveVisibleAlbums().find((record) => confirmedAlbumTracks(record).length); const next = unrated[0] || choices()[0];
   const albumAction = album ? link(`/rate/album/${album.id || slug(album.artist + "-" + album.title)}`, "RATE AN ALBUM", "button primary") : link("/import/qq", "IMPORT AN ALBUM", "button primary");
   const trackAction = next ? link(`/rate/track/${encodeURIComponent(rateId(next))}`, "CONTINUE RATING", "button primary") : link("/import", "IMPORT MUSIC", "button primary");
   const trackCopy = next ? `${safe(next.title)} · ${safe(next.artist)}${next.lifecycleState ? ` · ${next.lifecycleState.toUpperCase()}` : ""}` : "Bring in one track to begin a listening shape.";

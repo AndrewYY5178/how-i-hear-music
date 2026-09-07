@@ -6,8 +6,10 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const profile = JSON.parse(await readFile(join(root, 'data/music-profile.json'), 'utf8'));
 const songs = JSON.parse(await readFile(join(root, 'data/songs.json'), 'utf8')).entries;
 const artistsData = JSON.parse(await readFile(join(root, 'data/artists.json'), 'utf8'));
-const artists = [...artistsData.featured, ...artistsData.uncertain];
-const albums = profile.albumArchive;
+const showcaseArtists = ['单依纯', 'Taylor Swift', 'Kanye West', 'Kacey Musgraves', 'Bad Bunny', 'Charli xcx', 'Rihanna', 'Coldplay', 'Metallica'];
+const albums = profile.albumArchive.filter((album) => album.showcaseOnly);
+const demoTracks = albums.flatMap((album, albumIndex) => [0, 1, 2].map((trackIndex) => ({ title: `Demo track ${albumIndex * 3 + trackIndex + 1}`, artist: album.artist })));
+const artists = showcaseArtists.map((name) => ({ name }));
 const baseUrl = 'https://andrewyy5178.github.io/how-i-hear-music';
 const escape = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
 const link = (href, label) => `<a href="/how-i-hear-music${href}">${escape(label)}</a>`;
@@ -16,8 +18,8 @@ const pageHeader = (title, copy) => `<section class="page-head"><h1>${title}</h1
 
 const routes = [
   { path: '/', title: 'How I Hear Music', description: 'A personal music taste archive: listening shapes, album landscapes and notes over time.' },
-  { path: '/archive', title: 'Archive', description: `${songs.length} Tracks, ${albums.length} Albums and ${artists.length} Artists in a personal listening archive.`, body: `${pageHeader('Browse the record.', 'Tracks, albums and artists that have entered the archive.')}<nav class="snapshot-gates">${link('/archive/tracks', `${songs.length} Tracks`)}${link('/archive/albums', `${albums.length} Albums`)}${link('/archive/artists', `${artists.length} Artists`)}</nav>` },
-  { path: '/archive/tracks', title: 'Archive — Tracks', description: `${songs.length} recorded Tracks with explicit personal listening scores.`, body: `${pageHeader('Tracks in the record.', 'Ratings are personal evidence and are never inferred.')}${list(songs.map((track) => ({ label: track.title, note: track.artist })))}` },
+  { path: '/archive', title: 'Archive', description: `${demoTracks.length} Tracks, ${albums.length} Albums and ${artists.length} Artists in a sample listening archive.`, body: `${pageHeader('Browse the record.', 'Tracks, albums and artists in the virtual showcase archive.')}<nav class="snapshot-gates">${link('/archive/tracks', `${demoTracks.length} Tracks`)}${link('/archive/albums', `${albums.length} Albums`)}${link('/archive/artists', `${artists.length} Artists`)}</nav>` },
+  { path: '/archive/tracks', title: 'Archive — Tracks', description: `${demoTracks.length} showcase Tracks with illustrative listening scores.`, body: `${pageHeader('Tracks in the record.', 'The signed-out view uses a virtual showcase account.')}${list(demoTracks.map((track) => ({ label: track.title, note: track.artist })))}` },
   { path: '/archive/albums', title: 'Archive — Albums', description: `${albums.length} Albums in the How I Hear Music archive.`, body: `${pageHeader('Albums in view.', 'Confirmed records and listening landscapes.')}${list(albums.map((album) => ({ label: album.title, note: album.artist })))}` },
   { path: '/archive/artists', title: 'Archive — Artists', description: `${artists.length} Artists represented in the How I Hear Music archive.`, body: `${pageHeader('The people at the center.', 'Artists represented by confirmed listening records.')}${list(artists.map((artist) => ({ label: artist.name, note: artist.role || artist.romanized || '' })))}` },
   { path: '/rate', title: 'Rate', description: 'Rate one Track across Song, Vocal, Production and Overall without replacing personal listening judgment.', body: pageHeader('Begin with one listening decision.', 'Four dimensions, one personal response. Scores stay in this browser.') },

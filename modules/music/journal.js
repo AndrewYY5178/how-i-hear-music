@@ -1,8 +1,8 @@
-import { storage } from "./data.js";
+import { storage, visibleJournal } from "./data.js";
 import { normalizeInsightTags } from "./insights.js";
 
 export const journalStorageKey = "how-i-hear-music:journal:v1";
-export const readJournal = () => storage.get(journalStorageKey, []);
+export const readJournal = () => visibleJournal();
 export const journalEntry = (id) => readJournal().find((entry) => entry.id === id) || null;
 const clean = (value, maximum = 600) => String(value || "").trim().slice(0, maximum);
 const score = (value) => { if (value === "" || value === null || value === undefined) return null; const number = Number(value); if (!Number.isFinite(number) || number < 0 || number > 11) throw new Error("Scores must stay between 0 and 11."); return Math.round(number * 10) / 10; };

@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js";
+import { allArtists, allTracks, archiveVisibleAlbums, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal } from "../music/data.js";
 import { link, pageHeader } from "../layout/shell.js";
 import { rediscoveryCandidates } from "../music/analysis.js";
 import { insightLabel, insightTags, insightTagsOf } from "../music/insights.js";
@@ -58,7 +58,7 @@ const entropyChart = (series) => {
 };
 
 export const entropyPage = () => {
-  const series = archiveEntropy({ entries: storage.get(journalKey, []) }); const latest = series.at(-1); const metrics = latest ? [["ARTIST CONCENTRATION", latest.artistConcentration], ["TRAIT DIVERSITY", latest.traitDiversity], ["ERA SPREAD", latest.eraSpread], ["ALBUM DEPTH", latest.albumDepth], ["EXPLORATION RATE", latest.explorationRate]] : [];
+  const series = archiveEntropy({ entries: visibleJournal() }); const latest = series.at(-1); const metrics = latest ? [["ARTIST CONCENTRATION", latest.artistConcentration], ["TRAIT DIVERSITY", latest.traitDiversity], ["ERA SPREAD", latest.eraSpread], ["ALBUM DEPTH", latest.albumDepth], ["EXPLORATION RATE", latest.explorationRate]] : [];
   const available = latest ? metrics.filter(([, value]) => value !== null).map(([label]) => label).join(" · ") : "";
   return `${pageHeader("JOURNAL / ARCHIVE ENTROPY", "Is the archive widening?", "A higher number means the archive is more distributed. A lower number means it is more specialized. Neither is better.")}${series.length ? `<section class="entropy-lead"><div><span class="mono">LATEST · ${safe(latest.period)}</span><strong>${Math.round(latest.index * 100)}</strong><p>${safe(entropyNarrative(series))}</p><small class="mono">${latest.evidenceCount} CURRENT TRACKS · ${metrics.filter(([, value]) => value !== null).length} OF 5 DIMENSIONS AVAILABLE</small></div>${entropyChart(series)}</section><dl class="entropy-metrics">${metrics.map(([label, value]) => `<div><dt>${label}</dt><dd>${value === null ? "—" : Math.round(value * 100)}</dd></div>`).join("")}</dl><p class="entropy-method"><b>AVAILABLE:</b> ${safe(available)}. Calculated from cumulative saved Journal ratings by quarter. The 0–100 index is a directional summary, not a precise measurement. Missing tags, years or album metadata stay absent from the relevant dimension.${latest.evidenceCount < 10 ? " This is a low-evidence baseline and may move sharply with a few ratings." : ""}</p>` : `<section class="analysis-empty"><span class="mono">NO TIME SERIES YET</span><h2>Entropy begins after three dated track ratings.</h2><p>The first qualifying quarter establishes a baseline; later quarters reveal direction.</p>${link("/rate", "SAVE A RATING →", "text-link")}</section>`}`;
 };

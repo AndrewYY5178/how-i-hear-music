@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, canonical, data, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js";
+import { accountSignedIn, allArtists, allTracks, archiveVisibleAlbums, canonical, data, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js";
 import { fields, fieldLabel, radar, radarPoints, summary, waveform } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 import { icon } from "../layout/icons.js";
@@ -11,18 +11,18 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.80";
+import { translateText } from "../layout/i18n.js?v=0.9.81";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.6";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.6";
+import { archiveSearch } from "../search/pages.js?ui=3.12.7";
+import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.7";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
 const archiveHomeNav = () => `<div class="archive-index-nav archive-index-actions"><button class="archive-search-trigger mono" id="archive-search-trigger" type="button" aria-controls="archive-search-panel" aria-expanded="${new URLSearchParams(location.search).has("q") ? "true" : "false"}">SEARCH</button></div>`;
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
-const journalEntries = () => storage.get("how-i-hear-music:journal:v1", []);
-const savedRatings = () => storage.get("how-i-hear-music:rating-sessions:v2", {});
+const journalEntries = () => visibleJournal();
+const savedRatings = () => visibleRatings();
 const resolvedScores = (track) => savedRatings()[trackId(track)]?.scores || track.scores || {};
 const scoreNumber = (value) => value === null || value === undefined || value === "" || !Number.isFinite(Number(value)) ? null : Number(value);
 const ratingDescending = (left, right, scoreOf, tieOf) => {
@@ -34,7 +34,7 @@ const trackRatingDescending = (left, right) => ratingDescending(left, right, (tr
 const albumOverall = (album) => {
   const id = album.id || slug(album.artist + "-" + album.title);
   const history = journalEntries().filter((entry) => entry.type === "album" && (entry.albumId === id || entry.title === album.title && entry.artist === album.artist)).sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0))[0];
-  return [storage.get(`how-i-hear-music:album-draft:${id}:overall`, null), history?.overall, album.overall].map(scoreNumber).find((value) => value !== null) ?? null;
+  return [accountSignedIn() ? storage.get(`how-i-hear-music:album-draft:${id}:overall`, null) : null, history?.overall, album.overall].map(scoreNumber).find((value) => value !== null) ?? null;
 };
 const artistAverage = (artist) => {
   const values = tracksForArtist(artist.id).map((track) => scoreNumber(resolvedScores(track).overall)).filter((value) => value !== null);
@@ -99,7 +99,7 @@ export const archiveAlbumDetail = (id) => {
   const album = findAlbum(id);
   if (!album) return `${pageHeader("ARCHIVE / ALBUMS", "Album not found.", "This album is not in the current archive.", link("/archive/albums", "Back to albums", "button"))}`;
   const history = journalEntries().filter((entry) => entry.type === "album" && (entry.albumId === id || entry.title === album.title && entry.artist === album.artist));
-  const albumDraft = history.find((entry) => Array.isArray(entry.tracks))?.tracks || []; const draftStorage = storage.get(`how-i-hear-music:album-draft:${id}`, []); const canonicalTracks = data.songs.entries.filter((track) => canonicalAlbumMatch(track, album)); const baseTracks = album.tracks?.length ? album.tracks : canonicalTracks; const savedRatings = storage.get("how-i-hear-music:rating-sessions:v2", {});
+  const albumDraft = history.find((entry) => Array.isArray(entry.tracks))?.tracks || []; const draftStorage = accountSignedIn() ? storage.get(`how-i-hear-music:album-draft:${id}`, []) : []; const canonicalTracks = data.songs.entries.filter((track) => canonicalAlbumMatch(track, album)); const baseTracks = album.tracks?.length ? album.tracks : canonicalTracks; const savedRatings = visibleRatings();
   const tracks = baseTracks.map((track) => { const draft = [...albumDraft, ...draftStorage].find((item) => item.trackId === trackId(track) || item.title === track.title); const savedScores = savedRatings[trackId(track)]?.scores; const trackScores = track.scores; const draftScores = draft && draft.overall !== null && draft.overall !== undefined && draft.overall !== "" ? { overall: draft.overall } : null; const scores = Number.isFinite(Number(savedScores?.overall)) ? savedScores : Number.isFinite(Number(trackScores?.overall)) ? trackScores : draftScores; return { ...track, scores }; }).sort((a, b) => (a.discNumber || 1) - (b.discNumber || 1) || (a.trackNumber || 0) - (b.trackNumber || 0));
   const confirmed = tracks.filter((track) => Number.isFinite(Number(track.scores?.overall)));
   const narrative = albumNarrative(tracks.map((track) => ({ ...track, overall: track.scores?.overall })));
@@ -116,7 +116,7 @@ const albumComparisonEvidence = (album) => {
   const id = album.id || slug(album.artist + "-" + album.title); const history = journalEntries().find((entry) => entry.type === "album" && (entry.albumId === id || entry.title === album.title && entry.artist === album.artist));
   const tracks = album.tracks || data.songs.entries.filter((track) => canonicalAlbumMatch(track, album));
   const scored = tracks.map((track) => { const scores = resolvedScores(track); return { ...track, scores, overall: scores.overall }; }).filter((track) => track.scores?.overall !== null && track.scores?.overall !== undefined && Number.isFinite(Number(track.scores.overall)));
-  const overall = storage.get(`how-i-hear-music:album-draft:${id}:overall`, history?.overall ?? null);
+  const overall = accountSignedIn() ? storage.get(`how-i-hear-music:album-draft:${id}:overall`, history?.overall ?? null) : history?.overall ?? null;
   return { album, id, tracks, scored, overall, eligible: tracks.length > 0 || overall !== null && overall !== undefined && Number.isFinite(Number(overall)) };
 };
 const comparisonColumn = (evidence) => `<article><span class="mono">${safe(evidence.album.artist)}</span><h2>${safe(evidence.album.title)}</h2><strong>${rating(evidence.overall)}</strong><p class="mono">ALBUM OVERALL</p>${waveform(evidence.scored)}${summary(evidence.scored)}<dl><div><dt>TRACKS</dt><dd>${evidence.tracks.length}</dd></div><div><dt>RATED</dt><dd>${evidence.scored.length}</dd></div></dl>${link(`/archive/albums/${evidence.id}`, "OPEN ALBUM →", "text-link")}</article>`;

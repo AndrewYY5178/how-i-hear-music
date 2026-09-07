@@ -1,4 +1,4 @@
-import { allTracks, findBaseTrack, storage, trackId } from "./data.js";
+import { accountSignedIn, allTracks, findBaseTrack, storage, trackId } from "./data.js";
 
 export const metadataOverrideKey = "how-i-hear-music:metadata-overrides:v1";
 export const metadataFields = ["album", "releaseDate", "language", "region"];
@@ -23,5 +23,5 @@ export const saveMetadataOverride = (id, values) => {
   return overrides[id] || null;
 };
 
-export const metadataOverrideFor = (id) => { const record = storage.get(metadataOverrideKey, {})[id] || {}; if (record.fields) return record; const fields = Object.fromEntries(metadataFields.filter((field) => clean(record[field])).map((field) => [field, { value: clean(record[field]), sourceUrl: clean(record.sourceUrl), sourceNote: clean(record.sourceNote), confirmedAt: record.metadataConfirmedAt }])); return { ...record, fields }; };
+export const metadataOverrideFor = (id) => { const record = accountSignedIn() ? storage.get(metadataOverrideKey, {})[id] || {} : {}; if (record.fields) return record; const fields = Object.fromEntries(metadataFields.filter((field) => clean(record[field])).map((field) => [field, { value: clean(record[field]), sourceUrl: clean(record.sourceUrl), sourceNote: clean(record.sourceNote), confirmedAt: record.metadataConfirmedAt }])); return { ...record, fields }; };
 export const metadataRows = () => allTracks().map((track) => ({ track, id: trackId(track), missing: metadataFields.filter((field) => !clean(track[field])) }));

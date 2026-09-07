@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, data, findTrack, rating, safe, storage, trackId } from "../music/data.js";
+import { allArtists, allTracks, archiveVisibleAlbums, data, findTrack, rating, safe, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader } from "../layout/shell.js";
 import { antiRecommendationPatterns, currentEvidence } from "../music/analysis.js";
@@ -33,7 +33,7 @@ const goodNotMineMarkup = () => {
 };
 
 export const compare = () => {
-  const ratings = storage.get("how-i-hear-music:rating-sessions:v2", {}); const comparisons = Object.entries(ratings).map(([id, visitor]) => ({ track: findTrack(id), visitor })).filter(({ track, visitor }) => Number.isFinite(track?.scores?.overall) && Number.isFinite(visitor?.scores?.overall));
+  const ratings = visibleRatings(); const comparisons = Object.entries(ratings).map(([id, visitor]) => ({ track: findTrack(id), visitor })).filter(({ track, visitor }) => Number.isFinite(track?.scores?.overall) && Number.isFinite(visitor?.scores?.overall));
   const distances = comparisons.map(({ track, visitor }) => Math.abs(track.scores.overall - visitor.scores.overall)); const average = distances.length ? distances.reduce((sum, value) => sum + value, 0) / distances.length : null; const match = average === null ? null : Math.max(0, Math.round((1 - average / 11) * 100));
   const content = comparisons.length >= 3 ? `<span class="mono">TASTE MATCH / ${comparisons.length} SHARED TRACKS</span><h2>${match}% listening proximity.</h2><p>This is the average distance between your Overall scores and Andrew’s—not a compatibility verdict.</p><div class="taste-distances">${comparisons.slice(0, 6).map(({ track, visitor }) => `<span><b>${safe(track.title)}</b><em>${rating(visitor.scores.overall)} / ${rating(track.scores.overall)}</em></span>`).join("")}</div>` : `<span class="mono">TASTE MATCH / LOCAL-ONLY</span><h2>${comparisons.length ? `${3 - comparisons.length} more shared ${3 - comparisons.length === 1 ? "track" : "tracks"}.` : "Comparison begins with a real score."}</h2><p>Rate at least three archived tracks. Your ratings remain in this browser and no public profile is created.</p>`;
   return `${pageHeader("TASTE / COMPARE", "Two ways of hearing.", "Rate selected tracks in the dedicated workspace, then reveal the distance.", link("/rate", "RATE A TRACK", "button primary"))}<section class="compare-callout">${content}</section>`;
@@ -74,7 +74,7 @@ export const familyTree = () => {
 };
 
 export const portrait = () => {
-  const scope = new URLSearchParams(location.search).get("scope") || "9plus"; const evidence = currentEvidence(); const tracks = scope === "all" ? evidence : evidence.filter((track) => Number(track.scores?.overall) >= (scope === "favorites" ? 9.5 : 9)); const albums = storage.get("how-i-hear-music:journal:v1", []).filter((entry) => entry.type === "album" && Array.isArray(entry.tracks));
+  const scope = new URLSearchParams(location.search).get("scope") || "9plus"; const evidence = currentEvidence(); const tracks = scope === "all" ? evidence : evidence.filter((track) => Number(track.scores?.overall) >= (scope === "favorites" ? 9.5 : 9)); const albums = visibleJournal().filter((entry) => entry.type === "album" && Array.isArray(entry.tracks));
   return `${pageHeader("TASTE / LISTENING PORTRAIT", "The archive as a print.", "Track shapes and album landscapes become one sampled composition—not a dashboard.")}<nav class="portrait-filters">${[["9plus", "9+ TRACKS"], ["favorites", "FAVORITES"], ["all", "ALL TIME"]].map(([value, label]) => link(`/taste/portrait?scope=${value}`, label, value === scope ? "active" : "")).join("")}</nav>${listeningPortrait({ tracks, albums, year: "MY LISTENING PORTRAIT" })}`;
 };
 

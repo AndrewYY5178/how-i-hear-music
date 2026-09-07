@@ -1,6 +1,6 @@
-import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId } from "./music/data.js";
+import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.6";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.7";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -15,7 +15,7 @@ const shuffled = (records) => {
 
 const withCurrentScores = (track) => ({
   ...track,
-  scores: storage.get("how-i-hear-music:rating-sessions:v2", {})[trackId(track)]?.scores || track.scores || {},
+  scores: visibleRatings()[trackId(track)]?.scores || track.scores || {},
 });
 let stopHomeMotion = () => {};
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
@@ -36,7 +36,7 @@ const homeSampleAlbumKeys = new Set([
 ]);
 const albumKey = (album) => album.id || slug(`${album.artist}-${album.title}`);
 const showcaseFirst = (albums) => {
-  const lead = albums.find((album) => albumKey(album) === "单依纯-纯妹妹");
+  const lead = albums.find((album) => albumKey(album) === "单依纯-纯妹妹" || slug(`${album.artist}-${album.title}`) === "单依纯-纯妹妹");
   return lead ? [lead, ...shuffled(albums.filter((album) => album !== lead))] : shuffled(albums);
 };
 const coverSourcesForAlbum = (album) => {
@@ -50,6 +50,7 @@ const coverSourcesForAlbum = (album) => {
 };
 const homeAlbums = () => {
   const albums = allAlbums();
+  if (!syncSession()?.token) return showcaseFirst(albums).slice(0, homeAlbumCapacity);
   const imported = importedAlbums();
   const importedKeys = new Set(imported.map(albumKey));
   // Existing non-showcase archive records are already the owner's albums;
@@ -62,7 +63,6 @@ const homeAlbums = () => {
   const availableSamples = samples.filter((album) => !importedKeys.has(albumKey(album)));
   const scoredSamples = availableSamples.filter((album) => albumScore(album) !== null);
   const unscoredSamples = availableSamples.filter((album) => albumScore(album) === null);
-  if (!syncSession()?.token) return showcaseFirst(samples).slice(0, homeAlbumCapacity);
   if (!own.length) return showcaseFirst(samples).slice(0, homeAlbumCapacity);
   if (own.length >= homeAlbumCapacity) return shuffled(own);
   return [...shuffled(own), ...shuffled([...scoredSamples, ...unscoredSamples]).slice(0, homeAlbumCapacity - own.length)];
@@ -70,7 +70,7 @@ const homeAlbums = () => {
 const albumScore = (album) => {
   if (!syncSession()?.token) return null;
   const id = album.id || slug(`${album.artist}-${album.title}`);
-  const history = storage.get("how-i-hear-music:journal:v1", []).filter((entry) => entry.type === "album" && (entry.albumId === id || entry.title === album.title && entry.artist === album.artist)).sort((left, right) => new Date(right.at || 0) - new Date(left.at || 0))[0];
+  const history = visibleJournal().filter((entry) => entry.type === "album" && (entry.albumId === id || entry.title === album.title && entry.artist === album.artist)).sort((left, right) => new Date(right.at || 0) - new Date(left.at || 0))[0];
   return [storage.get(`how-i-hear-music:album-draft:${id}:overall`, null), history?.overall, album.overall].map((value) => value === null || value === undefined || value === "" ? null : Number(value)).find((value) => value !== null && Number.isFinite(value)) ?? null;
 };
 const recordMarkup = (album, index) => {
