@@ -1,17 +1,17 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.77";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.78";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
-import { bindHome, home } from "./modules/home.js?ui=3.12.3";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.3";
-import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.12.3";
-import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, philosophy, portrait, profile, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.12.3";
-import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.12.3";
-import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.12.3";
+import { bindHome, home } from "./modules/home.js?ui=3.12.4";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.4";
+import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.12.4";
+import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, portrait, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.12.4";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.12.4";
+import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.12.4";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
 import { accountNickname } from "./modules/music/account.js";
-import { bindSearch } from "./modules/search/pages.js?ui=3.12.3";
-import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.77";
-import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.3";
+import { bindSearch } from "./modules/search/pages.js?ui=3.12.4";
+import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.78";
+import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.4";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -38,8 +38,6 @@ const route = (path) => {
   if (current === "/taste/journal/entropy") return entropyPage();
   if (/^\/taste\/journal\/year\/\d{4}\/portrait$/.test(current)) return annualPortrait(Number(current.split("/")[4]));
   if (/^\/taste\/journal\/year\/\d{4}$/.test(current)) return yearInMusic(Number(current.split("/").pop()), "/taste/journal");
-  if (current === "/taste/philosophy") return philosophy();
-  if (current === "/taste/profile") return profile();
   if (current === "/taste/good-not-mine") return goodNotMine();
   if (current === "/taste/compare") return compare();
   if (current === "/taste/dna") return dna();
@@ -54,19 +52,13 @@ const route = (path) => {
   if (current === "/import/netease") return importNetEase();
   if (current === "/import/inbox") return importInbox();
   if (current === "/import/data") return importData();
-  if (current === "/journal") return journal("/journal");
-  if (/^\/journal\/edit\/.+/.test(current)) return journalEdit(decodeURIComponent(current.split("/").pop()));
-  if (current === "/journal/memory-palace") return memoryPalace();
-  if (current === "/journal/entropy") return entropyPage();
-  if (/^\/journal\/year\/\d{4}\/portrait$/.test(current)) return annualPortrait(Number(current.split("/")[3]));
-  if (/^\/journal\/year\/\d{4}$/.test(current)) return yearInMusic(Number(current.split("/").pop()));
   return `<section class="not-found"><span class="eyebrow mono">404</span><h1>That page is not in the archive.</h1>${link("/", "RETURN HOME", "button primary")}</section>`;
 };
 
 const navigate = (path, { replace = false, motion = true } = {}) => {
   const requested = new URL(path, location.href);
   const requestedTarget = cleanPath(withoutBase(requested.pathname));
-  const target = requestedTarget === "/search" ? "/archive" : requestedTarget === "/import/qq-album" ? "/import/qq" : requestedTarget === "/journal" ? "/taste/journal" : requestedTarget.replace(/^\/journal\//, "/taste/journal/");
+  const target = requestedTarget === "/search" ? "/archive" : requestedTarget === "/import/qq-album" ? "/import/qq" : requestedTarget === "/taste/profile" ? "/taste/dna" : requestedTarget === "/taste/philosophy" ? "/taste" : requestedTarget === "/journal" ? "/taste/journal" : requestedTarget.replace(/^\/journal\//, "/taste/journal/");
   const browserPath = `${withBase(target)}${requested.search}${requested.hash}`;
   const commit = () => { if (replace) history.replaceState({}, "", browserPath); else history.pushState({}, "", browserPath); render(); };
   if (motion && document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(commit);
@@ -184,6 +176,18 @@ const restorePagesRoute = () => {
   }
   if (current === "/import/qq-album") {
     navigate(`/import/qq${location.search}${location.hash}`, { replace: true, motion: false });
+    return true;
+  }
+  if (current === "/taste/profile") {
+    navigate(`/taste${location.search}${location.hash}`, { replace: true, motion: false });
+    return true;
+  }
+  if (current === "/taste/philosophy") {
+    navigate(`/taste${location.search}${location.hash}`, { replace: true, motion: false });
+    return true;
+  }
+  if (current === "/journal" || current.startsWith("/journal/")) {
+    navigate(`/taste/journal${current.slice("/journal".length)}${location.search}${location.hash}`, { replace: true, motion: false });
     return true;
   }
   const legacy = location.hash.match(/^#(archive|rate|taste|import|journal)(\/.*)?$/);

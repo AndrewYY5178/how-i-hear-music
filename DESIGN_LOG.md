@@ -3193,3 +3193,15 @@ Implementation commit: pending
 ### Verification
 
 - Render checks assert the Home landscape waveform remains present; browser motion timing is isolated to the live waveform class.
+
+## Version 3.12.4 — Consolidate Taste reading surfaces and retire duplicate entry points
+
+### Decision
+
+- Make `Taste → Overview` the home for the listening method, so Philosophy is no longer a separate top-level destination.
+- Keep `/taste/philosophy` as a compatibility redirect to `/taste`, and `/taste/profile` as a compatibility redirect to `/taste/dna` because its content is the same Taste DNA analysis.
+- Redirect the former `/journal` tree into `Taste → Journal`, preserving nested edit, memory, entropy and annual-index links without maintaining a second page surface.
+
+### Verification
+
+- Render tests assert that the merged Taste Overview contains the philosophy essay, no longer links to `/taste/philosophy`, and that all three legacy route families normalize to their new destinations.

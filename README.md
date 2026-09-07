@@ -1,6 +1,6 @@
 # How I Hear Music
 
-一个零依赖的个人音乐档案产品，使用原生 HTML/CSS/JS 与 History API 多路由结构实现。主页是编辑入口；Archive、Rate、Taste、Import、Journal 各自负责浏览、评分、审美说明、导入和时间线。
+一个零依赖的个人音乐档案产品，使用原生 HTML/CSS/JS 与 History API 多路由结构实现。主页是编辑入口；Archive、Rate、Taste、Import 各自负责浏览、评分、审美说明和导入，Journal 位于 Taste 内部的时间线。
 
 本地 Node 服务与线上 Cloudflare Worker 都提供 QQ Music 智能公开资料导入：粘贴一次公开歌单或专辑链接／分享文字，服务会自动识别其类型；歌单进入 Inbox 预览，专辑显示官方曲序与重复分析，确认后才写入浏览器本地资料。NetEase Cloud Music 保持公开歌单 metadata 导入。所有适配器都不使用平台登录、Cookie、音频、封面下载或歌词；GitHub Pages 通过受限 CORS 的 Worker 执行实时公开资料读取。
 
@@ -179,6 +179,8 @@ UI 3.11.45 登录后的 Home 容量判断会计入已有的正式个人档案专
 UI 3.11.46 将所有可见评分统一为加粗衬线体：评分页输入值、Home / Archive 卡片分数、详情页分数列表、Journal 历史与年度摘要，以及雷达图中的分数标注都使用 Libre Baskerville 700，让评分更像正式成绩；维度标签和操作按钮保持原有等宽体层级。
 
 UI 3.11.47 移除 Home 专辑封面的复古滤镜，恢复远程或本地封面的原始色彩；封面流的立体感继续由透视、尺寸、位置和唱片阴影表达。
+
+UI 3.12.4 将 Taste Philosophy 说明并入 Taste Overview；`/taste/philosophy` 重定向到 `/taste`，重复的 `/taste/profile` 重定向到 `/taste/dna`，旧 `/journal` 及其嵌套地址重定向到 `Taste → Journal`。站点地图只保留合并后的规范 Journal 地址。
 
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`

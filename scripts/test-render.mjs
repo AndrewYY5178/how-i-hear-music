@@ -27,6 +27,7 @@ const themeSource = await readFile(new URL('../modules/layout/theme.js', import.
 const motionSource = await readFile(new URL('../modules/layout/motion.js', import.meta.url), 'utf8');
 const homeSource = await readFile(new URL('../modules/home.js', import.meta.url), 'utf8');
 const archiveSource = await readFile(new URL('../modules/archive/pages.js', import.meta.url), 'utf8');
+const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
 localStorage.setItem('how-i-hear-music:journal:v1', JSON.stringify([{ id: 'journal_fixture', type: 'rating', title: 'Fixture', artist: 'Artist', scores: { song: 8, vocal: 8, production: 8, overall: 8 }, at: '2026-08-31T00:00:00.000Z' }]));
 
 const renders = [
@@ -56,6 +57,13 @@ const mergedTaste = taste.tasteHome();
 assert.match(mergedTaste, /taste-merged-index/);
 assert.match(mergedTaste, /LISTENING JOURNAL/);
 assert.match(mergedTaste, /\/taste\/journal/);
+assert.match(mergedTaste, /taste-overview-method/);
+assert.match(mergedTaste, /LISTENING PHILOSOPHY/);
+assert.doesNotMatch(mergedTaste, /\/taste\/philosophy/);
+assert.doesNotMatch(appSource, /current === "\/journal"\) return journal\("\/journal"\)/);
+assert.doesNotMatch(appSource, /current === "\/taste\/profile"\) return profile\(\)/);
+assert.match(appSource, /requestedTarget === "\/taste\/profile" \? "\/taste\/dna"/);
+assert.match(appSource, /requestedTarget === "\/taste\/philosophy" \? "\/taste"/);
 [
   'One personal listening archive: its overview, history and transparent insights.',
   '01 / LISTENING DNA →',
