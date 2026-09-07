@@ -3429,6 +3429,29 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.37 — Guard boundary transparency cascade
+
+Implementation commit: 19d5c3f
+
+### Evidence
+
+- The transparent rule was still being overridden because the CHROMATIC theme declaration appeared later in the stylesheet cascade.
+- The live screenshot therefore continued to show a pale panel around the radar image.
+
+### Decision
+
+- Add a final cascade guard for `.good-not-mine article` after all theme and responsive rules, with `!important` limited to this one surface.
+- Keep the card geometry, grid rhythm, radar art and theme colors unchanged.
+
+### Rejected alternatives
+
+- Do not weaken the CHROMATIC theme globally; other light-paper surfaces still use that token intentionally.
+- Do not rely on another earlier selector; cascade order was the source of the regression.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.36 — Fix CHROMATIC boundary transparency
 
 Implementation commit: 9e366e2
