@@ -191,6 +191,7 @@ assert.doesNotMatch(importQQMarkup, /QQ MUSIC SMART IMPORT/);
 assert.match(imports.importData(), /id="reextract-all-cover-palettes"/);
 assert.match(stylesheet, /\.album-detail-colorfield \{ position:relative;/);
 assert.match(stylesheet, /\.album-color-waves \.wave-one \{ fill:var\(--album-color-1/);
+assert.match(stylesheet, /\.rate-choices article>\.button \{ margin-top:auto; \}/);
 assert.doesNotMatch(stylesheet, /\.account-login-options \{[^}]*border-top/);
 assert.match(stylesheet, /\.home-record\[data-record-position="left-4"\] \{ z-index:6; opacity:\.5;/);
 assert.match(stylesheet, /\.home-record\[data-record-position="right-3"\] \{ opacity:\.5;/);

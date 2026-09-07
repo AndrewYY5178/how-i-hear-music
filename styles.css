@@ -1932,3 +1932,6 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-listening { padding-bottom:24px; }
   .home-listening + .featured-shape { margin-top:24px; }
 }
+
+/* UI 3.12.18 — Rate choices keep their primary actions on one shared baseline. */
+.rate-choices article>.button { margin-top:auto; }

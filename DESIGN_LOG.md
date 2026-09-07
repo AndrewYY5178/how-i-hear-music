@@ -3367,3 +3367,14 @@ Implementation commit: pending
 ### Verification
 
 - Render checks assert a single Philosophy disclosure and no remaining per-item controls.
+
+## Version 3.12.18 — Align Rate entry actions
+
+### Decision
+
+- Let the two desktop Rate choice panels share a flex-column action baseline, regardless of title or copy wrapping.
+- Keep the narrow one-column layout content-led: with no fixed card height, its action follows its description naturally.
+
+### Verification
+
+- Render checks assert the final Rate action baseline rule.
