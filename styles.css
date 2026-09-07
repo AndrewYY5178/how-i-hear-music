@@ -1008,7 +1008,7 @@ body::before {
   font-weight:700;
 }
 
-/* UI 3.11.55 — constrain detail records and simplify Rate prompt; keep Home artwork in its source colors. */
+/* UI 3.11.56 — constrain detail records, mobile columns and simplify Rate prompt. */
 .home-record,
 .home-record[data-record-position="left-1"],
 .home-record[data-record-position="right-1"],
@@ -1721,6 +1721,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
 }
 
 @media (max-width:760px) {
+  .album-detail-cover>div:last-child { min-width:0; }
   .cover-maintenance-record>summary { grid-template-columns:18px minmax(0,1fr); gap:8px; }
   .cover-maintenance-record>summary small { grid-column:2; text-align:left; }
   .cover-maintenance-body { grid-template-columns:96px minmax(0,1fr); gap:18px; padding-left:0; }
