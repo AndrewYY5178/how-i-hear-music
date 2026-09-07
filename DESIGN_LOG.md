@@ -3756,3 +3756,26 @@ Implementation commit: 6f4f3bf
 ### Verification
 
 - Project, core, render and Worker checks pass before publication.
+
+## Version 3.12.39 — Remove the remaining CHROMATIC Featured Shape panel fill
+
+Implementation commit: pending
+
+### Evidence
+
+- The pale rectangle persisted only in the grayscale CHROMATIC theme; PAPER did not show it.
+- The affected artwork is the Home `FEATURED SHAPE` radar visual. Its theme rule reintroduced `var(--paper-light)` after the earlier transparent declaration.
+
+### Decision
+
+- Add a final, narrowly scoped CHROMATIC override for `.featured-shape-visual` so the radar sits directly on the page surface.
+- Leave the PAPER theme and all other CHROMATIC paper surfaces unchanged.
+
+### Rejected alternatives
+
+- Do not alter the radar SVG or remove its labels and scores; the issue is the parent fill, not the artwork.
+- Do not remove the entire Featured Shape module; only the redundant panel background is removed.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
