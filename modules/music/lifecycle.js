@@ -1,4 +1,4 @@
-import { data, storage } from "./data.js?v=0.9.109";
+import { data, storage } from "./data.js?v=0.9.110";
 
 export const ratingStorageKey = "how-i-hear-music:rating-sessions:v2";
 export const lifecycleStates = ["imported", "heard", "rated", "archived"];

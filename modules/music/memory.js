@@ -1,4 +1,4 @@
-import { accountSignedIn, allTracks, storage, trackId, visibleJournal } from "./data.js?v=0.9.109";
+import { accountSignedIn, allTracks, storage, trackId, visibleJournal } from "./data.js?v=0.9.110";
 import { currentEvidence, ratingChanges } from "./analysis.js";
 import { versionsForTrack } from "./versions.js";
 
