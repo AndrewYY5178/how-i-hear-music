@@ -13,9 +13,9 @@ import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
 import { translateText } from "../layout/i18n.js?v=0.9.116";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.42";
-import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.42";
-import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.42";
+import { archiveSearch } from "../search/pages.js?ui=3.12.43";
+import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.43";
+import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.43";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);

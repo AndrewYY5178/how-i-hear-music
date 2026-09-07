@@ -2,6 +2,21 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## 2026-09-08 audit and approval boundary
+
+- [x] Review 12 guest routes at 390 / 1024 / 1440px with reduced motion: all render their expected heading without horizontal overflow. This is layout coverage, not a claim of exhaustive interaction coverage.
+- [x] Inspect actual Home screenshots in Paper and Chromatic: irregular grain is visible; retain a quieter neutral grain in Chromatic.
+- [x] Raise Archive Search, language toggle, track filters and Sonic Map redraw touch targets to 44px minimum.
+- [ ] Finish authenticated Data Desk local-cover upload/preview/persistence/reset browser tests; do not mistake the relocated controls for missing album-detail controls.
+- [ ] Finish external cover-CDN failure injection and remaining authenticated end-to-end checks. Earlier historical checkboxes below do not certify these current checks.
+- [ ] Consolidate legacy CSS media-query overrides with visual equivalence tests; not completed by the touch-target fix.
+- [ ] Complete missing canonical metadata only from confirmed source evidence; never infer release IDs or personal ratings.
+- [ ] Owned-domain email delivery: deferred until an owned domain is available, as previously requested.
+- [ ] macOS standalone packaging: explicitly deferred by the user on 2026-09-08; excluded from this delivery.
+- [ ] Custom albums / personal compilations: **design awaiting user approval; do not implement or publish the feature yet**. Place within Archive → Albums; preserve five primary modules. See `CUSTOM_ALBUM_PLAN.md`.
+
+Historical entries below are retained as history; the audit above is the current scope, not a declaration that every historical task is finished.
+
 ## Current delivery — UI 3.12.6
 
 - [x] Add persisted `PAPER ARCHIVE` and `CHROMATIC CONTRAST` visual themes in the Account panel. Chromatic Contrast keeps artwork and vinyl at source color while using grayscale surfaces and a saturated score accent.

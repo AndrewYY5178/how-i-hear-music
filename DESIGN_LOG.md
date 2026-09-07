@@ -3829,3 +3829,9 @@ Implementation commit: 15e5c0f
 ### Verification
 
 - Project, core, render and Worker checks pass before publication; both themes are verified in the browser with the cache-busted version.
+
+## UI 3.12.43 — audit and compilation proposal (2026-09-08)
+
+Based on commit 497b6bd. Increase Search, language, track-filter and Sonic Map control hit areas to 44px without adding visual boxes. Local browser checks cover 12 guest routes at three widths, with no horizontal overflow, plus actual Paper and Chromatic Home screenshots. This is not authenticated end-to-end coverage.
+
+Custom albums remain an approval-only proposal inside Archive → Albums, retaining all five primary modules. The generated desktop/mobile sketch uses the repository editorial palette and square artwork, not a new external design system. Rejected a sixth navigation item, duplicate canonical albums, invented scores and automatic public sharing. The sketch's redundant checkbox/plus treatment will be simplified to one selection control if approved; it is not production UI. Full implementation boundaries are in CUSTOM_ALBUM_PLAN.md. macOS packaging is explicitly deferred.
