@@ -1,4 +1,4 @@
-import { data, storage } from "./data.js?v=0.9.98";
+import { data, storage } from "./data.js?v=0.9.99";
 import { accountNicknamePrefix } from "./account.js";
 
 export const backupFormat = "how-i-hear-music-backup";

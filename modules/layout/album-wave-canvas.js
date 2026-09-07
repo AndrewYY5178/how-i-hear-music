@@ -53,11 +53,6 @@ export const bindAlbumWaveCanvas = (field) => {
       context.arc(x, y, radius, 0, Math.PI * 2);
       context.fillStyle = disc;
       context.fill();
-      context.beginPath();
-      context.arc(x, y, radius * .72, 0, Math.PI * 2);
-      context.strokeStyle = color(tone, alpha * .34);
-      context.lineWidth = 1;
-      context.stroke();
     });
     context.restore();
   };

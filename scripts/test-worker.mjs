@@ -1,6 +1,6 @@
 import { handleRequest } from '../worker/index.mjs';
 
-const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.98' };
+const env = { ALLOWED_ORIGIN: 'https://andrewyy5178.github.io', SERVICE_VERSION: '0.9.99' };
 const allowedOrigin = env.ALLOWED_ORIGIN;
 const request = (path, options = {}) => new Request(`https://adapter.example${path}`, options);
 const expect = (condition, message) => { if (!condition) throw new Error(message); };
