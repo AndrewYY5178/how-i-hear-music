@@ -1,4 +1,4 @@
-import { storage, visibleJournal } from "./data.js?v=0.9.102";
+import { storage, visibleJournal } from "./data.js?v=0.9.103";
 import { normalizeInsightTags } from "./insights.js";
 
 export const journalStorageKey = "how-i-hear-music:journal:v1";

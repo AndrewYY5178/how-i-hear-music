@@ -750,19 +750,19 @@ body::before {
 .album-detail-cover-tools { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:14px; }
 .album-detail-cover-tools .button { min-height:32px; padding:7px 10px; font-size:8px; }
 .album-detail-cover-tools .mono { color:var(--muted); font-size:8px; }
-/* UI 3.12.28 — cover-derived colors drift as restrained circular record fields. */
+/* UI 3.12.29 — cover-derived colors drift as restrained circular record fields. */
 body.album-detail-page { background:var(--paper); }
-body.album-detail-page .site-header,body.album-detail-page .site-footer { position:relative; z-index:2; background:color-mix(in srgb,var(--paper) 78%,transparent); }
+body.album-detail-page .site-header,body.album-detail-page .site-footer { position:relative; z-index:2; background:transparent; }
 body.album-detail-page #app { position:relative; z-index:1; }
 .album-detail-experience { position:relative; isolation:isolate; }
 .album-page-wave-background { position:fixed; z-index:-1; inset:0; overflow:hidden; pointer-events:none; background:var(--paper); }
 .album-page-wave-background canvas { display:block; width:100vw; height:100vh; }
 .album-detail-page-content { position:relative; }
-.album-detail-page-content>.album-detail-cover { display:grid; grid-template-columns:200px 1fr; gap:40px; align-items:center; margin-bottom:64px; padding:clamp(24px,4vw,56px); border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); background:color-mix(in srgb,var(--paper-light) 32%,transparent); }
-.album-detail-page-content>section:not(.album-detail-cover),.album-detail-page-content>details { background:color-mix(in srgb,var(--paper) 14%,transparent); }
+.album-detail-page-content>.album-detail-cover { display:grid; grid-template-columns:200px 1fr; gap:40px; align-items:center; margin-bottom:64px; padding:clamp(24px,4vw,56px); border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); background:transparent; }
+.album-detail-page-content>section:not(.album-detail-cover),.album-detail-page-content>details { background:transparent; }
 html[data-theme="chromatic"] body.album-detail-page { background:#d2d3d7; }
 html[data-theme="chromatic"] .album-page-wave-background { background:#d2d3d7; }
-html[data-theme="chromatic"] .album-detail-page-content>.album-detail-cover { background:color-mix(in srgb,#e6e7eb 22%,transparent); }
+html[data-theme="chromatic"] .album-detail-page-content>.album-detail-cover { background:transparent; }
 .album-note-form { max-width:720px; padding:16px 0 24px; }
 .album-note-form label>span { display:block; margin-bottom:8px; color:var(--red); font-size:8px; }
 .album-note-form textarea { width:100%; padding:16px 0; border:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); outline:0; background:transparent; color:inherit; resize:vertical; }
@@ -1929,5 +1929,5 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-listening + .featured-shape { margin-top:24px; }
 }
 
-/* UI 3.12.28 — Rate choices keep their primary actions on one shared baseline. */
+/* UI 3.12.29 — Rate choices keep their primary actions on one shared baseline. */
 .rate-choices article>.button { margin-top:auto; }

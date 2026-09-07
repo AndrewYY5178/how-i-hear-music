@@ -1,4 +1,4 @@
-import { allAlbums, allArtists, allTracks, canonical, data, slug, storage, trackId } from "./data.js?v=0.9.102";
+import { allAlbums, allArtists, allTracks, canonical, data, slug, storage, trackId } from "./data.js?v=0.9.103";
 import { matchTrack } from "./matching.js";
 
 export const albumStorageKey = data.library.albumStorageKey;
