@@ -3782,7 +3782,7 @@ Implementation commit: a0b1799
 
 ## Version 3.12.41 — Add restrained paper fibre texture
 
-Implementation commit: pending
+Implementation commit: a351620
 
 ### Evidence
 
