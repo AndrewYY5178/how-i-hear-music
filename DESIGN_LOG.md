@@ -3248,3 +3248,63 @@ Implementation commit: pending
 ### Verification
 
 - Project, core, render and Worker contract checks pass.
+
+## Version 3.12.9 — Remove the empty Home listening stage
+
+### Decision
+
+- Render the Home `CURRENTLY LISTENING` Cover Flow only when the active account has records to show.
+- Avoid leaving the fixed-height stage, navigation rule and large blank band behind during an empty or not-yet-available data state.
+- Preserve the existing Cover Flow sizing, controls and motion whenever at least one album is available.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.
+
+## Version 3.12.10 — Turn Artist albums into a Cover Flow
+
+### Decision
+
+- Replace the narrow vertical album-spine shelf on Artist detail pages with the same sleeve-and-record carousel language used by Home.
+- Render one carousel item per album in the artist's visible archive, with PREV/NEXT, click, drag and horizontal-wheel navigation plus keyboard focus support.
+- Keep the artist album set data-driven: no placeholder albums are added, and an empty set receives a compact message instead of a fixed-height shelf.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.
+
+## Version 3.12.11 — Make Artist index cards fully clickable
+
+### Decision
+
+- Promote each Artist index tile to one full-area route target, matching the clickable-region behavior already used by Archive gates.
+- Remove the redundant visible `Open artist` link while retaining an accessible label and keyboard focus outline.
+- Keep the editorial signature, artist name and supporting copy as the visual content of each tile.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.
+
+## Version 3.12.12 — Make Track index cards fully clickable
+
+### Decision
+
+- Promote each Archive Track grid card to one full-area route target, matching the Artist index interaction.
+- Remove the repeated visible `Open track` link while keeping an accessible label and keyboard focus outline.
+- Keep score geometry, metadata and the large overall score as the card's visual content.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.
+
+## Version 3.12.13 — Collapse Taste Philosophy entries by default
+
+### Decision
+
+- Present each `LISTENING PHILOSOPHY` principle as a native disclosure control: the index and title stay visible, while the explanatory copy appears only after activation.
+- Use a plus control that rotates into a clear close mark when open, with the native `<details>/<summary>` behavior providing keyboard and screen-reader support.
+- Keep the reading order and editorial typography unchanged once an entry is expanded.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.

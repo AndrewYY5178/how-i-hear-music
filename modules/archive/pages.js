@@ -11,10 +11,10 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.82";
+import { translateText } from "../layout/i18n.js?v=0.9.87";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.8";
-import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.8";
+import { archiveSearch } from "../search/pages.js?ui=3.12.13";
+import { bindCoverTones, fallbackCoverTone, reextractCoverTone } from "../layout/cover-tone.js?ui=3.12.13";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
@@ -22,6 +22,13 @@ const archiveHomeNav = () => `<div class="archive-index-nav archive-index-action
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
 const journalEntries = () => visibleJournal();
+let stopArtistAlbumMotion = () => {};
+const artistAlbumRecord = (album, index) => {
+  const id = album.id || slug(`${album.artist}-${album.title}`);
+  const { primary: coverUrl, alternate } = coverSourcesFor(album, id);
+  const recordColor = album.themeColor || fallbackCoverTone(`${album.artist}-${album.title}`);
+  return `<a class="home-record artist-album-record" data-artist-record data-artist-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${recordColor};--sleeve-edge-color:${recordColor}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}${coverMarkup(coverUrl, `${album.artist} — ${album.title} cover`, true, alternate)}</span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b></span></a>`;
+};
 const savedRatings = () => visibleRatings();
 const resolvedScores = (track) => savedRatings()[trackId(track)]?.scores || track.scores || {};
 const scoreNumber = (value) => value === null || value === undefined || value === "" || !Number.isFinite(Number(value)) ? null : Number(value);
@@ -42,7 +49,7 @@ const artistAverage = (artist) => {
 };
 const historyMarkup = (entries) => entries.length ? `<div class="rating-history">${entries.slice(0, 8).map((entry) => `<article><time class="mono">${safe(new Date(entry.at).toLocaleDateString())}${entry.revisedAt ? " · CORRECTED" : ""}</time><strong>${rating(entry.type === "album" ? entry.overall : entry.scores?.overall)}</strong>${entry.note ? `<p>${safe(entry.note)}</p>` : ""}${entry.id ? link(`/taste/journal/edit/${encodeURIComponent(entry.id)}`, "CORRECT HISTORY →", "text-link") : ""}</article>`).join("")}</div>` : "<p>No local rating changes recorded yet.</p>";
 const coverMarkup = (url, alt, loading = false, alternate = "") => url ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" src="${safe(url)}" alt="${safe(translateText(alt))}"${loading ? " loading=\"lazy\"" : ""}><div class="cover-fallback" data-cover-fallback hidden>NO COVER</div>` : `<div class="cover-fallback">NO COVER</div>`;
-const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card" data-settle-key="${safe(trackId(track))}"><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `<span>${translateText(fieldLabel[field])} ${rating(scores[field])}</span>`).join(" · ") : translateText("NO SCORED GEOMETRY")}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong>${link(`/archive/tracks/${trackId(track)}`, "Open track", "card-link")}</article>`; };
+const recordCard = (track) => { const scores = resolvedScores(track); const known = fields.filter((field) => Number.isFinite(Number(scores[field]))); return `<article class="track-card" data-settle-key="${safe(trackId(track))}"><a class="track-card-link" href="${withBase(`/archive/tracks/${encodeURIComponent(trackId(track))}`)}" data-route aria-label="Open track — ${safe(track.title)}"></a><div>${trackGlyph(scores, `${track.title} listening glyph`)}</div><p class="geometry-note mono">${known.length ? known.map((field) => `<span>${translateText(fieldLabel[field])} ${rating(scores[field])}</span>`).join(" · ") : translateText("NO SCORED GEOMETRY")}</p><p class="mono">${safe(track.artist)}${track.versionType ? ` · ${safe(track.versionType.toUpperCase())}` : ""}</p><h3>${safe(track.title)}</h3><strong>${rating(scores.overall)}</strong></article>`; };
 
 const archiveGates = () => [["TRACKS", "/archive/tracks", allTracks().length + " recorded tracks", "tracks"], ["ALBUMS", "/archive/albums", archiveVisibleAlbums().length + " albums in view", "albums"], ["ARTISTS", "/archive/artists", allArtists().length + " artists in view", "artists"]];
 export const archiveHome = () => `${pageHeader("ARCHIVE", "Browse the record.", "Tracks, albums and artists that have entered the archive.")}${archiveHomeNav()}${archiveSearch()}<div class="archive-gates">${archiveGates().map(([title, href, note, iconName]) => `<article class="archive-gate"><a class="archive-gate-link" href="${withBase(href)}" data-route aria-label="Open ${title.toLowerCase()} — ${note}"></a><span class="archive-symbol">${icon(iconName)}</span><span class="mono">${title}</span><p>${note}</p></article>`).join("")}</div>`;
@@ -127,7 +134,7 @@ export const archiveAlbumCompare = () => {
   return `${pageHeader("ARCHIVE / ALBUM COMPARISON", "Two landscapes, without forcing a verdict.", "Sequence, coverage and saved ratings remain visible; missing evidence is never completed automatically.")}${selectors}${body}`;
 };
 
-export const archiveArtists = () => { const traits = tasteDNA(); const artists = allArtists().sort((left, right) => ratingDescending(left, right, artistAverage, (artist) => artist.name)); return `${pageHeader("ARCHIVE / ARTISTS", "The people at the center.", "Editorial notes first. A signature summarizes recurring geometry without replacing the reason an artist matters.")}${archiveNav()}<div class="artist-grid">${artists.map((artist, index) => { const tracks = tracksForArtist(artist.id).map((track) => ({ ...track, scores: resolvedScores(track) })); const artistTraits = traits.filter((trait) => trait.evidence.some((record) => record.artistId === artist.id || record.artist === artist.name)); return `<article><span class="mono">${String(index + 1).padStart(2, "0")}</span>${artistSignature(tracks, artistTraits, `${artist.name} signature`)}<h2>${safe(artist.name)}</h2><p>${safe(artist.role || artist.romanized || "In the archive")}</p>${link(`/archive/artists/${artist.id}`, "Open artist", "text-link")}</article>`; }).join("")}</div>`; };
+export const archiveArtists = () => { const traits = tasteDNA(); const artists = allArtists().sort((left, right) => ratingDescending(left, right, artistAverage, (artist) => artist.name)); return `${pageHeader("ARCHIVE / ARTISTS", "The people at the center.", "Editorial notes first. A signature summarizes recurring geometry without replacing the reason an artist matters.")}${archiveNav()}<div class="artist-grid">${artists.map((artist, index) => { const tracks = tracksForArtist(artist.id).map((track) => ({ ...track, scores: resolvedScores(track) })); const artistTraits = traits.filter((trait) => trait.evidence.some((record) => record.artistId === artist.id || record.artist === artist.name)); return `<article><a class="artist-card-link" href="${withBase(`/archive/artists/${encodeURIComponent(artist.id)}`)}" data-route aria-label="Open artist — ${safe(artist.name)}"></a><span class="mono">${String(index + 1).padStart(2, "0")}</span>${artistSignature(tracks, artistTraits, `${artist.name} signature`)}<h2>${safe(artist.name)}</h2><p>${safe(artist.role || artist.romanized || "In the archive")}</p></article>`; }).join("")}</div>`; };
 
 export const archiveArtistDetail = (id) => {
   const artist = findArtist(id);
@@ -135,12 +142,65 @@ export const archiveArtistDetail = (id) => {
   const tracks = tracksForArtist(artist.id);
   const albums = archiveVisibleAlbums().filter((album) => album.artist === artist.name);
   const traits = tasteDNA().filter((trait) => trait.evidence.some((record) => record.artistId === artist.id || record.artist === artist.name)); const scoredTracks = tracks.map((track) => ({ ...track, scores: resolvedScores(track) }));
-  const albumSpines = albums.sort((left, right) => Number(left.year || 9999) - Number(right.year || 9999)).map((album) => `<a href="${withBase(`/archive/albums/${slug(album.artist + "-" + album.title)}`)}" data-route><span class="mono">${safe(album.year || "—")}</span><b>${safe(album.title)}</b></a>`).join("");
-  return `${pageHeader("ARTIST", safe(artist.name), artist.role || artist.romanized || "In the archive")}<section class="artist-intro"><div>${artistSignature(scoredTracks, traits, `${artist.name} signature`)}</div><div><span class="eyebrow mono">WHY THEY MATTER</span><p>${safe(artist.role || "Their work has a confirmed place in this archive.")}</p>${traits.length ? `<small class="mono">RECURRING HERE · ${traits.slice(0, 3).map((trait) => safe(trait.label)).join(" · ")}</small>` : ""}</div></section><section><h2>Albums</h2><div class="artist-album-spines">${albumSpines || "No confirmed albums recorded."}</div></section><section><h2>Selected tracks</h2><div class="tracklist">${tracks.map((track, index) => `<div><span>${String(index + 1).padStart(2, "0")}</span>${link(`/archive/tracks/${trackId(track)}`, track.title)}<b>${rating(resolvedScores(track).overall)}</b></div>`).join("") || "No scored tracks recorded yet."}</div></section>`;
+  const orderedAlbums = albums.sort((left, right) => Number(left.year || 9999) - Number(right.year || 9999));
+  const albumCarousel = orderedAlbums.length ? `<div class="home-record-stage artist-album-stage" data-artist-album-stage role="region" aria-roledescription="carousel" aria-label="Albums by ${safe(artist.name)}">${orderedAlbums.map(artistAlbumRecord).join("")}<div class="home-record-controls artist-album-controls"><button type="button" data-artist-album-previous aria-label="Previous album">← <span>PREV</span></button><button type="button" data-artist-album-next aria-label="Next album"><span>NEXT</span> →</button></div></div>` : "<p class=\"empty-state\">No confirmed albums recorded.</p>";
+  return `${pageHeader("ARTIST", safe(artist.name), artist.role || artist.romanized || "In the archive")}<section class="artist-intro"><div>${artistSignature(scoredTracks, traits, `${artist.name} signature`)}</div><div><span class="eyebrow mono">WHY THEY MATTER</span><p>${safe(artist.role || "Their work has a confirmed place in this archive.")}</p>${traits.length ? `<small class="mono">RECURRING HERE · ${traits.slice(0, 3).map((trait) => safe(trait.label)).join(" · ")}</small>` : ""}</div></section><section><h2>Albums</h2>${albumCarousel}</section><section><h2>Selected tracks</h2><div class="tracklist">${tracks.map((track, index) => `<div><span>${String(index + 1).padStart(2, "0")}</span>${link(`/archive/tracks/${trackId(track)}`, track.title)}<b>${rating(resolvedScores(track).overall)}</b></div>`).join("") || "No scored tracks recorded yet."}</div></section>`;
+};
+
+const bindArtistAlbumCarousel = () => {
+  const stage = document.querySelector("[data-artist-album-stage]");
+  const records = [...document.querySelectorAll("[data-artist-record]")];
+  if (!stage || !records.length) return;
+  let active = 0;
+  let timer = null;
+  let moveTimer = null;
+  let pending = 0;
+  let moving = false;
+  let pointerStart = null;
+  let suppressClick = false;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const retract = (record) => {
+    record?.classList.add("record-is-retracting");
+    if (record) { window.clearTimeout(record._retractTimer); record._retractTimer = window.setTimeout(() => record.classList.remove("record-is-retracting"), 420); }
+  };
+  const arrange = () => records.forEach((record, index) => {
+    const clockwise = (index - active + records.length) % records.length;
+    const distance = clockwise > records.length / 2 ? clockwise - records.length : clockwise;
+    const position = distance === 0 ? "front" : Math.abs(distance) <= 4 ? `${distance < 0 ? "left" : "right"}-${Math.abs(distance)}` : "back";
+    record.dataset.recordPosition = position;
+    record.setAttribute("aria-current", position === "front" ? "true" : "false");
+    record.tabIndex = position === "front" ? 0 : -1;
+  });
+  const move = (step) => {
+    pending += step;
+    if (moving) return;
+    const nextStep = pending; pending = 0; moving = true;
+    retract(records[active]);
+    moveTimer = window.setTimeout(() => {
+      active = (active + nextStep + records.length) % records.length;
+      arrange(); moving = false; moveTimer = null;
+      if (pending) move(pending);
+    }, 180);
+  };
+  const stop = () => { if (timer) window.clearInterval(timer); timer = null; };
+  const play = () => { stop(); if (!reduceMotion && records.length > 1) timer = window.setInterval(() => move(1), 3000); };
+  stopArtistAlbumMotion = () => { stop(); if (moveTimer) window.clearTimeout(moveTimer); moveTimer = null; pending = 0; moving = false; };
+  arrange(); play();
+  stage.querySelector("[data-artist-album-previous]")?.addEventListener("click", (event) => { event.stopPropagation(); move(-1); play(); });
+  stage.querySelector("[data-artist-album-next]")?.addEventListener("click", (event) => { event.stopPropagation(); move(1); play(); });
+  stage.addEventListener("wheel", (event) => { if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 8) return; event.preventDefault(); move(event.deltaX > 0 ? 1 : -1); play(); }, { passive: false });
+  stage.addEventListener("pointerdown", (event) => { if (event.target.closest(".home-record-controls")) return; pointerStart = event.clientX; stage.setPointerCapture?.(event.pointerId); });
+  stage.addEventListener("pointerup", (event) => { if (pointerStart === null) return; const delta = event.clientX - pointerStart; pointerStart = null; if (Math.abs(delta) > 32) { suppressClick = true; move(delta < 0 ? 1 : -1); play(); window.setTimeout(() => { suppressClick = false; }, 0); } });
+  stage.addEventListener("pointercancel", () => { pointerStart = null; });
+  stage.addEventListener("focusin", (event) => { if (event.target.matches?.(":focus-visible")) stop(); });
+  stage.addEventListener("focusout", (event) => { if (!stage.contains(event.relatedTarget)) play(); });
+  records.forEach((record, index) => record.addEventListener("click", (event) => { if (suppressClick) { event.preventDefault(); return; } if (index === active) { play(); return; } event.preventDefault(); const step = (index - active + records.length) % records.length; move(step > records.length / 2 ? step - records.length : step); play(); }));
 };
 
 export const bindArchive = (path, navigate) => {
+  stopArtistAlbumMotion();
   bindCoverTones();
+  if (/^\/archive\/artists\/.+/.test(path)) bindArtistAlbumCarousel();
   if (path === "/archive/albums") document.querySelector(".album-grid")?.addEventListener("click", (event) => {
     const card = event.target.closest(".album-card");
     if (!card || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
