@@ -3,9 +3,9 @@ import { accountNickname, saveAccountNickname } from "../music/account.js";
 import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStatus, requestEmailCode, signOutSync, syncSession } from "../music/cloud-sync.js";
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
-import { bindThemeControls, currentTheme } from "./theme.js?v=0.9.87";
+import { bindThemeControls, currentTheme } from "./theme.js?v=0.9.88";
 
-const appVersion = "0.9.87";
+const appVersion = "0.9.88";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"],

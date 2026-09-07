@@ -1827,6 +1827,39 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-shape-cycle.shape-is-changing { animation:none; }
 }
 
+/* UI 3.12.14 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
+.home-landscape-cycle { position:relative; display:block; max-width:none; margin:clamp(70px,10vw,130px) 0; padding:clamp(32px,5vw,65px) 0 62px; overflow:hidden; }
+.featured-landscape-slide { display:grid; grid-template-columns:minmax(170px,.42fr) minmax(220px,.72fr) minmax(360px,1.45fr); gap:clamp(28px,5vw,88px); align-items:end; }
+.featured-landscape-slide[hidden] { display:none; }
+.featured-landscape-art { width:min(100%,250px); min-width:0; }
+.featured-landscape-record { display:block; width:100%; color:var(--ink); text-decoration:none; }
+.featured-landscape-record:focus-visible { outline:2px solid var(--red); outline-offset:5px; }
+.featured-landscape-copy { min-width:0; }
+.featured-landscape-copy h2 { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.featured-landscape-wave { min-width:0; }
+.featured-landscape-wave .waveform { width:100%; min-height:260px; }
+.featured-landscape-controls { position:absolute; right:0; bottom:0; left:0; z-index:8; display:flex; justify-content:space-between; border-bottom:1px solid var(--ink); pointer-events:none; }
+.featured-landscape-controls button { display:inline-flex; align-items:center; gap:8px; min-width:72px; min-height:44px; padding:0; border:0; background:transparent; color:var(--ink); font:8px var(--mono); letter-spacing:.08em; pointer-events:auto; }
+.featured-landscape-controls button:last-child { justify-content:flex-end; }
+.featured-landscape-controls button:hover { color:var(--red); }
+.home-landscape-cycle.landscape-is-changing { animation:shapeCycleFade 900ms ease both; }
+.home-landscape-cycle .featured-landscape-slide.active .featured-landscape-copy { animation:shapeCopyIn 700ms ease forwards; }
+.home-landscape-cycle .featured-landscape-slide.active .featured-landscape-wave { animation:shapeCopyIn 700ms ease 90ms both; }
+
+@media (max-width:900px) {
+  .featured-landscape-slide { grid-template-columns:minmax(150px,.65fr) minmax(220px,1fr); gap:40px; }
+  .featured-landscape-wave { grid-column:1/-1; }
+  .featured-landscape-wave .waveform { min-height:0; }
+}
+
+@media (max-width:760px) {
+  .home-landscape-cycle { margin-bottom:72px; padding-top:40px; }
+  .featured-landscape-slide { grid-template-columns:1fr; gap:26px; }
+  .featured-landscape-art { width:min(70vw,270px); }
+  .featured-landscape-copy h2 { font-size:43px; }
+  .featured-landscape-wave { grid-column:auto; }
+}
+
 /* UI 3.11.13 — anchor narrow Home controls to the Cover Flow content band. */
 @media (max-width:900px) {
   .home-record-controls {
@@ -1848,7 +1881,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .journal-history .rating-history article .text-link { grid-column:3; }
 }
 
-/* UI 3.12.13 — collapse Taste Philosophy entries until the reader asks for detail. */
+/* UI 3.12.14 — collapse Taste Philosophy entries until the reader asks for detail. */
 .essay-stack details { max-width:none; padding:0; border-top:1px solid var(--line); border-bottom:0; }
 .essay-stack details:last-child { border-bottom:1px solid var(--line); }
 .essay-stack details>summary { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:24px; align-items:center; min-height:96px; padding:24px 0; list-style:none; }

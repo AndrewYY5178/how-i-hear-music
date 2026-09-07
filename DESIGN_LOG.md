@@ -3308,3 +3308,15 @@ Implementation commit: pending
 ### Verification
 
 - Project, core, render and Worker contract checks pass.
+
+## Version 3.12.14 — Rotate Home Featured Landscape albums
+
+### Decision
+
+- Give Home `FEATURED LANDSCAPE` the same sleeve-and-record reveal used on album detail pages.
+- Rotate through up to six scored albums automatically, with PREV/NEXT controls and reduced-motion support.
+- Keep each landscape data-driven from the current showcase or signed-in archive; no extra placeholder records are introduced.
+
+### Verification
+
+- Project, core, render and Worker contract checks pass.

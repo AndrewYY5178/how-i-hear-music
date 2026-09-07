@@ -1,6 +1,6 @@
 import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.13";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.14";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -82,6 +82,12 @@ const recordMarkup = (album, index) => {
   return `<a class="home-record" data-home-record data-home-record-index="${index}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route><span class="home-record-object" data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${recordColor};--sleeve-edge-color:${recordColor}" aria-hidden="true"><span class="home-record-disc"></span><span class="home-record-sleeve">${sleeveDepth}<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" draggable="false" src="${safe(coverUrl)}" alt=""><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span></span></span><span class="home-record-caption"><small>${safe(album.artist)}</small><b>${safe(album.title)}</b>${score === null ? "" : `<strong>${rating(score)}</strong>`}</span></a>`;
 };
 const shapeMarkup = (track, index) => `<article class="featured-shape-slide${index === 0 ? " active" : ""}" data-home-shape-slide${index === 0 ? "" : " hidden"}><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>${safe(track.title)}</h2><p>${safe(track.artist)}</p></div><div class="featured-shape-visual">${radar(track.scores, { className: "home-radar ink-draw-radar", showValues: true, valuePlacement: "outside" })}</div></article>`;
+const landscapeMarkup = (album, index) => {
+  const id = albumKey(album);
+  const { primary: coverUrl, alternate } = coverSourcesForAlbum(album);
+  const fallbackTone = album.themeColor || fallbackCoverTone(`${album.artist}-${album.title}`);
+  return `<article class="featured-landscape-slide${index === 0 ? " active" : ""}" data-home-landscape-slide${index === 0 ? "" : " hidden"}><div class="featured-landscape-art"><a class="album-detail-record featured-landscape-record" data-landscape-record data-cover-tone data-cover-source="${safe(coverUrl)}" style="--record-color:${fallbackTone};--sleeve-edge-color:${fallbackTone}" href="${withBase(`/archive/albums/${encodeURIComponent(id)}`)}" data-route aria-label="Open album — ${safe(album.title)}"><span class="album-detail-disc" aria-hidden="true"></span><div class="album-detail-image">${coverUrl ? `<img data-cover-image${alternate ? ` data-cover-fallback-source="${safe(alternate)}"` : ""} referrerpolicy="no-referrer" draggable="false" src="${safe(coverUrl)}" alt="${safe(album.artist)} — ${safe(album.title)} cover"><span class="home-record-fallback" data-cover-fallback hidden>COVER UNAVAILABLE</span>` : `<span class="home-record-fallback">COVER UNAVAILABLE</span>`}</div></a></div><div class="featured-landscape-copy"><span class="eyebrow mono">FEATURED LANDSCAPE</span><h2>${safe(album.title)}</h2><p>${safe(album.artist)}</p></div><div class="featured-landscape-wave">${waveform(album.tracks, { className: "ink-draw-wave" })}</div></article>`;
+};
 
 export const home = () => {
   const ratedTracks = shuffled(allTracks().map(withCurrentScores).filter((track) => ["song", "vocal", "production", "overall"].every((field) => Number.isFinite(Number(track.scores?.[field])))));
@@ -91,10 +97,12 @@ export const home = () => {
     const tracks = (album.tracks?.length ? album.tracks : allTracks().filter((track) => track.artist === album.artist && track.album === album.title)).map(withCurrentScores);
     return { ...album, tracks: tracks.map((track) => ({ title: track.title, overall: track.scores?.overall })) };
   }));
-  const featuredAlbum = albumCandidates.find((album) => album.tracks.some((track) => Number.isFinite(Number(track.overall)))) || albumCandidates[0] || { title: "—", artist: "", tracks: [] };
+  const scoredAlbums = albumCandidates.filter((album) => album.tracks.some((track) => Number.isFinite(Number(track.overall))));
+  const featuredLandscapes = (scoredAlbums.length ? scoredAlbums : albumCandidates).slice(0, 6);
   const featuredShape = featuredTracks.length ? `<section class="featured-shape home-shape-cycle shape-is-drawing" data-home-shape-cycle>${featuredTracks.map(shapeMarkup).join("")}</section>` : `<section class="featured-shape featured-shape-empty" data-home-shape-cycle><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>Complete the shape.</h2><p>Song, Vocal, Production and Overall must all be rated before a track appears here.</p></div></section>`;
   const listeningSection = current.length ? `<section class="home-section home-listening"><span class="eyebrow mono">CURRENTLY LISTENING</span><div class="home-record-stage" data-home-record-stage role="region" aria-roledescription="carousel" aria-label="Currently listening">${current.map(recordMarkup).join("")}<div class="home-record-controls"><button type="button" data-home-record-previous aria-label="Previous record">← <span>PREV</span></button><button type="button" data-home-record-next aria-label="Next record"><span>NEXT</span> →</button></div></div></section>` : "";
-  return `<section class="home-hero"><h1>How I<br><em>hear music.</em></h1><p>Melody opens the door.<br>Everything else has to earn its place.</p></section>${listeningSection}${featuredShape}<section class="featured-landscape"><div><span class="eyebrow mono">FEATURED LANDSCAPE</span><h2>${safe(featuredAlbum.title)}</h2><p>${safe(featuredAlbum.artist)}</p></div><div>${waveform(featuredAlbum.tracks, { className: "ink-draw-wave" })}</div></section><section class="short-manifesto"><p>Music can be minimal or maximal, familiar or surprising. The only question is whether it stays alive.</p></section>`;
+  const featuredLandscape = featuredLandscapes.length ? `<section class="featured-landscape home-landscape-cycle" data-home-landscape-cycle role="region" aria-roledescription="carousel" aria-label="Featured album landscapes">${featuredLandscapes.map(landscapeMarkup).join("")}<div class="featured-landscape-controls" aria-label="Featured landscape controls"><button type="button" data-home-landscape-previous aria-label="Previous featured album">← <span>PREV</span></button><button type="button" data-home-landscape-next aria-label="Next featured album"><span>NEXT</span> →</button></div></section>` : "";
+  return `<section class="home-hero"><h1>How I<br><em>hear music.</em></h1><p>Melody opens the door.<br>Everything else has to earn its place.</p></section>${listeningSection}${featuredShape}${featuredLandscape}<section class="short-manifesto"><p>Music can be minimal or maximal, familiar or surprising. The only question is whether it stays alive.</p></section>`;
 };
 
 export const bindHome = () => {
@@ -103,7 +111,9 @@ export const bindHome = () => {
   const records = [...document.querySelectorAll("[data-home-record]")];
   const shapeCycle = document.querySelector("[data-home-shape-cycle]");
   const shapeSlides = [...document.querySelectorAll("[data-home-shape-slide]")];
-  if (!stage || !records.length) return;
+  const landscapeCycle = document.querySelector("[data-home-landscape-cycle]");
+  const landscapeSlides = [...document.querySelectorAll("[data-home-landscape-slide]")];
+  if (!stage && !shapeCycle && !landscapeCycle) return;
   let active = 0;
   let recordTimer = null;
   let shapeTimer = null;
@@ -113,6 +123,10 @@ export const bindHome = () => {
   let suppressClick = false;
   let shapeSwapTimer = null;
   let shapeFadeTimer = null;
+  let landscapeTimer = null;
+  let landscapeSwapTimer = null;
+  let landscapeActive = 0;
+  let landscapeChanging = false;
   let recordMoveTimer = null;
   let recordMovePending = 0;
   let recordMoving = false;
@@ -157,19 +171,52 @@ export const bindHome = () => {
     }, 480);
     shapeFadeTimer = window.setTimeout(() => shapeCycle.classList.remove("shape-is-changing"), 1080);
   };
-  bindCoverTones(stage);
-  arrange(); playRecords();
+  const showLandscape = (index) => {
+    if (!landscapeCycle || landscapeChanging || landscapeSlides.length < 2) return;
+    const next = (index + landscapeSlides.length) % landscapeSlides.length;
+    const previousSlide = landscapeSlides[landscapeActive];
+    const nextSlide = landscapeSlides[next];
+    if (!previousSlide || !nextSlide || next === landscapeActive) return;
+    landscapeChanging = true;
+    landscapeCycle.classList.add("landscape-is-changing");
+    const previousRecord = previousSlide.querySelector("[data-landscape-record]");
+    previousRecord?.classList.remove("record-is-open");
+    previousRecord?.classList.add("record-is-retracting");
+    landscapeSwapTimer = window.setTimeout(() => {
+      previousSlide.hidden = true;
+      nextSlide.hidden = false;
+      landscapeSlides.forEach((slide, slideIndex) => slide.classList.toggle("active", slideIndex === next));
+      landscapeActive = next;
+      const nextRecord = nextSlide.querySelector("[data-landscape-record]");
+      nextRecord?.classList.remove("record-is-retracting");
+      requestAnimationFrame(() => nextRecord?.classList.add("record-is-open"));
+      landscapeChanging = false;
+      landscapeCycle.classList.remove("landscape-is-changing");
+      landscapeSwapTimer = null;
+    }, 360);
+  };
+  const stopLandscape = () => { if (landscapeTimer) window.clearInterval(landscapeTimer); landscapeTimer = null; };
+  const playLandscape = () => { stopLandscape(); if (!reduceMotion && landscapeSlides.length > 1) landscapeTimer = window.setInterval(() => showLandscape(landscapeActive + 1), 5600); };
+  bindCoverTones();
+  if (stage && records.length) { arrange(); playRecords(); }
+  if (landscapeSlides.length) { landscapeSlides.forEach((slide, index) => { slide.hidden = index !== landscapeActive; }); requestAnimationFrame(() => landscapeSlides[landscapeActive]?.querySelector("[data-landscape-record]")?.classList.add("record-is-open")); playLandscape(); }
   if (!reduceMotion && shapeSlides.length > 1) shapeTimer = window.setInterval(() => showShape(shapeActive + 1), 4400);
-  stopHomeMotion = () => { stopRecords(); if (recordMoveTimer) window.clearTimeout(recordMoveTimer); recordMoveTimer = null; recordMovePending = 0; recordMoving = false; if (shapeTimer) window.clearInterval(shapeTimer); if (shapeSwapTimer) window.clearTimeout(shapeSwapTimer); if (shapeFadeTimer) window.clearTimeout(shapeFadeTimer); };
-  stage.querySelector("[data-home-record-previous]")?.addEventListener("click", (event) => { event.stopPropagation(); move(-1); playRecords(); });
-  stage.querySelector("[data-home-record-next]")?.addEventListener("click", (event) => { event.stopPropagation(); move(1); playRecords(); });
-  stage.addEventListener("wheel", (event) => { if (wheelLocked || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 8) return; event.preventDefault(); wheelLocked = true; move(event.deltaX > 0 ? 1 : -1); playRecords(); window.setTimeout(() => { wheelLocked = false; }, 420); }, { passive: false });
-  stage.addEventListener("pointerdown", (event) => { if (event.target.closest(".home-record-controls")) return; pointerStart = event.clientX; stage.setPointerCapture?.(event.pointerId); });
-  stage.addEventListener("dragstart", (event) => event.preventDefault());
-  stage.addEventListener("pointerup", (event) => { if (pointerStart === null) return; const delta = event.clientX - pointerStart; pointerStart = null; if (Math.abs(delta) > 32) { suppressClick = true; move(delta < 0 ? 1 : -1); playRecords(); window.setTimeout(() => { suppressClick = false; }, 0); } });
-  stage.addEventListener("pointercancel", () => { pointerStart = null; });
-  stage.addEventListener("focusin", (event) => { if (event.target.matches?.(":focus-visible")) stopRecords(); });
-  stage.addEventListener("focusout", (event) => { if (!stage.contains(event.relatedTarget)) playRecords(); });
-  records.forEach((record, index) => record.addEventListener("click", (event) => { if (suppressClick) { event.preventDefault(); return; } if (index === active) { playRecords(); return; } event.preventDefault(); const step = (index - active + records.length) % records.length; move(step > records.length / 2 ? step - records.length : step); playRecords(); }));
-  stage.addEventListener("dblclick", playRecords);
+  stopHomeMotion = () => { stopRecords(); stopLandscape(); if (recordMoveTimer) window.clearTimeout(recordMoveTimer); recordMoveTimer = null; recordMovePending = 0; recordMoving = false; if (shapeTimer) window.clearInterval(shapeTimer); if (shapeSwapTimer) window.clearTimeout(shapeSwapTimer); if (shapeFadeTimer) window.clearTimeout(shapeFadeTimer); if (landscapeSwapTimer) window.clearTimeout(landscapeSwapTimer); };
+  if (stage && records.length) {
+    stage.querySelector("[data-home-record-previous]")?.addEventListener("click", (event) => { event.stopPropagation(); move(-1); playRecords(); });
+    stage.querySelector("[data-home-record-next]")?.addEventListener("click", (event) => { event.stopPropagation(); move(1); playRecords(); });
+    stage.addEventListener("wheel", (event) => { if (wheelLocked || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 8) return; event.preventDefault(); wheelLocked = true; move(event.deltaX > 0 ? 1 : -1); playRecords(); window.setTimeout(() => { wheelLocked = false; }, 420); }, { passive: false });
+    stage.addEventListener("pointerdown", (event) => { if (event.target.closest(".home-record-controls")) return; pointerStart = event.clientX; stage.setPointerCapture?.(event.pointerId); });
+    stage.addEventListener("dragstart", (event) => event.preventDefault());
+    stage.addEventListener("pointerup", (event) => { if (pointerStart === null) return; const delta = event.clientX - pointerStart; pointerStart = null; if (Math.abs(delta) > 32) { suppressClick = true; move(delta < 0 ? 1 : -1); playRecords(); window.setTimeout(() => { suppressClick = false; }, 0); } });
+    stage.addEventListener("pointercancel", () => { pointerStart = null; });
+    stage.addEventListener("focusin", (event) => { if (event.target.matches?.(":focus-visible")) stopRecords(); });
+    stage.addEventListener("focusout", (event) => { if (!stage.contains(event.relatedTarget)) playRecords(); });
+    records.forEach((record, index) => record.addEventListener("click", (event) => { if (suppressClick) { event.preventDefault(); return; } if (index === active) { playRecords(); return; } event.preventDefault(); const step = (index - active + records.length) % records.length; move(step > records.length / 2 ? step - records.length : step); playRecords(); }));
+    stage.addEventListener("dblclick", playRecords);
+  }
+  landscapeCycle?.querySelector("[data-home-landscape-previous]")?.addEventListener("click", () => { showLandscape(landscapeActive - 1); playLandscape(); });
+  landscapeCycle?.querySelector("[data-home-landscape-next]")?.addEventListener("click", () => { showLandscape(landscapeActive + 1); playLandscape(); });
+  landscapeCycle?.addEventListener("focusin", stopLandscape);
+  landscapeCycle?.addEventListener("focusout", (event) => { if (!landscapeCycle.contains(event.relatedTarget)) playLandscape(); });
 };
