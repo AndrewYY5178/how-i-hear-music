@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal } from "../music/data.js?v=0.9.111";
+import { allArtists, allTracks, archiveVisibleAlbums, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal } from "../music/data.js?v=0.9.112";
 import { link, pageHeader } from "../layout/shell.js";
 import { rediscoveryCandidates } from "../music/analysis.js";
 import { insightLabel, insightTags, insightTagsOf } from "../music/insights.js";

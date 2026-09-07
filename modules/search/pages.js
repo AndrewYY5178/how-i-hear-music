@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, safe, slug, storage, trackId, visibleJournal } from "../music/data.js?v=0.9.111";
+import { allArtists, allTracks, archiveVisibleAlbums, safe, slug, storage, trackId, visibleJournal } from "../music/data.js?v=0.9.112";
 import { allMemoryEntries } from "../music/memory.js";
 import { tasteDNA } from "../music/taste-dna.js";
 import { link } from "../layout/shell.js";
