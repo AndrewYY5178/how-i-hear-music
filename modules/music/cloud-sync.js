@@ -42,12 +42,12 @@ export const readSyncStatus = async () => {
   const result = await request("/api/sync/status"); const saved = get(); set({ ...saved, user: result.user, revision: result.revision, updatedAt: result.updatedAt }); return result;
 };
 export const pushAccountSync = async () => {
-  const saved = get(); if (!saved?.token) throw new Error("Sign in with GitHub before syncing.");
+  const saved = get(); if (!saved?.token) throw new Error("Sign in before syncing.");
   const result = await request("/api/sync/blob", { method: "PUT", body: JSON.stringify({ backup: exportBackup(), revision: Number(saved.revision || 0) }) });
   set({ ...saved, revision: result.revision, updatedAt: result.updatedAt }); return result;
 };
 export const downloadAccountSync = async () => {
-  const saved = get(); if (!saved?.token) throw new Error("Sign in with GitHub before syncing.");
+  const saved = get(); if (!saved?.token) throw new Error("Sign in before syncing.");
   const result = await request("/api/sync/blob"); if (!result.backup) return { empty: true, revision: 0 };
   const backup = result.backup; const preview = previewRestore(backup);
   set({ ...saved, revision: result.revision, updatedAt: result.updatedAt }); return { backup, preview, revision: result.revision, updatedAt: result.updatedAt };
