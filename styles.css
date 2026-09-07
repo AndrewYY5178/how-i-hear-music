@@ -750,7 +750,7 @@ body::before {
 .album-detail-cover-tools { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:14px; }
 .album-detail-cover-tools .button { min-height:32px; padding:7px 10px; font-size:8px; }
 .album-detail-cover-tools .mono { color:var(--muted); font-size:8px; }
-/* UI 3.12.31 — cover-derived colors drift as restrained circular record fields. */
+/* UI 3.12.32 — cover-derived colors drift as restrained circular record fields. */
 body.album-detail-page { background:var(--paper); }
 body.album-detail-page .site-header,body.album-detail-page .site-footer { position:relative; z-index:2; background:transparent; }
 body.album-detail-page #app { position:relative; z-index:1; }
@@ -1367,6 +1367,11 @@ html[data-theme="chromatic"] body[data-module="rate"] {
 .blind-spot-entrypoints { display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; margin-top:24px; }
 .blind-spot-entrypoints span { width:100%; color:var(--muted); font-size:8px; }
 .blind-spot-entrypoints a { color:var(--red); font:10px var(--mono); }
+/* UI 3.12.32 — make boundary evidence a distinct closing section of Listening DNA. */
+.taste-dna-boundaries { max-width:800px; margin-top:96px; padding-top:40px; border-top:1px solid var(--ink); }
+.taste-dna-boundaries>span { color:var(--red); font-size:8px; }
+.taste-dna-boundaries>p { max-width:560px; margin:16px 0 40px; color:var(--muted); font-style:italic; }
+.taste-dna-boundaries .taste-boundary-patterns,.taste-dna-boundaries .taste-boundary-blind { margin-top:64px; }
 .journal-analysis-index { display:grid; grid-template-columns:repeat(2,1fr); max-width:760px; margin-bottom:64px; border-top:1px solid var(--ink); }
 .journal-analysis-index a { min-height:64px; padding:24px 24px 16px 0; border-bottom:1px solid var(--line); font:10px var(--mono); }
 .journal-analysis-index a+ a { padding-left:24px; border-left:1px solid var(--line); }
@@ -1933,7 +1938,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
 .essay-stack .essay-item-index { color:var(--red); font:10px var(--mono); }
 .essay-stack .essay-item-title { margin:0; color:var(--ink); font:400 29px/1.1 var(--serif); letter-spacing:-.05em; }
 .essay-stack .essay-item p { margin:12px 0 0; color:var(--muted); font:italic 15px/1.6 var(--serif); }
-/* UI 3.12.31 — keep the revealed Listening Principles quieter than their section heading. */
+/* UI 3.12.32 — keep the revealed Listening Principles quieter than their section heading. */
 .essay-stack .essay-item-title { font-size:24px; }
 .essay-stack .essay-item p { font-size:13px; line-height:1.5; }
 @media (max-width:760px) {
@@ -1950,5 +1955,5 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-listening + .featured-shape { margin-top:24px; }
 }
 
-/* UI 3.12.31 — Rate choices keep their primary actions on one shared baseline. */
+/* UI 3.12.32 — Rate choices keep their primary actions on one shared baseline. */
 .rate-choices article>.button { margin-top:auto; }

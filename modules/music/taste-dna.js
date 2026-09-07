@@ -1,4 +1,4 @@
-import { allTracks, storage, trackId, visibleJournal } from "./data.js?v=0.9.105";
+import { allTracks, storage, trackId, visibleJournal } from "./data.js?v=0.9.106";
 import { currentEvidence, ratingChanges } from "./analysis.js";
 import { insightTagsOf } from "./insights.js";
 import { readSonic } from "./sonic.js";

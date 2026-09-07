@@ -1,4 +1,4 @@
-import { allTracks, archiveVisibleAlbums, data, findAlbum, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js?v=0.9.105";
+import { allTracks, archiveVisibleAlbums, data, findAlbum, findTrack, rating, safe, slug, storage, trackId } from "../music/data.js?v=0.9.106";
 import { fieldLabel, fields, radar, summary, waveform } from "./visuals.js";
 import { clampScore, radarScoreFromPointer, scoreFromKey, waveformScoreFromPointer } from "./interactions.js";
 import { link, pageHeader } from "../layout/shell.js";

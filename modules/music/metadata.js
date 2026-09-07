@@ -1,4 +1,4 @@
-import { accountSignedIn, allTracks, findBaseTrack, storage, trackId } from "./data.js?v=0.9.105";
+import { accountSignedIn, allTracks, findBaseTrack, storage, trackId } from "./data.js?v=0.9.106";
 
 export const metadataOverrideKey = "how-i-hear-music:metadata-overrides:v1";
 export const metadataFields = ["album", "releaseDate", "language", "region"];

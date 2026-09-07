@@ -1,4 +1,4 @@
-import { accountSignedIn, allArtists, allTracks, archiveVisibleAlbums, canonical, data, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js?v=0.9.105";
+import { accountSignedIn, allArtists, allTracks, archiveVisibleAlbums, canonical, data, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js?v=0.9.106";
 import { fields, fieldLabel, radar, radarPoints, summary, waveform } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 import { icon } from "../layout/icons.js";
@@ -11,11 +11,11 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.105";
+import { translateText } from "../layout/i18n.js?v=0.9.106";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.31";
-import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.31";
-import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.31";
+import { archiveSearch } from "../search/pages.js?ui=3.12.32";
+import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.32";
+import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.32";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
