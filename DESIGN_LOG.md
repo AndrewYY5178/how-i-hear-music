@@ -3428,3 +3428,27 @@ Implementation commit: 7cf82f4
 ### Verification
 
 - Project, core, render and Worker checks pass before publication.
+
+## Version 3.12.25 — Remove outlines from album color discs
+
+Implementation commit: dc10d7d
+
+### Evidence
+
+- The owner identified the visible concentric strokes as linear circular frames, which made the background read as unfinished rather than atmospheric.
+- The circular relationship is already carried by each field's radial color distribution and slow movement; a drawn contour adds no useful information.
+
+### Decision
+
+- Remove every Canvas arc stroke from the album-detail background.
+- Keep only the three slowly drifting, cover-derived radial color discs with soft zero-opacity edges.
+- Preserve the Paper and Chromatic opacity values, automatic palette refresh and full-page canvas coverage.
+
+### Rejected alternatives
+
+- Further reducing the line opacity would still make it compete with the page's intentional 1px editorial rules.
+- Returning to broad horizontal bands would reintroduce the waveform reading already rejected by the owner.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
