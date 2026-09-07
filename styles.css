@@ -1827,7 +1827,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-shape-cycle.shape-is-changing { animation:none; }
 }
 
-/* UI 3.12.14 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
+/* UI 3.12.15 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
 .home-landscape-cycle { position:relative; display:block; max-width:none; margin:clamp(70px,10vw,130px) 0; padding:clamp(32px,5vw,65px) 0 62px; overflow:hidden; }
 .featured-landscape-slide { display:grid; grid-template-columns:minmax(170px,.42fr) minmax(220px,.72fr) minmax(360px,1.45fr); gap:clamp(28px,5vw,88px); align-items:end; }
 .featured-landscape-slide[hidden] { display:none; }
@@ -1887,7 +1887,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .journal-history .rating-history article .text-link { grid-column:3; }
 }
 
-/* UI 3.12.14 — collapse Taste Philosophy entries until the reader asks for detail. */
+/* UI 3.12.15 — collapse Taste Philosophy entries until the reader asks for detail. */
 .essay-stack details { max-width:none; padding:0; border-top:1px solid var(--line); border-bottom:0; }
 .essay-stack details:last-child { border-bottom:1px solid var(--line); }
 .essay-stack details>summary { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:24px; align-items:center; min-height:96px; padding:24px 0; list-style:none; }
@@ -1902,4 +1902,12 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .essay-stack details>summary { grid-template-columns:40px minmax(0,1fr) auto; gap:16px; min-height:76px; padding:18px 0; }
   .essay-stack .essay-item-title { font-size:24px; }
   .essay-stack .essay-item-body { grid-template-columns:40px minmax(0,1fr) auto; gap:16px; padding-bottom:20px; }
+}
+
+/* UI 3.12.15 — tighten the handoff from Home album rotation into Featured Shape. */
+.home-listening { padding-bottom:32px; }
+.home-listening + .featured-shape { margin-top:32px; }
+@media (max-width:760px) {
+  .home-listening { padding-bottom:24px; }
+  .home-listening + .featured-shape { margin-top:24px; }
 }

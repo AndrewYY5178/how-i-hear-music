@@ -3320,3 +3320,15 @@ Implementation commit: pending
 ### Verification
 
 - Project, core, render and Worker contract checks pass.
+
+## Version 3.12.15 — Tighten the Home section handoff
+
+### Decision
+
+- Reduce only the vertical handoff between the Home album rotation and `FEATURED SHAPE`.
+- Keep the Cover Flow stage height, sleeve motion and carousel controls unchanged.
+- Preserve the larger editorial spacing on other sections and use a smaller mobile value.
+
+### Verification
+
+- Project and render checks pass.
