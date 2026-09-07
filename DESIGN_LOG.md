@@ -3429,6 +3429,29 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.35 — Remove boundary radar panel fill
+
+Implementation commit: 105982b
+
+### Evidence
+
+- The GOOD ≠ MINE radar artwork appeared on a pale rectangular card, separate from the surrounding page surface.
+- The owner wanted this image area to have a transparent base so the chart reads as part of the editorial canvas.
+
+### Decision
+
+- Remove the background fill from GOOD ≠ MINE radar cards in both PAPER and CHROMATIC themes.
+- Keep the grid gap, radar geometry, labels and score hierarchy unchanged.
+
+### Rejected alternatives
+
+- Do not alter the SVG radar itself; it is already background-free and should remain reusable.
+- Do not remove the surrounding grid structure; the section still needs rhythm and separation between records.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.34 — Tighten Archive search field
 
 Implementation commit: 600460d
