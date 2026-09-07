@@ -1,4 +1,4 @@
-import { accountSignedIn, canonical, data, storage, trackId } from "./data.js?v=0.9.104";
+import { accountSignedIn, canonical, data, storage, trackId } from "./data.js?v=0.9.105";
 
 export const versionStorageKey = "how-i-hear-music:recording-versions:v1";
 export const versionTypes = ["STUDIO", "LIVE", "ACOUSTIC", "REARRANGED", "DEMO", "REMIX", "REMASTERED", "OTHER"];
