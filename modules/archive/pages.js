@@ -1,4 +1,4 @@
-import { accountSignedIn, allArtists, allTracks, archiveVisibleAlbums, canonical, data, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js?v=0.9.106";
+import { accountSignedIn, allArtists, allTracks, archiveVisibleAlbums, canonical, data, findAlbum, findArtist, findTrack, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js?v=0.9.107";
 import { fields, fieldLabel, radar, radarPoints, summary, waveform } from "../rating/visuals.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
 import { icon } from "../layout/icons.js";
@@ -11,15 +11,15 @@ import { activatedTraits, tasteDNA } from "../music/taste-dna.js";
 import { metadataCoverage, metadataFields, metadataOverrideFor, metadataRows, saveMetadataOverride } from "../music/metadata.js";
 import { albumNote, saveAlbumNote } from "../music/notes.js";
 import { metadataApiRequest } from "../music/api.js";
-import { translateText } from "../layout/i18n.js?v=0.9.106";
+import { translateText } from "../layout/i18n.js?v=0.9.107";
 import { withBase } from "../layout/paths.js";
-import { archiveSearch } from "../search/pages.js?ui=3.12.32";
-import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.32";
-import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.32";
+import { archiveSearch } from "../search/pages.js?ui=3.12.33";
+import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.33";
+import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.33";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
 const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
-const archiveHomeNav = () => `<div class="archive-index-nav archive-index-actions"><button class="archive-search-trigger mono" id="archive-search-trigger" type="button" aria-controls="archive-search-panel" aria-expanded="${new URLSearchParams(location.search).has("q") ? "true" : "false"}">SEARCH</button></div>`;
+const archiveHomeNav = () => { const raw = new URLSearchParams(location.search).get("q") || ""; return `<div class="archive-index-nav archive-index-actions"><form class="archive-search-inline" aria-label="Search the record"><label class="sr-only" for="global-search-query">SEARCH THE RECORD</label><input id="global-search-query" name="q" type="search" value="${safe(raw)}" placeholder="Title, artist, note, trait…" aria-label="Search the record"><button class="archive-search-trigger mono" id="archive-search-trigger" type="submit">SEARCH</button></form></div>`; };
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
 const journalEntries = () => visibleJournal();

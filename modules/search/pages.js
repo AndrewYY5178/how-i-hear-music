@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, safe, slug, storage, trackId, visibleJournal } from "../music/data.js?v=0.9.106";
+import { allArtists, allTracks, archiveVisibleAlbums, safe, slug, storage, trackId, visibleJournal } from "../music/data.js?v=0.9.107";
 import { allMemoryEntries } from "../music/memory.js";
 import { tasteDNA } from "../music/taste-dna.js";
 import { link } from "../layout/shell.js";
@@ -21,18 +21,12 @@ export const archiveSearch = () => {
   }
   const order = ["TRACK", "ALBUM", "ARTIST", "JOURNAL", "ALBUM NOTE", "MEMORY", "TASTE DNA"];
   const grouped = order.map((kind) => { const rows = results.filter((result) => result.kind === kind); return rows.length ? `<section class="search-result-group"><h2><span>${safe(kind)}</span><b>${rows.length}</b></h2>${rows.map((result) => result.html).join("")}</section>` : ""; }).join("");
-  return `<section class="archive-search" id="archive-search-panel" aria-labelledby="archive-search-label"${query ? "" : " hidden"}><form class="global-search-form"><label class="sr-only" id="archive-search-label" for="global-search-query">SEARCH THE RECORD</label><div><input id="global-search-query" name="q" type="search" value="${safe(raw)}" placeholder="Title, artist, note, trait…" aria-label="Search the record"><button class="text-action" type="submit">SEARCH</button></div></form>${query ? `<p class="search-count mono">${results.length} ${results.length === 1 ? "RESULT" : "RESULTS"}</p><div class="global-search-results">${grouped || `<p class="empty-state">No local record matches this search.</p>`}</div>` : ""}</section>`;
+  return `<section class="archive-search" id="archive-search-panel" aria-label="Search results"${query ? "" : " hidden"}>${query ? `<p class="search-count mono">${results.length} ${results.length === 1 ? "RESULT" : "RESULTS"}</p><div class="global-search-results">${grouped || `<p class="empty-state">No local record matches this search.</p>`}</div>` : ""}</section>`;
 };
 
 export const bindSearch = (path, navigate) => {
   if (path !== "/archive") return;
-  const form = document.querySelector(".global-search-form"); const input = document.getElementById("global-search-query");
-  const trigger = document.getElementById("archive-search-trigger"); const panel = document.getElementById("archive-search-panel");
-  trigger?.addEventListener("click", () => {
-    if (!panel) return;
-    const opening = panel.hidden; panel.hidden = !opening; trigger.setAttribute("aria-expanded", String(opening));
-    if (opening) requestAnimationFrame(() => input?.focus());
-  });
+  const form = document.querySelector(".archive-search-inline"); const input = document.getElementById("global-search-query");
   form?.addEventListener("submit", (event) => { event.preventDefault(); const query = String(new FormData(event.currentTarget).get("q") || "").trim(); navigate(query ? `/archive?q=${encodeURIComponent(query)}` : "/archive"); });
   input?.addEventListener("search", () => { if (!input.value) navigate("/archive"); });
 };
