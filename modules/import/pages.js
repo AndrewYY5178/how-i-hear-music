@@ -6,7 +6,7 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.43";
+import { bindCoverTones, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.44";
 import { coverOverrideKey, localCoverOverrideKey, coverSourcesFor, encodeLocalCover } from "../music/cover-maintenance.js";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
 import { translateText } from "../layout/i18n.js?v=0.9.116";

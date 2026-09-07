@@ -1,8 +1,8 @@
 :root { --paper:#e7dfcf; --paper-light:#f2ede3; --ink:#20201d; --muted:#68645b; --line:#b9b0a1; --olive:#5e604d; --red:#a44733; --serif:"Libre Baskerville", Georgia, serif; --mono:"DM Mono", monospace; }
 * { box-sizing:border-box; }
 html { background:var(--paper); color:var(--ink); scroll-behavior:smooth; }
-body { margin:0; min-width:320px; font:15px/1.55 var(--serif); }
-body::before { content:""; position:fixed; inset:0; z-index:20; pointer-events:none; background:none; }
+body { position:relative; margin:0; min-width:320px; min-height:100vh; font:15px/1.55 var(--serif); }
+body::before { content:""; position:absolute; inset:0; z-index:20; pointer-events:none; background:none; }
 a { color:inherit; text-decoration:none; }
 button, input, textarea, select { font:inherit; }
 button { cursor:pointer; }
@@ -696,7 +696,7 @@ body::before {
     radial-gradient(ellipse at 18% 16%, rgba(255,255,255,.08), transparent 44%),
     radial-gradient(ellipse at 84% 78%, rgba(91,84,70,.035), transparent 50%);
   background-size:320px 320px, 520px 520px, 100% 100%, 100% 100%;
-  background-attachment:fixed;
+  background-attachment:scroll;
 }
 
 @media (max-width:760px) {
@@ -1019,29 +1019,29 @@ html[data-theme="chromatic"] .album-detail-page-content>.album-detail-cover { ba
 .theme-option:focus-visible { outline:2px solid var(--red); outline-offset:2px; }
 
 html[data-theme="chromatic"] {
-  --paper:#d6d7d9;
-  --paper-light:#ececee;
-  --paper-deep:#c8cacf;
-  --ink:#202125;
-  --muted:#5e626a;
-  --line:#92969d;
-  --olive:#50545b;
+  --paper:#dedede;
+  --paper-light:#eeeeee;
+  --paper-deep:#cccccc;
+  --ink:#202020;
+  --muted:#606060;
+  --line:#969696;
+  --olive:#505050;
   --red:#ed1675;
   --page:var(--paper);
 }
 html[data-theme="chromatic"] body::before { opacity:.085; }
-html[data-theme="chromatic"] body[data-module="archive"] { --page:#cfd1d4; }
-html[data-theme="chromatic"] body[data-module="taste"] { --page:#ececee; }
-html[data-theme="chromatic"] body[data-module="import"] { --page:#dfe1e4; }
-html[data-theme="chromatic"] body[data-module="journal"] { --page:#e2e3e6; }
+html[data-theme="chromatic"] body[data-module="archive"] { --page:#d4d4d4; }
+html[data-theme="chromatic"] body[data-module="taste"] { --page:#eeeeee; }
+html[data-theme="chromatic"] body[data-module="import"] { --page:#e2e2e2; }
+html[data-theme="chromatic"] body[data-module="journal"] { --page:#e6e6e6; }
 html[data-theme="chromatic"] body[data-module="rate"] {
-  --page:#55585f;
-  --ink:#f1f2f3;
-  --muted:#d0d1d5;
-  --line:rgba(241,242,243,.32);
+  --page:#555555;
+  --ink:#f2f2f2;
+  --muted:#d2d2d2;
+  --line:rgba(242,242,242,.32);
   --red:#ff2d8b;
-  --paper-light:#e0e1e4;
-  --olive:#55585f;
+  --paper-light:#e2e2e2;
+  --olive:#555555;
   color:var(--ink);
 }
 html[data-theme="chromatic"] .site-header,
@@ -1055,13 +1055,13 @@ html[data-theme="chromatic"] .home-record-sleeve img,
 html[data-theme="chromatic"] .import-album-sleeve img { filter:none !important; }
 html[data-theme="chromatic"] .album-card-cover,
 html[data-theme="chromatic"] .home-record-sleeve,
-html[data-theme="chromatic"] .import-album-sleeve { background:#c7c9cd; }
+html[data-theme="chromatic"] .import-album-sleeve { background:#cccccc; }
 html[data-theme="chromatic"] .feature-split>article,
 html[data-theme="chromatic"] .track-card,
 html[data-theme="chromatic"] .good-not-mine article,
 html[data-theme="chromatic"] .featured-shape-visual { background:var(--paper-light); }
 html[data-theme="chromatic"] body[data-module="rate"] .button.primary,
-html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active { color:#202125; }
+html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active { color:#202020; }
 
 /* UI 3.11.46 — make every visible listening score read like a result, not metadata. */
 .feature-score b,
@@ -1109,23 +1109,23 @@ html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active 
 
 /* UI 3.12.2 — give Chromatic Contrast each module its own paper-gray gradient. */
 html[data-theme="chromatic"] body {
-  background:linear-gradient(132deg,#d6d7d9 0%,#e8e9eb 46%,#c9cbd0 100%);
+  background:linear-gradient(132deg,#dedede 0%,#e8e8e8 46%,#d4d4d4 100%);
   background-attachment:fixed;
 }
 html[data-theme="chromatic"] body[data-module="archive"] {
-  background:linear-gradient(118deg,#cfd1d4 0%,#e4e5e8 48%,#bec1c6 100%);
+  background:linear-gradient(118deg,#d4d4d4 0%,#e4e4e4 48%,#cccccc 100%);
 }
 html[data-theme="chromatic"] body[data-module="taste"] {
-  background:linear-gradient(142deg,#ececee 0%,#d9dade 52%,#f4f4f5 100%);
+  background:linear-gradient(142deg,#eeeeee 0%,#e2e2e2 52%,#f4f4f4 100%);
 }
 html[data-theme="chromatic"] body[data-module="import"] {
-  background:linear-gradient(126deg,#dfe1e4 0%,#cdd0d5 48%,#e8e9eb 100%);
+  background:linear-gradient(126deg,#e2e2e2 0%,#d6d6d6 48%,#e8e8e8 100%);
 }
 html[data-theme="chromatic"] body[data-module="journal"] {
-  background:linear-gradient(120deg,#e2e3e6 0%,#d2d4d8 46%,#eeeff0 100%);
+  background:linear-gradient(120deg,#e6e6e6 0%,#d8d8d8 46%,#eeeeee 100%);
 }
 html[data-theme="chromatic"] body[data-module="rate"] {
-  background:linear-gradient(138deg,#55585f 0%,#686b73 48%,#45484f 100%);
+  background:linear-gradient(138deg,#555555 0%,#666666 48%,#484848 100%);
 }
 
 /* UI 3.12.3 — let the Home Featured Landscape keep breathing after its ink draw. */
@@ -1983,15 +1983,17 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
 /* UI 3.12.42 — final cascade guard keeps boundary radar cards transparent in every theme. */
 .good-not-mine article,html[data-theme="chromatic"] .good-not-mine article { background:transparent!important; }
 
-/* UI 3.12.42 — make the paper fibre finer and quieter on CHROMATIC surfaces. */
-html[data-theme="chromatic"] body::before {
-  opacity:.085;
+/* Local material review: real fibre structure, not stacked opaque noise. */
+html[data-theme="paper"] body::before {
+  background-image:url("./assets/textures/newsprint-fibres-v1.png");
+  background-size:768px 768px;
+  background-repeat:repeat;
+  opacity:.42;
   mix-blend-mode:multiply;
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78 .92' numOctaves='4' seed='23' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.5 0 0 0 .07 .47 0 0 0 .07 .44 0 0 0 .08 0 0 0 .92 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-grain)'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 520 520' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper-fibre'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .22' numOctaves='3' seed='97' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.34 0 0 0 .03 .32 0 0 0 .03 .3 0 0 0 .03 0 0 0 .38 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper-fibre)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse at 18% 16%, rgba(255,255,255,.045), transparent 44%),
-    radial-gradient(ellipse at 84% 78%, rgba(76,81,90,.025), transparent 50%);
-  background-size:320px 320px, 520px 520px, 100% 100%, 100% 100%;
-  background-attachment:fixed;
+}
+
+/* Neutral background only: retain pink accents and original-color artwork. */
+html[data-theme="chromatic"] body::before {
+  background:none;
+  opacity:0;
 }

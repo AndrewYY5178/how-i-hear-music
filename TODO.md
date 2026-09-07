@@ -14,6 +14,7 @@ This file records planned work that is not complete yet. The current site is a p
 - [ ] Owned-domain email delivery: deferred until an owned domain is available, as previously requested.
 - [ ] macOS standalone packaging: explicitly deferred by the user on 2026-09-08; excluded from this delivery.
 - [ ] Custom albums / personal compilations: **design awaiting user approval; do not implement or publish the feature yet**. Place within Archive → Albums; preserve five primary modules. See `CUSTOM_ALBUM_PLAN.md`.
+- [ ] 自制专辑封面编辑器（待审核）：在编排页点击封面进入，提供拼贴模板、轻量自由排版、整图上传；支持图片裁切/移动/缩放、标题文字、背景配色、撤销重做和草稿恢复。保存可编辑设计与成品封面，沿用五模块结构。具体范围见 `CUSTOM_ALBUM_PLAN.md`「封面自主设计」。
 
 Historical entries below are retained as history; the audit above is the current scope, not a declaration that every historical task is finished.
 

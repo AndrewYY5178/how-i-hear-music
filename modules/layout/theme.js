@@ -24,7 +24,7 @@ export const applyTheme = () => {
     button.setAttribute("aria-pressed", String(selected));
   });
   const meta = document.querySelector('meta[name="theme-color"]');
-  meta?.setAttribute("content", theme === "chromatic" ? "#d6d7d9" : "#e7dfcf");
+  meta?.setAttribute("content", theme === "chromatic" ? "#dedede" : "#e7dfcf");
 };
 
 export const setTheme = (next) => {
