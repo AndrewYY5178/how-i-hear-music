@@ -3759,7 +3759,7 @@ Implementation commit: 6f4f3bf
 
 ## Version 3.12.39 — Remove the remaining CHROMATIC Featured Shape panel fill
 
-Implementation commit: pending
+Implementation commit: a0b1799
 
 ### Evidence
 
