@@ -3807,7 +3807,7 @@ Implementation commit: a351620
 
 ## Version 3.12.42 — Make the grain layer perceptible
 
-Implementation commit: pending
+Implementation commit: 15e5c0f
 
 ### Evidence
 
