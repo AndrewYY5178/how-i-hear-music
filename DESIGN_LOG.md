@@ -3355,3 +3355,15 @@ Implementation commit: pending
 ### Verification
 
 - Render checks assert album-detail wave markup, the three-color extractor and the Data Desk batch action.
+
+## Version 3.12.17 — Make Listening Philosophy one deliberate disclosure
+
+### Decision
+
+- Keep the Philosophy title and short premise visible as the reading invitation.
+- Replace the per-principle disclosures with one native disclosure control that reveals or closes the complete set of principles and their explanations together.
+- Retain the editorial sequence, index numbers and rule-based rhythm after expansion; only the redundant individual plus controls are removed.
+
+### Verification
+
+- Render checks assert a single Philosophy disclosure and no remaining per-item controls.

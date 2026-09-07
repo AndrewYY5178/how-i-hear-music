@@ -138,6 +138,7 @@ Object.assign(zh, {
   "No time series yet.": "还没有时间序列。",
   "No winners confirmed.": "还没有确认任何得奖者。",
   "COVER MAINTENANCE": "封面维护",
+  "LISTENING PRINCIPLES": "聆听原则",
   "Repair artwork and theme colors without opening every album. Local covers stay in this browser and are never uploaded.": "无需逐张打开专辑即可修复封面和主题色。本地封面只保存在此浏览器，不会上传。",
   "LOCAL COVER FILE": "本地封面文件",
   "REMOTE HTTPS IMAGE URL (OPTIONAL)": "远程 HTTPS 图片地址（可选）",

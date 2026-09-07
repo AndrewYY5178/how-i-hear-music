@@ -1846,7 +1846,7 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-shape-cycle.shape-is-changing { animation:none; }
 }
 
-/* UI 3.12.16 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
+/* UI 3.12.14 — rotate Home Featured Landscape albums with the sleeve-and-disc reveal. */
 .home-landscape-cycle { position:relative; display:block; max-width:none; margin:clamp(70px,10vw,130px) 0; padding:clamp(32px,5vw,65px) 0 62px; overflow:hidden; }
 .featured-landscape-slide { display:grid; grid-template-columns:minmax(170px,.42fr) minmax(220px,.72fr) minmax(360px,1.45fr); gap:clamp(28px,5vw,88px); align-items:end; }
 .featured-landscape-slide[hidden] { display:none; }
@@ -1907,24 +1907,25 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .journal-history .rating-history article .text-link { grid-column:3; }
 }
 
-/* UI 3.12.15 — collapse Taste Philosophy entries until the reader asks for detail. */
-.essay-stack details { max-width:none; padding:0; border-top:1px solid var(--line); border-bottom:0; }
-.essay-stack details:last-child { border-bottom:1px solid var(--line); }
-.essay-stack details>summary { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:24px; align-items:center; min-height:96px; padding:24px 0; list-style:none; }
-.essay-stack details>summary::-webkit-details-marker { display:none; }
+/* UI 3.12.17 — one Philosophy control reveals or closes the full set of principles. */
+.philosophy-disclosure { max-width:800px; margin-top:24px; padding:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.philosophy-disclosure>summary { display:flex; align-items:center; justify-content:space-between; min-height:56px; cursor:pointer; list-style:none; }
+.philosophy-disclosure>summary::-webkit-details-marker { display:none; }
+.philosophy-disclosure>summary .mono { color:var(--red); font-size:9px; }
+.philosophy-disclosure-toggle { color:var(--red); font:22px/1 var(--mono); transition:transform 220ms ease; }
+.philosophy-disclosure[open] .philosophy-disclosure-toggle { transform:rotate(45deg); }
+.essay-stack { padding:0; }
+.essay-stack .essay-item { display:grid; grid-template-columns:64px minmax(0,1fr); gap:24px; padding:24px 0; border-top:1px solid var(--line); }
 .essay-stack .essay-item-index { color:var(--red); font:10px var(--mono); }
-.essay-stack .essay-item-title { color:var(--ink); font:400 29px/1.1 var(--serif); letter-spacing:-.05em; }
-.essay-stack .essay-item-toggle { color:var(--red); font:20px/1 var(--mono); transition:transform 220ms ease; }
-.essay-stack details[open] .essay-item-toggle { transform:rotate(45deg); }
-.essay-stack .essay-item-body { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:24px; padding:0 0 26px; }
-.essay-stack .essay-item-body p { grid-column:2; margin:0; color:var(--muted); font:italic 15px/1.6 var(--serif); }
+.essay-stack .essay-item-title { margin:0; color:var(--ink); font:400 29px/1.1 var(--serif); letter-spacing:-.05em; }
+.essay-stack .essay-item p { margin:12px 0 0; color:var(--muted); font:italic 15px/1.6 var(--serif); }
 @media (max-width:760px) {
-  .essay-stack details>summary { grid-template-columns:40px minmax(0,1fr) auto; gap:16px; min-height:76px; padding:18px 0; }
+  .philosophy-disclosure>summary { min-height:52px; }
+  .essay-stack .essay-item { grid-template-columns:40px minmax(0,1fr); gap:16px; padding:20px 0; }
   .essay-stack .essay-item-title { font-size:24px; }
-  .essay-stack .essay-item-body { grid-template-columns:40px minmax(0,1fr) auto; gap:16px; padding-bottom:20px; }
 }
 
-/* UI 3.12.16 — tighten the handoff from Home album rotation into Featured Shape. */
+/* UI 3.12.15 — tighten the handoff from Home album rotation into Featured Shape. */
 .home-listening { padding-bottom:32px; }
 .home-listening + .featured-shape { margin-top:32px; }
 @media (max-width:760px) {
