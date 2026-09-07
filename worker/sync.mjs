@@ -16,8 +16,9 @@ const bearer = (request) => {
   const value = request.headers.get("Authorization") || "";
   return value.startsWith("Bearer ") ? value.slice(7) : "";
 };
-const configured = (env) => Boolean(env.SYNC_DB && env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET && env.SYNC_CALLBACK_URL);
-const emailConfigured = (env) => Boolean(configured(env) && env.RESEND_API_KEY);
+const databaseConfigured = (env) => Boolean(env.SYNC_DB);
+const githubConfigured = (env) => Boolean(databaseConfigured(env) && env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET && env.SYNC_CALLBACK_URL);
+const emailConfigured = (env) => Boolean(databaseConfigured(env) && env.RESEND_API_KEY);
 const response = (headers, status, body) => new Response(JSON.stringify(body), { status, headers });
 const bytesToBase64 = (value) => { let binary = ""; new Uint8Array(value).forEach((byte) => { binary += String.fromCharCode(byte); }); return btoa(binary); };
 const base64ToBytes = (value) => Uint8Array.from(atob(String(value || "")), (character) => character.charCodeAt(0));
@@ -81,10 +82,11 @@ const withinEmailRateLimit = (key) => {
 
 export const handleSync = async ({ request, url, env, headers, origin }) => {
   if (!url.pathname.startsWith("/api/sync/")) return null;
-  if (!configured(env)) return response(headers, 503, { error: "Private sync is not configured yet." });
+  if (!databaseConfigured(env)) return response(headers, 503, { error: "Private sync is not configured yet." });
   const db = env.SYNC_DB;
   const path = url.pathname;
   if (request.method === "GET" && path === "/api/sync/github/start") {
+    if (!githubConfigured(env)) return response(headers, 503, { error: "GitHub sign-in is not configured yet." });
     try {
       const state = random(); const stateHash = await hash(state); const returnTo = allowedReturn(url.searchParams.get("return_to"), origin); const expiresAt = now() + 10 * 60_000;
       await db.batch([db.prepare("DELETE FROM sync_oauth_states WHERE expires_at <= ?").bind(now()), db.prepare("INSERT INTO sync_oauth_states (state_hash, return_to, expires_at) VALUES (?, ?, ?)").bind(stateHash, returnTo, expiresAt)]);
@@ -94,6 +96,7 @@ export const handleSync = async ({ request, url, env, headers, origin }) => {
     } catch (error) { return response(headers, 400, { error: error.message || "Could not start GitHub sign-in." }); }
   }
   if (request.method === "GET" && path === "/api/sync/github/callback") {
+    if (!githubConfigured(env)) return response(headers, 503, { error: "GitHub sign-in is not configured yet." });
     try {
       const state = String(url.searchParams.get("state") || ""); const code = String(url.searchParams.get("code") || "");
       if (!state || !code) throw new Error("GitHub did not return a complete sign-in response.");
@@ -123,6 +126,7 @@ export const handleSync = async ({ request, url, env, headers, origin }) => {
     } catch (error) { return response(headers, 400, { error: error.message || "Could not complete GitHub sign-in." }); }
   }
   if (request.method === "POST" && path === "/api/sync/exchange") {
+    if (!githubConfigured(env)) return response(headers, 503, { error: "GitHub sign-in is not configured yet." });
     try {
       const body = await readBody(request, 20_000); const codeHash = await hash(String(body.exchangeCode || "")); const pending = await db.prepare("SELECT session_token, user_id, expires_at FROM sync_exchanges WHERE code_hash = ?").bind(codeHash).first();
       await db.prepare("DELETE FROM sync_exchanges WHERE code_hash = ?").bind(codeHash).run();
