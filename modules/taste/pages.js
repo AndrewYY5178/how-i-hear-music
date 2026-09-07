@@ -1,4 +1,4 @@
-import { allArtists, allTracks, archiveVisibleAlbums, data, findTrack, rating, safe, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js?v=0.9.110";
+import { allArtists, allTracks, archiveVisibleAlbums, data, findTrack, rating, safe, storage, trackId, visibleJournal, visibleRatings } from "../music/data.js?v=0.9.111";
 import { radar } from "../rating/visuals.js";
 import { link, pageHeader } from "../layout/shell.js";
 import { antiRecommendationPatterns, currentEvidence } from "../music/analysis.js";

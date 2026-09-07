@@ -1,17 +1,17 @@
-import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.110";
+import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.111";
 import { withBase, withoutBase } from "./modules/layout/paths.js";
-import { bindHome, home } from "./modules/home.js?ui=3.12.36";
-import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.36";
-import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.12.36";
-import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, portrait, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.12.36";
-import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.12.36";
-import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.12.36";
+import { bindHome, home } from "./modules/home.js?ui=3.12.37";
+import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.37";
+import { rateAlbum, rateHome, rateTrack, unratedQueue, bindRating } from "./modules/rating/pages.js?ui=3.12.37";
+import { antiRecommendation, bindTaste, blindSpotPage, compare, dna, familyTree, goodNotMine, portrait, sonicMap, tasteHome } from "./modules/taste/pages.js?ui=3.12.37";
+import { bindImport, importData, importHome, importInbox, importNetEase, importQQ } from "./modules/import/pages.js?ui=3.12.37";
+import { annualPortrait, bindJournal, bindYear, entropyPage, journal, journalEdit, memoryPalace, yearInMusic } from "./modules/journal/pages.js?ui=3.12.37";
 import { migrateLocalData } from "./modules/music/resilience.js";
 import { completeGithubSync, requestNicknamePrompt, startAutomaticSync, syncSession } from "./modules/music/cloud-sync.js";
 import { accountNickname } from "./modules/music/account.js";
-import { bindSearch } from "./modules/search/pages.js?ui=3.12.36";
-import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.110";
-import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.36";
+import { bindSearch } from "./modules/search/pages.js?ui=3.12.37";
+import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.111";
+import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.37";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -212,7 +212,7 @@ completeGithubSync().then(async (user) => {
 const registerOfflineShell = async () => {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
   try {
-    const workerUrl = new URL("./sw.js", import.meta.url); workerUrl.searchParams.set("v", "0.9.110-ui3.12.36");
+    const workerUrl = new URL("./sw.js", import.meta.url); workerUrl.searchParams.set("v", "0.9.111-ui3.12.37");
     const registration = await navigator.serviceWorker.register(workerUrl, { scope: new URL("./", import.meta.url).pathname, updateViaCache: "none" }); offlineRegistration = registration; const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; pendingOfflineWorker = worker; worker.postMessage("SKIP_WAITING"); window.setTimeout(() => { if (pendingOfflineWorker === worker) { banner.hidden = false; document.getElementById("apply-update").onclick = activateOfflineUpdate; } }, 2200); }; showOfflineUpdate = showUpdate;
     if (registration.waiting) showUpdate(registration.waiting);
     registration.addEventListener("updatefound", () => { const installing = registration.installing; installing?.addEventListener("statechange", () => { if (installing.state === "installed") showUpdate(registration.waiting || installing); }); });

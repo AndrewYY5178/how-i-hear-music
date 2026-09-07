@@ -1,4 +1,4 @@
-import { accountSignedIn, storage } from "./data.js?v=0.9.110";
+import { accountSignedIn, storage } from "./data.js?v=0.9.111";
 
 export const tasteGroupStorageKey = "how-i-hear-music:taste-groups:v1";
 export const readTasteGroups = () => accountSignedIn() ? storage.get(tasteGroupStorageKey, []) : [];
