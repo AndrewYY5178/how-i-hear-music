@@ -3523,3 +3523,26 @@ Implementation commit: d255446
 ### Verification
 
 - Project, core, render and Worker checks pass; the project check asserts the album-centered expansion contract.
+
+## Version 3.12.29 — Remove translucent album-detail overlays
+
+Implementation commit: 6f4f3bf
+
+### Evidence
+
+- The owner saw the semi-transparent paper washes behind each detail section as a white film over the color field.
+- The page's dynamic background is intended to be the environmental surface; additional section fills diluted that effect.
+
+### Decision
+
+- Set the album-detail header, footer, cover section and content sections to transparent backgrounds.
+- Retain the existing 1px rules, typography and layering so structure and legibility continue to come from the editorial system rather than panels.
+
+### Rejected alternatives
+
+- Lowering the opacity would leave the same white-film reading and make the treatment harder to reason about.
+- Replacing the film with opaque cards would conflict with the full-page color field and the repository's no-card/no-shadow restraint.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
