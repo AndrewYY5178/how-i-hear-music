@@ -3404,3 +3404,27 @@ Implementation commit: 50aff43
 ### Verification
 
 - Render checks assert full-page canvas markup and the fixed background layer; project, core and Worker checks remain required before release.
+
+## Version 3.12.24 — Soften the album field into moving color discs
+
+Implementation commit: 7cf82f4
+
+### Evidence
+
+- The owner found the first full-page three-color treatment too heavy and its banded contour too much like a waveform.
+- The album object is circular, so a quieter set of cover-color discs better extends the existing sleeve-and-record language without adding another chart shape.
+
+### Decision
+
+- Replace the horizontal color bands with three low-opacity, circular radial fields that move on independent slow orbits.
+- Add only a faint concentric record ring to each field; the page stays legible and no literal waveform remains in the background.
+- Reduce Paper-mode color density substantially while preserving a somewhat stronger, but still restrained, Chromatic-mode contrast.
+
+### Rejected alternatives
+
+- Do not retain the original broad bands, even at lower opacity: their silhouette still reads as a waveform.
+- Do not turn the background into opaque vinyl illustrations; those would compete with the actual animated sleeve and cover.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
