@@ -3133,3 +3133,52 @@ Implementation commit: pending
 ### Intentionally unchanged
 
 - Artwork URLs, fallback behavior, theme-color extraction, carousel timing, opacity, layout and stored user data remain unchanged.
+
+## Version 3.12.0 — Paper Archive and Chromatic Contrast themes
+
+### Evidence
+
+- The owner requested two explicit visual modes: the existing low-saturation paper archive and a grayscale surface that preserves original-color artwork and vinyl.
+- Home Cover Flow now exposes the complete nine-sleeve sequence at the 390px audit width without horizontal overflow; the canonical `单依纯 — 纯妹妹` sample remains present in the signed-out showcase deck.
+
+### Decision
+
+- Keep `PAPER ARCHIVE` as the default, preserving the established `#e7dfcf` paper, ink and red tokens.
+- Add `CHROMATIC CONTRAST` as a persisted theme switch in Account. It changes page surfaces to neutral grays, leaves cover/vinyl images unfiltered, and reserves saturated magenta for scores and active accents.
+- Keep theme selection local to the browser; account data and album records are not changed by a visual preference.
+
+### Rejected
+
+- Do not tint or desaturate album artwork in Chromatic Contrast; the requested contrast depends on original-color covers against grayscale surfaces.
+- Do not add a second top-level route or duplicate navigation entry for themes.
+
+### Verification
+
+- `npm test` passes check, core, render and Worker contract suites.
+- Browser audit completed at 390 / 1024 / 1440px with zero horizontal overflow; Cover Flow controls remain in the content band and the signed-out sample includes `纯妹妹`.
+
+## Version 3.12.1 — Chromatic module gradients and resilient theme switching
+
+### Decision
+
+- Give Home, Archive, Taste, Import, Journal and Rate distinct grayscale gradients in `CHROMATIC CONTRAST`, while keeping the paper texture restrained and the artwork/vinyl unfiltered.
+- Update both document roots when a theme changes and prevent the theme button's default activation from interrupting the state update on touch devices.
+
+### Verification
+
+- Confirmed direct theme selection in the local browser updates the active button, document colors and persisted preference.
+- Re-ran the full automated test suite after the change.
+
+## Version 3.12.2 — Synchronize theme selected state
+
+### Evidence
+
+- The page background changed after selecting `CHROMATIC`, but the red selected border remained on `PAPER` because only `aria-pressed` was updated after the initial render.
+
+### Decision
+
+- Toggle the visual `active` class and `aria-pressed` together whenever the theme changes, so the selected control always matches the document theme.
+
+### Verification
+
+- Browser check confirms `CHROMATIC` background + `CHROMATIC` active state, then returns cleanly to `PAPER`.

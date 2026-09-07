@@ -964,6 +964,58 @@ body::before {
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
 }
 
+/* UI 3.12.2 — intentional paper / chromatic contrast themes. The artwork and vinyl stay original-color in both modes. */
+.account-theme { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+.account-theme-options { display:flex; gap:6px; }
+.theme-option { min-height:32px; padding:6px 8px; border:1px solid var(--line); background:transparent; color:var(--muted); font:9px var(--mono); letter-spacing:.06em; }
+.theme-option.active { border-color:var(--red); color:var(--red); }
+.theme-option:focus-visible { outline:2px solid var(--red); outline-offset:2px; }
+
+html[data-theme="chromatic"] {
+  --paper:#d6d7d9;
+  --paper-light:#ececee;
+  --paper-deep:#c8cacf;
+  --ink:#202125;
+  --muted:#5e626a;
+  --line:#92969d;
+  --olive:#50545b;
+  --red:#ed1675;
+  --page:var(--paper);
+}
+html[data-theme="chromatic"] body::before { opacity:.1; background-image:radial-gradient(#555a62 .45px, transparent .6px); }
+html[data-theme="chromatic"] body[data-module="archive"] { --page:#cfd1d4; }
+html[data-theme="chromatic"] body[data-module="taste"] { --page:#ececee; }
+html[data-theme="chromatic"] body[data-module="import"] { --page:#dfe1e4; }
+html[data-theme="chromatic"] body[data-module="journal"] { --page:#e2e3e6; }
+html[data-theme="chromatic"] body[data-module="rate"] {
+  --page:#55585f;
+  --ink:#f1f2f3;
+  --muted:#d0d1d5;
+  --line:rgba(241,242,243,.32);
+  --red:#ff2d8b;
+  --paper-light:#e0e1e4;
+  --olive:#55585f;
+  color:var(--ink);
+}
+html[data-theme="chromatic"] .site-header,
+html[data-theme="chromatic"] body[data-module="archive"] .site-header,
+html[data-theme="chromatic"] body[data-module="taste"] .site-header,
+html[data-theme="chromatic"] body[data-module="import"] .site-header,
+html[data-theme="chromatic"] body[data-module="journal"] .site-header,
+html[data-theme="chromatic"] body[data-module="rate"] .site-header { background:color-mix(in srgb,var(--page) 95%,transparent) !important; }
+html[data-theme="chromatic"] .album-card img,
+html[data-theme="chromatic"] .home-record-sleeve img,
+html[data-theme="chromatic"] .import-album-sleeve img { filter:none !important; }
+html[data-theme="chromatic"] .album-card-cover,
+html[data-theme="chromatic"] .home-record-sleeve,
+html[data-theme="chromatic"] .import-album-sleeve { background:#c7c9cd; }
+html[data-theme="chromatic"] .feature-split>article,
+html[data-theme="chromatic"] .track-card,
+html[data-theme="chromatic"] .good-not-mine article,
+html[data-theme="chromatic"] .featured-shape-visual { background:var(--paper-light); }
+html[data-theme="chromatic"] body[data-module="rate"] .button.primary,
+html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active { color:#202125; }
+
 /* UI 3.11.46 — make every visible listening score read like a result, not metadata. */
 .feature-score b,
 .track-card>strong,
@@ -1006,6 +1058,27 @@ body::before {
 .album-overall input {
   font-family:var(--serif);
   font-weight:700;
+}
+
+/* UI 3.12.2 — give Chromatic Contrast each module its own paper-gray gradient. */
+html[data-theme="chromatic"] body {
+  background:linear-gradient(132deg,#d6d7d9 0%,#e8e9eb 46%,#c9cbd0 100%);
+  background-attachment:fixed;
+}
+html[data-theme="chromatic"] body[data-module="archive"] {
+  background:linear-gradient(118deg,#cfd1d4 0%,#e4e5e8 48%,#bec1c6 100%);
+}
+html[data-theme="chromatic"] body[data-module="taste"] {
+  background:linear-gradient(142deg,#ececee 0%,#d9dade 52%,#f4f4f5 100%);
+}
+html[data-theme="chromatic"] body[data-module="import"] {
+  background:linear-gradient(126deg,#dfe1e4 0%,#cdd0d5 48%,#e8e9eb 100%);
+}
+html[data-theme="chromatic"] body[data-module="journal"] {
+  background:linear-gradient(120deg,#e2e3e6 0%,#d2d4d8 46%,#eeeff0 100%);
+}
+html[data-theme="chromatic"] body[data-module="rate"] {
+  background:linear-gradient(138deg,#55585f 0%,#686b73 48%,#45484f 100%);
 }
 
 /* UI 3.11.56 — constrain detail records, mobile columns and simplify Rate prompt. */

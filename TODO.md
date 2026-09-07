@@ -2,6 +2,12 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## Current delivery — UI 3.12.2
+
+- [x] Add persisted `PAPER ARCHIVE` and `CHROMATIC CONTRAST` visual themes in the Account panel. Chromatic Contrast keeps artwork and vinyl at source color while using grayscale surfaces and a saturated score accent.
+- [x] Complete the final Home Cover Flow regression at 390 / 1024 / 1440px: center/neighbor visibility, Prev / Next placement, `纯妹妹` showcase coverage, and zero horizontal overflow.
+- [ ] Replace `EMAIL_FROM` with a verified address on an owned domain. The Worker already reads this value from Cloudflare variables; remaining work is domain/DNS verification, variable update, deploy and a real-inbox test.
+
 ## Active touch-first App shell and delivery — UI 3.6.0
 
 - [x] Repair the offline update action: always resolve the current waiting Service Worker, show a visible `RELOADING…` state, activate it through `SKIP_WAITING`, and fall back to a reload if `controllerchange` is delayed. Local preview and published-site behavior remain separately scoped. *(UI 3.11.5; automated checks passed.)*
