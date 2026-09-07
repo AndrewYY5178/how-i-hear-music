@@ -1,4 +1,4 @@
-import { accountSignedIn, storage } from "./data.js?v=0.9.100";
+import { accountSignedIn, storage } from "./data.js?v=0.9.101";
 
 export const coverOverrideKey = "how-i-hear-music:cover-overrides:v1";
 export const localCoverOverrideKey = "how-i-hear-music:cover-overrides-local:v1";

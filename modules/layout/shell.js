@@ -1,11 +1,11 @@
-import { data, safe } from "../music/data.js?v=0.9.100";
+import { data, safe } from "../music/data.js?v=0.9.101";
 import { accountNickname, saveAccountNickname } from "../music/account.js";
-import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStatus, requestEmailCode, signOutSync, syncSession } from "../music/cloud-sync.js?v=0.9.100";
+import { beginGithubSync, clearNicknamePrompt, completeEmailSignIn, readSyncStatus, requestEmailCode, signOutSync, syncSession } from "../music/cloud-sync.js?v=0.9.101";
 import { withBase } from "./paths.js";
 import { currentLanguage, translateText } from "./i18n.js";
-import { bindThemeControls, currentTheme } from "./theme.js?v=0.9.100";
+import { bindThemeControls, currentTheme } from "./theme.js?v=0.9.101";
 
-const appVersion = "0.9.100";
+const appVersion = "0.9.101";
 
 const nav = [
   ["/", "Home"], ["/archive", "Archive"], ["/rate", "Rate"], ["/taste", "Taste"], ["/import", "Import"],
@@ -81,7 +81,7 @@ export const renderShell = (path) => {
   emailVerifyForm?.addEventListener("submit", async (event) => { event.preventDefault(); const button = event.currentTarget.querySelector("button"); const status = accountPanel.querySelector("#account-status"); button.disabled = true; status.textContent = translateText("Checking code…"); try { await completeEmailSignIn(emailChallenge, new FormData(event.currentTarget).get("code")); location.reload(); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not complete email sign-in."; button.disabled = false; } });
   accountPanel.querySelector("[data-check-update]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("how-i-hear-music:check-update")));
   accountPanel.querySelector(".account-nickname-form")?.addEventListener("submit", (event) => { event.preventDefault(); const status = accountPanel.querySelector("#account-status"); try { const saved = saveAccountNickname(session.user.id, new FormData(event.currentTarget).get("nickname")); clearNicknamePrompt(); accountToggles.forEach((button) => { button.textContent = saved; button.classList.add("has-nickname"); button.setAttribute("data-i18n-ignore", ""); }); accountPanel.querySelector("#account-panel-title").textContent = `Hello, ${saved}.`; status.textContent = "Nickname saved · automatic sync queued."; } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not save the nickname."; } });
-  accountPanel.querySelector("[data-account-sign-out]")?.addEventListener("click", async () => { const status = accountPanel.querySelector("#account-status"); try { await signOutSync(); renderShell(path); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not sign out."; } });
+  accountPanel.querySelector("[data-account-sign-out]")?.addEventListener("click", async () => { const status = accountPanel.querySelector("#account-status"); try { await signOutSync(); } catch (error) { status.textContent = error instanceof Error ? error.message : "Could not sign out."; } finally { location.reload(); } });
   bindThemeControls(accountPanel);
   header.addEventListener("keydown", (event) => { if (event.key !== "Escape") return; if (!accountPanel.hidden) { closeAccount(); visibleAccountToggle().focus(); } });
   if (session?.promptNickname && !nickname) { clearNicknamePrompt(); openAccount({ focusNickname: true }); queueMicrotask(() => accountPanel.querySelector('[name="nickname"]')?.focus()); }
