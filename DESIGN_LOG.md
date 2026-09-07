@@ -3429,6 +3429,30 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.31 — Reduce Listening Principles type
+
+Implementation commit: 19b9b2e
+
+### Evidence
+
+- The owner found the revealed principle entries too visually heavy beneath the LISTENING PRINCIPLES control.
+- The disclosure heading and the principle titles need to remain distinct levels instead of competing at nearly the same scale.
+
+### Decision
+
+- Reduce revealed principle titles to 24px on wide layouts and 20px on narrow layouts.
+- Reduce the supporting italic copy to 13px with a tighter 1.5 line-height.
+- Keep the disclosure label, numbering, rules and overall serif treatment unchanged.
+
+### Rejected alternatives
+
+- Do not shrink the LISTENING PRINCIPLES summary label; it is the control and should remain easy to find.
+- Do not reduce the main LISTENING PHILOSOPHY heading; the hierarchy should be solved within the revealed list.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.30 — Align featured Home modules
 
 Implementation commit: 0d25f7c
