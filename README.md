@@ -184,6 +184,8 @@ UI 3.12.4 将 Taste Philosophy 说明并入 Taste Overview；`/taste/philosophy`
 
 UI 3.12.5 将 Archive 首页的 Tracks、Albums、Artists 三个区域改为整块点击进入，并移除每块内部重复的 `Enter →` 操作文字；键盘用户仍可通过焦点轮廓识别当前入口。
 
+UI 3.12.6 让 Rate 首页的 `CONTINUE RATING` 与 `RATE AN ALBUM` 按钮共享同一底部基线，避免说明文字长短不同造成视觉错位。
+
 - 修改个人听歌逻辑与故事：编辑 `data/music-profile.json`
 - 修改艺术家状态：编辑 `data/artists.json`
 - 修改歌曲评分与专辑记录：编辑 `data/songs.json`

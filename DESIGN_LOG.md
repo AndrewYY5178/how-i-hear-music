@@ -3216,3 +3216,13 @@ Implementation commit: pending
 ### Verification
 
 - Render tests assert exactly three full-area gate links and no remaining `Enter →` labels.
+
+## Version 3.12.6 — Align Rate home actions
+
+### Decision
+
+- Use a shared flex column rhythm for the Track and Album choice panels so their primary buttons sit on the same bottom baseline even when the explanatory copy wraps differently.
+
+### Verification
+
+- Full project, core, render and Worker contract tests pass.

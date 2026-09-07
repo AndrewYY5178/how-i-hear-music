@@ -2,13 +2,14 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
-## Current delivery — UI 3.12.5
+## Current delivery — UI 3.12.6
 
 - [x] Add persisted `PAPER ARCHIVE` and `CHROMATIC CONTRAST` visual themes in the Account panel. Chromatic Contrast keeps artwork and vinyl at source color while using grayscale surfaces and a saturated score accent.
 - [x] Complete the final Home Cover Flow regression at 390 / 1024 / 1440px: center/neighbor visibility, Prev / Next placement, `纯妹妹` showcase coverage, and zero horizontal overflow.
 - [x] Keep the Home `FEATURED LANDSCAPE` waveform alive after its initial ink draw with a restrained path drift and point pulse; honor reduced-motion preferences.
 - [x] Consolidate Taste reading surfaces: move Philosophy into Taste Overview, redirect `/taste/philosophy` to `/taste`, redirect duplicate `/taste/profile` to `/taste/dna`, and send the legacy `/journal` tree to `Taste → Journal` while preserving nested links.
 - [x] Make the Archive Tracks / Albums / Artists regions fully clickable and remove the redundant `Enter →` labels, retaining keyboard focus visibility.
+- [x] Align the Rate home `CONTINUE RATING` and `RATE AN ALBUM` actions to a shared bottom baseline despite different copy lengths.
 - [ ] Replace `EMAIL_FROM` with a verified address on an owned domain. The Worker already reads this value from Cloudflare variables; remaining work is domain/DNS verification, variable update, deploy and a real-inbox test.
 
 ## Active touch-first App shell and delivery — UI 3.6.0

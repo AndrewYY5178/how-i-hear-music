@@ -124,6 +124,8 @@ details { max-width:780px; padding:15px 0; border-bottom:1px solid var(--line); 
 .archive-gate-link { position:absolute; inset:0; z-index:2; display:block; }
 .archive-gate-link:focus-visible { outline:2px solid var(--red); outline-offset:-5px; }
 .archive-gate>*:not(.archive-gate-link) { pointer-events:none; }
+.rate-choices article { display:flex; flex-direction:column; }
+.rate-choices article>.button { margin-top:auto; }
 .qq-import-focus {
   display:grid;
   grid-template-columns:minmax(190px,.55fr) minmax(330px,1.45fr);
