@@ -3429,6 +3429,30 @@ Implementation commit: 7cf82f4
 
 - Project, core, render and Worker checks pass before publication.
 
+## Version 3.12.32 — Consolidate Taste insights
+
+Implementation commit: 440a385
+
+### Evidence
+
+- The owner approved reducing the five-link INSIGHTS index into a smaller set of durable analysis entry points.
+- Memory and entropy already belong to the Journal time layer, while boundary evidence qualifies the traits shown in Listening DNA.
+
+### Decision
+
+- Keep SONIC MAP and LISTENING DNA as the only INSIGHTS index items.
+- Render BOUNDARIES as a closing evidence section inside Listening DNA; retain the standalone boundary route as a compatibility view.
+- Keep MEMORY PALACE and ARCHIVE ENTROPY linked from JOURNAL, and retain TASTE CONSTELLATION as a direct route without placing it in the primary index.
+
+### Rejected alternatives
+
+- Do not delete the old routes; bookmarks and internal compatibility links should continue to resolve.
+- Do not fold SONIC MAP into DNA; its two-axis interaction is a distinct way to inspect explicit sonic descriptors.
+
+### Verification
+
+- Project, core, render and Worker checks pass before publication.
+
 ## Version 3.12.31 — Reduce Listening Principles type
 
 Implementation commit: 19b9b2e
