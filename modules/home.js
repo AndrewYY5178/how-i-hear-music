@@ -1,6 +1,6 @@
-import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js?v=0.9.103";
+import { allAlbums, allTracks, importedAlbums, rating, safe, slug, storage, trackId, visibleJournal, visibleRatings } from "./music/data.js?v=0.9.104";
 import { withBase } from "./layout/paths.js";
-import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.29";
+import { bindCoverTones, fallbackCoverTone } from "./layout/cover-tone.js?ui=3.12.30";
 import { radar, waveform } from "./rating/visuals.js";
 import { syncSession } from "./music/cloud-sync.js";
 
@@ -102,7 +102,8 @@ export const home = () => {
   const featuredShape = featuredTracks.length ? `<section class="featured-shape home-shape-cycle shape-is-drawing" data-home-shape-cycle>${featuredTracks.map(shapeMarkup).join("")}</section>` : `<section class="featured-shape featured-shape-empty" data-home-shape-cycle><div class="featured-shape-copy"><span class="eyebrow mono">FEATURED SHAPE</span><h2>Complete the shape.</h2><p>Song, Vocal, Production and Overall must all be rated before a track appears here.</p></div></section>`;
   const listeningSection = current.length ? `<section class="home-section home-listening"><span class="eyebrow mono">CURRENTLY LISTENING</span><div class="home-record-stage" data-home-record-stage role="region" aria-roledescription="carousel" aria-label="Currently listening">${current.map(recordMarkup).join("")}<div class="home-record-controls"><button type="button" data-home-record-previous aria-label="Previous record">← <span>PREV</span></button><button type="button" data-home-record-next aria-label="Next record"><span>NEXT</span> →</button></div></div></section>` : "";
   const featuredLandscape = featuredLandscapes.length ? `<section class="featured-landscape home-landscape-cycle" data-home-landscape-cycle role="region" aria-roledescription="carousel" aria-label="Featured album landscapes">${featuredLandscapes.map(landscapeMarkup).join("")}<div class="featured-landscape-controls" aria-label="Featured landscape controls"><button type="button" data-home-landscape-previous aria-label="Previous featured album">← <span>PREV</span></button><button type="button" data-home-landscape-next aria-label="Next featured album"><span>NEXT</span> →</button></div></section>` : "";
-  return `<section class="home-hero"><h1>How I<br><em>hear music.</em></h1><p>Melody opens the door.<br>Everything else has to earn its place.</p></section>${listeningSection}${featuredShape}${featuredLandscape}<section class="short-manifesto"><p>Music can be minimal or maximal, familiar or surprising. The only question is whether it stays alive.</p></section>`;
+  const featuredRow = `<section class="home-feature-row" aria-label="Featured listening evidence">${featuredShape}${featuredLandscape}</section>`;
+  return `<section class="home-hero"><h1>How I<br><em>hear music.</em></h1><p>Melody opens the door.<br>Everything else has to earn its place.</p></section>${listeningSection}${featuredRow}<section class="short-manifesto"><p>Music can be minimal or maximal, familiar or surprising. The only question is whether it stays alive.</p></section>`;
 };
 
 export const bindHome = () => {

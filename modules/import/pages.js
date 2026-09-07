@@ -1,4 +1,4 @@
-import { archiveVisibleAlbums, canonical, data, safe, slug, storage } from "../music/data.js?v=0.9.103";
+import { archiveVisibleAlbums, canonical, data, safe, slug, storage } from "../music/data.js?v=0.9.104";
 import { matchTrack } from "../music/matching.js";
 import { createPlaylistSnapshot, diffPlaylistSnapshots } from "../music/sync.js";
 import { lifecycleStates, lifecycleTracks, updateLifecycle } from "../music/lifecycle.js";
@@ -6,10 +6,10 @@ import { analyzeAlbumImport, storeAlbumImport } from "../music/album-import.js";
 import { metadataApiRequest, staticImportUnavailable } from "../music/api.js";
 import { beginGithubSync, readSyncStatus, signOutSync, startAutomaticSync, syncReady, syncSession } from "../music/cloud-sync.js";
 import { link, pageHeader, secondaryNav } from "../layout/shell.js";
-import { bindCoverTones, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.29";
+import { bindCoverTones, fallbackCoverTone, reextractCoverAppearance } from "../layout/cover-tone.js?ui=3.12.30";
 import { coverOverrideKey, localCoverOverrideKey, coverSourcesFor, encodeLocalCover } from "../music/cover-maintenance.js";
 import { dataHealth, decryptBackup, encryptedBackupFormat, exportBackup, exportEncryptedBackup, markBackupCreated, previewRestore, recoverySnapshots, restoreBackup, restoreLastRollback, restoreRecoverySnapshot, storageEstimate } from "../music/resilience.js";
-import { translateText } from "../layout/i18n.js?v=0.9.103";
+import { translateText } from "../layout/i18n.js?v=0.9.104";
 
 const inboxKey = data.library.storageKey;
 const libraryKey = data.library.libraryStorageKey;

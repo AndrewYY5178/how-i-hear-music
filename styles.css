@@ -750,7 +750,7 @@ body::before {
 .album-detail-cover-tools { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:14px; }
 .album-detail-cover-tools .button { min-height:32px; padding:7px 10px; font-size:8px; }
 .album-detail-cover-tools .mono { color:var(--muted); font-size:8px; }
-/* UI 3.12.29 — cover-derived colors drift as restrained circular record fields. */
+/* UI 3.12.30 — cover-derived colors drift as restrained circular record fields. */
 body.album-detail-page { background:var(--paper); }
 body.album-detail-page .site-header,body.album-detail-page .site-footer { position:relative; z-index:2; background:transparent; }
 body.album-detail-page #app { position:relative; z-index:1; }
@@ -1882,6 +1882,24 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-landscape-cycle .featured-landscape-slide.active .featured-landscape-wave { animation:none; }
 }
 
+/* Preview: keep the two featured evidence modules in one wide-screen row. */
+.home-feature-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:0; border-bottom:1px solid var(--ink); }
+.home-feature-row>.featured-shape,.home-feature-row>.featured-landscape { min-width:0; max-width:none; margin:0; padding:48px clamp(20px,3vw,48px) 56px; border:0; }
+.home-feature-row>.featured-shape { border-right:1px solid var(--line); }
+.home-feature-row .featured-shape-slide,.home-feature-row .featured-landscape-slide { grid-template-columns:1fr; gap:24px; align-items:start; }
+.home-feature-row .featured-shape::before { top:16px; right:clamp(20px,3vw,48px); }
+.home-feature-row .featured-shape-visual { padding:0; }
+.home-feature-row .featured-shape-visual .home-radar { width:min(100%,280px); }
+.home-feature-row .featured-landscape-slide { gap:24px; }
+.home-feature-row .featured-landscape-art { width:min(100%,210px); }
+.home-feature-row .featured-landscape-wave .waveform { min-height:180px; }
+.home-feature-row .featured-landscape-controls { border-bottom:0!important; }
+
+@media (max-width:900px) {
+  .home-feature-row { grid-template-columns:1fr; }
+  .home-feature-row>.featured-shape { border-right:0; border-bottom:1px solid var(--line); }
+}
+
 /* UI 3.11.13 — anchor narrow Home controls to the Cover Flow content band. */
 @media (max-width:900px) {
   .home-record-controls {
@@ -1929,5 +1947,5 @@ body[data-module="rate"] .rating-control button { border-bottom:1px solid var(--
   .home-listening + .featured-shape { margin-top:24px; }
 }
 
-/* UI 3.12.29 — Rate choices keep their primary actions on one shared baseline. */
+/* UI 3.12.30 — Rate choices keep their primary actions on one shared baseline. */
 .rate-choices article>.button { margin-top:auto; }
