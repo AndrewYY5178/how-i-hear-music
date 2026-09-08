@@ -13,6 +13,7 @@ import { accountNickname } from "./modules/music/account.js";
 import { bindSearch } from "./modules/search/pages.js?ui=3.12.44";
 import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.116";
 import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.44";
+import { bindEntryIntro } from "./modules/layout/entry-intro.js?ui=3.12.62";
 
 const app = document.getElementById("app");
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
@@ -87,6 +88,7 @@ const render = () => {
   bindSearch(path, navigate);
   bindHome();
   bindLivingMotion(app, path);
+  bindEntryIntro(path);
   bindLanguageToggle(() => setDocumentTitle(pageTitle));
   applyLanguage();
 };
@@ -215,7 +217,7 @@ completeGithubSync().then(async (user) => {
 const registerOfflineShell = async () => {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
   try {
-    const workerUrl = new URL("./sw.js", import.meta.url); workerUrl.searchParams.set("v", "0.9.116-ui3.12.44");
+    const workerUrl = new URL("./sw.js", import.meta.url); workerUrl.searchParams.set("v", "0.9.116-ui3.12.62");
     const registration = await navigator.serviceWorker.register(workerUrl, { scope: new URL("./", import.meta.url).pathname, updateViaCache: "none" }); offlineRegistration = registration; const banner = document.getElementById("update-banner"); const showUpdate = (worker) => { if (!worker || !navigator.serviceWorker.controller) return; pendingOfflineWorker = worker; worker.postMessage("SKIP_WAITING"); window.setTimeout(() => { if (pendingOfflineWorker === worker) { banner.hidden = false; document.getElementById("apply-update").onclick = activateOfflineUpdate; } }, 2200); }; showOfflineUpdate = showUpdate;
     if (registration.waiting) showUpdate(registration.waiting);
     registration.addEventListener("updatefound", () => { const installing = registration.installing; installing?.addEventListener("statechange", () => { if (installing.state === "installed") showUpdate(registration.waiting || installing); }); });

@@ -3835,3 +3835,184 @@ Implementation commit: 15e5c0f
 Based on commit 497b6bd. Increase Search, language, track-filter and Sonic Map control hit areas to 44px without adding visual boxes. Local browser checks cover 12 guest routes at three widths, with no horizontal overflow, plus actual Paper and Chromatic Home screenshots. This is not authenticated end-to-end coverage.
 
 Custom albums remain an approval-only proposal inside Archive → Albums, retaining all five primary modules. The generated desktop/mobile sketch uses the repository editorial palette and square artwork, not a new external design system. Rejected a sixth navigation item, duplicate canonical albums, invented scores and automatic public sharing. The sketch's redundant checkbox/plus treatment will be simplified to one selection control if approved; it is not production UI. Full implementation boundaries are in CUSTOM_ALBUM_PLAN.md. macOS packaging is explicitly deferred.
+
+## UI 3.12.46 — single-sheet newspaper entry sequence (2026-09-08)
+
+Implementation commit: pending
+
+### Evidence
+
+- The selected references agree on an editorial opening before the content appears: Miranda supplies the newspaper masthead and column rhythm, while EveryPage and i3Dify demonstrate that a reader-like page turn needs a binding axis, depth, paper thickness and a controlled reveal.
+- The owner explicitly preferred a single-page turn over a rigid book spread and asked for the masthead to focus before the newspaper opens into the main interface.
+
+### Decision
+
+- Add a home-only entry layer that focuses the `HOW I HEAR MUSIC` masthead, lifts one full sheet from its left edge, turns it in CSS 3D, fades to the sheet back, and reveals the existing Home beneath it.
+- Reuse the local newsprint fibre asset, the existing Paper / Chromatic tokens, the current serif/mono system and a restrained physical shadow. The effect plays once per browser session, supports an explicit skip button and Escape, and is bypassed under reduced motion.
+- Keep the implementation dependency-free. A subdivided WebGL mesh would add a large runtime cost for a short entry sequence; the current CSS 3D sheet preserves the requested motion language while keeping the static site cacheable and the mobile fallback reliable.
+
+### Rejected alternatives
+
+- Do not use a rigid card rotation or a centered double-page spread; both contradict the requested single-sheet reading gesture.
+- Do not show mirrored masthead text on the back face; the front is explicitly faded out through the edge-on phase and the back is a quiet paper surface.
+- Do not add a video, remote library or copied reference assets; the motion principles are recreated with repository-owned markup, CSS and the existing local texture.
+
+### Verification
+
+- Latest local browser pass checked the masthead focus frame, the edge-on/back-face frame, the no-mirror condition, skip behavior, session dismissal and the existing Home reveal.
+- Project, core, render and Worker checks pass; cache-busted release query is `0.9.116-ui3.12.46`.
+
+## UI 3.12.47 — flexible single-sheet curl (2026-09-08)
+
+Implementation commit: pending
+
+### Evidence
+
+- The previous CSS-only `rotateY` moved one rigid plane, so it read as a card rather than a reader-like page. The requested i3Dify reference depends on a continuous sheet, a travelling fold and visible depth at the turning edge.
+
+### Decision
+
+- Keep one semantic newspaper page, but render it as 24 contiguous vertical slices inside one sheet. The animation propagates the fold from the left binding toward the right edge; each slice receives a small bend, lift, depth offset, yaw and twist, while the back face replaces the front progressively. This keeps the page whole in content and interaction while giving the paper flexible motion.
+- Drive the curl with `requestAnimationFrame` so the bend is continuous and can be cancelled cleanly by skip/Escape. Preserve the masthead focus, local fibre texture, existing theme tokens, one-play session behavior and reduced-motion bypass.
+
+### Rejected alternatives
+
+- Do not return to a single rigid `rotateY`, a two-page spread or separate card panels; those lose the requested single-page reading gesture.
+- Do not introduce a video or WebGL dependency for this short entry sequence; the sliced CSS 3D surface keeps the static shell lightweight and cacheable.
+
+### Verification
+
+- Cache-busted release query is `0.9.116-ui3.12.47`. Project, core, render and Worker checks are run after the flexible-curl implementation; local browser mid-turn inspection confirms the front edge propagates across one sheet without mirrored masthead text.
+
+## UI 3.12.48 — continuous blank reverse side (2026-09-08)
+
+Implementation commit: pending
+
+### Evidence
+
+- Mid-turn browser inspection exposed repeated reverse-side labels because each physical slice had received its own copy of the back-face text. That broke the illusion of one sheet.
+
+### Decision
+
+- Keep the back of each slice as a texture-only paper surface. The 24 slices still share the same geometry and fold propagation, but no repeated content can appear while the reverse side is exposed.
+
+### Verification
+
+- Cache-busted release query is `0.9.116-ui3.12.48`; the late-turn inspection is clean paper with one outer edge, followed by the existing Home reveal.
+
+## UI 3.12.49 — remove duplicate backing sheet and add fold shading (2026-09-08)
+
+Implementation commit: pending
+
+### Evidence
+
+- Browser inspection showed the old thickness pseudo-element under the sliced sheet as a second visible rectangle, making the turn feel like two rigid panels rather than one page.
+
+### Decision
+
+- Remove that backing surface only when the flexible sheet is active. Add restrained per-slice fold shading that follows the measured bend, so the moving edge reads through light and depth rather than a decorative outline.
+
+### Verification
+
+- Cache-busted release query is `0.9.116-ui3.12.49`; start, bend and late-turn browser frames were checked, and the intro exits with the body scroll lock removed.
+
+## UI 3.12.55 — corner-curl WebGL page (2026-09-08)
+
+Implementation commit: pending
+
+### Evidence
+
+- i3Dify describes a magazine reader built around WebGL depth and physics-based page flipping; EveryPage describes a leaf curling over the spread from a drag/flick/tap gesture. These are materially different from a rigid CSS card rotation.
+- The owner requested the highest-fidelity single-sheet turn, beginning at a corner and carrying the whole page away before Home is revealed.
+
+### Decision
+
+- Use a locally vendored Three.js 0.180.0 WebGL renderer for capable browsers. The intro sheet is a subdivided `PlaneGeometry`; its vertices deform from a bottom-right pivot along a diagonal fold axis, with continuous normals, depth, shadow and front/back CanvasTextures.
+- Keep the same newspaper masthead and local newsprint texture, but rasterize the page into a texture so the corner curl bends the entire authored sheet rather than separate DOM panels.
+- Provide a Canvas 2D mesh fallback for environments without WebGL (including the current in-app browser), using the same corner-pivot geometry and fold shading. The page dimensions are measured before the entrance scale, and the animation timer starts only after async texture setup completes.
+
+### Rejected alternatives
+
+- Do not keep vertical CSS strips or a single `rotateY`; both read as rigid panels and cannot form a diagonal corner fold.
+- Do not load Three.js from a remote CDN; the local vendor file keeps the static Pages build deterministic and available offline.
+- Do not add a full magazine reader dependency for this home-only intro; it would introduce interaction and pagination that the brief does not require.
+
+### Verification
+
+- Cache-busted release query is `0.9.116-ui3.12.55`.
+- `npm run build:static`, `npm test` and `git diff --check` pass. The local in-app browser reports no WebGL, so the Canvas fallback was verified there; WebGL is selected automatically in capable browsers.
+
+## UI 3.12.56 — complete Three.js browser bundle (2026-09-08)
+
+Implementation commit: pending
+
+### Decision
+
+- Include Three.js' companion `three.core.min.js` beside the module in the Pages shell. Without that sibling module, capable browsers would fail the dynamic import and silently use the lower-fidelity Canvas path.
+
+### Verification
+
+- The vendored module now imports in Node (`REVISION 180`, `WebGLRenderer`, `PlaneGeometry` available), and the core file is precached by the service worker.
+- Cache-busted release query is `0.9.116-ui3.12.56`; project, core, render, Worker and diff checks remain clean.
+
+## UI 3.12.57 — bottom-right developable page curl (2026-09-08)
+
+Implementation commit: pending (local review; no publication in this turn).
+
+### Evidence and correction
+
+- The requested reference is a flexible single magazine/newspaper leaf lifted from its bottom-right corner, not a rigid book hinge or segmented shutter. Prior renderer verification was insufficient: the relative vendor import resolved under `/modules/assets`, and the texture URL was also incorrect. Both now resolve from the module with `../../assets/`.
+- Real Playwright Chromium with WebGL and service workers blocked confirms that the Three.js renderer is active. Earlier claims based on the limited browser evaluator must not be treated as proof of the active rendering path.
+- Replace per-vertex pivot rotations with an arc-length-preserving cylindrical mapping. The untouched region stays fixed; a continuous curved fold leads into the reverse face. This avoids stretching and twisting the printed page.
+- Expand the transparent rendering surface beyond the original sheet bounds; otherwise the raised leaf is visibly clipped. Keep the existing newspaper palette and typography, use curvature shading and a silhouette shadow only for physical depth.
+- Remove Home's competing editorial-column transition. Reject the software triangle fallback after visual inspection exposed seams; unsupported WebGL and reduced-motion preferences enter Home directly.
+
+### Verification
+
+- Inspect corner, middle and late frames; complete normal playback at 390, 1024 and 1440px. No page exceptions, horizontal overflow or leftover WebGL canvas after completion in these runs.
+- Verify Escape after another key, Skip, reduced motion, missing WebGL and transparent chromatic overlay. Verify the obsolete Home column overlay count is zero.
+- Add `test-page-curl.mjs` to `npm test`: finite geometry, stationary pre-turn sheet, bottom-right lift, and local horizontal/vertical arc-length preservation at three aspect ratios.
+- Local replay: `/?v=0.9.116&ui=3.12.57&intro=1`. `introFrame` is a localhost-only deterministic visual-inspection control, not production playback behavior.
+
+## UI 3.12.58 — viewport-sized cover leaf (2026-09-08)
+
+Implementation commit: pending local review.
+
+- User clarification: the opening webpage is the cover itself, not a newspaper floating in the middle of the screen. Set stage and sheet to the entire viewport at every breakpoint, remove entrance scale/fade, and keep the existing bottom-right cylindrical curl.
+- Remove the dimming backdrop once the renderer is ready so the opened area directly reveals Home. A viewport-size canvas now suffices: clipping at the browser edge is intentional, and no oversized offscreen GPU surface is needed.
+- Lay out the masthead and folio against viewport proportions, with readable mobile body text and width-fitted titles. Keep the existing editorial identity; no new external design reference.
+- Real browser checks at 390×844, 1024×768 and 1440×1000 confirm initial sheet bounds exactly equal `[0, 0, viewportWidth, viewportHeight]`, with opacity 1. Inspected opening and mid-turn screenshots; normal desktop playback reveals Home, unlocks scrolling and removes its canvas without page exceptions. Static build and full test suite passed.
+
+## UI 3.12.59 — circular corner path and rotating curl axis (2026-09-08)
+
+Implementation commit: pending local review.
+
+- Replace the fixed diagonal curl axis with a bottom-right corner constrained to a 90-degree circular arc. The corner initially travels diagonally upward/left; the displacement chord progressively becomes horizontal as it returns toward the bottom baseline, bringing the fold axis toward vertical.
+- Solve the cylindrical displacement backwards from that corner target rather than independently rotating vertices. The stationary region remains fixed and the paper remains locally isometric. Compute the frame once per render, not once per vertex.
+- Extend geometry tests to verify circle radius, exact corner position, monotonic leftward travel and progressive axis rotation. Full test suite and static build passed. Inspect three turn stages at 390, 1024 and 1440px with no page exceptions or horizontal overflow; complete playback reveals Home and removes the canvas/scroll lock.
+- Retain fullscreen cover, paper identity and local-only review. Replay URL: `/?v=0.9.116&ui=3.12.59&intro=1`.
+
+## UI 3.12.60 — visible parallel finish and paper fibres (2026-09-08)
+
+Implementation commit: pending local review.
+
+- Finish the circular segment at 74% of playback while a visible strip remains, then move the sheet horizontally with an exactly vertical curl axis through the final segment. This corrects the previous version, where the axis only finished straightening after most of the page had left the viewport.
+- Reuse the existing newsprint fibre texture on both paper faces at 42%/34% multiply strength. Size the texture in CSS pixels to retain visible fibres on mobile; grayscale its pigment in Chromatic. The texture remains attached to the page UVs, not a stationary screen overlay.
+- Extend geometry checks to assert an exactly parallel finish and a visible fold at the transition. Browser screenshots inspected at 390, 1024 and 1440px for initial material and 78% finishing frame; no page exceptions or overflow in those runs.
+- Local replay: `/?v=0.9.116&ui=3.12.60&intro=1`. No Pages publication in this turn.
+
+## UI 3.12.61 — native static typography and high-density turn (2026-09-08)
+
+Implementation commit: pending local review.
+
+- The still cover now uses native HTML text over a separate paper/rule canvas. One typesetting pass records text runs for both native spans and the GPU texture; explicit font loading, kerning and shared baselines avoid independent layout drift. The native layer hides only as the curl starts at 22%, after the GPU frame has rendered.
+- Match texture and renderer density to DPR (up to 3), bounded to eight million pixels and 8192 pixels per side. Enable up to 8× anisotropic sampling. Paper fibres retain CSS-pixel sizing and stay attached to the turning mesh.
+- Browser checks: 390px at DPR 3 renders 1170×2532; 1024px at DPR 2 renders 2048×1536; 1440px at DPR 2 renders 2880×2000. Native cover visible at 22%, hidden at 23%. Inspected native/GPU handoff screenshots; desktop text widths match within 0.06 CSS px. No page exceptions in these runs. Full mobile playback returns Home and removes both native and GPU layers.
+- Static build, full test suite and diff checks passed. Local replay: `/?v=0.9.116&ui=3.12.61&intro=1`; not published to Pages.
+
+## UI 3.12.62 — pre-redesign release checkpoint (2026-09-08)
+
+- User requested publication of the latest existing website before the newspaper redesign. Remove the visible Skip Intro control, preserve Escape and reduced-motion fallbacks, and release the already reviewed full-viewport paper curl and native static typography.
+- Implementation commit: the release commit containing this entry (subject: `Publish UI 3.12.62 before newspaper redesign`). Earlier pending intro entries are incorporated in this checkpoint; their historical text remains unchanged.
+- Exclude the standalone `design-preview/` directory, reference screenshots and research documents from this release. No approved newspaper mockup has replaced the production layout.
+- Rebuilt static snapshots; syntax, paper geometry, project, core, render and worker tests pass. Verify the resulting Pages deployment and live version after push.

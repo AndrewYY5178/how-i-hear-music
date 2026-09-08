@@ -57,7 +57,7 @@ export const bindLivingMotion = (root, path) => {
     });
     cleanups.push(() => observer.disconnect());
 
-    if (path === "/" || /^\/journal\/year\//.test(path) || path === "/taste/dna") {
+    if (/^\/journal\/year\//.test(path) || path === "/taste/dna") {
       const columns = document.createElement("div");
       columns.className = "editorial-motion-columns";
       columns.setAttribute("aria-hidden", "true");
