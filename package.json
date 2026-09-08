@@ -13,6 +13,6 @@
     "test:core": "node scripts/test-core.mjs",
     "test:render": "node scripts/test-render.mjs",
     "test:worker": "node scripts/test-worker.mjs",
-    "test": "npm run check && npm run test:core && npm run test:render && npm run test:worker"
+    "test": "node scripts/check-syntax.mjs && npm run check && npm run test:core && npm run test:render && npm run test:worker"
   }
 }

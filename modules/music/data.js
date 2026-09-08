@@ -23,10 +23,21 @@ export const accountSignedIn = () => { if (typeof window === "undefined" || type
 const announceStorageChange = (key) => {
   if (key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:cloud-sync-session:v1" && key !== "how-i-hear-music:recovery:v1" && typeof window !== "undefined" && typeof CustomEvent !== "undefined") window.dispatchEvent(new CustomEvent("how-i-hear-music:local-change", { detail: { key } }));
 };
+// Guests must never read/write a previous signed-in user's local archive.
+const guestStoragePrefix = 'him-guest-storage:';
+const physicalKey = key => accountSignedIn() ? key : guestStoragePrefix + key;
+export const scopedLocalStorage = {
+  getItem: key => localStorage.getItem(physicalKey(key)),
+  setItem: (key, value) => localStorage.setItem(physicalKey(key), value),
+  removeItem: key => localStorage.removeItem(physicalKey(key)),
+};
+export const storageKeys = () => Object.keys(localStorage)
+  .filter(key => accountSignedIn() ? !key.startsWith(guestStoragePrefix) : key.startsWith(guestStoragePrefix))
+  .map(key => accountSignedIn() ? key : key.slice(guestStoragePrefix.length));
 export const storage = {
-  get(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || ""); } catch { return fallback; } },
-  set(key, value, { recover = true } = {}) { try { const next = JSON.stringify(value); const prior = localStorage.getItem(key); if (recover && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1" && prior !== next) { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(localStorage.getItem(recoveryKey) || "[]"); } catch {} const parsed = prior === null ? null : (() => { try { return JSON.parse(prior); } catch { return prior; } })(); localStorage.setItem(recoveryKey, JSON.stringify([{ key, value: parsed, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } localStorage.setItem(key, next); if (prior !== next) announceStorageChange(key); return true; } catch { return false; } },
-  remove(key, { recover = true } = {}) { try { const prior = localStorage.getItem(key); if (recover && prior !== null && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1") { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(localStorage.getItem(recoveryKey) || "[]"); } catch {} let value = prior; try { value = JSON.parse(prior); } catch {} localStorage.setItem(recoveryKey, JSON.stringify([{ key, value, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } localStorage.removeItem(key); if (prior !== null) announceStorageChange(key); return true; } catch { return false; } },
+  get(key, fallback) { try { return JSON.parse(scopedLocalStorage.getItem(key) || ""); } catch { return fallback; } },
+  set(key, value, { recover = true } = {}) { try { const next = JSON.stringify(value); const prior = scopedLocalStorage.getItem(key); if (recover && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1" && prior !== next) { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(scopedLocalStorage.getItem(recoveryKey) || "[]"); } catch {} const parsed = prior === null ? null : (() => { try { return JSON.parse(prior); } catch { return prior; } })(); scopedLocalStorage.setItem(recoveryKey, JSON.stringify([{ key, value: parsed, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } scopedLocalStorage.setItem(key, next); if (prior !== next) announceStorageChange(key); return true; } catch { return false; } },
+  remove(key, { recover = true } = {}) { try { const prior = scopedLocalStorage.getItem(key); if (recover && prior !== null && key.startsWith("how-i-hear-music:") && key !== "how-i-hear-music:recovery:v1") { const recoveryKey = "how-i-hear-music:recovery:v1"; let snapshots = []; try { snapshots = JSON.parse(scopedLocalStorage.getItem(recoveryKey) || "[]"); } catch {} let value = prior; try { value = JSON.parse(prior); } catch {} scopedLocalStorage.setItem(recoveryKey, JSON.stringify([{ key, value, at: new Date().toISOString() }, ...snapshots].slice(0, 20))); } scopedLocalStorage.removeItem(key); if (prior !== null) announceStorageChange(key); return true; } catch { return false; } },
 };
 const guestScoreSets = [
   { song: 8.8, vocal: 9.2, production: 8.4, overall: 8.9 }, { song: 9.1, vocal: 8.7, production: 9.3, overall: 9.1 },

@@ -44,7 +44,7 @@ export const waveform = (tracks, { interactive = false, className = "" } = {}) =
 };
 
 export const summary = (tracks) => {
-  const values = tracks.map((track) => Number(track.overall)).filter(Number.isFinite);
+  const values = tracks.filter(track => track.overall !== null && track.overall !== undefined && track.overall !== '').map((track) => Number(track.overall)).filter(Number.isFinite);
   if (!values.length) return "";
   const average = values.reduce((sum, item) => sum + item, 0) / values.length;
   const variance = values.reduce((sum, item) => sum + (item - average) ** 2, 0) / values.length;

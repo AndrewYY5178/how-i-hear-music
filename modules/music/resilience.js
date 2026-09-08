@@ -1,4 +1,4 @@
-import { data, storage } from "./data.js?v=0.9.116";
+import { data, storage, scopedLocalStorage as localStorage, storageKeys } from "./data.js?v=0.9.116";
 import { accountNicknamePrefix } from "./account.js";
 
 export const backupFormat = "how-i-hear-music-backup";
@@ -18,7 +18,7 @@ const fixedKeys = [
   "how-i-hear-music:playlist-snapshots:v1", "how-i-hear-music:metadata-overrides:v1",
   "how-i-hear-music:album-notes:v1",
 ];
-export const backupKeys = () => [...new Set([...fixedKeys, ...Object.keys(localStorage).filter((key) => key.startsWith("how-i-hear-music:album-draft:") || key.startsWith(accountNicknamePrefix))])];
+export const backupKeys = () => [...new Set([...fixedKeys, ...storageKeys().filter((key) => key.startsWith("how-i-hear-music:album-draft:") || key.startsWith(accountNicknamePrefix))])];
 const identity = (item) => item?.id || `${item?.title || ""}::${item?.artist || ""}::${item?.at || ""}` || JSON.stringify(item);
 const mergeArrays = (current, incoming) => { const result = [...current]; const seen = new Set(current.map(identity)); incoming.forEach((item) => { const id = identity(item); if (!seen.has(id)) { seen.add(id); result.push(item); } }); return result; };
 const compatibleEntries = (payload) => { const allowed = new Set(fixedKeys); return Object.entries(payload?.data || {}).filter(([key]) => allowed.has(key) || key.startsWith("how-i-hear-music:album-draft:") || key.startsWith(accountNicknamePrefix)); };
@@ -79,7 +79,7 @@ export const restoreRecoverySnapshot = (index) => {
   return snapshot;
 };
 export const dataHealth = () => {
-  const bytes = Object.keys(localStorage).reduce((sum, key) => sum + key.length + String(localStorage.getItem(key) || "").length, 0) * 2;
+  const bytes = storageKeys().reduce((sum, key) => sum + key.length + String(localStorage.getItem(key) || "").length, 0) * 2;
   const reminder = storage.get(backupReminderKey, {}); const last = reminder.lastBackupAt ? new Date(reminder.lastBackupAt) : null; const days = last && Number.isFinite(last.valueOf()) ? Math.floor((Date.now() - last) / 86400000) : null;
   return { bytes, kilobytes: Math.round(bytes / 1024), groups: backupKeys().filter((key) => localStorage.getItem(key) !== null).length, recoveryCount: recoverySnapshots().length, lastBackupAt: last, backupDue: days === null || days >= 30 };
 };

@@ -1,4 +1,5 @@
 import { link, renderShell, setDocumentTitle } from "./modules/layout/shell.js?v=0.9.116";
+import { compilationsPage, bindCompilations } from './modules/archive/compilations.js';
 import { withBase, withoutBase } from "./modules/layout/paths.js";
 import { bindHome, home } from "./modules/home.js?ui=3.12.44";
 import { archiveAlbumCompare, archiveAlbumDetail, archiveAlbums, archiveArtistDetail, archiveArtists, archiveCoverage, archiveHome, archiveTrackDetail, archiveTracks, bindArchive } from "./modules/archive/pages.js?ui=3.12.44";
@@ -21,6 +22,7 @@ const route = (path) => {
   if (current === "/archive") return archiveHome();
   if (current === "/archive/tracks") return archiveTracks();
   if (current === "/archive/albums") return archiveAlbums();
+  if (current === "/archive/compilations") return compilationsPage();
   if (current === "/archive/compare/albums") return archiveAlbumCompare();
   if (current === "/archive/artists") return archiveArtists();
   if (current === "/archive/coverage") return archiveCoverage();
@@ -76,6 +78,7 @@ const render = () => {
   const description = `${pageTitle} — personal listening evidence in How I Hear Music.`; const publicUrl = new URL(withBase(path), "https://andrewyy5178.github.io").href; document.querySelector('link[rel="canonical"]')?.setAttribute("href", publicUrl); document.querySelector('meta[property="og:url"]')?.setAttribute("content", publicUrl); document.querySelector('meta[property="og:title"]')?.setAttribute("content", pageTitle); document.querySelector('meta[property="og:description"]')?.setAttribute("content", description); document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", pageTitle); document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", description); document.querySelector('meta[name="description"]')?.setAttribute("content", description);
   app.focus({ preventScroll: true });
   bindArchive(path, navigate);
+  bindCompilations();
   bindRating(path, navigate);
   bindImport(path, navigate);
   bindJournal(path, navigate);

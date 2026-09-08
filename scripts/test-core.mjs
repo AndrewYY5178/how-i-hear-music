@@ -46,6 +46,10 @@ assert.equal(formatTranslatedText('Begin with one listening decision.', { target
 assert.equal(formatTranslatedText('Begin with one listening decision.', { target: 'zh-CN' }), '先听，再作出判断。');
 assert.equal(formatTranslatedText('Taste over time.', { target: 'zh-CN', heading: true }), '一路听来，什么变了？');
 assert.equal(translateText('Rate', 'en'), 'Rate');
+assert.equal(translateText('Custom compilation', 'zh-CN'), '自制专辑');
+assert.equal(translateText('Cover studio', 'zh-CN'), '封面工作室');
+assert.equal(translateText('Move Demo track up', 'zh-CN'), '上移 Demo track');
+assert.doesNotMatch(await readFile(new URL('../modules/archive/compilations.js', import.meta.url), 'utf8'), /[\u4e00-\u9fff]/, 'Compilation UI source must stay English-translatable');
 
 const dominantPixels = new Uint8ClampedArray([
   210, 42, 38, 255, 208, 44, 40, 255, 29, 120, 180, 255,
@@ -139,4 +143,25 @@ storage.set('how-i-hear-music:test-value', { version: 2 });
 storage.remove('how-i-hear-music:test-value');
 assert.equal(recoverySnapshots().some((snapshot) => snapshot.key === 'how-i-hear-music:test-value' && snapshot.value?.version === 2), true);
 
-console.log('Core data checks passed: rating identity, automatic collection, field provenance, album persistence, restore rollback, encryption and evidence gates.');
+// Browser guest boundaries must also protect legacy consumers and raw restore operations.
+const { scopedLocalStorage } = await import('../modules/music/data.js');
+const savedDocument=globalThis.document;
+globalThis.window=globalThis;
+globalThis.document={createElement(){return {};}};
+localStorage.removeItem('how-i-hear-music:cloud-sync-session:v1');
+const personalKey='how-i-hear-music:journal:v1';
+const originalPrivate=JSON.stringify([{id:'private',note:'PRIVATE_SENTINEL'}]);
+localStorage.setItem(personalKey,originalPrivate);
+assert.deepEqual(storage.get(personalKey,[]),[]);
+storage.set(personalKey,[{id:'guest',note:'GUEST_ONLY'}]);
+assert.equal(localStorage.getItem(personalKey),originalPrivate);
+assert.equal(JSON.stringify(exportBackup()).includes('PRIVATE_SENTINEL'),false);
+assert.equal(JSON.parse(scopedLocalStorage.getItem(personalKey))[0].id,'guest');
+localStorage.setItem('how-i-hear-music:cloud-sync-session:v1',JSON.stringify({token:'test',user:{id:'fixture'}}));
+assert.equal(storage.get(personalKey,[])[0].id,'private');
+globalThis.document=savedDocument;
+const { summary: scoreSummary }=await import('../modules/rating/visuals.js');
+assert.equal(scoreSummary([{overall:null},{overall:''}]),'');
+assert.match(scoreSummary([{overall:null},{overall:8}]),/AVERAGE<\/dt><dd>8<\/dd>/);
+assert.match(scoreSummary([{overall:0},{overall:8}]),/AVERAGE<\/dt><dd>4<\/dd>/);
+console.log('Core data checks passed: rating identity, automatic collection, field provenance, album persistence, restore rollback, encryption, guest isolation and missing-score semantics.');

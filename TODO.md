@@ -4,17 +4,24 @@ This file records planned work that is not complete yet. The current site is a p
 
 ## 2026-09-08 audit and approval boundary
 
+- [x] 用户已批准开始实现自制专辑与封面工作室；本地首版具备选曲、排序、草稿、模板封面和上传。历史「待审核」标记由本条批准状态取代。
+- [ ] 完成自由图层、封面取图/三色提取、移动端分步、备份与云同步及完整验收后再发布新增功能。
+
 - [x] Review 12 guest routes at 390 / 1024 / 1440px with reduced motion: all render their expected heading without horizontal overflow. This is layout coverage, not a claim of exhaustive interaction coverage.
 - [x] Inspect actual Home screenshots in Paper and Chromatic: irregular grain is visible; retain a quieter neutral grain in Chromatic.
 - [x] Raise Archive Search, language toggle, track filters and Sonic Map redraw touch targets to 44px minimum.
+- [x] 深度回归 390 / 1024 / 1440px：26 个路由均可渲染，无横向溢出或页面异常；导航、Home PREV/NEXT、Archive 搜索、评分保存、QQ 非法输入提示、Sonic Map 重绘、自制专辑入口和两套主题均完成隔离浏览器交互检查。
+- [x] 修复游客存储边界：退出登录后不再读取或覆盖账户的评分、Inbox、Journal、备份和恢复数据；未评分专辑曲目不再被 `Number(null)` 错判为 0 分。
+- [x] 为自制专辑加入静态 Pages 快照与 Service Worker 资源缓存，避免直接访问新路由时落入空白/离线缺模块。
+- [x] 全站英文界面审计：自制专辑、封面工作室、Archive 分区导航及动态错误/状态文案均改为英文源文案，并补齐中文翻译键；仅保留艺人和作品名等真实资料的中文。
 - [ ] Finish authenticated Data Desk local-cover upload/preview/persistence/reset browser tests; do not mistake the relocated controls for missing album-detail controls.
 - [ ] Finish external cover-CDN failure injection and remaining authenticated end-to-end checks. Earlier historical checkboxes below do not certify these current checks.
 - [ ] Consolidate legacy CSS media-query overrides with visual equivalence tests; not completed by the touch-target fix.
 - [ ] Complete missing canonical metadata only from confirmed source evidence; never infer release IDs or personal ratings.
 - [ ] Owned-domain email delivery: deferred until an owned domain is available, as previously requested.
 - [ ] macOS standalone packaging: explicitly deferred by the user on 2026-09-08; excluded from this delivery.
-- [ ] Custom albums / personal compilations: **design awaiting user approval; do not implement or publish the feature yet**. Place within Archive → Albums; preserve five primary modules. See `CUSTOM_ALBUM_PLAN.md`.
-- [ ] 自制专辑封面编辑器（待审核）：在编排页点击封面进入，提供拼贴模板、轻量自由排版、整图上传；支持图片裁切/移动/缩放、标题文字、背景配色、撤销重做和草稿恢复。保存可编辑设计与成品封面，沿用五模块结构。具体范围见 `CUSTOM_ALBUM_PLAN.md`「封面自主设计」。
+- [x] Custom albums / personal compilations v1: approved and implemented locally under Archive → Albums with track selection, ordering, drafts and template covers. See `CUSTOM_ALBUM_PLAN.md`.
+- [ ] 自制专辑封面编辑器增强：自由图层、图片移动/缩放、取图/三色提取、移动端分步、备份与云同步仍待实现；当前模板编辑、上传、撤销重做和草稿恢复已可用。
 
 Historical entries below are retained as history; the audit above is the current scope, not a declaration that every historical task is finished.
 

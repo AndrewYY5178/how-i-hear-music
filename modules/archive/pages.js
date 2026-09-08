@@ -18,7 +18,7 @@ import { bindCoverPalette, bindCoverTones, fallbackCoverPalette, fallbackCoverTo
 import { bindAlbumWaveCanvas } from "../layout/album-wave-canvas.js?ui=3.12.44";
 import { coverSourcesFor } from "../music/cover-maintenance.js";
 
-const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"]]);
+const archiveNav = () => secondaryNav([["/archive/tracks", "Tracks"], ["/archive/albums", "Albums"], ["/archive/artists", "Artists"], ["/archive/compilations", "Custom albums"]]);
 const archiveHomeNav = () => { const raw = new URLSearchParams(location.search).get("q") || ""; return `<div class="archive-index-nav archive-index-actions"><form class="archive-search-inline" aria-label="Search the record"><label class="sr-only" for="global-search-query">SEARCH THE RECORD</label><input id="global-search-query" name="q" type="search" value="${safe(raw)}" aria-label="Search the record"><button class="archive-search-trigger mono" id="archive-search-trigger" type="submit">SEARCH</button></form></div>`; };
 const sleeveDepth = `<span class="record-sleeve-back"></span><span class="record-sleeve-edge record-sleeve-edge-right"></span><span class="record-sleeve-edge record-sleeve-edge-left"></span><span class="record-sleeve-edge record-sleeve-edge-top"></span><span class="record-sleeve-edge record-sleeve-edge-bottom"></span>`;
 const tracksForArtist = (artistId) => allTracks().filter((track) => track.artistId === artistId);
