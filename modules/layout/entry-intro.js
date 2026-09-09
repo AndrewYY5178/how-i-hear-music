@@ -1,4 +1,5 @@
 import { curlPoint, pageCurlFrame } from "./page-curl.js";
+import { archiveVisibleAlbums } from '../music/data.js';
 const INTRO_SESSION_KEY = "how-i-hear-music:entry-intro:v2";
 const INTRO_DURATION = 4200;
 const STRIP_COUNT = 24;
@@ -56,13 +57,17 @@ const clearIntro = (intro, { remember = true } = {}) => {
   window.clearTimeout(intro._entryIntroTimer);
   cancelAnimation(intro);
   intro._entryIntroEvents?.abort();
+  intro._coverCamera?.cancel(); intro._coverMask?.cancel();
   disposeWebGL(intro);
   disposeCanvas(intro);
   intro.querySelector(".entry-intro-native")?.remove();
+  intro.querySelector('[data-open-cover]')?.remove();
+  delete intro.dataset.coverState;
   intro.classList.remove("is-active", "is-finishing");
   intro.hidden = true;
   intro.setAttribute("aria-hidden", "true");
   document.body.classList.remove("entry-intro-lock");
+  for (const id of ['app','site-header','site-footer']) { const node = document.getElementById(id); if (node) node.inert = false; }
   document.body.removeAttribute("data-entry-intro");
   if (remember) writeSessionFlag();
 };
@@ -239,59 +244,83 @@ const drawPaperCanvas = async (sourceFront, width, height, reverse = false) => {
       metrics: context.measureText(text) });
   };
 
-  const scale = canvas.width / 1024;
   const pixel = canvas.width / width;
-  const x = 56 * scale;
-  let titleSize = Math.min(canvas.width * 0.12, canvas.height * 0.18);
-  const kicker = sourceFront.querySelector(".entry-intro-kicker")?.textContent.trim() || "THE LISTENING EDITION · ISSUE 001";
-  const titleTop = sourceFront.querySelector(".entry-intro-masthead span")?.textContent.trim() || "HOW I";
-  const titleBottom = sourceFront.querySelector(".entry-intro-masthead strong")?.textContent.trim() || "HEAR MUSIC";
-  const lead = sourceFront.querySelector(".entry-intro-lead")?.textContent.trim() || "A personal archive of records, shapes and the reasons a song stays alive.";
-  const folio = sourceFront.querySelector(".entry-intro-folio")?.textContent.trim() || "ANDDREAM / PRIVATE LISTENING ARCHIVE";
-
-  context.strokeStyle = ink;
-  context.lineWidth = 2 * scale;
-  context.strokeRect(1 * scale, 1 * scale, canvas.width - 2 * scale, canvas.height - 2 * scale);
-  context.fillStyle = red;
-  context.font = `${Math.max(10 * pixel, 10 * scale)}px "DM Mono", monospace`;
-  context.fillText(kicker, x, canvas.height * 0.07, canvas.width - 2 * x);
-  context.fillStyle = ink;
-  context.font = `${titleSize}px "Libre Baskerville", Georgia, serif`;
-  titleSize *= Math.min(1, (canvas.width - 2 * x) / context.measureText(titleBottom).width);
-  context.font = `italic ${Math.round(titleSize)}px "Libre Baskerville", Georgia, serif`;
-  context.fillText(titleTop, x, canvas.height * 0.30);
-  context.font = `${Math.round(titleSize)}px "Libre Baskerville", Georgia, serif`;
-  context.fillText(titleBottom, x, canvas.height * 0.30 + titleSize * 1.16);
-  const ruleY = canvas.height * 0.30 + titleSize * 1.55;
-  context.beginPath();
-  context.moveTo(x, ruleY);
-  context.lineTo(canvas.width - x, ruleY);
-  context.stroke();
-
-  context.fillStyle = muted;
-  const leadSize = Math.max(16 * pixel, 20 * scale);
-  context.font = `italic ${leadSize}px "Libre Baskerville", Georgia, serif`;
-  drawWrapped(context, lead, x, ruleY + leadSize * 2, Math.min(canvas.width - 2 * x, 640 * pixel), leadSize * 1.45);
-
-  context.strokeStyle = rootStyle.getPropertyValue("--line").trim() || "#969696";
-  context.lineWidth = 1 * scale;
-  const columnsTop = canvas.height * 0.78;
-  const columns = [
-    [x, 146 * scale],
-    [320 * scale, 188 * scale],
-    [560 * scale, 112 * scale],
-    [760 * scale, 165 * scale],
-  ];
-  columns.forEach(([left, length]) => {
-    context.beginPath(); context.moveTo(left, columnsTop); context.lineTo(left + length, columnsTop); context.stroke();
-    context.beginPath(); context.moveTo(left, columnsTop + canvas.height * 0.09); context.lineTo(left + length, columnsTop + canvas.height * 0.09); context.stroke();
+  const x = (width < 760 ? 16 : 32) * pixel;
+  const usable = canvas.width - 2*x;
+  const chinese = document.documentElement.lang === 'zh-CN';
+  const narrow = width < 760;
+  const gap = (narrow ? 16 : 32)*pixel;
+  // Match the approved stacked, ink-only masthead. Measure the bold face,
+  // rather than compressing the final text or clipping it behind a mask.
+  let titleSize = Math.min(usable*.265, canvas.height*(narrow?.105:.14));
+  context.font = `bold ${titleSize}px "Libre Baskerville",Georgia,serif`;
+  titleSize *= Math.min(1, usable / Math.max(...['HOW I','HEAR','MUSIC'].map(t=>context.measureText(t).width)));
+  context.font = `bold ${titleSize}px "Libre Baskerville",Georgia,serif`;
+  context.fillStyle=ink;
+  const titleTop=24*pixel+titleSize*.82;
+  ['HOW I','HEAR','MUSIC'].forEach((line,i)=>context.fillText(line,x,titleTop+i*titleSize*.98));
+  const ruleY=titleTop+titleSize*2.16;
+  context.strokeStyle=ink;context.lineWidth=pixel;
+  context.beginPath();context.moveTo(x,ruleY);context.lineTo(canvas.width-x,ruleY);context.stroke();
+  const top=ruleY+24*pixel;
+  const bottom=canvas.height-24*pixel;
+  const col=(usable-gap*(narrow?1:2))/(narrow?2:3);
+  const album=archiveVisibleAlbums()[0];
+  const artSize=Math.min(col,(bottom-top)*(narrow?.44:.64));
+  if(album?.coverUrl) {
+    const img=new Image();img.crossOrigin='anonymous';img.referrerPolicy='no-referrer';
+    const loaded=await new Promise(resolve=>{const timer=setTimeout(()=>resolve(false),3000);img.onload=()=>{clearTimeout(timer);resolve(true)};img.onerror=()=>{clearTimeout(timer);resolve(false)};img.src=album.coverUrl;});
+    if(loaded)context.drawImage(img,x,top,artSize,artSize);
+    else {context.strokeRect(x,top,artSize,artSize);}
+  }
+  const heading=(narrow?17:Math.min(30,width*.028))*pixel;
+  const body=(narrow?13:Math.min(22,width*.019))*pixel;
+  context.font=`bold ${heading}px "Libre Baskerville",Georgia,serif`;
+  drawWrapped(context,album?.title||'Your listening archive.',x,top+artSize+heading*1.3,col,heading*1.25);
+  context.font=`${body*.8}px "Libre Baskerville",Georgia,serif`;
+  context.fillText(album?.artist||'',x,top+artSize+heading*3,col);
+  const middle=x+col+gap;
+  context.font=`bold ${heading}px "Libre Baskerville",Georgia,serif`;
+  drawWrapped(context,chinese?'最后一个音符之后，什么留了下来？':'What stays after the last note?',middle,top+heading,col,heading*1.15);
+  const paragraphY=top+heading*3.7;
+  if(chinese) {
+    context.font=`${body}px "Libre Baskerville",Georgia,serif`;
+    drawWrapped(context,'音乐是我们反复回到的地方。一张唱片，一种形状，一个继续聆听的理由。这里收藏着属于你的聆听记忆。',middle,paragraphY,col,body*1.45);
+  } else {
+    const dropSize=body*3;
+    context.font=`${dropSize}px "Libre Baskerville",Georgia,serif`;
+    const inset=context.measureText('M').width+body*.2;
+    context.fillStyle=red;context.fillText('M',middle,paragraphY+body*1.4);
+    context.fillStyle=ink;context.font=`${body}px "Libre Baskerville",Georgia,serif`;
+    const words='usic is a place we return to. A record, a shape, a reason to keep listening. This is a personal listening archive.'.split(' ');
+    let line='', row=0;
+    const paint=()=>{context.fillText(line,middle+(row<2?inset:0),paragraphY+row*body*1.45);row++;line='';};
+    for(const word of words) {
+      const next=line?line+' '+word:word;
+      if(line&&context.measureText(next).width>col-(row<2?inset:0))paint();
+      line=line?line+' '+word:word;
+    }
+    if(line)paint();
+  }
+  const indexX=narrow?x:x+2*(col+gap);
+  const indexY=narrow?Math.max(top+artSize+heading*4,bottom-184*pixel):top;
+  const indexWidth=narrow?usable:col;
+  context.font=`bold ${heading}px "Libre Baskerville",Georgia,serif`;
+  context.fillText(chinese?'本期目录':'In this edition.',indexX,indexY+heading);
+  const row=Math.max(18*pixel,Math.min(64*pixel,(bottom-indexY-heading*2)/5));
+  (chinese?['首页','档案','评分','审美','导入']:['HOME','ARCHIVE','RATE','TASTE','IMPORT']).forEach((name,i)=>{
+    const y=indexY+heading*2+(i+.6)*row;
+    context.font=`${body*.8}px "Libre Baskerville",Georgia,serif`;
+    context.fillText('0'+(i+1),indexX,y);
+    context.font=`${body}px "Libre Baskerville",Georgia,serif`;
+    context.fillText(name,indexX+indexWidth*.22,y);
+    context.strokeStyle=muted;context.lineWidth=pixel*.5;
+    context.beginPath();context.moveTo(indexX,y+row*.3);context.lineTo(indexX+indexWidth,y+row*.3);context.stroke();
   });
-
-  context.fillStyle = muted;
-  context.font = `${Math.max(9 * pixel, 10 * scale)}px "DM Mono", monospace`;
-  context.textAlign = "left";
-  context.fillText(folio, x, canvas.height * 0.92, canvas.width - 2 * x);
-  context.textAlign = "left";
+  context.strokeStyle=muted;context.lineWidth=pixel*.5;
+  [middle-gap/2,...(narrow?[]:[indexX-gap/2])].forEach(left=>{
+    context.beginPath();context.moveTo(left,top);context.lineTo(left,narrow?indexY-16*pixel:bottom);context.stroke();
+  });
   const native = document.createElement("div");
   native.className = "entry-intro-native";
   const material = document.createElement("canvas");
@@ -603,16 +632,21 @@ export const bindEntryIntro = (path) => {
   if (intro.classList.contains("is-active")) return;
 
   intro.hidden = false;
+  intro.dataset.coverState='preparing';intro.style.background='#111';
   intro.setAttribute("aria-hidden", "false");
   document.body.classList.add("entry-intro-lock");
+  for (const id of ['app','site-header','site-footer']) { const node = document.getElementById(id); if (node) node.inert = true; }
   document.body.dataset.entryIntro = "active";
   intro._entryIntroDuration = readIntroDuration();
-  bindSkip(intro);
 
   const begin = () => {
     if (intro.hidden || intro.classList.contains("is-finishing")) { disposeWebGL(intro); disposeCanvas(intro); return; }
     intro.classList.add("is-active");
-    intro._entryIntroStart = performance.now();
+    intro.querySelector('[data-open-cover]')?.remove();
+    intro.dataset.coverState = 'turning';
+    intro.style.background='transparent';
+    const stage=intro.querySelector('.entry-intro-stage'); if(stage)stage.style.clipPath='none';
+    intro._entryIntroStart = performance.now() - getIntroDuration(intro) * .22;
     animateIntro(intro, intro._entryIntroStart);
     // Start the safety timer with the visual animation, not with the async
     // texture/renderer setup. Slow font or image loading must not shorten the
@@ -621,7 +655,44 @@ export const bindEntryIntro = (path) => {
       intro._entryIntroTimer = window.setTimeout(() => finishIntro(intro), getIntroDuration(intro) + 160);
   };
 
-  makeWebGLSheet(intro).then(begin).catch((error) => {
+  makeWebGLSheet(intro).then(() => {
+    if (intro.hidden) return;
+    intro.classList.add('is-active');
+    intro.dataset.coverState = 'waiting';
+    renderWebGLSheet(intro, 0);
+    const sheet = intro.querySelector('[data-entry-intro-sheet]');
+    const stage = intro.querySelector('.entry-intro-stage');
+    intro.dataset.coverState = 'camera';
+    intro.setAttribute('role','button'); intro.tabIndex=0;
+    intro.setAttribute('aria-label',document.documentElement.lang==='zh-CN'?'翻开报纸，进入首页':'Open newspaper and enter Home');
+    intro.style.background='#111';
+    intro._coverCamera=sheet.animate([
+      {transform:'translate(-50%, -22%) scale(1)',transformOrigin:'50% 22%',offset:0},
+      {transform:'translate(-50%, -22%) scale(1)',transformOrigin:'50% 22%',offset:.18},
+      {transform:'translate(-50%, -76%) scale(1)',transformOrigin:'50% 76%',offset:.72},
+      {transform:'translate(-50%, -50%) scale(1)',transformOrigin:'50% 50%',offset:1}
+    ],{duration:3600,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+    intro._coverMask=stage.animate([{clipPath:'inset(25% 0 25% 0)'},{clipPath:'inset(25% 0 25% 0)',offset:.72},{clipPath:'inset(0)'}],{duration:3600,easing:'ease-in-out',fill:'forwards'});
+    intro._coverCamera.finished.then(()=>{if(!intro.hidden&&intro.dataset.coverState==='camera'){intro.dataset.coverState='waiting';intro.focus({preventScroll:true});}}).catch(()=>{});
+    const signal=intro._entryIntroEvents.signal;
+    const open=()=>{if(intro.dataset.coverState!=='waiting')return;intro._coverCamera.cancel();intro._coverMask.cancel();begin();};
+    intro.addEventListener('click',open,{signal});
+    intro.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open();}},{signal});
+    intro.addEventListener('pointermove',event=>{
+      if(intro.dataset.coverState!=='waiting'||event.pointerType==='touch')return;
+      const w=intro._entryIntroWebGL;if(!w)return;
+      const targetY=w.height/2-event.clientY;
+      const positions=w.geometry.attributes.position.array, shadow=w.shadow.geometry.attributes.position.array;
+      for(let i=0;i<positions.length;i+=3){const x=w.basePositions[i],y=w.basePositions[i+1];const edge=Math.max(0,(x-w.width*.34)/(w.width*.16));const lift=edge*edge*Math.exp(-(((y-targetY)/(w.height*.16))**2))*28;
+        positions[i]=x-lift*.35;positions[i+1]=y;positions[i+2]=lift;
+        shadow[i]=positions[i]+lift*.2;shadow[i+1]=y-lift*.18;shadow[i+2]=-1;
+      }
+      w.geometry.attributes.position.needsUpdate=true;w.shadow.geometry.attributes.position.needsUpdate=true;
+      const native=intro.querySelector('.entry-intro-native');if(native)native.style.clipPath=`inset(0 ${w.width*.16}px 0 0)`;
+      w.renderer.render(w.scene,w.camera);
+    },{signal});
+    intro.addEventListener('pointerleave',()=>{if(intro.dataset.coverState==='waiting'){renderWebGLSheet(intro,0);const native=intro.querySelector('.entry-intro-native');if(native)native.style.clipPath='none';}},{signal});
+  }).catch((error) => {
     disposeWebGL(intro);
     intro.dataset.rendererFallback = error.message;
     // A clean entrance is preferable to a visibly seamed software mesh.

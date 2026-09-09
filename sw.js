@@ -1,6 +1,10 @@
 const cachePrefix = "how-i-hear-music-shell-";
-const cacheName = "how-i-hear-music-shell-0.9.116-ui3.12.62";
+const cacheName = "how-i-hear-music-shell-0.9.116-newspaper-6";
 const shell = [
+  "newspaper.css?v=newspaper-6", "app.js?v=0.9.116-newspaper-6",
+  "newspaper.css?v=newspaper-3", "app.js?v=0.9.116-newspaper-3",
+  "styles.css?v=0.9.116-newspaper-monochrome-1",
+  "newspaper.css", "newspaper.css?v=newspaper-1", "modules/layout/chapter-turn.js",
   "assets/textures/newsprint-fibres-v1.png",
   "", "index.html", "base.js", "styles.css", "styles.css?v=0.9.116-ui3.12.62", "app.js", "favicon.png", "og-image.svg",
   "data/music-profile.json", "data/artists.json", "data/songs.json", "data/library.json", "data/catalog.json",

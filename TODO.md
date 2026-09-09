@@ -2,6 +2,17 @@
 
 This file records planned work that is not complete yet. The current site is a personal archive, an interactive rating prototype and a playlist-import inbox prototype.
 
+## 2026-09-09 newspaper redesign feedback — current design plan
+
+- [x] Record the user's seven design requirements and unresolved decisions in `NEWSPAPER_REDESIGN_PLAN.md`. Existing prototype layout direction is approved, not every interaction.
+- [ ] Select and proof Chinese fonts; write contextual Chinese copy and a bilingual terminology list.
+- [ ] Implement continuous, directional chapter turns with sheet count matching crossed primary modules, bounded duration and configurable subtle paper audio.
+- [ ] Prototype confirmed titles: Home keeps THE LISTENING ROOM; cover keeps HOW I / HEAR MUSIC two-tone treatment; cutout means paper-colored solid lettering inside a black block, not outlines.
+- [ ] Produce controlled with/without decorative micro-label A/B views; do not delete necessary form, score or state labels.
+- [ ] Retain physical record thickness/shadows, vinyl motion, ink drawing, animated curves, palette spread and scrolling paper fibres.
+- [ ] Review and select marquee / overlapping paper-note patterns from `design-toolbox/README.md`; do not apply every reference effect everywhere.
+- [ ] Resolve questions Q01–Q11 before implementing the disputed details. This round does not modify or republish the live site.
+
 ## 2026-09-08 audit and approval boundary
 
 - [x] 用户已批准开始实现自制专辑与封面工作室；本地首版具备选曲、排序、草稿、模板封面和上传。历史「待审核」标记由本条批准状态取代。

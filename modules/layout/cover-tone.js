@@ -222,6 +222,15 @@ const showCoverFallback = (image) => {
 const bindCoverImage = (image) => {
   if (image.dataset.coverBound === "true") return;
   image.dataset.coverBound = "true";
+  const frame = image.closest('.sample-album>div, .album-card-cover');
+  const loading = frame ? document.createElement('span') : null;
+  if (loading) {
+    loading.className = 'sample-art-loading';
+    loading.textContent = document.documentElement.lang === 'zh-CN' ? '正在加载封面…' : 'Loading artwork…';
+    frame.append(loading);
+    image.addEventListener('load', () => loading.remove(), { once:true });
+    if (image.complete && image.naturalWidth) loading.remove();
+  }
   const handleError = () => {
     const alternate = image.dataset.coverFallbackSource;
     if (alternate && image.src !== new URL(alternate, location.href).href) {
@@ -235,6 +244,7 @@ const bindCoverImage = (image) => {
       return;
     }
     showCoverFallback(image);
+    loading?.remove();
   };
   image.addEventListener("error", handleError);
   if (image.complete && !image.naturalWidth) handleError();

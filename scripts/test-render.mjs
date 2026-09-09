@@ -41,7 +41,7 @@ const renders = [
 for (const [name, render] of renders) {
   const html = render();
   assert.equal(typeof html, 'string', `${name} did not return markup`);
-  assert.match(html, /<h1>|page-head/, `${name} lacks a page heading`);
+  assert.match(html, /<h1(?:\s[^>]*)?>|page-head/, `${name} lacks a page heading`);
   assert.equal(html.includes('undefined'), false, `${name} exposed undefined`);
 }
 assert.match(rating.rateTrack('missing-track'), /Track not found/);
@@ -90,7 +90,9 @@ assert.match(archiveHome, /class="archive-search"/);
 assert.match(archiveHome, /SEARCH THE RECORD/);
 assert.match(archiveHome, /id="archive-search-trigger"/);
 assert.match(archiveHome, /id="archive-search-panel"[^>]+ hidden/);
-assert.equal((archiveHome.match(/class="archive-gate-link"/g) || []).length, 3);
+assert.match(archiveHome, /class="sample-directory"/);
+assert.match(archiveHome, /Albums in view\./);
+assert.equal((archiveHome.match(/<h2>(Tracks|Albums|Artists)<\/h2>/g) || []).length, 3);
 assert.doesNotMatch(archiveHome, /Enter →/);
 location.search = '?q=Tattooed';
 const searchMarkup = search.archiveSearch();
@@ -185,7 +187,10 @@ assert.doesNotMatch(shellSource, /data-mobile-more|mobile-more-panel/);
 const importHomeMarkup = imports.importHome();
 const importQQMarkup = imports.importQQ();
 assert.match(importHomeMarkup, /class="secondary-nav"[\s\S]*?>Import<\/a>[\s\S]*?>Inbox<\/a>[\s\S]*?>Data Desk<\/a>/);
-assert.match(importHomeMarkup, /<span class="mono">QQ MUSIC<\/span>/);
+assert.match(importHomeMarkup, /<h2>QQ Music<\/h2>/);
+assert.match(importHomeMarkup, /One work or a whole sequence\./);
+assert.match(importHomeMarkup, /import\/qq\?mode=track/);
+assert.match(importHomeMarkup, /Keep the desk in order\./);
 assert.match(importQQMarkup, /01 \/ QQ MUSIC/);
 assert.doesNotMatch(importQQMarkup, /QQ MUSIC SMART IMPORT/);
 assert.match(imports.importData(), /id="reextract-all-cover-palettes"/);

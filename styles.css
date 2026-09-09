@@ -1336,7 +1336,7 @@ html[data-theme="chromatic"] {
   --muted:#606060;
   --line:#969696;
   --olive:#505050;
-  --red:#ed1675;
+  --red:#202020;
   --page:var(--paper);
 }
 html[data-theme="chromatic"] body::before { opacity:.085; }
@@ -1368,11 +1368,11 @@ html[data-theme="chromatic"] body[data-module="taste"] { --page:#eeeeee; }
 html[data-theme="chromatic"] body[data-module="import"] { --page:#e2e2e2; }
 html[data-theme="chromatic"] body[data-module="journal"] { --page:#e6e6e6; }
 html[data-theme="chromatic"] body[data-module="rate"] {
-  --page:#555555;
-  --ink:#f2f2f2;
-  --muted:#d2d2d2;
-  --line:rgba(242,242,242,.32);
-  --red:#ff2d8b;
+  --page:#dedede;
+  --ink:#202020;
+  --muted:#606060;
+  --line:#969696;
+  --red:#202020;
   --paper-light:#e2e2e2;
   --olive:#555555;
   color:var(--ink);
@@ -1394,7 +1394,7 @@ html[data-theme="chromatic"] .track-card,
 html[data-theme="chromatic"] .good-not-mine article,
 html[data-theme="chromatic"] .featured-shape-visual { background:var(--paper-light); }
 html[data-theme="chromatic"] body[data-module="rate"] .button.primary,
-html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active { color:#202020; }
+html[data-theme="chromatic"] body[data-module="rate"] .tag-picker button.active { color:#ffffff; }
 
 /* UI 3.11.46 — make every visible listening score read like a result, not metadata. */
 .feature-score b,
@@ -1458,7 +1458,7 @@ html[data-theme="chromatic"] body[data-module="journal"] {
   background:linear-gradient(120deg,#e6e6e6 0%,#d8d8d8 46%,#eeeeee 100%);
 }
 html[data-theme="chromatic"] body[data-module="rate"] {
-  background:linear-gradient(138deg,#555555 0%,#666666 48%,#484848 100%);
+  background:linear-gradient(138deg,#dedede 0%,#e8e8e8 48%,#d4d4d4 100%);
 }
 
 /* UI 3.12.3 — let the Home Featured Landscape keep breathing after its ink draw. */
@@ -2327,6 +2327,11 @@ html[data-theme="paper"] body::before {
 
 /* Neutral background only: retain pink accents and original-color artwork. */
 html[data-theme="chromatic"] body::before {
-  background:none;
-  opacity:0;
+  background-image:url("./assets/textures/newsprint-fibres-v1.png");
+  background-size:768px 768px;
+  background-repeat:repeat;
+  background-attachment:scroll;
+  filter:grayscale(1);
+  opacity:.36;
+  mix-blend-mode:multiply;
 }

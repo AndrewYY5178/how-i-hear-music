@@ -14,8 +14,10 @@ import { bindSearch } from "./modules/search/pages.js?ui=3.12.44";
 import { applyLanguage, bindLanguageToggle, observeLanguage } from "./modules/layout/i18n.js?v=0.9.116";
 import { bindLivingMotion } from "./modules/layout/motion.js?ui=3.12.44";
 import { bindEntryIntro } from "./modules/layout/entry-intro.js?ui=3.12.62";
+import { turnChapter, chapterJourney, cancelChapterTurn, bindPaperSound } from './modules/layout/chapter-turn.js';
 
 const app = document.getElementById("app");
+document.documentElement.dataset.editorialLabels = new URLSearchParams(location.search).get('labels') === 'show' ? 'show' : 'hide';
 const cleanPath = (path) => path.replace(/\/+$/, "") || "/";
 const route = (path) => {
   const current = cleanPath(path);
@@ -63,14 +65,18 @@ const navigate = (path, { replace = false, motion = true } = {}) => {
   const requestedTarget = cleanPath(withoutBase(requested.pathname));
   const target = requestedTarget === "/search" ? "/archive" : requestedTarget === "/import/qq-album" ? "/import/qq" : requestedTarget === "/taste/profile" ? "/taste/dna" : requestedTarget === "/taste/philosophy" ? "/taste" : requestedTarget === "/journal" ? "/taste/journal" : requestedTarget.replace(/^\/journal\//, "/taste/journal/");
   const browserPath = `${withBase(target)}${requested.search}${requested.hash}`;
-  const commit = () => { if (replace) history.replaceState({}, "", browserPath); else history.pushState({}, "", browserPath); render(); };
-  if (motion && document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(commit);
+  const from = cleanPath(withoutBase(location.pathname));
+  const commit = () => { if (replace) history.replaceState({}, "", browserPath); else history.pushState({}, "", browserPath); render(); window.scrollTo({ top: 0, behavior: 'instant' }); };
+  cancelChapterTurn();
+  if (motion && chapterJourney(from, target).count) turnChapter(from, target, commit);
+  else if (motion && document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(commit);
   else commit();
 };
 const render = () => {
   const path = cleanPath(withoutBase(location.pathname));
   document.body.classList.toggle("album-detail-page", /^\/archive\/albums\/.+/.test(path));
   renderShell(path);
+  bindPaperSound();
   app.dataset.route = path;
   app.innerHTML = route(path);
   app.classList.remove("page-motion-enter");
@@ -101,10 +107,15 @@ document.addEventListener("click", (event) => {
   if (url.origin !== location.origin) return;
   event.preventDefault();
   navigate(url.pathname + url.search);
-  window.scrollTo({ top: 0, behavior: "instant" });
 });
-window.addEventListener("popstate", render);
-window.addEventListener("how-i-hear-music:sync-applied", render);
+window.addEventListener("popstate", () => {
+  const from = app.dataset.route || '/';
+  const to = cleanPath(withoutBase(location.pathname));
+  turnChapter(from, to, render, { sound: false });
+});
+window.addEventListener("how-i-hear-music:sync-applied", () => { cancelChapterTurn(); render(); });
+window.addEventListener('how-i-hear-music:theme-change', cancelChapterTurn);
+window.addEventListener('languagechange', cancelChapterTurn);
 
 let offlineRegistration = null;
 let showOfflineUpdate = () => {};

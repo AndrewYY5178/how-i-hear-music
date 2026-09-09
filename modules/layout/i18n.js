@@ -2,6 +2,23 @@ const storageKey = "how-i-hear-music:language:v1";
 const supported = new Set(["en", "zh-CN"]);
 
 const zh = {
+  "BRING MUSIC IN.":"把音乐带进来。", "One work or a whole sequence.":"从一首歌，到一整张专辑。", "A track":"一首歌", "Search the QQ Music catalog for one work.":"在 QQ 音乐曲库中寻找想导入的歌曲。", "FIND A TRACK →":"寻找歌曲 →", "Public playlist or album link.":"粘贴公开的歌单或专辑链接。", "A public playlist to review.":"导入公开歌单，确认后加入档案。", "Keep the desk in order.":"整理你的音乐工作台。", "Review imported works before rating.":"评分之前，先核对导入的作品。", "Data desk":"数据工作台", "Backups, artwork and recovery.":"管理备份、封面与数据恢复。", "Find a track.":"寻找一首歌。", "Loading artwork…":"正在加载封面…",
+  "Overview":"总览", "Insights":"洞察", "Your own editions.":"你的自制专辑。", "No albums in this archive yet.":"档案里还没有专辑。",
+  "THE RECORD INDEX":"唱片索引", "ONE LISTENING DECISION.":"从一次聆听开始。", "HOW I HEAR MUSIC.":"我如何听见音乐。",
+  "The details worth keeping.":"留下值得记住的细节。", "A complete listening sequence.":"循着曲序，听完整张专辑。", "The people behind the record.":"唱片背后的创作者。",
+  "DNA, portrait and comparison.":"从偏好、画像与比较认识自己。", "What changed over time.":"记录时间带来的改变。", "Explore the archive in space.":"换个角度，看见聆听的联系。",
+  "A few ways in.":"从这里继续探索。", "OPEN MY EDITIONS":"打开自制专辑", "REVIEW COVERAGE":"查看档案完整度", "OPEN FULL QUEUE":"查看全部待评分作品", "Heard, but not rated.":"听过，还没评分。",
+  "Some songs arrive slowly. A familiar detail becomes the reason for listening again.": "有些歌，是慢慢听进心里的。一个熟悉的细节，就成了再听一遍的理由。",
+  "TASTE / JOURNAL": "审美 / 聆听日志", "ARCHIVE / MY EDITIONS": "档案 / 自制专辑",
+  "PAPER SOUND": "翻页纸声", "THE LISTENING ROOM": "聆听室",
+  "Listen. Look. Return.": "听见。\n看见。\n再听一遍。",
+  "The records we return to.": "总想再听一遍的唱片。",
+  "A cover, a sequence, a reason to listen again.": "从一张封面开始，沿着曲序，听见值得重来的细节。",
+  "Your own sequence.": "编一张属于你的专辑。",
+  "Choose the songs. Design a cover. Keep a personal edition.": "选好歌曲，设计封面，把这段聆听编成自己的珍藏。",
+  "MAKE AN EDITION": "开始自制专辑", "READ JOURNAL": "翻阅聆听日志",
+  "The songs we return to.": "那些反复听起的歌。",
+  "Keep the details that made you listen again.": "记下让你再听一遍的细节。",
   "Visual theme": "视觉主题", "THEME": "主题", "PAPER": "纸张", "CHROMATIC": "彩色对冲",
   "Home": "首页", "HOME": "首页", "Archive": "档案", "Rate": "评分", "Taste": "审美", "Import": "导入", "Journal": "日志", "Search": "搜索", "More": "更多", "EMAIL": "邮箱",
   "ACCOUNT": "账号", "ACCOUNT / PRIVATE SYNC": "账号 / 私密同步", "ACCOUNT / AUTO SYNC": "账号 / 自动同步", "GitHub account.": "GitHub 账号", "Sign in or register.": "登录或注册。", "Authorize GitHub once to create or enter a private sync account.": "完成一次 GitHub 授权，即可创建或进入私密同步账号。", "Authorize GitHub once to create one shared music archive.": "完成一次 GitHub 授权，即可创建一份跨设备共享的音乐档案。", "Private sync is ready in Data Desk.": "私密同步已在数据台准备就绪。", "This archive now follows your GitHub account automatically.": "这份档案现在会自动跟随你的 GitHub 账号同步。", "GitHub identifies this private sync account. Your music data remains in this browser until you choose an encrypted upload.": "GitHub 只负责识别这个私密同步账号；只有你主动选择上传加密副本，音乐资料才会离开此浏览器。", "DISPLAY NICKNAME": "显示昵称", "NICKNAME": "昵称", "Nickname": "昵称", "How should this archive address you?": "希望这份档案如何称呼你？", "SAVE": "保存", "SAVE NICKNAME": "保存昵称", "CHANGE NICKNAME": "修改昵称", "Enter a nickname.": "请输入昵称。", "Nickname saved · automatic sync queued.": "昵称已保存 · 已加入自动同步。", "Could not save the nickname.": "无法保存昵称。", "GITHUB IDENTITY": "GITHUB 身份", "EMAIL IDENTITY": "邮箱身份", "OPEN DATA DESK": "打开数据台", "DATA DESK": "数据台", "REGISTER / SIGN IN WITH GITHUB": "注册 / 使用 GITHUB 登录", "Account sign-in is available on the published site.": "账号登录仅在已发布的网站中可用。", "Checking encrypted copy…": "正在检查加密副本……", "Checking account sync…": "正在检查账号同步……", "Checking for updates…": "正在检查更新……", "New archive shell found · updating…": "发现网站更新 · 正在自动更新……", "You are up to date.": "当前已是最新版本。", "Update checking is available on the published site.": "更新检查仅在已发布的网站上可用。", "Update checking is available after the offline shell is installed.": "离线应用安装完成后即可检查更新。", "Could not check for updates.": "无法检查更新。", "CHECK FOR UPDATES": "检查更新", "SIGN IN WITH GITHUB": "使用 GitHub 登录", "SIGN IN WITH EMAIL": "使用邮箱登录", "Email sign-in is coming soon.": "邮箱登录即将开放。", "Registration and sign-in are handled securely by GitHub.": "注册与登录由 GitHub 安全处理。", "SEND CODE": "发送验证码", "CODE": "验证码", "VERIFY": "验证登录", "Sending sign-in code…": "正在发送登录验证码……", "Code sent. It expires in 10 分钟。": "验证码已发送，10 分钟内有效。", "Checking code…": "正在验证验证码……", "Enter the six-digit sign-in code.": "请输入 6 位验证码。", "Email sign-in is not configured yet.": "邮箱登录服务尚未配置。", "The email service could not send a sign-in code.": "邮件服务暂时无法发送验证码。", "Sign in before syncing.": "请先登录，再进行同步。", "Close account panel": "关闭账号面板", "Could not sign out.": "无法退出登录。",
