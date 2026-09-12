@@ -100,6 +100,9 @@ body[data-module="rate"] .page-head h1 { max-width:13ch; }
 .newspaper-lead .home-listening { min-width:0; width:100%; margin:0; padding:0; border:0; }
 .newspaper-lead .home-record-stage { margin-top:0; height:clamp(400px,37vw,560px); }
 .newspaper-lead .home-record-controls { bottom:0; }
+/* The navigation controls sit on the page surface; their inherited rule line
+   created the extra short underline visible beneath PREV / NEXT. */
+.home-record-controls { border-bottom:0; }
 .home-feature-row { margin:0; }
 .home-feature-row>.featured-shape,.home-feature-row>.featured-landscape { padding:40px 24px; }
 .home-feature-row>.featured-shape { padding-left:0; }

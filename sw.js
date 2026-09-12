@@ -1,7 +1,7 @@
 const cachePrefix = "how-i-hear-music-shell-";
-const cacheName = "how-i-hear-music-shell-0.9.116-newspaper-6";
+const cacheName = "how-i-hear-music-shell-0.9.116-newspaper-7";
 const shell = [
-  "newspaper.css?v=newspaper-6", "app.js?v=0.9.116-newspaper-6",
+  "newspaper.css?v=newspaper-7", "app.js?v=0.9.116-newspaper-7",
   "newspaper.css?v=newspaper-3", "app.js?v=0.9.116-newspaper-3",
   "styles.css?v=0.9.116-newspaper-monochrome-1",
   "newspaper.css", "newspaper.css?v=newspaper-1", "modules/layout/chapter-turn.js",
